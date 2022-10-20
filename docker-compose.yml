@@ -1,0 +1,16 @@
+version: '3'
+services:
+  frontend:
+    container_name: frontend
+    build:
+
+
+  backend:
+    container_name: backend
+    build:
+
+  db:
+
+
+  network:
+  
