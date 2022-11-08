@@ -6,17 +6,7 @@ import { User } from './test/User';
 
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: "postgres",
-    password: "",
-    database: "test",
-    synchronize: true,
-    entities: [User],
-
-  })],
+  imports: [],
   controllers: [AppController],
   providers: [AppService],
 })

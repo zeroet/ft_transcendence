@@ -1,43 +1,39 @@
-version: '3'
+version: "3.8"
+
 services:
-  nginx:
-    restart: always
+  backend:
+    container_name: backend
     build:
-      dockerfile: dev.Dockerfile
-      context: ./Nginx
+      context: ./backend
+      target: development
     volumes:
-      - ./Nginx/logs:/var/log/nginx
+      - ./backend:/app
+      # - /usr/src/app/node_modules
     ports:
-      - '80:80'
-
-  react-front:
-    build:
-      dockerfile: dev.Dockerfile
-      context: ReactFront
+      - ${SERVER_PORT}:${SERVER_PORT}
+    command: npm run start:dev
     env_file:
       - .env
-    volumes:
-      - /usr/app/node_modules
-      - ./ReactFront:/usr/app
-    command: ["npm", "run", "dev"]
-
-  node-back:
-    build:
-      context: ./NodeBack
-      dockerfile: dev.Dockerfile
-    env_file:
-      - .env
-    volumes:
-      - /usr/app/node_modules
-      - ./NodeBack:/usr/app
-    command: ["npm", "run", "dev"]
+    networks:
+      - webnet
+    depends_on:
+      - postgres
 
   postgres:
-    build:
-      context: ./PostgresDb
-      dockerfile: dev.Dockerfile
-    restart: always
-    env_file:
-      - .env
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+     POSTGRES_PASSWORD: ${DB_PASSWORD}
+     POSTGRES_USER: ${DB_USERNAME}
+     POSTGRES_DB: ${DB_DATABASE_NAME}
+     PG_DATA: /var/lib/postgresql/data
+    networks:
+      - webnet
     volumes:
-      - ./PostgresDb/dev/data:/var/lib/postgresql/data
+      - api-db:/var/lib/postgresql/data
+
+networks:
+  webnet:
+volumes:
+  api-db:
