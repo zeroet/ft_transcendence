@@ -24,6 +24,7 @@
     "make:rollback": "ts-node -P tsconfig.server.json ./node_modules/typeorm/cli.js migration:revert"
   },
   "dependencies": {
+    "@nestjs/cli": "^9.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
