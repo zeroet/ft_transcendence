@@ -10,7 +10,7 @@ export default function Home() {
   };
   return (
     <div className={styles.container}>
-      <h2>number is : {value}</h2>
+      <h2>gooooooooooooood !!!!!: {value}</h2>
       <button onClick={onClickEx}>+</button>
     </div>
   );
