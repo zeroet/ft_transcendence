@@ -29,8 +29,9 @@ services:
       context: ./backend
     volumes:
       - ./backend:/app
+      - /app/node_modules
     ports:
-      - 3000:3000
+      - 8080:3000
     command: npm run start:dev
     depends_on:
       - db
@@ -44,7 +45,7 @@ services:
      POSTGRES_PASSWORD: postgres
 
     volumes:
-      - ./api-db:/var/lib/postgresql/data
+      - api-db:/var/lib/postgresql/data
 
   dbadmin:
     image: dpage/pgadmin4
@@ -55,3 +56,5 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: pgadmin4
 
+volumes:
+  api-db:
