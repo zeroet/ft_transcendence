@@ -11,60 +11,47 @@ services:
     restart: always
     ports:
       - "8000:80"
-    networks:
-      - webnet
 
   front:
     container_name: front
     build:
       context: front
       dockerfile: Dockerfile
-    # env_file:
-    # - .env
     volumes:
       - ./front:/usr/app
       - /usr/app/node_modules
       - /usr/app/.next
     restart: always
-    networks:
-      - webnet
 
   backend:
     container_name: backend
     build:
       context: ./backend
-      target: development
     volumes:
       - ./backend:/app
-      # - /usr/src/app/node_modules
     ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
+      - 3000:3000
     command: npm run start:dev
-    env_file:
-      - .env
-    networks:
-      - webnet
     depends_on:
-      - postgres
+      - db
 
-  postgres:
-    container_name: postgres
+  db:
     image: postgres
-    expose:
-      - "5432"
+    restart: always
+    ports:
+      - 5432:5432
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_DB: ${DB_DATABASE}
-      PG_DATA: /var/lib/postgresql/data
-    networks:
-      - webnet
+     POSTGRES_PASSWORD: postgres
+
     volumes:
       - ./api-db:/var/lib/postgresql/data
 
-networks:
-  webnet:
-    driver: bridge
+  dbadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 5050:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin4
 
-# volumes:
-#   api-db:

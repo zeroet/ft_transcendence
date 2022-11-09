@@ -12,6 +12,8 @@ fclean :
 	docker image prune --force --all
 	docker network prune --force 
 	docker volume prune --force 
+	rm -rf api-db
+	mkdir api-db
 
 re : fclean all
 
