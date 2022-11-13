@@ -11,7 +11,7 @@ export default function Home() {
   };
   const getData = async () => {
     const data = axios
-      .get("http://localhost/api")
+      .get("http://localhost:8080/test")
       .then((res) => console.log(res))
       .catch((res) => console.log(res));
   };

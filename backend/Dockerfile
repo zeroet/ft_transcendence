@@ -14,6 +14,6 @@ COPY . .
 
 
 
-EXPOSE 5000
+# EXPOSE 5000
 
 CMD [ "node", "dist/main.js"]
