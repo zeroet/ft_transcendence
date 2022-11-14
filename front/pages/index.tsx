@@ -1,21 +1,30 @@
-import axios from "axios";
 import Head from "next/head";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
-import styles from "../styles/Home.module.css";
+import Link from "next/link";
 
-const fetcher = async (url : string) => {
-  return axios.get(url).then(res => res.data).catch(res => res.data);
-}
-
-export default function Home() {
-  const {data, error, isValidating} = useSWR('/api/test', fetcher)
-  
-  if (error) return ;
+export default function Enter() {
   return (
-    <div className={styles.container}>
-      <h1>{!isValidating && data}</h1>
+    <div>
+      <Head>
+        <title>ft_transcendence</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+      <div>
+        <Link href="Home">
+          <img src="/images/Group.png" alt="enterImg" className="enterImg" />
+        </Link>
+        <style jsx>{`
+          div {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .enterImg {
+            height: 150px;
+          }
+        `}</style>
+      </div>
     </div>
   );
 }

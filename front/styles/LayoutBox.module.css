@@ -1,0 +1,12 @@
+.box {
+  margin: 20px;
+  border: 1px inset black;
+  box-shadow: 10px 10px;
+}
+
+.setting {
+  margin: 20px;
+  border: 1px inset black;
+  box-shadow: 10px 10px;
+  text-align: center;
+}
