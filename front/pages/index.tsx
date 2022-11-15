@@ -2,6 +2,7 @@ import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
 
+
 export default function Enter() {
   const getUserData = async () => {
   //   axios
@@ -16,7 +17,7 @@ export default function Enter() {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <div>
-        <Link href="Home">
+        <Link href="Login">
           <img
             onClick={getUserData}
             src="/images/Group.png"
