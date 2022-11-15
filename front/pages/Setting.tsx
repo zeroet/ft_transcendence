@@ -7,7 +7,7 @@ export default function Setting() {
     <Layout>
       <Title title="Setting" />
       <div className={styles.setting}>
-        <h1>Setting</h1>
+       <h1>존나 졸림 ㅅㅂ</h1>
       </div>
     </Layout>
   );

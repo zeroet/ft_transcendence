@@ -13,6 +13,8 @@
   text-align: center;
   height: 740px;
   text-align: left;
+  display: grid;
+  grid-template-rows: 1fr 2fr, 1fr;
 }
 
 .font-style {

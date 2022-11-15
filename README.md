@@ -11,7 +11,8 @@ make re: fclean all
 
 # 프론트 개발
 front 폴더에 nginx폴더있음
-localhost:8000 으로 들어가면 프론트나옴
+localhost:8000 으로 들어가면 프론트나옴 : 로그인구현중이라 기달
+localhost:8000/Home 으로들어가면 Home나옴
 
 # 백엔드
 backend에 nestjs 폴더있음
