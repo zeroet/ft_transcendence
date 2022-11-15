@@ -1,5 +1,5 @@
-import GameBody from "../component/GameBody";
-import GameList from "../component/GameList";
+import GameBody from "../component/Game/GameBody";
+import GameList from "../component/Game/GameList";
 import Layout from "../component/Layout";
 import Title from "../component/Title";
 

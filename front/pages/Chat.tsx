@@ -1,7 +1,7 @@
-import ChatBody from "../component/ChatBody";
+import ChatBody from "../component/Chat/ChatBody";
 import Layout from "../component/Layout";
-import Participant from "../component/Participant";
-import RoomList from "../component/RoomList";
+import Participant from "../component/Chat/Participant";
+import RoomList from "../component/Chat/RoomList";
 import Title from "../component/Title";
 
 export default function Chat() {

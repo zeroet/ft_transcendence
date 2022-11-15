@@ -1,7 +1,14 @@
+import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
 
 export default function Enter() {
+  const getUserData = async () => {
+  //   axios
+  //     .get("/api/auth/login")
+  //     .then((res) => console.log(res))
+  //     .catch((err) => console.log(err));
+  };
   return (
     <div>
       <Head>
@@ -10,7 +17,12 @@ export default function Enter() {
       </Head>
       <div>
         <Link href="Home">
-          <img src="/images/Group.png" alt="enterImg" className="enterImg" />
+          <img
+            onClick={getUserData}
+            src="/images/Group.png"
+            alt="enterImg"
+            className="enterImg"
+          />
         </Link>
         <style jsx>{`
           div {
