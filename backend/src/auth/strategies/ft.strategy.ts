@@ -17,7 +17,7 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
       callbackURL: process.env.CALLBACK_URL,
-      // scope: ['login', 'email', 'image_url', 'displayname'],
+      scope: ['public'],
     });
   }
 

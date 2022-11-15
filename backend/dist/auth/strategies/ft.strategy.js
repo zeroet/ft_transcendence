@@ -26,6 +26,7 @@ let FtStrategy = class FtStrategy extends (0, passport_1.PassportStrategy)(passp
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
             callbackURL: process.env.CALLBACK_URL,
+            scope: ['public'],
         });
         this.httpService = httpService;
         this.authService = authService;

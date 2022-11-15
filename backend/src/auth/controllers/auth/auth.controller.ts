@@ -7,6 +7,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { response, Response } from 'express';
 import { FtAuthGurad } from 'src/auth/guards/ft-auth.guard';
 import { AuthService } from 'src/auth/services/auth/auth.service';
 
@@ -16,18 +17,13 @@ export class AuthController {
 
   @UseGuards(FtAuthGurad)
   @Get('login')
-  // async login(@Request() req) {
-  login() {
-    console.log('/auth/login');
-    return 'login test';
-  }
+  login() {}
 
   @UseGuards(FtAuthGurad)
   @Redirect('http://localhost:8000', 301)
   @Get('redirect')
-  async redirect() {
-    // const user = await
-    console.log('sucess');
+  async redirect(@Request() req) {
+    console.log('sucess, req.user:', req.user);
     return 'redirect';
   }
 

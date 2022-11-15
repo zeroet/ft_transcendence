@@ -20,12 +20,9 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    login() {
-        console.log('/auth/login');
-        return 'login test';
-    }
-    async redirect() {
-        console.log('sucess');
+    login() { }
+    async redirect(req) {
+        console.log('sucess, req.user:', req.user);
         return 'redirect';
     }
     profile() { }
@@ -42,8 +39,9 @@ __decorate([
     (0, common_1.UseGuards)(ft_auth_guard_1.FtAuthGurad),
     (0, common_1.Redirect)('http://localhost:8000', 301),
     (0, common_1.Get)('redirect'),
+    __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "redirect", null);
 __decorate([
