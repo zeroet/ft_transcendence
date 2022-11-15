@@ -1,8 +1,9 @@
-import { UserDto } from 'src/users/dto/user.dto';
+import { User } from 'src/typeorm';
+import { Repository } from 'typeorm';
 import { IUserService } from './user.interface';
 export declare class UserService implements IUserService {
-    private users;
-    getUsers(): UserDto[];
-    createUser(user: UserDto): number;
-    deleteUser(): void;
+    private userRepository;
+    constructor(userRepository: Repository<User>);
+    getUsers(): Promise<User[]>;
+    getUserById(id: number): Promise<User>;
 }

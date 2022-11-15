@@ -3,6 +3,7 @@ import {
   Get,
   Inject,
   Post,
+  Redirect,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -21,6 +22,7 @@ export class AuthController {
   }
 
   @UseGuards(FtAuthGurad)
+  @Redirect('http://localhost:8000', 301)
   @Get('redirect')
   redirect() {
     console.log('sucess');

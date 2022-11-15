@@ -21,10 +21,9 @@ let UsersController = class UsersController {
     getUsers() {
         return this.userService.getUsers();
     }
-    createUser(user) {
-        return this.userService.createUser(user);
+    getUserById(id) {
+        return this.userService.getUserById(id);
     }
-    deleteUser() { }
 };
 __decorate([
     (0, common_1.Get)(),
@@ -33,18 +32,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "getUsers", null);
 __decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], UsersController.prototype, "createUser", null);
-__decorate([
-    (0, common_1.Delete)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "deleteUser", null);
+], UsersController.prototype, "getUserById", null);
 UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __param(0, (0, common_1.Inject)('USER_SERVICE')),

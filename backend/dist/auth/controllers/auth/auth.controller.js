@@ -41,6 +41,7 @@ __decorate([
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.UseGuards)(ft_auth_guard_1.FtAuthGurad),
+    (0, common_1.Redirect)('http://localhost:8000', 301),
     (0, common_1.Get)('redirect'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
