@@ -16,15 +16,17 @@ export class AuthController {
 
   @UseGuards(FtAuthGurad)
   @Get('login')
-  async login(@Request() req) {
-    console.log('login');
-    return 'success';
+  // async login(@Request() req) {
+  login() {
+    console.log('/auth/login');
+    return 'login test';
   }
 
   @UseGuards(FtAuthGurad)
   @Redirect('http://localhost:8000', 301)
   @Get('redirect')
-  redirect() {
+  async redirect() {
+    // const user = await
     console.log('sucess');
     return 'redirect';
   }

@@ -20,11 +20,11 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async login(req) {
-        console.log('login');
-        return 'success';
+    login() {
+        console.log('/auth/login');
+        return 'login test';
     }
-    redirect() {
+    async redirect() {
         console.log('sucess');
         return 'redirect';
     }
@@ -34,10 +34,9 @@ let AuthController = class AuthController {
 __decorate([
     (0, common_1.UseGuards)(ft_auth_guard_1.FtAuthGurad),
     (0, common_1.Get)('login'),
-    __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.UseGuards)(ft_auth_guard_1.FtAuthGurad),
@@ -45,7 +44,7 @@ __decorate([
     (0, common_1.Get)('redirect'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "redirect", null);
 __decorate([
     (0, common_1.Get)('profile'),

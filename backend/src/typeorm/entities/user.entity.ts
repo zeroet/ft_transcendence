@@ -17,4 +17,10 @@ export class User implements IUser {
 
   @Column()
   username: string;
+
+  @Column({ default: new Date() })
+  createdAt: Date;
+
+  @Column({ default: new Date() })
+  modifiedAt: Date;
 }

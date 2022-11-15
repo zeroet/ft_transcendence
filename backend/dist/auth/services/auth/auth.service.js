@@ -22,6 +22,7 @@ let AuthService = class AuthService {
         this.userRepository = userRepository;
     }
     async validateUser(userDetails) {
+        console.log('validateUser');
         const { intra_id } = userDetails;
         const user = await this.userRepository.findOneBy({ intra_id });
         console.log(user);

@@ -11,6 +11,7 @@ export class AuthService implements IAuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async validateUser(userDetails: UserDetails) {
+    console.log('validateUser');
     const { intra_id } = userDetails;
     const user = await this.userRepository.findOneBy({ intra_id });
     console.log(user);

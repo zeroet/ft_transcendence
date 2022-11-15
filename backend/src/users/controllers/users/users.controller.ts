@@ -5,6 +5,8 @@ import {
   Get,
   Inject,
   Param,
+  ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { IUserService } from 'src/users/services/user/user.interface';
@@ -15,13 +17,20 @@ export class UsersController {
     @Inject('USER_SERVICE') private readonly userService: IUserService,
   ) {}
   @Get()
-  getUsers() {
-    return this.userService.getUsers();
+  async getUsers() {
+    const users = await this.userService.getUsers();
+    return users;
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: number) {
-    return this.userService.getUserById(id);
+  getUserById(@Param('id', ParseIntPipe) id: number) {
+    const user = this.userService.getUserById(id);
+    return user;
+  }
+
+  @Patch(':id')
+  updateUserById(@Param('id', ParseIntPipe) id: number) {
+    this.userService.updateUserById(id);
   }
   // @Post()
   // createUser(@Body() user: UserDto) {

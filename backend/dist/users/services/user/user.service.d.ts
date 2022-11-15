@@ -6,4 +6,5 @@ export declare class UserService implements IUserService {
     constructor(userRepository: Repository<User>);
     getUsers(): Promise<User[]>;
     getUserById(id: number): Promise<User>;
+    updateUserById(id: number): void;
 }

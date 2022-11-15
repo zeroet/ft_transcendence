@@ -33,6 +33,14 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "username", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: new Date() }),
+    __metadata("design:type", Date)
+], User.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: new Date() }),
+    __metadata("design:type", Date)
+], User.prototype, "modifiedAt", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)({ name: 'users' })
 ], User);

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
 import { Repository } from 'typeorm';
@@ -13,6 +13,9 @@ export class UserService implements IUserService {
     return this.userRepository.find();
   }
   getUserById(id: number): Promise<User> {
-    return this.userRepository.findOneBy({ id });
+    const user = this.userRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException(`User by #id ${id} not found`);
+    return user;
   }
+  updateUserById(id: number) {}
 }

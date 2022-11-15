@@ -25,8 +25,12 @@ let UserService = class UserService {
         return this.userRepository.find();
     }
     getUserById(id) {
-        return this.userRepository.findOneBy({ id });
+        const user = this.userRepository.findOneBy({ id });
+        if (!user)
+            throw new common_1.NotFoundException(`User by #id ${id} not found`);
+        return user;
     }
+    updateUserById(id) { }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

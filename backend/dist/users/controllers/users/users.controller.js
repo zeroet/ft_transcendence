@@ -18,26 +18,38 @@ let UsersController = class UsersController {
     constructor(userService) {
         this.userService = userService;
     }
-    getUsers() {
-        return this.userService.getUsers();
+    async getUsers() {
+        const users = await this.userService.getUsers();
+        return users;
     }
     getUserById(id) {
-        return this.userService.getUserById(id);
+        const user = this.userService.getUserById(id);
+        return user;
+    }
+    updateUserById(id) {
+        this.userService.updateUserById(id);
     }
 };
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUsers", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "getUserById", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "updateUserById", null);
 UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __param(0, (0, common_1.Inject)('USER_SERVICE')),
