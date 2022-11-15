@@ -47,6 +47,14 @@ div {
   line-height: 20px;
   text-align: center;
   padding-top: 12px;
+  cursor: pointer;
+}
+
+.setting-component:hover {
+  background-color: black;
+  color: white;
+  border: 1px inset black;
+  box-shadow: 10px 10px white initial;
 }
 /* a {
   color: inherit;
