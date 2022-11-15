@@ -14,6 +14,9 @@ declare namespace NodeJS {
     TOKEN_URL?: string;
     AUTHORIZATION_URL?: string;
 
-    JWT_SECRET?: string;
+    JWT_ACCESS_SECRET?: string;
+    JWT_REFRESH_SECRET?: string;
+    JWT_ACCESS_EXPIRATION_TIME?: string;
+    JWT_REFRESH_EXPIRATION_TIME?: string;
   }
 }

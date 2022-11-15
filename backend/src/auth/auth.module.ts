@@ -5,15 +5,13 @@ import { HttpModule } from '@nestjs/axios';
 import { FtStrategy } from './strategies/ft.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     HttpModule,
-    // JwtModule.register({
-    //   secret: process.env.JWT_SECRET,
-    //   signOptions: { expiresIn: '360000s' },
-    // }),
+    JwtModule.register({}),
   ],
   controllers: [AuthController],
   providers: [{ provide: 'AUTH_SERVICE', useClass: AuthService }, FtStrategy],
