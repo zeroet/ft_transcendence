@@ -1,12 +1,17 @@
+import { useState } from "react";
+import CreatChat from "./CreatChat";
+
 const ChatRoom = () => {
+  const [creatChatModal, setCreatChatModal] = useState<boolean>(false);
+
   const addChat = () => {
-    console.log('add chat')
-  }
+    setCreatChatModal((curr) => !curr);
+  };
   return (
     <div className="ChatRoom">
-      <div className="chat-div">
+      {creatChatModal && <CreatChat />}
+      <div className="chat-div">       
         <h1>CHAT ROOM</h1>
-        
         <button onClick={addChat}>+</button>
       </div>
       <hr />
@@ -16,11 +21,10 @@ const ChatRoom = () => {
         <li>chat room 3</li>
       </ul>
       <style jsx>{`
-
         button {
-          background-color: white; 
+          background-color: white;
           border-style: none;
-          cursor: pointer
+          cursor: pointer;
         }
 
         .ChatRoom {
