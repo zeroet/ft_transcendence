@@ -1,6 +1,6 @@
 import styles from "../../styles/LayoutBox.module.css";
-import ChatRoom from "./ChatRoom/ChatRoom";
-import DM from "./ChatRoom/DM";
+import ChatRoom from "./RoomList/ChatRoom";
+import DM from "./RoomList/DM";
 
 export default function RoomList() {
   return (

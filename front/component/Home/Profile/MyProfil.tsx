@@ -10,6 +10,7 @@ const MyProfil = () => {
         div {
           display: grid;
           grid-template-columns: 2fr 4fr;
+          overflow: visible;
         }
       `}</style>
     </div>

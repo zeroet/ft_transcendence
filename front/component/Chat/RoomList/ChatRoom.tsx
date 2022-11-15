@@ -19,6 +19,7 @@ const ChatRoom = () => {
         <li>chat room 1</li>
         <li>chat room 2</li>
         <li>chat room 3</li>
+
       </ul>
       <style jsx>{`
         button {

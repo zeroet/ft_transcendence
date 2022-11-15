@@ -5,6 +5,11 @@ export default function Participant() {
     <div className={styles.box}>
       <h1>Participant_chat</h1>
       <hr />
+      <ul>
+        <li>hyungyoo</li>
+        <li>hyungyoo</li>
+        <li>hyungyoo</li>
+      </ul>
       <style jsx>{`
       h1 {
         font-size: 25px;
