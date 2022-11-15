@@ -21,9 +21,20 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     login() { }
-    async redirect(req) {
+    async redirect(req, res) {
         console.log('sucess, req.user:', req.user);
-        return 'redirect';
+        res.cookie('Authentication', req.user.accessToken, {
+            domain: 'localhost',
+            path: '/',
+            httpOnly: true,
+            maxAge: 360 * 1000,
+        });
+        res.cookie('Refresh', req.user.refreshToken, {
+            domain: 'localhost',
+            path: '/',
+            httpOnly: true,
+            maxAge: 360 * 1000,
+        });
     }
     profile() { }
     logout() { }
@@ -37,11 +48,12 @@ __decorate([
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.UseGuards)(ft_auth_guard_1.FtAuthGurad),
-    (0, common_1.Redirect)('http://localhost:8000', 301),
+    (0, common_1.Redirect)('http://localhost:8000/Home', 301),
     (0, common_1.Get)('redirect'),
     __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Response)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "redirect", null);
 __decorate([

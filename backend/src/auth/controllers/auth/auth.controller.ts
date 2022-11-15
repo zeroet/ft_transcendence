@@ -5,9 +5,9 @@ import {
   Post,
   Redirect,
   Request,
+  Response,
   UseGuards,
 } from '@nestjs/common';
-import { response, Response } from 'express';
 import { FtAuthGurad } from 'src/auth/guards/ft-auth.guard';
 import { AuthService } from 'src/auth/services/auth/auth.service';
 
@@ -20,11 +20,26 @@ export class AuthController {
   login() {}
 
   @UseGuards(FtAuthGurad)
-  @Redirect('http://localhost:8000', 301)
+  @Redirect('http://localhost:8000/Home', 301)
   @Get('redirect')
-  async redirect(@Request() req) {
+  async redirect(@Request() req, @Response({ passthrough: true }) res) {
     console.log('sucess, req.user:', req.user);
-    return 'redirect';
+    // console.log('req.user.access_token:', req.user.access_token);
+    // console.log('req.user.accessToken:', req.user.accessToken);
+    // console.log('req.user.refresh_token:', req.user.refresh_token);
+    // console.log('req.user.refreshToken:', req.user.refreshToken);
+    res.cookie('Authentication', req.user.accessToken, {
+      domain: 'localhost',
+      path: '/',
+      httpOnly: true,
+      maxAge: 360 * 1000,
+    });
+    res.cookie('Refresh', req.user.refreshToken, {
+      domain: 'localhost',
+      path: '/',
+      httpOnly: true,
+      maxAge: 360 * 1000,
+    });
   }
 
   @Get('profile')
