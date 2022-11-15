@@ -4,3 +4,7 @@ export declare type UserDetails = {
     image_url: string;
     username: string;
 };
+export declare type Tokens = {
+    access_token: string;
+    refresh_token: string;
+};
