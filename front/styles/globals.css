@@ -1,0 +1,76 @@
+html {
+  --body-color: orange;
+}
+
+html,
+body {
+  margin: 0;
+  font-family: "Fragment Mono", monospace;
+}
+
+h1,
+button {
+  background-color: white;
+  border-style: none;
+  font-family: "Doppio One";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 20px;
+  /* identical to box height, or 67% */
+  margin-left: 2px;
+  text-transform: uppercase;
+
+  color: #000000;
+}
+
+hr {
+  border: 1px solid #000000;
+  width: 90%;
+  margin-left: 0;
+  margin-top: 0;
+}
+
+div {
+  overflow: auto;
+}
+
+.setting-component {
+  width: 400px;
+  box-shadow: 10px 10px;
+  margin: 30px;
+  border: 2px solid;
+  font-family: "Doppio One";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 20px;
+  text-align: center;
+  padding-top: 12px;
+  cursor: pointer;
+}
+
+.setting-component:hover {
+  background-color: black;
+  color: white;
+  border: 1px inset black;
+  box-shadow: 10px 10px white initial;
+}
+/* a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+} */
+
+/* @media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: white;
+    background: black;
+  }
+} */

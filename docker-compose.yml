@@ -1,16 +1,67 @@
-version: '3'
-services:
-  frontend:
-    container_name: frontend
-    build:
+version: "3.8"
 
+services:
+  nginx:
+    container_name: reverse_proxy
+    build:
+      context: Nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./Nginx/logs:/var/log/nginx
+      - ./Nginx/conf:/etc/nginx/conf.d
+    restart: always
+    ports:
+      - "8000:80"
+    depends_on:
+      - front
+      - backend
+
+  front:
+    container_name: front
+    build:
+      context: front
+      dockerfile: Dockerfile
+    volumes:
+      - ./front:/usr/app
+      - /usr/app/node_modules
+      - /usr/app/.next
+    restart: always
+    depends_on:
+      - backend
 
   backend:
     container_name: backend
     build:
+      context: ./backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - 8080:3000
+    env_file: .env
+    command: npm run start:dev
+    depends_on:
+      - db
 
   db:
+    image: postgres
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    env_file: .env
 
+    volumes:
+      - api-db:/var/lib/postgresql/data
 
-  network:
-  
+  dbadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 5050:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin4
+
+volumes:
+  api-db:

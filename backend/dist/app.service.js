@@ -12,6 +12,9 @@ let AppService = class AppService {
     getHello() {
         return 'Hello World!';
     }
+    testReq() {
+        return "시발 왜 또 db 연동안되냐 짜증나게";
+    }
 };
 AppService = __decorate([
     (0, common_1.Injectable)()
