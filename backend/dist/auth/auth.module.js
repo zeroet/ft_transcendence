@@ -14,6 +14,7 @@ const axios_1 = require("@nestjs/axios");
 const ft_strategy_1 = require("./strategies/ft.strategy");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("../typeorm");
+const jwt_1 = require("@nestjs/jwt");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -21,6 +22,7 @@ AuthModule = __decorate([
         imports: [
             typeorm_1.TypeOrmModule.forFeature([typeorm_2.User]),
             axios_1.HttpModule,
+            jwt_1.JwtModule.register({}),
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [{ provide: 'AUTH_SERVICE', useClass: auth_service_1.AuthService }, ft_strategy_1.FtStrategy],
