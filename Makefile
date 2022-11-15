@@ -5,7 +5,7 @@ VOLUME_LIST := $(shell docker network ls)
 
 
 all :
-	docker-compose up
+	docker-compose up --build
 
 fclean :
 	docker-compose down

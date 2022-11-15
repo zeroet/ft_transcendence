@@ -38,17 +38,18 @@ services:
       - /app/node_modules
     ports:
       - 8080:3000
+    env_file: .env
     command: npm run start:dev
     depends_on:
       - db
 
   db:
     image: postgres
+    container_name: postgres
     restart: always
     ports:
       - 5432:5432
-    environment:
-     POSTGRES_PASSWORD: postgres
+    env_file: .env
 
     volumes:
       - api-db:/var/lib/postgresql/data
