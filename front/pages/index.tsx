@@ -1,21 +1,26 @@
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
-
+import { useRouter } from "next/router";
 
 export default function Enter() {
+  // const router = useRouter();
   const getUserData = async () => {
-  //   axios
-  //     .get("/api/auth/login")
-  //     .then((res) => console.log(res))
-  //     .catch((err) => console.log(err));
+    //   axios
+    //     .get("/api/auth/login")
+    //     .then((res) => console.log(res))
+    //     .catch((err) => console.log(err));
   };
+  // const go = () => {
+  //   router.push("/api/auth/login");
+  // };
   return (
     <div>
       <Head>
         <title>ft_transcendence</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
+      {/* <button onClick={go}>~~~~~~~~~</button> */}
       <div>
         <Link href="Login">
           <img
@@ -40,4 +45,11 @@ export default function Enter() {
       </div>
     </div>
   );
+}
+
+export function getServerSideProps(context: any) {
+  console.log(context.req.headers.cookie);
+  return {
+    props: {},
+  };
 }
