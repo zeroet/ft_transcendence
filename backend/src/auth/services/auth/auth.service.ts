@@ -125,4 +125,13 @@ export class AuthService implements IAuthService {
   async updateRefreshTokenHash(id: number, refreshToken: string) {
     const hash = await this.hashData(refreshToken);
   }
+
+  async logout() {
+    return {
+      path: '/',
+      domain: process.env.BASE_DOMAIN,
+      httpOnly: true,
+      maxAge: 0,
+    };
+  }
 }
