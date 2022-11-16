@@ -1,18 +1,12 @@
-import useSWR from "swr";
-import fetcher from "../../../Utils/fetcher";
-
 const TextProfil = () => {
-  const {data, error, isValidating} = useSWR('/api/users', fetcher);
-  const user = data[0]
-  const { intra_id } = user;
-
+  const name = "hyungyoo";
   const victory = 4;
   const loss = 1;
   const winRate = "80";
   return (
     <div>
       <div className="name">
-        <h1 className="userName">{intra_id}</h1>
+        <h1 className="userName">{name}</h1>
       </div>
       <div className="info">
         <h3 className="victory">ViCTORY: {victory}</h3>

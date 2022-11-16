@@ -3,15 +3,12 @@ import useSWR from "swr";
 import fetcher from "../../../Utils/fetcher";
 
 const Photo = () => {
-  const {data, error, isValidating} = useSWR('/api/users', fetcher);
-  // 나중에  data : user로 바꿔야함
-  const user = data[0];
-  const {image_url} = user;
-  const defaultImage = image_url;
+  useSWR('/api/users', fetcher)
+  const defaultImage = "/images/default_image.jpg";
   return (
     <div>
       <div className="photo">
-        <img height={200} src={defaultImage} />
+        <img height={250} src={defaultImage} />
       </div>
       <style jsx>{`
         .photo {
