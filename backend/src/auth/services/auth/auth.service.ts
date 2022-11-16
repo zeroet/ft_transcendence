@@ -21,6 +21,12 @@ export class AuthService implements IAuthService {
     path: '/',
   };
 
+  logoutCookieOptions: CookieOptions = {
+    httpOnly: false,
+    path: '/',
+    maxAge: 0,
+  };
+
   refreshTokenCookieOptions: CookieOptions = {
     ...this.defaultCookieOptions,
     maxAge: Number.parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) * 1000,

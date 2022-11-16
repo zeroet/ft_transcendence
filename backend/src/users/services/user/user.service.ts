@@ -9,7 +9,7 @@ export class UserService implements IUserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
-  getUsers(): Promise<User[]> {
+  getCurrentUser(): Promise<User[]> {
     return this.userRepository.find();
   }
   getUserById(id: number): Promise<User> {
