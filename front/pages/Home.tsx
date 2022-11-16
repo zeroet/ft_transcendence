@@ -4,11 +4,13 @@ import Profile from "../component/Home/Profile";
 import Title from "../component/Title";
 import { TokenType } from "../interfaceType";
 import axios from "axios";
+import cookies from "next-cookies";
+import tokenManager from "../component/Utils/tokenManager";
 
 export default function Home({ token, refresh }: TokenType): JSX.Element {
   // console.log(token)
   // console.log(refresh)
-
+  axios.get("/api/users");
   return (
     <Layout>
       <Title title="Home" />
@@ -39,8 +41,8 @@ setCookie는 쓸필없고
 */
 
 export function getServerSideProps(context: any) {
-  const cookie = context.req.headers.cookie;
-  if (!cookie) {
+  const cookie = cookies(context);
+  if (JSON.stringify(cookie) === '{}') {
     return {
       redirect: {
         destination: "/",
@@ -48,10 +50,6 @@ export function getServerSideProps(context: any) {
       },
     };
   }
-  console.log(cookie)
-  const [token, refresh] = cookie.split("; ");
-  console.log('auth', token)
-  return {
-    props: { token, refresh },
-  };
+  tokenManager(cookie);
+  return { props: {} };
 }

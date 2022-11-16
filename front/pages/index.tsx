@@ -1,4 +1,5 @@
 import axios from "axios";
+import cookies from "next-cookies";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -48,8 +49,8 @@ export default function Enter() {
 }
 
 export function getServerSideProps(context: any) {
-  const cookie = context.req.headers.cookie;
-  if (cookie) {
+  const cookie = cookies(context);
+  if (!(JSON.stringify(cookie) === '{}')) {
     return {
       redirect: {
         destination: "/Home",
