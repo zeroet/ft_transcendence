@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
+import addChat from "./ChatRoom.tsx";
 
-export default function CreateChat() {
-  let [modalBox, setModalBox] = useState<boolean>(true);
+export default function CreateChat({ onClose }) {
+  // const [isBrowser, setIsBrowser] = useState(false);
+
+  // useEffect(() => {
+  //   setIsBrowser(true);
+  // }, []);
+
+  // let [showModal, setShowModal] = useState<boolean>(true);
   //   useEffect(() => {
   //     const width = window.outerWidth / 2;
   //     const heigth = window.outerHeight / 2;
@@ -10,8 +17,10 @@ export default function CreateChat() {
     alert("hi");
   };
 
-  const cancelRoom = () => {
-    alert("cancel");
+  const cancelRoom = (e) => {
+    e.preventDefault();
+    onClose();
+    // alert("cancel");
   };
 
   return (

@@ -1,18 +1,24 @@
 import { useState } from "react";
-import CreatChat from "./CreateChat";
+import CreateChat from "./CreateChat";
 
 export default function ChatRoom() {
-  const [creatChatModal, setCreateChatModal] = useState<boolean>(false);
+  const [showCreateChatModal, setShowCreateChatModal] =
+    useState<boolean>(false);
 
   const addChat = () => {
-    setCreateChatModal((curr) => !curr);
+    setShowCreateChatModal(true);
   };
+
+  const onClose = () => {
+    setShowCreateChatModal(false);
+  };
+
   return (
     <div className="ChatRoom">
-      {creatChatModal && <CreatChat />}
+      {showCreateChatModal && <CreateChat onClose={onClose} />}
       <div className="chat-div">
         <h1>CHAT ROOM</h1>
-        <button onClick={addChat} className="button">
+        <button onClick={addChat} className="button" type="button">
           +
         </button>
       </div>
