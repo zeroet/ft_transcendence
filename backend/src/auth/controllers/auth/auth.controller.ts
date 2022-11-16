@@ -36,7 +36,7 @@ export class AuthController {
   @Redirect('http://localhost:8000', 301)
   @Get('logout')
   async logout(@Request() req, @Response({ passthrough: true }) res) {
-    res.cookie(Cookies.ACCESS_TOKEN, this.authService.logoutCookieOptions);
-    res.cookie(Cookies.REFRESH_TOKEN, this.authService.logoutCookieOptions);
+    res.cookie(Cookies.ACCESS_TOKEN, '', this.authService.logoutCookieOptions);
+    res.cookie(Cookies.REFRESH_TOKEN, '', this.authService.logoutCookieOptions);
   }
 }
