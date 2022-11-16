@@ -36,8 +36,7 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
       console.log('email: ', email);
       console.log('image_url: ', image_url);
       console.log('displayname: ', username);
-      const user = this.authService.validateUser(userDetails);
-      return { ...user, accessToken, refreshToken };
+      return this.authService.validateUser(userDetails);
     } catch (error) {
       console.error(error);
       throw new UnauthorizedException();

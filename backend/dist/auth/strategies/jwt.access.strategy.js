@@ -20,7 +20,7 @@ let JwtAccessStrategy = class JwtAccessStrategy extends (0, passport_1.PassportS
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromExtractors([
                 (request) => {
                     var _a;
-                    return (_a = request === null || request === void 0 ? void 0 : request.cookies) === null || _a === void 0 ? void 0 : _a.Authentication;
+                    return (_a = request === null || request === void 0 ? void 0 : request.cookies) === null || _a === void 0 ? void 0 : _a.Access;
                 },
             ]),
             secretOrKey: process.env.JWT_ACCESS_SECRET,

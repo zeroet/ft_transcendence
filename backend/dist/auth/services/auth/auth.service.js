@@ -17,12 +17,20 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("../../../typeorm");
+const types_1 = require("../../../utils/types");
 const typeorm_3 = require("typeorm");
 const bcrypt = require("bcrypt");
 let AuthService = class AuthService {
     constructor(userRepository, jwtService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.defaultCookieOptions = {
+            domain: process.env.BASE_DOMAIN,
+            httpOnly: true,
+            path: '/',
+        };
+        this.refreshTokenCookieOptions = Object.assign(Object.assign({}, this.defaultCookieOptions), { maxAge: Number.parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) });
+        this.accessTokenCookieOptions = Object.assign(Object.assign({}, this.defaultCookieOptions), { maxAge: Number.parseInt(process.env.JWT_ACCESS_EXPIRATION_TIME) });
     }
     hashData(data) {
         return bcrypt.hash(data, 12);
@@ -74,10 +82,28 @@ let AuthService = class AuthService {
         });
         return refresh;
     }
+    setAccessToken(res, id) {
+        res.cookie(types_1.Cookies.ACCESS_TOKEN, this.getAccessToken(id), this.accessTokenCookieOptions);
+    }
+    setRefreshToken(res, id) {
+        res.cookie(types_1.Cookies.REFRESH_TOKEN, this.getRefreshToken(id), this.refreshTokenCookieOptions);
+    }
     async updateRefreshTokenHash(id, refreshToken) {
         const hash = await this.hashData(refreshToken);
     }
 };
+__decorate([
+    __param(0, (0, common_1.Response)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", void 0)
+], AuthService.prototype, "setAccessToken", null);
+__decorate([
+    __param(0, (0, common_1.Response)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", void 0)
+], AuthService.prototype, "setRefreshToken", null);
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(typeorm_2.User)),
