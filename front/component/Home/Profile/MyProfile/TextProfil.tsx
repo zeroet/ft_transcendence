@@ -52,6 +52,7 @@ const TextProfil = () => {
 
         .name {
           margin-top: 48px;
+          overflow: hidden;
         }
 
         .info {

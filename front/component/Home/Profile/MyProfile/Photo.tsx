@@ -3,7 +3,8 @@ import useSWR from "swr";
 import fetcher from "../../../Utils/fetcher";
 
 const Photo = () => {
-  useSWR('/api/users', fetcher)
+  const user = useSWR("/api/users", fetcher);
+  console.log(user);
   const defaultImage = "/images/default_image.jpg";
   return (
     <div>
