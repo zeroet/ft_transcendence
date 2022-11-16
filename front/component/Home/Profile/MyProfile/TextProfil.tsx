@@ -1,12 +1,24 @@
+import useSWR from "swr";
+import fetcher from "../../../Utils/fetcher";
+
 const TextProfil = () => {
-  const name = "hyungyoo";
-  const victory = 4;
+  const { data: user, error, mutate} = useSWR("/api/users", fetcher);
+  
+  /*
+   1. useSWR with new API for loss, victory, winRate
+  */
+
+
   const loss = 1;
+  const victory = 4;
   const winRate = "80";
+
+  if (error) return <div>failed to load</div>;
+  if (!user) return <div>loading...</div>;
   return (
     <div>
       <div className="name">
-        <h1 className="userName">{name}</h1>
+        <h1 className="userName">{user.username}</h1>
       </div>
       <div className="info">
         <h3 className="victory">ViCTORY: {victory}</h3>

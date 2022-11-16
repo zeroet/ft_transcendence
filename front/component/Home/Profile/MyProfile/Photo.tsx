@@ -3,13 +3,14 @@ import useSWR from "swr";
 import fetcher from "../../../Utils/fetcher";
 
 const Photo = () => {
-  const user = useSWR("/api/users", fetcher);
-  console.log(user);
-  const defaultImage = "/images/default_image.jpg";
+  const { data: user, error, isValidating } = useSWR("/api/users", fetcher);
+  
+  if (error) return <div>failed to load</div>;
+  if (!user) return <div>loading...</div>;
   return (
     <div>
       <div className="photo">
-        <img height={250} src={defaultImage} />
+        <img height={200} src={user.image_url} />
       </div>
       <style jsx>{`
         .photo {

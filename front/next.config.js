@@ -9,8 +9,8 @@ module.exports = {
   // async redirects() {
   //   return [
   //     {
-  //       source: "/Login",
-  //       destination: "http://localhost:8080/auth/login",
+  //       source: "/Logout",
+  //       destination: "http://localhost:8080/auth/logout",
   //       permanent: true,
   //     },
   //   ];
