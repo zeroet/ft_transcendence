@@ -1,12 +1,14 @@
 import Image from "next/image";
 import useSWR from "swr";
+import Error from "../../../errorAndLoading/Error";
+import Loading from "../../../errorAndLoading/Loading";
 import fetcher from "../../../Utils/fetcher";
 
 const Photo = () => {
   const { data: user, error, isValidating } = useSWR("/api/users", fetcher);
   
-  if (error) return <div>failed to load</div>;
-  if (!user) return <div>loading...</div>;
+  if (error) return <Error />;
+  if (!user) return <Loading />;
   return (
     <div>
       <div className="photo">
