@@ -58,8 +58,7 @@ export class AuthService implements IAuthService {
         },
         {
           secret: process.env.JWT_ACCESS_SECRET,
-          expiresIn:
-            Number.parseInt(process.env.JWT_ACCESS_EXPIRATION_TIME) * 1000,
+          expiresIn: process.env.JWT_ACCESS_EXPIRATION_TIME,
         },
       ),
       this.jwtService.signAsync(
@@ -68,8 +67,7 @@ export class AuthService implements IAuthService {
         },
         {
           secret: process.env.JWT_REFRESH_SECRET,
-          expiresIn:
-            Number.parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) * 1000,
+          expiresIn: process.env.JWT_REFRESH_EXPIRATION_TIME,
         },
       ),
     ]);
@@ -83,8 +81,7 @@ export class AuthService implements IAuthService {
       },
       {
         secret: process.env.JWT_ACCESS_SECRET,
-        expiresIn:
-          Number.parseInt(process.env.JWT_ACCESS_EXPIRATION_TIME) * 1000,
+        expiresIn: process.env.JWT_ACCESS_EXPIRATION_TIME,
       },
     );
     return access;
@@ -97,8 +94,7 @@ export class AuthService implements IAuthService {
       },
       {
         secret: process.env.JWT_REFRESH_SECRET,
-        expiresIn:
-          Number.parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) * 1000,
+        expiresIn: process.env.JWT_REFRESH_EXPIRATION_TIME,
       },
     );
     return refresh;

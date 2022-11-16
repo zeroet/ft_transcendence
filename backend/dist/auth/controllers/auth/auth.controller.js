@@ -22,8 +22,6 @@ let AuthController = class AuthController {
     }
     login() { }
     async redirect(req, res) {
-        res.user = req.user;
-        console.log(res.user);
         this.authService.setAccessToken(res, req.user.id);
         this.authService.setRefreshToken(res, req.user.id);
     }
