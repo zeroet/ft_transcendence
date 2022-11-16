@@ -5,11 +5,11 @@ export default function ChatRoom() {
   const [showCreateChatModal, setShowCreateChatModal] =
     useState<boolean>(false);
 
-  const addChat = () => {
+  const addChat = (e) => {
     setShowCreateChatModal(true);
   };
 
-  const onClose = () => {
+  const onClose = (e) => {
     setShowCreateChatModal(false);
   };
 

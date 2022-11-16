@@ -28,6 +28,7 @@
   padding: 8px 30px;
   padding-top: 25px;
   width: 150px;
+  text-transform: uppercase;
 }
 
 .navbar_menu li a {
