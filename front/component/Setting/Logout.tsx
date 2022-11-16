@@ -1,14 +1,10 @@
-import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Logout = () => {
-  const router = useRouter();
-  const logout = () => {
-    router.push("/api/auth/logout");
-  };
   return (
-    <div onClick={logout} className="setting-component">
-      Logout
-    </div>
+    <Link href="/api/auth/logout">
+      <div className="setting-component">Logout</div>
+    </Link>
   );
 };
 
