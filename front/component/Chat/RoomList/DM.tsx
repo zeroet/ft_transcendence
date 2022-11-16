@@ -23,7 +23,7 @@ export default function DM() {
             color: #000000;
           }
           .DM {
-            height: 286px;
+            height: 50%;
           }
         `}
       </style>

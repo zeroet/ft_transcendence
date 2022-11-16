@@ -12,7 +12,9 @@ export default function ChatRoom() {
       {creatChatModal && <CreatChat />}
       <div className="chat-div">
         <h1>CHAT ROOM</h1>
-        <button onClick={addChat}>+</button>
+        <button onClick={addChat} className="button">
+          +
+        </button>
       </div>
       <hr />
       <ul>
@@ -32,14 +34,16 @@ export default function ChatRoom() {
         }
 
         .ChatRoom {
-          height: 410px;
+          height: 50%;
         }
 
         .chat-div {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin: 5px;
+        }
+        .button {
+          margin: 10px;
         }
       `}</style>
     </div>
