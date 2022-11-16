@@ -13,14 +13,13 @@ export default function Setting() {
       <div className={styles.setting}>
         <div className="dummy"></div>
         <div className="set-list">
-            <ChangeName />
-            <ChangeAvatar />
-            <TwoFactor />
-            <Logout />
+          <ChangeName />
+          <ChangeAvatar />
+          <TwoFactor />
+          <Logout />
         </div>
         <div className="dummy"></div>
         <style jsx>{`
-          
           .dummy {
             // background-color: green;
           }

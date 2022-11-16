@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 
-const CreatChat = () => {
+export default function CreateChat() {
   //   useEffect(() => {
   //     const width = window.outerWidth / 2;
   //     const heigth = window.outerHeight / 2;
   //   }, []);
   return (
     <div>
-      CreatChat
+      Create Chat Room
       <style jsx>{`
         div {
           position: fixed;
@@ -22,6 +22,4 @@ const CreatChat = () => {
       `}</style>
     </div>
   );
-};
-
-export default CreatChat;
+}

@@ -5,7 +5,7 @@ export default function FriendStatus() {
     <div className={styles.box}>
       <h1>Friend Status</h1>
       <hr />
-      <ul >
+      <ul>
         <li>hyungyoo1</li>
         <li>hyungyoo2</li>
         <li>hyungyoo3</li>
@@ -18,6 +18,11 @@ export default function FriendStatus() {
         <li>hyungyoo3</li>
         <li>hyungyoo3</li>
       </ul>
+      <style jsx>{`
+        h1 {
+          font-family: "Fragment Mono", monospace;
+        }
+      `}</style>
     </div>
   );
 }

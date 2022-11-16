@@ -11,7 +11,7 @@ const TextProfil = () => {
       <div className="info">
         <h3 className="victory">ViCTORY: {victory}</h3>
         <h3 className="loss">LOSS: {loss}</h3>
-        <h3>WINRATE: {winRate}%</h3>
+        <h3>WINRATE: {winRate} %</h3>
       </div>
       <style jsx>{`
         div {
@@ -19,7 +19,7 @@ const TextProfil = () => {
           margin-left: 5px;
         }
         .userName {
-          font-family: "Doppio One";
+          font-family: "Fragment Mono", monospace;
           font-style: normal;
           font-weight: 400;
           font-size: 50px;
@@ -31,7 +31,7 @@ const TextProfil = () => {
           color: #000000;
         }
         h3 {
-          font-family: "Doppio One";
+          font-family: "Fragment Mono", monospace;
           font-style: normal;
           font-weight: 400;
           font-size: 20px;
