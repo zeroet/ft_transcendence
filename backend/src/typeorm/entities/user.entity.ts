@@ -18,7 +18,7 @@ export class User implements IUser {
   @Column({ nullable: false, length: 30 })
   username: string;
 
-  @Column({ nullable: true, length: 30 })
+  @Column({ default: null, nullable: true, length: 30 })
   nickname: string;
 
   @Column({ default: new Date() })
