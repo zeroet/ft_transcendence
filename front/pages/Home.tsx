@@ -6,11 +6,11 @@ import { TokenType } from "../interfaceType";
 import axios from "axios";
 import cookies from "next-cookies";
 import tokenManager from "../component/Utils/tokenManager";
+import useSWR from "swr";
+import fetcher from "../component/Utils/fetcher";
 
 export default function Home({ token, refresh }: TokenType): JSX.Element {
-  // console.log(token)
-  // console.log(refresh)
-  axios.get("/api/users");
+  const { data, error, isValidating, mutate } = useSWR("/api/users", fetcher);
   return (
     <Layout>
       <Title title="Home" />
@@ -42,7 +42,7 @@ setCookie는 쓸필없고
 
 export function getServerSideProps(context: any) {
   const cookie = cookies(context);
-  if (JSON.stringify(cookie) === '{}') {
+  if (JSON.stringify(cookie) === "{}") {
     return {
       redirect: {
         destination: "/",
