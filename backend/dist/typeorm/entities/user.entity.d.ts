@@ -5,6 +5,6 @@ export declare class User implements IUser {
     email: string;
     image_url: string;
     username: string;
-    createdAt: Date;
-    modifiedAt: Date;
+    created_at: Date;
+    modified_at: Date;
 }

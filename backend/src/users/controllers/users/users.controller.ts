@@ -17,8 +17,9 @@ export class UsersController {
     @Inject('USER_SERVICE') private readonly userService: IUserService,
   ) {}
   @Get()
-  async getUsers() {
-    const users = await this.userService.getUsers();
+  async getCurrentUser() {
+    // async getUsers() {
+    const users = await this.userService.getCurrentUser();
     return users;
   }
 
