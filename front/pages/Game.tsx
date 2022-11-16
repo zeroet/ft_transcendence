@@ -1,7 +1,9 @@
+import cookies from "next-cookies";
 import GameBody from "../component/Game/GameBody";
 import GameList from "../component/Game/GameList";
 import Layout from "../component/Layout";
 import Title from "../component/Title";
+import tokenManager from "../component/Utils/tokenManager";
 
 export default function Game() {
   return (
@@ -13,4 +15,18 @@ export default function Game() {
       </div>
     </Layout>
   );
+}
+
+export function getServerSideProps(context: any) {
+  const cookie = cookies(context);
+  if (JSON.stringify(cookie) === '{}') {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  tokenManager(cookie)
+  return { props: {} };
 }

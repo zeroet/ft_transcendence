@@ -15,12 +15,21 @@ export class User implements IUser {
   @Column()
   image_url: string;
 
-  @Column()
+  @Column({ nullable: false, length: 30 })
   username: string;
 
-  @Column({ default: new Date() })
-  createdAt: Date;
+  @Column({ default: null, nullable: true, length: 30 })
+  nickname: string;
 
   @Column({ default: new Date() })
-  modifiedAt: Date;
+  created_at: Date;
+
+  @Column({ default: new Date() })
+  modified_at: Date;
+
+  // @Column({ nullable: true })
+  // hashed_refresh_token: string;
+
+  // @Column()
+  // two_factor: boolean;
 }

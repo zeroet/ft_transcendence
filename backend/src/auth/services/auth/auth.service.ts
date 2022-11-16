@@ -21,6 +21,12 @@ export class AuthService implements IAuthService {
     path: '/',
   };
 
+  logoutCookieOptions: CookieOptions = {
+    httpOnly: false,
+    path: '/',
+    maxAge: 0,
+  };
+
   refreshTokenCookieOptions: CookieOptions = {
     ...this.defaultCookieOptions,
     maxAge: Number.parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) * 1000,
@@ -118,5 +124,14 @@ export class AuthService implements IAuthService {
 
   async updateRefreshTokenHash(id: number, refreshToken: string) {
     const hash = await this.hashData(refreshToken);
+  }
+
+  async logout() {
+    return {
+      path: '/',
+      domain: process.env.BASE_DOMAIN,
+      httpOnly: true,
+      maxAge: 0,
+    };
   }
 }
