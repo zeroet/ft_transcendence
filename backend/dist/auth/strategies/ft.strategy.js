@@ -21,11 +21,11 @@ const axios_1 = require("@nestjs/axios");
 let FtStrategy = class FtStrategy extends (0, passport_1.PassportStrategy)(passport_oauth2_1.Strategy, 'ft') {
     constructor(httpService, authService) {
         super({
-            authorizationURL: process.env.AUTHORIZATION_URL,
-            tokenURL: process.env.TOKEN_URL,
-            clientID: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: process.env.CALLBACK_URL,
+            authorizationURL: process.env.FT_AUTHORIZATION_URL,
+            tokenURL: process.env.FT_TOKEN_URL,
+            clientID: process.env.FT_CLIENT_ID,
+            clientSecret: process.env.FT_CLIENT_SECRET,
+            callbackURL: process.env.FT_CALLBACK_URL,
             scope: ['public'],
         });
         this.httpService = httpService;
