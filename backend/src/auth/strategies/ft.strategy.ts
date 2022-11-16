@@ -12,11 +12,11 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
     @Inject('AUTH_SERVICE') private readonly authService: IAuthService,
   ) {
     super({
-      authorizationURL: process.env.AUTHORIZATION_URL,
-      tokenURL: process.env.TOKEN_URL,
-      clientID: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: process.env.CALLBACK_URL,
+      authorizationURL: process.env.FT_AUTHORIZATION_URL,
+      tokenURL: process.env.FT_TOKEN_URL,
+      clientID: process.env.FT_CLIENT_ID,
+      clientSecret: process.env.FT_CLIENT_SECRET,
+      callbackURL: process.env.FT_CALLBACK_URL,
       scope: ['public'],
     });
   }

@@ -32,7 +32,7 @@ export class AuthController {
     const refreshToken = this.authService.getRefreshToken(req.user.id);
     console.log('accessToken:', accessToken);
     console.log('refreshToken:', refreshToken);
-    res.cookie('Authentication', accessToken, {
+    res.cookie('Access', accessToken, {
       domain: 'localhost',
       path: '/',
       httpOnly: true,
