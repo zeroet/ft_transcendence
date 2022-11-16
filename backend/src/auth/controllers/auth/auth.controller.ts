@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { FtAuthGurad } from 'src/auth/guards/ft-auth.guard';
 import { AuthService } from 'src/auth/services/auth/auth.service';
+import { Cookies } from 'src/utils/types';
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +33,10 @@ export class AuthController {
   @Get('profile')
   profile() {}
 
+  @Redirect('http://localhost:8000', 301)
   @Get('logout')
-  logout() {}
+  async logout(@Request() req, @Response({ passthrough: true }) res) {
+    res.cookie(Cookies.ACCESS_TOKEN, this.authService.logoutCookieOptions);
+    res.cookie(Cookies.REFRESH_TOKEN, this.authService.logoutCookieOptions);
+  }
 }
