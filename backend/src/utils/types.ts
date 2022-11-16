@@ -8,4 +8,9 @@ export type UserDetails = {
 export type Tokens = {
   access_token: string;
   refresh_token: string;
+};
+
+export enum Cookies {
+  ACCESS_TOKEN = 'accessToken',
+  REFRESH_TOKEN = 'refreshToken',
 }
