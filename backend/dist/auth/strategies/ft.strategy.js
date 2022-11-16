@@ -47,8 +47,7 @@ let FtStrategy = class FtStrategy extends (0, passport_1.PassportStrategy)(passp
             console.log('email: ', email);
             console.log('image_url: ', image_url);
             console.log('displayname: ', username);
-            const user = this.authService.validateUser(userDetails);
-            return Object.assign(Object.assign({}, user), { accessToken, refreshToken });
+            return this.authService.validateUser(userDetails);
         }
         catch (error) {
             console.error(error);

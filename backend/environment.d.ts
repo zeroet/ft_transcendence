@@ -8,6 +8,7 @@ declare namespace NodeJS {
     DATABASE_URL?: string;
 
     SERVER_PORT?: string;
+    BASE_DOMAIN?: string;
     SERVER_URL?: string;
     CLINET_URL?: string;
 

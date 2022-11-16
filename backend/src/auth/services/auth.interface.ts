@@ -6,4 +6,6 @@ export interface IAuthService {
   getTokens(id: number);
   getAccessToken(id: number);
   getAccessToken(id: number);
+  setAccessToken(res: Response, id: number);
+  setRefreshToken(res: Response, id: number);
 }

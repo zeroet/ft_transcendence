@@ -22,22 +22,10 @@ let AuthController = class AuthController {
     }
     login() { }
     async redirect(req, res) {
-        const accessToken = this.authService.getAccessToken(req.user.id);
-        const refreshToken = this.authService.getRefreshToken(req.user.id);
-        console.log('accessToken:', accessToken);
-        console.log('refreshToken:', refreshToken);
-        res.cookie('Access', accessToken, {
-            domain: 'localhost',
-            path: '/',
-            httpOnly: true,
-            maxAge: 360 * 1000,
-        });
-        res.cookie('Refresh', refreshToken, {
-            domain: 'localhost',
-            path: '/',
-            httpOnly: true,
-            maxAge: 360 * 1000,
-        });
+        res.user = req.user;
+        console.log(res.user);
+        this.authService.setAccessToken(res, req.user.id);
+        this.authService.setRefreshToken(res, req.user.id);
     }
     profile() { }
     logout() { }
