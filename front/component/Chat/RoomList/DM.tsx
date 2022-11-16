@@ -1,4 +1,4 @@
-expoort default function DM() {
+export default function DM() {
   return (
     <div className="DM">
       <h1>DM</h1>
@@ -29,4 +29,4 @@ expoort default function DM() {
       </style>
     </div>
   );
-};
+}
