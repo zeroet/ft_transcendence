@@ -6,11 +6,8 @@ import { TokenType } from "../interfaceType";
 import axios from "axios";
 import cookies from "next-cookies";
 import tokenManager from "../component/Utils/tokenManager";
-import useSWR from "swr";
-import fetcher from "../component/Utils/fetcher";
 
-export default function Home({ token, refresh }: TokenType): JSX.Element {
-  const { data, error, isValidating, mutate } = useSWR("/api/users", fetcher);
+export default function Home(): JSX.Element {
   return (
     <Layout>
       <Title title="Home" />
