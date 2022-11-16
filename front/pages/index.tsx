@@ -48,7 +48,15 @@ export default function Enter() {
 }
 
 export function getServerSideProps(context: any) {
-  console.log(context.req.headers.cookie);
+  const cookie = context.req.headers.cookie;
+  if (cookie) {
+    return {
+      redirect: {
+        destination: "/Home",
+        permanent: false,
+      },
+    };
+  }
   return {
     props: {},
   };
