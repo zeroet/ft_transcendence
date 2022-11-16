@@ -26,6 +26,18 @@ export default function Home({ token, refresh }: TokenType): JSX.Element {
   );
 }
 
+/*
+https://sihus.tistory.com/34
+https://github.com/andreizanik/cookies-next
+
+
+
+setCookie는 쓸필없고
+ deleteCookie 는 로그아웃에 이용
+
+ 쿠키를 axios에 자동으로 넣을수있는 설정을 해야한다.
+*/
+
 export function getServerSideProps(context: any) {
   const cookie = context.req.headers.cookie;
   if (!cookie) {
