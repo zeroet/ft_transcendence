@@ -1,12 +1,17 @@
 import Image from "next/image";
+import { UserInfo } from "../../../../interfaceType";
 import useSWR from "swr";
 import Error from "../../../errorAndLoading/Error";
 import Loading from "../../../errorAndLoading/Loading";
 import fetcher from "../../../Utils/fetcher";
 
 const Photo = () => {
-  const { data: user, error, isValidating } = useSWR("/api/users", fetcher);
-  
+  const {
+    data: user,
+    error,
+    isValidating,
+  } = useSWR<UserInfo>("/api/users", fetcher);
+
   if (error) return <Error />;
   if (!user) return <Loading />;
   return (

@@ -1,9 +1,11 @@
+import axios from "axios";
 import { useRouter } from "next/router";
 
 const Logout = () => {
   const router = useRouter();
   const logout = () => {
-    router.push("/api/auth/logout");
+    axios.get("/api/auth/logout");
+    router.push("/");
   };
   return (
     <div onClick={logout} className="setting-component">

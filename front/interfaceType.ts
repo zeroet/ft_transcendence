@@ -3,11 +3,12 @@ export interface TokenType {
   refresh?: string;
 }
 
-export interface User {
+export interface UserInfo {
   created_at: string;
   email: string;
   id: number;
   image_url: string;
   modified_at: string;
   username: string;
+  nickname: string;
 }

@@ -2,9 +2,10 @@ import useSWR from "swr";
 import Error from "../../../errorAndLoading/Error";
 import Loading from "../../../errorAndLoading/Loading";
 import fetcher from "../../../Utils/fetcher";
+import { UserInfo } from "../../../../interfaceType";
 
 const TextProfil = () => {
-  const { data: user, error, mutate } = useSWR("/api/users", fetcher);
+  const { data: user, error, mutate } = useSWR<UserInfo>("/api/users", fetcher);
 
   /*
    1. useSWR with new API for loss, victory, winRate
