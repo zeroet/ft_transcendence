@@ -53,13 +53,13 @@ let AuthService = class AuthService {
                 sub: id,
             }, {
                 secret: process.env.JWT_ACCESS_SECRET,
-                expiresIn: Number.parseInt(process.env.JWT_ACCESS_EXPIRATION_TIME) * 1000,
+                expiresIn: process.env.JWT_ACCESS_EXPIRATION_TIME,
             }),
             this.jwtService.signAsync({
                 sub: id,
             }, {
                 secret: process.env.JWT_REFRESH_SECRET,
-                expiresIn: Number.parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) * 1000,
+                expiresIn: process.env.JWT_REFRESH_EXPIRATION_TIME,
             }),
         ]);
         return { access_token: access, refresh_token: refresh };
@@ -69,7 +69,7 @@ let AuthService = class AuthService {
             sub: id,
         }, {
             secret: process.env.JWT_ACCESS_SECRET,
-            expiresIn: Number.parseInt(process.env.JWT_ACCESS_EXPIRATION_TIME) * 1000,
+            expiresIn: process.env.JWT_ACCESS_EXPIRATION_TIME,
         });
         return access;
     }
@@ -78,7 +78,7 @@ let AuthService = class AuthService {
             sub: id,
         }, {
             secret: process.env.JWT_REFRESH_SECRET,
-            expiresIn: Number.parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) * 1000,
+            expiresIn: process.env.JWT_REFRESH_EXPIRATION_TIME,
         });
         return refresh;
     }
