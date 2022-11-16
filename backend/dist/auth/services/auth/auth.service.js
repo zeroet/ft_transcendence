@@ -29,8 +29,8 @@ let AuthService = class AuthService {
             httpOnly: true,
             path: '/',
         };
-        this.refreshTokenCookieOptions = Object.assign(Object.assign({}, this.defaultCookieOptions), { maxAge: Number.parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) });
-        this.accessTokenCookieOptions = Object.assign(Object.assign({}, this.defaultCookieOptions), { maxAge: Number.parseInt(process.env.JWT_ACCESS_EXPIRATION_TIME) });
+        this.refreshTokenCookieOptions = Object.assign(Object.assign({}, this.defaultCookieOptions), { maxAge: Number.parseInt(process.env.JWT_REFRESH_EXPIRATION_TIME) * 1000 });
+        this.accessTokenCookieOptions = Object.assign(Object.assign({}, this.defaultCookieOptions), { maxAge: Number.parseInt(process.env.JWT_ACCESS_EXPIRATION_TIME) * 1000 });
     }
     hashData(data) {
         return bcrypt.hash(data, 12);
@@ -53,13 +53,13 @@ let AuthService = class AuthService {
                 sub: id,
             }, {
                 secret: process.env.JWT_ACCESS_SECRET,
-                expiresIn: process.env.JWT_ACCESS_EXPIRATION_TIME,
+                expiresIn: `${process.env.JWT_ACCESS_EXPIRATION_TIME}`,
             }),
             this.jwtService.signAsync({
                 sub: id,
             }, {
                 secret: process.env.JWT_REFRESH_SECRET,
-                expiresIn: process.env.JWT_REFRESH_EXPIRATION_TIME,
+                expiresIn: `${process.env.JWT_REFRESH_EXPIRATION_TIME}`,
             }),
         ]);
         return { access_token: access, refresh_token: refresh };
@@ -69,7 +69,7 @@ let AuthService = class AuthService {
             sub: id,
         }, {
             secret: process.env.JWT_ACCESS_SECRET,
-            expiresIn: process.env.JWT_ACCESS_EXPIRATION_TIME,
+            expiresIn: `${process.env.JWT_ACCESS_EXPIRATION_TIME}s`,
         });
         return access;
     }
@@ -78,7 +78,7 @@ let AuthService = class AuthService {
             sub: id,
         }, {
             secret: process.env.JWT_REFRESH_SECRET,
-            expiresIn: process.env.JWT_REFRESH_EXPIRATION_TIME,
+            expiresIn: `${process.env.JWT_REFRESH_EXPIRATION_TIME}s`,
         });
         return refresh;
     }
