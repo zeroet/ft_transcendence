@@ -1,5 +1,5 @@
-const CreatChat = () => {
 
+const ChangeNameModal = () => {
   return (
     <div>
       CreatChat
@@ -7,7 +7,7 @@ const CreatChat = () => {
         div {
           position: fixed;
           top: 30%;
-          left: 30%;
+          left: 35%;
 
           width: 400px;
           height: 300px;
@@ -19,4 +19,4 @@ const CreatChat = () => {
   );
 };
 
-export default CreatChat;
+export default ChangeNameModal;

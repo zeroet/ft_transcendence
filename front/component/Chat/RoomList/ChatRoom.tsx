@@ -4,13 +4,14 @@ import CreatChat from "./CreatChat";
 const ChatRoom = () => {
   const [creatChatModal, setCreatChatModal] = useState<boolean>(false);
 
-  const addChat = () => {
+  const addChat = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setCreatChatModal((curr) => !curr);
   };
   return (
     <div className="ChatRoom">
       {creatChatModal && <CreatChat />}
-      <div className="chat-div">       
+      <div className="chat-div">
         <h1>CHAT ROOM</h1>
         <button onClick={addChat}>+</button>
       </div>
@@ -19,7 +20,6 @@ const ChatRoom = () => {
         <li>chat room 1</li>
         <li>chat room 2</li>
         <li>chat room 3</li>
-
       </ul>
       <style jsx>{`
         button {
