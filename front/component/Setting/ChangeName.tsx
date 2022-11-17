@@ -3,13 +3,13 @@ import ChangeNameModal from "./ChangeName/ChangeNameModal";
 
 const ChangeName = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const modal = (e: React.MouseEvent<HTMLDivElement>) => {
+  const modal = (e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement> ) => {
     e.preventDefault();
     setShowModal((curr) => !curr);
   };
   return (
     <div className="setting-component">
-      {showModal && <ChangeNameModal />}
+      {showModal && <ChangeNameModal modal={modal} />}
       <div className="div-lettre" onClick={modal}>
         ChangeName
       </div>
@@ -17,6 +17,8 @@ const ChangeName = () => {
         {`
           .div-lettre {
             overflow: visible;
+            width: 100%;
+            higth: 100%;
           }
         `}
       </style>
