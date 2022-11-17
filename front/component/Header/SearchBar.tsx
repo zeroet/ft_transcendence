@@ -6,7 +6,7 @@ const SearchBar = () => {
     <div className="searchBar">
       <div className="bar">
         <div>
-          <input className="barInput" placeholder="name!!!" type={"text"} />
+          <input className="barInput" placeholder="username" type={"text"} />
         </div>
         <img height={27} src={"/images/search.png"} />
       </div>
@@ -25,12 +25,19 @@ const SearchBar = () => {
 
         .bar {
           display: inline-flex;
+          margin-top: 25px;
         }
 
         .barInput {
           background: #ffffff;
           border: 1px solid #000000;
           height: 30px;
+          width: 200px;
+          outline: none;
+          box-shadow: 5px 5px;
+        }
+        img {
+          margin-top: 5px;
         }
       `}</style>
     </div>

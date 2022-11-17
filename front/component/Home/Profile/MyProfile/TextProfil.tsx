@@ -13,7 +13,7 @@ const TextProfil = () => {
 
   const loss = 1;
   const victory = 4;
-  const winRate = "80";
+  const winRate = (victory / (loss + victory)) * 100;
 
   if (error) return <Error />;
   if (!user) return <Loading />;
@@ -35,9 +35,9 @@ const TextProfil = () => {
           margin-left: 5px;
         }
         .userName {
-          font-family: "Doppio One";
+          font-family: "Fragment Mono", monospace;
           font-style: normal;
-          font-weight: 400;
+          font-weight: bold;
           font-size: 50px;
           line-height: 20px;
           /* or 40% */
@@ -45,7 +45,7 @@ const TextProfil = () => {
           color: #000000;
         }
         h3 {
-          font-family: "Doppio One";
+          font-family: "Fragment Mono", monospace;
           font-style: normal;
           font-weight: 400;
           font-size: 20px;
@@ -65,6 +65,8 @@ const TextProfil = () => {
           overflow: hidden;
         }
         .info {
+          margin-bottom: 30px;
+          // background-color: yellow;
         }
       `}</style>
     </div>

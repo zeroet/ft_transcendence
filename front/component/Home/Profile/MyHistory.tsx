@@ -14,7 +14,7 @@ const MyHistory = () => {
       <div className="dummy"></div>
       <div className="history">
         <h1>LAST 5 MATCHES HISTORY</h1>
-        <hr className="titleOfHistory" />
+        {/* <hr className="titleOfHistory" /> */}
         {
           <EachHistory
             winOrLoss={"win"}
@@ -64,11 +64,15 @@ const MyHistory = () => {
 
         h1 {
           font-family: "Fragment Mono", monospace;
-          width: 100%;
+          font-weight: bold;
+          background-color: black;
+          margin: 0;
+          padding: 30px;
+          color: white;
         }
 
         .titleOfHistory {
-          border-top: 2px solid brown;
+          // border-top: 3px ridge brown;
         }
 
         hr {

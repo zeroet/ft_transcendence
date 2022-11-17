@@ -74,27 +74,27 @@ const ChangeNameModal = ({
       </form>
       <style jsx>{`
         .box {
+          font-family: "Fragment Mono", monospace;
           position: fixed;
           top: 30%;
-          left: 37%;
+          left: 33%;
 
           width: 500px;
           height: 300px;
 
           background-color: white;
           border: 1px inset black;
-          box-shadow: 10px 10px;
+          // box-shadow: 10px 10px;
           text-transform: uppercase;
         }
         .title {
-          padding-left: 10px;
           background-color: black;
           color: white;
         }
         .submitform {
           // background-color: yellow;
-          padding-left: 50px;
-          padding-top: 20px;
+          // padding-left: 50px;
+          padding-top: 60px;
         }
         input {
           // background-color: tomato;
@@ -109,16 +109,16 @@ const ChangeNameModal = ({
           margin-bottom: 20px;
         }
         input::placeholder {
+          text-align: center;
           color: red;
         }
         button {
           text-align: center;
-          padding-top: 30px;
+          padding-top: 20px;
         }
         .buttonDiv {
           // background-color: yellow;
-          margin-top: 35px;
-          text-align: center;
+          margin-top: 10px;
         }
         .ok {
           font-family: "Fragment Mono", monospace;
