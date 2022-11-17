@@ -1,24 +1,17 @@
 const ChangeNameModal = () => {
-    
   return (
     <div className="box">
       <div className="title">
-        <h2>Create Chat Room</h2>
+        <h2>Change Name</h2>
       </div>
       <form className="createForm" method="post">
         <div className="submitform">
           <div>
-            <input type="text"/>
-          </div>
-          <div>
-            <input
-              type="password"
-              placeholder="for private room (more than 4 caracters)"
-            />
+            <input type="text" placeholder="New nick name"/>
           </div>
         </div>
         <div className="buttonDiv">
-          <button className="ok">OK</button>
+          <button className="ok">Submit</button>
           <button className="cancel">Cancel</button>
         </div>
       </form>
@@ -67,6 +60,7 @@ const ChangeNameModal = () => {
         }
         .buttonDiv {
           // background-color: yellow;
+          margin-top: 35px;
           text-align: center;
         }
         .ok {
