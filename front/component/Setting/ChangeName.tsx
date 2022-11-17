@@ -5,13 +5,21 @@ const ChangeName = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const modal = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(e)
     setShowModal((curr) => !curr);
   };
   return (
-    <div onClick={modal} className="setting-component">
+    <div className="setting-component">
       {showModal && <ChangeNameModal />}
-      ChangeName
+      <div className="div-lettre" onClick={modal}>
+        ChangeName
+      </div>
+      <style jsx>
+        {`
+          .div-lettre {
+            overflow: visible;
+          }
+        `}
+      </style>
     </div>
   );
 };
