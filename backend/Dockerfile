@@ -1,4 +1,4 @@
-FROM node:lts As development
+FROM node:latest As development
 
 ENV NODE_ENV=development
 

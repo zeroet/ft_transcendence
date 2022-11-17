@@ -15,11 +15,46 @@ const MyHistory = () => {
       <div className="history">
         <h1>LAST 5 MATCHES HISTORY</h1>
         <hr className="titleOfHistory" />
-        {<EachHistory winOrLoss={'win'} firstPlayer={`hyungyoo`} secondPlayer={'cjung-mo'} point={"5:4"}  />}
-        {<EachHistory winOrLoss={'loss'} firstPlayer={`cjung-mo`} secondPlayer={'hyungyoo'} point={"4:1"}  />}
-        {<EachHistory winOrLoss={'win'} firstPlayer={`hyungyoo`} secondPlayer={'cjung-mo'} point={"5:4"}  />}
-        {<EachHistory winOrLoss={'loss'} firstPlayer={`cjung-mo`} secondPlayer={'hyungyoo'} point={"4:1"}  />}
-        {<EachHistory winOrLoss={'win'} firstPlayer={`hyungyoo`} secondPlayer={'cjung-mo'} point={"5:4"}  />}
+        {
+          <EachHistory
+            winOrLoss={"win"}
+            firstPlayer={`hyungyoo`}
+            secondPlayer={"cjung-mo"}
+            point={"5:4"}
+          />
+        }
+        {
+          <EachHistory
+            winOrLoss={"loss"}
+            firstPlayer={`cjung-mo`}
+            secondPlayer={"hyungyoo"}
+            point={"4:1"}
+          />
+        }
+        {
+          <EachHistory
+            winOrLoss={"win"}
+            firstPlayer={`hyungyoo`}
+            secondPlayer={"cjung-mo"}
+            point={"5:4"}
+          />
+        }
+        {
+          <EachHistory
+            winOrLoss={"loss"}
+            firstPlayer={`cjung-mo`}
+            secondPlayer={"hyungyoo"}
+            point={"4:1"}
+          />
+        }
+        {
+          <EachHistory
+            winOrLoss={"win"}
+            firstPlayer={`hyungyoo`}
+            secondPlayer={"cjung-mo"}
+            point={"5:4"}
+          />
+        }
       </div>
       <style jsx>{`
         div {
@@ -28,6 +63,7 @@ const MyHistory = () => {
         }
 
         h1 {
+          font-family: "Fragment Mono", monospace;
           width: 100%;
         }
 

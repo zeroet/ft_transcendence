@@ -15,18 +15,16 @@ export default function Setting() {
       <div className={styles.setting}>
         <div className="dummy"></div>
         <div className="set-list">
-            <ChangeName />
-            <ChangeAvatar />
-            <TwoFactor />
-            <Logout />
+          <ChangeName />
+          <ChangeAvatar />
+          <TwoFactor />
+          <Logout />
         </div>
         <div className="dummy"></div>
         <style jsx>{`
-          
           .dummy {
             // background-color: green;
           }
-
           .set-list {
             // background-color: yellow;
             display: grid;
@@ -41,7 +39,7 @@ export default function Setting() {
 
 export function getServerSideProps(context: any) {
   const cookie = cookies(context);
-  if (JSON.stringify(cookie) === '{}') {
+  if (JSON.stringify(cookie) === "{}") {
     return {
       redirect: {
         destination: "/",
@@ -49,6 +47,6 @@ export function getServerSideProps(context: any) {
       },
     };
   }
-  tokenManager(cookie)
+  tokenManager(cookie);
   return { props: {} };
 }

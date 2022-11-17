@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { Form } from "semantic-ui-react";
 import styles from "styles/Gnb.module.css";
 import SearchBar from "./SearchBar";
 
@@ -35,15 +33,14 @@ export default function Gnb() {
         {/* <form className={styles.search}>
           <input type="text" placeholder="Search"></input>
         </form> */}
-
       </nav>
       <SearchBar />
       <style jsx>{`
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
       `}</style>
     </div>
   );

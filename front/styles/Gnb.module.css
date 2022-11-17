@@ -28,6 +28,7 @@
   padding: 8px 30px;
   padding-top: 25px;
   width: 150px;
+  text-transform: uppercase;
 }
 
 .navbar_menu li a {
@@ -35,7 +36,7 @@
   text-decoration: none;
   padding: 10px 50px;
   border: 1px inset black;
-  box-shadow: 10px 10px;
+  box-shadow: 5px 5px;
   font-weight: bold;
   font-size: large;
   color: black;

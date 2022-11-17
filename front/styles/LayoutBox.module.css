@@ -15,11 +15,10 @@
   text-align: left;
   display: grid;
   grid-template-rows: 1fr 3fr 1fr;
-  
 }
 
 .font-style {
-  font-family: "Doppio One";
+  font-family: "Fragment Mono", monospace;
   font-style: normal;
   font-weight: 400;
   font-size: 30px;
