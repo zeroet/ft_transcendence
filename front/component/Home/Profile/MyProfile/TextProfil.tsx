@@ -41,9 +41,7 @@ const TextProfil = () => {
           font-size: 50px;
           line-height: 20px;
           /* or 40% */
-
           text-transform: uppercase;
-
           color: #000000;
         }
         h3 {
@@ -53,24 +51,19 @@ const TextProfil = () => {
           font-size: 20px;
           line-height: 30px;
           /* or 150% */
-
           text-transform: uppercase;
           margin: 0px;
         }
-
         .victory {
           color: green;
         }
-
         .loss {
           color: red;
         }
-
         .name {
           margin-top: 48px;
           overflow: hidden;
         }
-
         .info {
         }
       `}</style>
