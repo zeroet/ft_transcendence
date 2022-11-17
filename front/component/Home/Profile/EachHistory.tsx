@@ -18,7 +18,7 @@ const EachHistory = ({
       <hr />
       <style jsx>{`
         p {
-          margin: 7px;
+          margin: 8px;
         }
         .win {
           color: green;

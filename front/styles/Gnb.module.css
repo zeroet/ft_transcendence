@@ -13,6 +13,8 @@
 .logo {
   width: 7vh;
   padding-right: 30px;
+  margin-left: 17px;
+  margin-top: 17px;
 }
 
 .navbar_menu {
@@ -27,7 +29,6 @@
   /* background-color: green; */
   padding: 8px 30px;
   padding-top: 25px;
-  width: 150px;
   text-transform: uppercase;
 }
 
@@ -47,6 +48,10 @@
   color: white;
   border: 1px inset black;
   box-shadow: 10px 10px white initial;
+}
+
+.navbar_menu li a .setting {
+  background-color: brown;
 }
 /* .search {
   border: 1px inset black;
