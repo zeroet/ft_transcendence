@@ -1,4 +1,20 @@
-const ChangeNameModal = () => {
+import { useCallback, useState } from "react";
+
+const ChangeNameModal = ({
+  modal,
+}: {
+  modal: (
+    e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
+  ) => void;
+}) => {
+  const [newNickName, setNewNickName] = useState<string>("");
+  const getNewNickName = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setNewNickName(e.target.value);
+      console.log(newNickName);
+    },
+    [newNickName]
+  );
   return (
     <div className="box">
       <div className="title">
@@ -7,12 +23,20 @@ const ChangeNameModal = () => {
       <form className="createForm" method="post">
         <div className="submitform">
           <div>
-            <input type="text" placeholder="New nick name"/>
+            <input
+              onChange={getNewNickName}
+              type="text"
+              placeholder="New nick name"
+            />
           </div>
         </div>
         <div className="buttonDiv">
-          <button className="ok">Submit</button>
-          <button className="cancel">Cancel</button>
+          <button onClick={modal} className="ok">
+            Submit
+          </button>
+          <button onClick={modal} className="cancel">
+            Cancel
+          </button>
         </div>
       </form>
       <style jsx>{`
