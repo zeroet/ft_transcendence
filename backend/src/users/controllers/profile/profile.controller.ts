@@ -13,9 +13,15 @@ export class ProfileController {
 
     // @UseGuards(JwtAccessAuthGuard)
     // 저거 원래 1 대신에 @Request() req.user.id 해서 들어가야하는데 그렇게 하면 access어쩌고 에러뜸 ㅠ
-    @Post('/username')
+    @Post('username')
     async changeUsername(@Body() newUserName:string){
         if (newUserName.length > 30) throw new BadRequestException('Username is tool long (max 30)');
         await this.profileService.updateUserName(1, newUserName);
+    }
+
+
+    @Post('userImage')
+    async changeUserImage(@Body() newUserImage:string){
+        await this.profileService.updateUserImage(1, newUserImage);
     }
 }

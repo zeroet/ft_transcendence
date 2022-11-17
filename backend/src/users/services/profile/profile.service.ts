@@ -16,4 +16,10 @@ export class ProfileService {
         console.log("in the username");
         console.log((await user).username);
     }
+
+    async updateUserImage(userID: number, newUserImage:string){
+        await this.userRepository.update(userID, {
+            image_url: newUserImage
+        });
+    }
 }
