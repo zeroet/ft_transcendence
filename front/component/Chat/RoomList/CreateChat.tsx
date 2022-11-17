@@ -7,7 +7,7 @@ export default function CreateChat({ onClose }) {
   //     const width = window.outerWidth / 2;
   //     const heigth = window.outerHeight / 2;
   //   }, []);
-  const createRoom = (e: React.MouseEvent<HTMLDivElement>) => {
+  const createRoom = (e) => {
     e.preventDefault();
     alert("create room button");
   };
