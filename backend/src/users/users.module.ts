@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { AuthService } from 'src/auth/services/auth/auth.service';
@@ -10,14 +11,18 @@ import { ProfileService } from './services/profile/profile.service';
 import { UserService } from './services/user/user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
-  controllers: [UsersController, ProfileController ],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({}),
+    PassportModule,
+  ],
+  controllers: [UsersController, ProfileController],
   providers: [
     {
       provide: 'USER_SERVICE',
       useClass: UserService,
     },
-    ProfileService
+    ProfileService,
   ],
   exports: [
     {

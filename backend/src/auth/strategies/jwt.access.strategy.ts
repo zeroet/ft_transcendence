@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserService } from 'src/users/services/user/user.service';
+import { IUserService } from 'src/users/services/user/user.interface';
 
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
-  constructor(private userService: UserService) {
+  constructor(
+    @Inject('USER_SERVICE') private userService: IUserService,
+    private jwtService: JwtService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request) => {
-          return request?.cookies?.Access;
+          return request?.cookies?.accessToken;
         },
       ]),
       secretOrKey: process.env.JWT_ACCESS_SECRET,
@@ -17,6 +21,9 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   }
 
   async validate(payload: any) {
-    this.userService.getUserById(payload.id);
+    console.log(payload);
+    const user = await this.userService.getUserById(payload.id);
+    console.log('current user before update:', user);
+    return user;
   }
 }

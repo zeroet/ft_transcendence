@@ -8,5 +8,4 @@ export interface IAuthService {
   getAccessToken(id: number);
   setAccessToken(res: Response, id: number);
   setRefreshToken(res: Response, id: number);
-  logout();
 }
