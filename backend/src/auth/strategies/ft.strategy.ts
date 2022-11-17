@@ -22,8 +22,6 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
   }
 
   async validate(accessToken: string, refreshToken: string) {
-    console.log('access token:', accessToken);
-    console.log('refresh token:', refreshToken);
     const req = this.httpService.get(`https://api.intra.42.fr/v2/me`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
@@ -35,7 +33,7 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
       console.log('intra_id: ', intra_id);
       console.log('email: ', email);
       console.log('image_url: ', image_url);
-      console.log('displayname: ', username);
+      console.log('username: ', username);
       return this.authService.validateUser(userDetails);
     } catch (error) {
       console.error(error);

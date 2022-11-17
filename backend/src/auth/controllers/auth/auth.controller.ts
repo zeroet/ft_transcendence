@@ -32,26 +32,17 @@ export class AuthController {
     this.authService.setRefreshToken(res, req.user.id);
   }
 
-  // @Get('profile')
-  // profile() {}
-
-  // @Get('test')
-  // test() {
-  //   console.log('test logout');
-  // }
-
   // @UseGuards(JwtAccessAuthGuard)
   // @UseGuards(JwtRefreshAuthGuard)
   @Redirect('http://localhost:8000', 301)
   @Get('logout')
-  // logout(@Request() req, @Response() res) {
   async logout(@Response({ passthrough: true }) res) {
-    console.log('logout');
-    const { ...options } = await this.authService.logout();
-    // res.cookie(Cookies.ACCESS_TOKEN, '', this.authService.logoutCookieOptions);
-    // res.cookie(Cookies.REFRESH_TOKEN, '', this.authService.logoutCookieOptions);
-    res.cookie('accessToken', '', options);
-    res.cookie('refreshToken', '', options);
-    return res.sendStatus(200);
+    res.cookie(Cookies.ACCESS_TOKEN, '', this.authService.defaultCookieOptions);
+    res.cookie(
+      Cookies.REFRESH_TOKEN,
+      '',
+      this.authService.defaultCookieOptions,
+    );
+    // return res.sendStatus(200);
   }
 }
