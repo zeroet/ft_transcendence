@@ -19,7 +19,8 @@ export default function Participant() {
         h1 {
           font-family: "Fragment Mono", monospace;
           font-size: 25px;
-          font-weight: 500;
+          font-weight: bold;
+          margin-left: 10px;
         }
       `}</style>
     </div>

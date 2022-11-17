@@ -5,11 +5,11 @@ export default function ChatRoom() {
   const [showCreateChatModal, setShowCreateChatModal] =
     useState<boolean>(false);
 
-  const addChat = (e) => {
+  const addChat = () => {
     setShowCreateChatModal(true);
   };
 
-  const onClose = (e) => {
+  const onClose = () => {
     setShowCreateChatModal(false);
   };
 
@@ -23,6 +23,7 @@ export default function ChatRoom() {
         </button>
       </div>
       <hr />
+      {/* 여기도 map? */}
       <ul>
         <li>chat room 1</li>
         <li>chat room 2</li>
@@ -32,6 +33,8 @@ export default function ChatRoom() {
         h1 {
           font-family: "Fragment Mono", monospace;
           font-size: 25px;
+          font-weight: bold;
+          margin-left: 10px;
         }
         button {
           background-color: white;
