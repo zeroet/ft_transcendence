@@ -3,6 +3,8 @@ import Layout from "../component/Layout";
 import Participant from "../component/Chat/Participant";
 import RoomList from "../component/Chat/RoomList";
 import Title from "../component/Title";
+import cookies from "next-cookies";
+import tokenManager from "../component/Utils/tokenManager";
 
 export default function Chat() {
   return (
@@ -15,4 +17,18 @@ export default function Chat() {
       </div>
     </Layout>
   );
+}
+
+export function getServerSideProps(context: any) {
+  const cookie = cookies(context);
+  if (JSON.stringify(cookie) === '{}') {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  tokenManager(cookie);
+  return { props: {} };
 }

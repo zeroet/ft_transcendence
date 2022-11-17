@@ -36,10 +36,11 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
+      - /app/dist
     ports:
       - 8080:3000
     env_file: .env
-    command: npm run start:dev
+    # command: npm run start:dev
     depends_on:
       - db
 

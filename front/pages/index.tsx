@@ -1,30 +1,19 @@
 import axios from "axios";
+import cookies from "next-cookies";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function Enter() {
-  // const router = useRouter();
-  const getUserData = async () => {
-    //   axios
-    //     .get("/api/auth/login")
-    //     .then((res) => console.log(res))
-    //     .catch((err) => console.log(err));
-  };
-  // const go = () => {
-  //   router.push("/api/auth/login");
-  // };
   return (
     <div>
       <Head>
         <title>ft_transcendence</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      {/* <button onClick={go}>~~~~~~~~~</button> */}
       <div>
-        <Link href="Login">
+        <Link href="/api/auth/login">
           <img
-            onClick={getUserData}
             src="/images/Group.png"
             alt="enterImg"
             className="enterImg"
@@ -48,7 +37,15 @@ export default function Enter() {
 }
 
 export function getServerSideProps(context: any) {
-  console.log(context.req.headers.cookie);
+  const cookie = cookies(context);
+  if (!(JSON.stringify(cookie) === '{}')) {
+    return {
+      redirect: {
+        destination: "/Home",
+        permanent: false,
+      },
+    };
+  }
   return {
     props: {},
   };

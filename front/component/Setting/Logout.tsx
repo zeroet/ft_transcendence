@@ -1,5 +1,17 @@
+import axios from "axios";
+import { useRouter } from "next/router";
+
 const Logout = () => {
-  return <div className="setting-component">Logout</div>;
+  const router = useRouter();
+  const logout = () => {
+    axios.get("/api/auth/logout");
+    router.push("/");
+  };
+  return (
+    <div onClick={logout} className="setting-component">
+      Logout
+    </div>
+  );
 };
 
 export default Logout;
