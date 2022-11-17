@@ -24,7 +24,7 @@ const Photo = () => {
           // display: relative;
           width: 203px;
           height: 203px;
-          margin-top: 48px;
+          margin-top: 50px;
           margin-left: auto;
           margin-right: auto;
         }

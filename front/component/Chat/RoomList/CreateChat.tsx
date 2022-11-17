@@ -21,26 +21,25 @@ export default function CreateChat({ onClose }) {
       <div className="title">
         <h2>Create Chat Room</h2>
       </div>
-      <form className="createForm" method="post">
+      <form>
         <div className="submitform">
-          <label for="name">name</label>
+          <label>name</label>
           <div>
-            <input type="text" minlength="1" required />
+            <input type="text" required />
           </div>
-          <label for="password">password</label>
+          <label>password</label>
           <div>
             <input
               type="password"
-              minlength="4"
               placeholder="for private room (more than 4 caracters)"
             />
           </div>
         </div>
         <div className="buttonDiv">
-          <button onClick={createRoom} className="ok">
+          <button type="submit" onClick={createRoom} className="ok">
             OK
           </button>
-          <button onClick={cancelRoom} className="cancel">
+          <button type="submit" onClick={cancelRoom} className="cancel">
             Cancel
           </button>
         </div>

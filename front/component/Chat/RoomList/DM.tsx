@@ -12,15 +12,12 @@ export default function DM() {
         {`
           h1 {
             font-family: "Fragment Mono", monospace;
-            font-style: normal;
-            font-weight: 400;
+            font-weight: bold;
             font-size: 25px;
             line-height: 20px;
+            margin-left: 10px;
             /* identical to box height, or 67% */
-
             text-transform: uppercase;
-
-            color: #000000;
           }
           .DM {
             height: 50%;
