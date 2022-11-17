@@ -3,7 +3,8 @@ import { useRouter } from "next/router";
 
 const Logout = () => {
   const router = useRouter();
-  const logout = () => {
+  const logout = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     axios.get("/api/auth/logout");
     router.push("/");
   };
