@@ -10,25 +10,38 @@ const ChangeNameModal = ({
   ) => void;
 }) => {
   const [newNickName, setNewNickName] = useState<string>("");
+
+  /**
+   * useCallBack: newNickName이 변화함에 따라서 업데이트
+   * input 값이 바뀔때마다, newNickName이 업데이트됨
+   */
   const getNewNickName = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setNewNickName(e.target.value);
-      console.log(newNickName);
     },
     [newNickName]
   );
-  const postNewName = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    axios
-      .post("/api/setting/username?", {
-        username: newNickName,
-      })
-      .then(() => {})
-      .catch((err) => console.log(err));
-    setNewNickName("");
-    modal(e);
-    console.log(newNickName);
-  };
+
+  /**
+   * submit버튼을 누르면, useState로 관리되는 newNickName이
+   * axios를 통해서, post요청을 함.
+   * 마지막으로 newNickName을 리셋해주고
+   * modal함수를 실행하여, modal을 닫음
+   */
+  const postNewName = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      axios
+        .post("/api/setting/username?", {
+          username: newNickName,
+        })
+        .then(() => {})
+        .catch((err) => console.log(err));
+      setNewNickName("");
+      modal(e);
+    },
+    [newNickName]
+  );
 
   return (
     <div className="box">
