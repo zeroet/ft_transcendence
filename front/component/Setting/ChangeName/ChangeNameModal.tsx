@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useCallback, useState } from "react";
+import { mutate } from "swr";
 
 const ChangeNameModal = ({
   modal,
@@ -15,6 +17,19 @@ const ChangeNameModal = ({
     },
     [newNickName]
   );
+  const postNewName = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    axios
+      .post("/api/setting/username?", {
+        username: newNickName,
+      })
+      .then(() => {})
+      .catch((err) => console.log(err));
+    setNewNickName("");
+    modal(e);
+    console.log(newNickName);
+  };
+
   return (
     <div className="box">
       <div className="title">
@@ -31,7 +46,7 @@ const ChangeNameModal = ({
           </div>
         </div>
         <div className="buttonDiv">
-          <button onClick={modal} className="ok">
+          <button onClick={postNewName} className="ok">
             Submit
           </button>
           <button onClick={modal} className="cancel">
