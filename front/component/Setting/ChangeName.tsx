@@ -1,5 +1,19 @@
+import { useState } from "react";
+import ChangeNameModal from "./ChangeName/ChangeNameModal";
+
 const ChangeName = () => {
-  return <div className="setting-component">ChangeName</div>;
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const modal = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log(e)
+    setShowModal((curr) => !curr);
+  };
+  return (
+    <div onClick={modal} className="setting-component">
+      {showModal && <ChangeNameModal />}
+      ChangeName
+    </div>
+  );
 };
 
 export default ChangeName;
