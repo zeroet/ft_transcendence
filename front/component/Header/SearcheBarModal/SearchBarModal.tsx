@@ -11,7 +11,6 @@ const SearchBarModal = ({ image, name }: { image: string; name: string }) => {
           border: 1px solid black;
           width: 206px;
           height: 34px;
-          //   z-index: auto;
         }
       `}</style>
     </div>
