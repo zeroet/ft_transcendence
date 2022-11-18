@@ -1,19 +1,72 @@
-// 나중에 submit으로 주기위해서 form 으로
-// 변경해야함
+import React, { useCallback, useState } from "react";
+import useSWR from "swr";
+import Error from "../errorAndLoading/Error";
+import Loading from "../errorAndLoading/Loading";
+import fetcher from "../Utils/fetcher";
+import SearchBarModal from "./SearcheBarModal/SearchBarModal";
 
 const SearchBar = () => {
+  const [inputValue, setInputValue] = useState<string | undefined>("");
+
+  /**
+   * dummy data
+   */
+  const { data, error, isValidating } = useSWR(
+    "https://dummyjson.com/users",
+    fetcher
+  );
+
+  const onChangeInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement> | undefined) => {
+      setInputValue(e?.target.value);
+    },
+    []
+  );
+
+  const onClickInputValue = useCallback(
+    (e: React.MouseEvent<HTMLImageElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      console.log(inputValue);
+      setInputValue("");
+    },
+    [inputValue]
+  );
+
+  if (error) return <Error />;
+  if (!data) return <Loading />;
   return (
     <div className="searchBar">
       <div className="bar">
         <div>
-          <input className="barInput" placeholder="username" type={"text"} />
+          <input
+            onChange={onChangeInput}
+            className="barInput"
+            placeholder="ex) Hyungyoo"
+            type={"text"}
+          />
         </div>
-        <img height={27} src={"/images/search.png"} />
+        <img
+          onClick={onClickInputValue}
+          height={27}
+          src={"/images/search.png"}
+        />
       </div>
+      {data.users &&
+        inputValue !== "" &&
+        data.users.map((user: any) => {
+          if (user.firstName.includes(inputValue)) {
+            return (
+              <div key={user.id}>
+                <SearchBarModal image={user.image} name={user.firstName} />
+              </div>
+            );
+          }
+        })}
       <style jsx>{`
         div {
           margin-right: 20px;
-          overflow: visible;
+          overflow: hidden;
         }
 
         .searchBar {

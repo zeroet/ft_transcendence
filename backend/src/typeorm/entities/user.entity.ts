@@ -12,7 +12,7 @@ export class User implements IUser {
   @Column({ unique: true, nullable: false, length: 30 })
   email: string;
 
-  @Column()
+  @Column({ type: 'text', nullable: true})
   image_url: string;
 
   @Column({ nullable: false, length: 30 })

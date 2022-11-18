@@ -6,6 +6,7 @@ const ChangeName = () => {
   const modal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
+    e.stopPropagation();
     e.preventDefault();
     setShowModal((curr) => !curr);
   };
@@ -26,7 +27,7 @@ const ChangeName = () => {
             font-weight: bold;
             overflow: visible;
             width: 100%;
-            higth: 100%;
+            height: 100%;
           }
           .modal-background {
             position: fixed;
