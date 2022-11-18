@@ -4,7 +4,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function Enter() {
+export default function Enter({ refreshToken }: { refreshToken: string }) {
+  const herfPath = refreshToken ? "/api/auth/login" : "/api/auth/signup";
   return (
     <div>
       <Head>
@@ -12,12 +13,8 @@ export default function Enter() {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <div>
-        <Link href="/api/auth/login">
-          <img
-            src="/images/Group.png"
-            alt="enterImg"
-            className="enterImg"
-          />
+        <Link href={herfPath}>
+          <img src="/images/Group.png" alt="enterImg" className="enterImg" />
         </Link>
         <style jsx>{`
           div {
@@ -39,7 +36,7 @@ export default function Enter() {
 export function getServerSideProps(context: any) {
   const cookie = cookies(context);
   const { accessToken, refreshToken } = cookie;
-  if ((accessToken)) {
+  if (accessToken) {
     return {
       redirect: {
         destination: "/Home",
@@ -48,6 +45,6 @@ export function getServerSideProps(context: any) {
     };
   }
   return {
-    props: {},
+    props: { refreshToken },
   };
 }
