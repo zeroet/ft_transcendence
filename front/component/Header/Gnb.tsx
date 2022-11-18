@@ -40,7 +40,7 @@ export default function Gnb() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          height: 101px;
+          // height: 101px;
         }
       `}</style>
     </div>

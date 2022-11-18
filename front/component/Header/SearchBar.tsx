@@ -66,7 +66,7 @@ const SearchBar = () => {
       <style jsx>{`
         div {
           margin-right: 20px;
-          overflow: visible;
+          overflow: hidden;
         }
 
         .searchBar {
