@@ -1,0 +1,148 @@
+import axios from "axios";
+import { useRouter } from "next/router";
+import React, { useCallback, useState } from "react";
+import useSWR from "swr";
+import fetcher from "../../Utils/fetcher";
+import TwoFactor from "../TwoFactor";
+
+const TwoFA_AUTH = ({
+  modal,
+}: {
+  modal: (
+    e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
+  ) => void;
+}) => {
+  const router = useRouter();
+  const { data, error, isValidating } = useSWR("/api/auth/setOtp", fetcher);
+  // state필요없고, get으로 데이터 넣고, post로 업데이트해야한다.
+  const [active2FA, setActive2FA] = useState(false);
+
+  console.log(data);
+  const onClick2FA = useCallback(
+    (
+      e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
+    ) => {
+      e?.stopPropagation();
+      e?.preventDefault();
+      setActive2FA((curr) => !curr);
+      router.push("/Home");
+      //   modal(e);
+      //   console.log(active2FA);
+      //axios
+    },
+    [active2FA]
+  );
+
+  return (
+    <div className="box">
+      <div className="title">
+        <h2>Change Name</h2>
+      </div>
+      <form className="createForm" method="post">
+        <div className="submitform">
+          <img src="/favicon.ico" width={70} height={70} />
+          {active2FA === true ? (
+            <div className="is-active">ACTIVED</div>
+          ) : (
+            <div className="is-active">DEACTIVED</div>
+          )}
+        </div>
+        <div className="buttonDiv">
+          <button onClick={onClick2FA} className="ok">
+            {active2FA === false ? "ACTIVATE" : "DEACTIVATE"}
+          </button>
+          <button onClick={modal} className="cancel">
+            Cancel
+          </button>
+        </div>
+      </form>
+      <style jsx>{`
+        .buttonDiv {
+          display: flex;
+          flex-direction: column; /*수직 정렬*/
+          align-items: center;
+          justify-content: center;
+        }
+        .is-active {
+          color: black;
+          font-family: "Doppio One";
+          font-style: normal;
+          font-weight: 400;
+          font-size: 30px;
+          line-height: 20px;
+          overflow: visible;
+          margin: 5px;
+        }
+        .box {
+          font-family: "Fragment Mono", monospace;
+          position: fixed;
+          top: 30%;
+          left: 33%;
+
+          width: 500px;
+          height: 300px;
+
+          background-color: white;
+          border: 1px inset black;
+          // box-shadow: 10px 10px;
+          text-transform: uppercase;
+        }
+        .title {
+          background-color: black;
+          color: white;
+          // height: 100%;
+        }
+        .submitform {
+          margin: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        input {
+          // background-color: tomato;
+          font-family: "Fragment Mono", monospace;
+          width: 400px;
+          height: 30px;
+          border-top: none;
+          border-left: none;
+          border-right: none;
+          border-bottom: 2px solid black;
+          outline: none;
+          margin-bottom: 20px;
+        }
+        input::placeholder {
+          text-align: center;
+          color: red;
+        }
+        button {
+          text-align: center;
+          padding-top: 20px;
+        }
+        .buttonDiv {
+          // background-color: yellow;
+          margin-top: 10px;
+        }
+        .ok {
+          font-family: "Fragment Mono", monospace;
+          font-size: 20px;
+          color: white;
+          background-color: black;
+          padding: 10px 20px;
+          border: 1px solid black;
+          cursor: pointer;
+          margin-bottom: 10px;
+        }
+        .cancel {
+          font-family: "Fragment Mono", monospace;
+          font-size: 20px;
+          padding: 10px 20px;
+          border: 1px solid black;
+          cursor: pointer;
+          margin-bottom: 20px;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default TwoFA_AUTH;
