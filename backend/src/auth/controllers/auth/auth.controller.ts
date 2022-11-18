@@ -38,11 +38,11 @@ export class AuthController {
   @Get('logout')
   async logout(@Response({ passthrough: true }) res) {
     res.cookie(Cookies.ACCESS_TOKEN, '', this.authService.defaultCookieOptions);
-    res.cookie(
-      Cookies.REFRESH_TOKEN,
-      '',
-      this.authService.defaultCookieOptions,
-    );
+    // res.cookie(
+    //   Cookies.REFRESH_TOKEN,
+    //   '',
+    //   this.authService.defaultCookieOptions,
+    // );
     // return res.sendStatus(200);
   }
 }
