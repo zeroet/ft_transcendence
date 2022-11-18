@@ -38,7 +38,8 @@ export default function Enter() {
 
 export function getServerSideProps(context: any) {
   const cookie = cookies(context);
-  if (!(JSON.stringify(cookie) === '{}')) {
+  const { accessToken, refreshToken } = cookie;
+  if ((accessToken || refreshToken)) {
     return {
       redirect: {
         destination: "/Home",
