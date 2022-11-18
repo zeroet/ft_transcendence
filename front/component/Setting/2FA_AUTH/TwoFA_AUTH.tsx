@@ -15,31 +15,28 @@ const TwoFA_AUTH = ({
   ) => void;
 }) => {
   const router = useRouter();
-//   const { data, error, isValidating } = useSWR("/api/users", fetcher);
-
+  const { data, error, isValidating } = useSWR("/api/users", fetcher);
+  //   console.log(data);
   // state필요없고, get으로 데이터 넣고, post로 업데이트해야한다.
-  const [active2FA, setActive2FA] = useState(false);
+  const [twoFactor, settwoFactor] = useState(false);
 
   const onClick2FA = useCallback(
-    (
+    async (
       e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
     ) => {
       e?.stopPropagation();
       e?.preventDefault();
 
-      // 이거대신 포스트로 보내기
-      setActive2FA((curr) => !curr);
-
-    //   router.push("/Home");
-        modal(e);
-      //   console.log(active2FA);
-      //axios
+      await axios.post("/api/profil/otp", {
+        set: !data.two_factor,
+      });
+      router.push("/Home");
     },
-    [active2FA]
+    [data.two_factor]
   );
-
-//   if (error) return <Error />;
-//   if (!isValidating) return <Loading />;
+  console.log(data.two_factor);
+  if (error) return <Error />;
+  if (!data) return <Loading />;
   return (
     <div className="box">
       <div className="title">
@@ -48,7 +45,7 @@ const TwoFA_AUTH = ({
       <form className="createForm" method="post">
         <div className="submitform">
           <img src="/favicon.ico" width={70} height={70} />
-          {active2FA === true ? (
+          {data.two_factor === true ? (
             <div className="is-active">ACTIVED</div>
           ) : (
             <div className="is-active">DEACTIVED</div>
@@ -56,7 +53,7 @@ const TwoFA_AUTH = ({
         </div>
         <div className="buttonDiv">
           <button onClick={onClick2FA} className="ok">
-            {active2FA === false ? "ACTIVATE" : "DEACTIVATE"}
+            {data.two_factor === false ? "ACTIVATE" : "DEACTIVATE"}
           </button>
           <button onClick={modal} className="cancel">
             Cancel
