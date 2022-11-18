@@ -27,7 +27,7 @@ export class ProfileController {
     console.log(newUserName);
     await this.profileService.updateUserName(req.user.id, newUserName.username);
   }
-
+  @UseGuards(JwtAccessAuthGuard)
   @Post('userimage')
   async changeUserImage(@Request() req, @Body() newUserImage: profileDTO) {
     await this.profileService.updateUserImage(req.user.id, newUserImage.image_url);
