@@ -30,6 +30,6 @@ export class User implements IUser {
   // @Column({ nullable: true })
   // hashed_refresh_token: string;
 
-  // @Column()
-  // two_factor: boolean;
+  @Column({ default: false })
+  two_factor: boolean;
 }
