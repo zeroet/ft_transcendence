@@ -4,7 +4,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function Enter() {
+export default function Enter({ path }: { path: string }) {
+  console.log(path);
   return (
     <div>
       <Head>
@@ -12,7 +13,7 @@ export default function Enter() {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <div>
-        <Link href="/api/auth/login">
+        <Link href={path}>
           <img src="/images/Group.png" alt="enterImg" className="enterImg" />
         </Link>
         <style jsx>{`
@@ -44,13 +45,12 @@ export function getServerSideProps(context: any) {
     };
   } else if (!accessToken && !refreshToken) {
     return {
-      redirect: {
-        destination: "/api/auth/signup",
-        permanent: false,
+      props: {
+        path: "/api/auth/signup",
       },
     };
   }
   return {
-    props: {},
+    props: { path: "/api/auth/login" },
   };
 }
