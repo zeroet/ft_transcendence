@@ -26,7 +26,7 @@ const ChangeName = () => {
             font-weight: bold;
             overflow: visible;
             width: 100%;
-            higth: 100%;
+            height: 100%;
           }
           .modal-background {
             position: fixed;

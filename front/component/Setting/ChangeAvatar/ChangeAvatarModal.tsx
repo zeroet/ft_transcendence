@@ -1,79 +1,42 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
+import { mutate } from "swr";
 
-const ChangeNameModal = ({
+const ChangeAvatarModal = ({
   modal,
 }: {
   modal: (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
   ) => void;
 }) => {
-  const [newNickName, setNewNickName] = useState<string>("");
-  const router = useRouter();
-
-  /**
-   * useCallBack: newNickName이 변화함에 따라서 업데이트
-   * input 값이 바뀔때마다, newNickName이 업데이트됨
-   */
-  const getNewNickName = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setNewNickName(e.target.value.trim());
-    },
-    [newNickName]
-  );
-
-  /**
-   * submit버튼을 누르면, useState로 관리되는 newNickName이
-   * axios를 통해서, post요청을 함.
-   * 글자수는 1 ~ 10
-   * 마지막으로 newNickName을 리셋해주고
-   * modal함수를 실행하여, modal을 닫고 Home으로 페이지 이동
-   */
-  const postNewName = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      if (newNickName.length >= 1 && newNickName.length <= 10) {
-        axios
-          .post("/api/setting/username?", {
-            username: newNickName,
-          })
-          .then(() => {})
-          .catch((err) => console.log(err));
-        router.push("/Home");
-      } else {
-        alert("new nickname should be less then 10 characters");
-        modal(e);
-      }
-    },
-    [newNickName]
-  );
-
   return (
     <div className="box">
       <div className="title">
-        <h2>Change Name</h2>
+        <h2>Change Avatar</h2>
       </div>
       <form className="createForm" method="post">
-        <div className="submitform">
-          <div>
-            <input
-              onChange={getNewNickName}
-              type="text"
-              placeholder="new nickname should be less then 10 characters"
-            />
-          </div>
+        <div className="upload-file">
+          <img height={27} src={"/images/search.png"} />
+          <button className="button-upload-file">UPLOAD FILE</button>
         </div>
         <div className="buttonDiv">
-          <button onClick={postNewName} className="ok">
-            Submit
-          </button>
-          <button onClick={modal} className="cancel">
-            Cancel
-          </button>
+          <button className="ok">Submit</button>
+          <button className="cancel">Cancel</button>
         </div>
       </form>
       <style jsx>{`
+        .upload-file {
+          margin-top: 30px;
+          margin-bottom: 30px;
+          border: 2px solid black;
+          width: 250px;
+          box-shadow: 10px 10px white initial;
+        }
+
+        .button-upload-file {
+          padding: 10px;
+        }
         .box {
           font-family: "Fragment Mono", monospace;
           position: fixed;
@@ -93,11 +56,14 @@ const ChangeNameModal = ({
           color: white;
           // height: 100%;
         }
-        .submitform {
-          // background-color: yellow;
-          // padding-left: 50px;
-          padding-top: 60px;
+
+        .createForm {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          align-items: center;
         }
+
         input {
           // background-color: tomato;
           font-family: "Fragment Mono", monospace;
@@ -143,4 +109,4 @@ const ChangeNameModal = ({
   );
 };
 
-export default ChangeNameModal;
+export default ChangeAvatarModal;

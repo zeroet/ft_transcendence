@@ -16,4 +16,15 @@ fclean :
 
 re : fclean all
 
-.PHONY: all fclean re
+frontend :
+	docker restart front
+
+backend :
+	docker restart backend
+
+nginx : 
+	docker restart nginx
+
+
+
+.PHONY: all fclean re frontend backend nginx
