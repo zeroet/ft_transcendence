@@ -31,10 +31,10 @@ const ChangeNameModal = ({
    * modal함수를 실행하여, modal을 닫고 Home으로 페이지 이동
    */
   const postNewName = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       if (newNickName.length >= 1 && newNickName.length <= 10) {
-        axios
+        await axios
           .post("/api/setting/username?", {
             username: newNickName,
           })

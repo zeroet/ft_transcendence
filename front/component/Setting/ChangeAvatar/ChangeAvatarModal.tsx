@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { mutate } from "swr";
 
 const ChangeAvatarModal = ({
@@ -10,18 +10,40 @@ const ChangeAvatarModal = ({
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
   ) => void;
 }) => {
+  const router = useRouter();
+  const changeAvatar = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log("change avatar");
+  }, []);
+
+  const confirmChangeAvatar = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      console.log("confirm change avatar");
+      await axios
+        .post("/api/setting/userimage?", {
+          image_url: "",
+        })
+        .then(() => {})
+        .catch((err) => console.log(err));
+      router.push("/Home");
+    },
+    []
+  );
   return (
     <div className="box">
       <div className="title">
         <h2>Change Avatar</h2>
       </div>
       <form className="createForm" method="post">
-        <div className="upload-file">
+        <div onClick={changeAvatar} className="upload-file">
           <img height={27} src={"/images/search.png"} />
           <button className="button-upload-file">UPLOAD FILE</button>
         </div>
         <div className="buttonDiv">
-          <button className="ok">Submit</button>
+          <button onClick={confirmChangeAvatar} className="ok">
+            Submit
+          </button>
           <button onClick={modal} className="cancel">
             Cancel
           </button>
@@ -33,12 +55,12 @@ const ChangeAvatarModal = ({
           margin-bottom: 30px;
           border: 2px solid black;
           width: 250px;
-          box-shadow: 10px 10px white initial;
         }
 
         .button-upload-file {
           padding: 10px;
         }
+
         .box {
           font-family: "Fragment Mono", monospace;
           position: fixed;

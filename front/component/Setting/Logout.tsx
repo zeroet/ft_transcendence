@@ -5,7 +5,9 @@ const Logout = () => {
   const router = useRouter();
   const logout = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    axios.get("/api/auth/logout");
+    axios.get("/api/auth/logout", {
+      headers: { "Cache-Control": "no-cache" },
+    });
     router.push("/");
   };
   return (
