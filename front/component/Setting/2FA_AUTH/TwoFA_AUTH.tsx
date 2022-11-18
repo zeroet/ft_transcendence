@@ -19,24 +19,28 @@ const TwoFA_AUTH = ({
   //   console.log(data);
   // state필요없고, get으로 데이터 넣고, post로 업데이트해야한다.
   const [twoFactor, settwoFactor] = useState(false);
-
+  console.log(data.two_factor);
   const onClick2FA = useCallback(
     async (
       e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
     ) => {
       e?.stopPropagation();
       e?.preventDefault();
-
-      await axios.post("/api/profil/otp", {
-        set: !data.two_factor,
-      });
-      router.push("/Home");
+      console.log(data.two_factor);
+      await axios
+        .post("/api/settig/setOtp", {
+          set: !data.two_factor,
+        })
+        .then(() => {
+          router.push("/Home");
+        })
+        .catch((err) => console.log(err));
     },
-    [data.two_factor]
+    []
   );
 
-  console.log(data.two_factor);
-  
+  //   console.log(data.two_factor);
+
   if (error) return <Error />;
   if (!data) return <Loading />;
   return (

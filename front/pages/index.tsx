@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function Enter({ path }: { path: string }) {
-  console.log(path);
   return (
     <div>
       <Head>
