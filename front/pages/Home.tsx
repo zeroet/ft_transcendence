@@ -40,7 +40,7 @@ setCookie는 쓸필없고
 export function getServerSideProps(context: any) {
   const cookie = cookies(context);
   const { accessToken, refreshToken } = cookie;
-  if (!(accessToken || refreshToken)) {
+  if (!(accessToken)) {
     return {
       redirect: {
         destination: "/",
