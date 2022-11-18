@@ -22,7 +22,9 @@ const ChangeAvatarModal = ({
         </div>
         <div className="buttonDiv">
           <button className="ok">Submit</button>
-          <button className="cancel">Cancel</button>
+          <button onClick={modal} className="cancel">
+            Cancel
+          </button>
         </div>
       </form>
       <style jsx>{`
