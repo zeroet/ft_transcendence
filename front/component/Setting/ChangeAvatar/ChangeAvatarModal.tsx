@@ -1,9 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
-import useSWR, { mutate } from "swr";
-import fetcher from "../../Utils/fetcher";
-import { UserInfo } from "../../../interfaceType";
 
 const ChangeAvatarModal = ({
   modal,
@@ -13,15 +10,17 @@ const ChangeAvatarModal = ({
   ) => void;
 }) => {
   const router = useRouter();
-  const {
-    data: user,
-    error,
-    isValidating,
-  } = useSWR<UserInfo>("/api/users", fetcher);
+  const [avatar, setAvatar] = useState<string | ArrayBuffer>();
 
-  // const [avatar, setAvatar] = useState<Blob>();
-  const [avatar, setAvatar] = useState<any>();
-
+  /**
+   * @param event HTMLinput event
+   * input의 type이 file일때, event.target.files[0]값이
+   *  Blob 객체이다.
+   * 먼저, 확장자가 올바른지확인 (예: .sh 파일을 업로드하면 에러가나기때문)
+   * FileReader를 이용하여, DataURL로 바꾼다.
+   * objetURL(FileReader에 있는 다른 API)는 영속성이 보장되지않음
+   * 즉, DB에 이미지를 보내고, 로그인을 다시하면, 값이 변경된다.
+   */
   const getNewAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       // 확장자 추출
@@ -33,32 +32,27 @@ const ChangeAvatarModal = ({
       if (
         extentionOfFile === "png" ||
         extentionOfFile === "jpg" ||
-        extentionOfFile === "jpeg"
+        extentionOfFile === "jpeg" ||
+        extentionOfFile === "svg"
       ) {
-        // formData.append("image_url", file.name);
-        // console.log(event.target.files[0]);
-        // setAvatar(URL.createObjectURL(event.target.files[0]));
         const reader = new FileReader();
         reader.readAsDataURL(event.target.files[0]);
         reader.onload = function (e) {
           if (e.target?.result) {
-            // console.log(e.target?.result);
-            // console.log(typeof e.target?.result);
+            console.log(e);
             setAvatar(e.target?.result);
           }
         };
-        // URL.createObjectURL(event.target.files[0]);
-        // setAvatar(event.target.files[0])
-        // console.log(typeof URL.createObjectURL(event.target.files[0]));
-        // URL.revokeObjectURL(event.target.files[0]);
       } else {
         alert("File should be pgn, jpg or");
       }
     }
   };
 
-  // console.log(avatar);
-
+  /**
+   * @param e Button event
+   * 얻은 값을 post함 (FileReader로 얻은값)
+   */
   const setNewAvatar = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
@@ -70,19 +64,15 @@ const ChangeAvatarModal = ({
         .then(() => {
           router.push("/Home");
         })
-        .catch((err) => console.log(`error for avatar`, err))
+        .catch((err) => {
+          console.log(`error for avatar`, err);
+          alert("Size of file is too big");
+        })
         .finally(() => modal(e));
     } else {
       modal(e);
     }
   };
-
-  // {
-  //   headers: {
-  //     'Content-Type': 'multipart/form-data',
-  //     withCredentials: 'true',
-  //   },
-  // })
 
   return (
     <div className="box">
@@ -90,7 +80,7 @@ const ChangeAvatarModal = ({
         <h2>Change Avatar</h2>
       </div>
       <form className="createForm" method="post">
-        {avatar ? (
+        {avatar && typeof avatar === "string" ? (
           <img
             className="upload-image"
             height={150}
