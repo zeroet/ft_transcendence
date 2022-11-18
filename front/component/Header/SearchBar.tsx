@@ -1,12 +1,22 @@
 // 나중에 submit으로 주기위해서 form 으로
 // 변경해야함
 
+import { useCallback, useState } from "react";
+const [inputValue, setInputValue] = useState();
 const SearchBar = () => {
+  const onChangeInput = useCallback((
+    
+  ) => {}, []);
   return (
     <div className="searchBar">
       <div className="bar">
         <div>
-          <input className="barInput" placeholder="username" type={"text"} />
+          <input
+            onChange={onChangeInput}
+            className="barInput"
+            placeholder="username"
+            type={"text"}
+          />
         </div>
         <img height={27} src={"/images/search.png"} />
       </div>

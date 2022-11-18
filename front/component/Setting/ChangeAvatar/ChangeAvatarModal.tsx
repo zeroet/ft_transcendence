@@ -21,58 +21,64 @@ const ChangeAvatarModal = ({
    * objetURL(FileReader에 있는 다른 API)는 영속성이 보장되지않음
    * 즉, DB에 이미지를 보내고, 로그인을 다시하면, 값이 변경된다.
    */
-  const getNewAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      // 확장자 추출
-      const last_dot = event.target.files[0].name.lastIndexOf(".");
-      const extentionOfFile = event.target.files[0].name.substring(
-        last_dot + 1
-      );
-      // 확장자가 png, jpg, jpeg일때만 업로드
-      if (
-        extentionOfFile === "png" ||
-        extentionOfFile === "jpg" ||
-        extentionOfFile === "jpeg" ||
-        extentionOfFile === "svg"
-      ) {
-        const reader = new FileReader();
-        reader.readAsDataURL(event.target.files[0]);
-        reader.onload = function (e) {
-          if (e.target?.result) {
-            console.log(e);
-            setAvatar(e.target?.result);
-          }
-        };
-      } else {
-        alert("File should be pgn, jpg or");
+  const getNewAvatar = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files && event.target.files[0]) {
+        // 확장자 추출
+        const last_dot = event.target.files[0].name.lastIndexOf(".");
+        const extentionOfFile = event.target.files[0].name.substring(
+          last_dot + 1
+        );
+        // 확장자가 png, jpg, jpeg일때만 업로드
+        if (
+          extentionOfFile === "png" ||
+          extentionOfFile === "jpg" ||
+          extentionOfFile === "jpeg" ||
+          extentionOfFile === "svg"
+        ) {
+          const reader = new FileReader();
+          reader.readAsDataURL(event.target.files[0]);
+          reader.onload = function (e) {
+            if (e.target?.result) {
+              console.log(e);
+              setAvatar(e.target?.result);
+            }
+          };
+        } else {
+          alert("File should be pgn, jpg or");
+        }
       }
-    }
-  };
+    },
+    []
+  );
 
   /**
    * @param e Button event
    * 얻은 값을 post함 (FileReader로 얻은값)
    */
-  const setNewAvatar = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (avatar) {
-      axios
-        .post("/api/setting/userimage", {
-          image_url: avatar,
-        })
-        .then(() => {
-          router.push("/Home");
-        })
-        .catch((err) => {
-          console.log(`error for avatar`, err);
-          alert("Size of file is too big");
-        })
-        .finally(() => modal(e));
-    } else {
-      modal(e);
-    }
-  };
+  const setNewAvatar = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (avatar) {
+        axios
+          .post("/api/setting/userimage", {
+            image_url: avatar,
+          })
+          .then(() => {
+            router.push("/Home");
+          })
+          .catch((err) => {
+            console.log(`error for avatar`, err);
+            alert("Size of file is too big, please less than 10kb");
+          })
+          .finally(() => modal(e));
+      } else {
+        modal(e);
+      }
+    },
+    [avatar]
+  );
 
   return (
     <div className="box">
