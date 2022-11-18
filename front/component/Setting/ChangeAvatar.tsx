@@ -8,6 +8,7 @@ const ChangeAvatar = () => {
     (
       e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
     ) => {
+      e.stopPropagation();
       e.preventDefault();
       setShowModal((curr) => !curr);
     },
@@ -32,6 +33,7 @@ const ChangeAvatar = () => {
           overflow: visible;
           height: 100%;
         }
+
         .modal-background {
           position: fixed;
           top: 0;

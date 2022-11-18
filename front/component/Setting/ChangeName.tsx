@@ -6,6 +6,7 @@ const ChangeName = () => {
   const modal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
+    e.stopPropagation();
     e.preventDefault();
     setShowModal((curr) => !curr);
   };

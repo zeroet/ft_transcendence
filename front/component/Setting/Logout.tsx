@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 const Logout = () => {
   const router = useRouter();
   const logout = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     e.preventDefault();
     axios.get("/api/auth/logout", {
       headers: { "Cache-Control": "no-cache" },

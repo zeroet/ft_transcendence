@@ -32,6 +32,7 @@ const ChangeNameModal = ({
    */
   const postNewName = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
       e.preventDefault();
       if (newNickName.length >= 1 && newNickName.length <= 10) {
         await axios

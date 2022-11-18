@@ -17,7 +17,7 @@ const Photo = () => {
   return (
     <div>
       <div className="photo">
-        <img height={200} src={user.image_url} />
+        <img height={200} width={200} src={user.image_url} />
       </div>
       <style jsx>{`
         .photo {

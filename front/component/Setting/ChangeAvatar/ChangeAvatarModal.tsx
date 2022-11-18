@@ -11,37 +11,71 @@ const ChangeAvatarModal = ({
   ) => void;
 }) => {
   const router = useRouter();
-  const changeAvatar = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    console.log("change avatar");
-  }, []);
+  // const [avatar, setAvatar] = useState<Blob>();
+  const [avatar, setAvatar] = useState<string>();
 
-  const confirmChangeAvatar = useCallback(
-    async (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      console.log("confirm change avatar");
-      await axios
-        .post("/api/setting/userimage?", {
-          image_url: "",
+  const getNewAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      // formData.append("image_url", file.name);
+      console.log(event.target.files[0]);
+      setAvatar(URL.createObjectURL(event.target.files[0]));
+      // setAvatar(event.target.files[0])
+      // console.log(typeof URL.createObjectURL(event.target.files[0]));
+      // URL.revokeObjectURL(event.target.files[0]);
+    }
+  };
+
+  console.log(avatar);
+
+  const setNewAvatar = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (avatar) {
+      axios
+        .post("/api/setting/userimage", {
+          image_url: avatar,
         })
-        .then(() => {})
-        .catch((err) => console.log(err));
-      router.push("/Home");
-    },
-    []
-  );
+        .then(() => {
+          router.push("/Home");
+        })
+        .catch((err) => console.log(`error for avatar`, err));
+    } else {
+      modal(e);
+    }
+  };
+
+  // {
+  //   headers: {
+  //     'Content-Type': 'multipart/form-data',
+  //     withCredentials: 'true',
+  //   },
+  // })
+
   return (
     <div className="box">
       <div className="title">
         <h2>Change Avatar</h2>
       </div>
       <form className="createForm" method="post">
-        <div onClick={changeAvatar} className="upload-file">
-          <img height={27} src={"/images/search.png"} />
-          <button className="button-upload-file">UPLOAD FILE</button>
-        </div>
+        {avatar ? (
+          <img
+            className="upload-image"
+            height={150}
+            width={150}
+            src={avatar}
+            alt="The current file"
+          />
+        ) : (
+          <div className="upload-file">
+            <img height={27} src={"/images/search.png"} />
+            <label className="label" htmlFor="avatar">
+              UPLOAD FILE
+            </label>
+            <input onChange={getNewAvatar} type="file" id="avatar" />
+          </div>
+        )}
         <div className="buttonDiv">
-          <button onClick={confirmChangeAvatar} className="ok">
+          <button onClick={setNewAvatar} type="submit" className="ok">
             Submit
           </button>
           <button onClick={modal} className="cancel">
@@ -50,15 +84,30 @@ const ChangeAvatarModal = ({
         </div>
       </form>
       <style jsx>{`
+        .upload-image {
+          border: 2px solid black;
+        }
+
+        label {
+          width: 100%;
+          margin-top: 3px;
+          color: black;
+        }
+
+        .upload-file {
+          display: flex;
+        }
+
         .upload-file {
           margin-top: 30px;
           margin-bottom: 30px;
           border: 2px solid black;
           width: 250px;
+          display: flex;
         }
 
-        .button-upload-file {
-          padding: 10px;
+        input {
+          display: none;
         }
 
         .box {
@@ -88,22 +137,11 @@ const ChangeAvatarModal = ({
           align-items: center;
         }
 
-        input {
-          // background-color: tomato;
-          font-family: "Fragment Mono", monospace;
-          width: 400px;
-          height: 30px;
-          border-top: none;
-          border-left: none;
-          border-right: none;
-          border-bottom: 2px solid black;
-          outline: none;
-          margin-bottom: 20px;
-        }
-        input::placeholder {
-          text-align: center;
-          color: red;
-        }
+        // input::placeholder {
+        //   text-align: center;
+        //   color: red;
+        // }
+
         button {
           text-align: center;
           padding-top: 20px;
