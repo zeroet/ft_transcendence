@@ -1,6 +1,6 @@
 export interface TokenType {
-  token?: string;
-  refresh?: string;
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 export interface UserInfo {

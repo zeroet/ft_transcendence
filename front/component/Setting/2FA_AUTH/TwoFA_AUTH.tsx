@@ -34,7 +34,9 @@ const TwoFA_AUTH = ({
     },
     [data.two_factor]
   );
+
   console.log(data.two_factor);
+  
   if (error) return <Error />;
   if (!data) return <Loading />;
   return (
