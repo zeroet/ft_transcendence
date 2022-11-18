@@ -2,6 +2,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 import useSWR from "swr";
+import Error from "../../errorAndLoading/Error";
+import Loading from "../../errorAndLoading/Loading";
 import fetcher from "../../Utils/fetcher";
 import TwoFactor from "../TwoFactor";
 
@@ -13,26 +15,31 @@ const TwoFA_AUTH = ({
   ) => void;
 }) => {
   const router = useRouter();
-  const { data, error, isValidating } = useSWR("/api/auth/setOtp", fetcher);
+//   const { data, error, isValidating } = useSWR("/api/users", fetcher);
+
   // state필요없고, get으로 데이터 넣고, post로 업데이트해야한다.
   const [active2FA, setActive2FA] = useState(false);
 
-  console.log(data);
   const onClick2FA = useCallback(
     (
       e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
     ) => {
       e?.stopPropagation();
       e?.preventDefault();
+
+      // 이거대신 포스트로 보내기
       setActive2FA((curr) => !curr);
-      router.push("/Home");
-      //   modal(e);
+
+    //   router.push("/Home");
+        modal(e);
       //   console.log(active2FA);
       //axios
     },
     [active2FA]
   );
 
+//   if (error) return <Error />;
+//   if (!isValidating) return <Loading />;
   return (
     <div className="box">
       <div className="title">
@@ -59,7 +66,7 @@ const TwoFA_AUTH = ({
       <style jsx>{`
         .buttonDiv {
           display: flex;
-          flex-direction: column; /*수직 정렬*/
+          flex-direction: column;
           align-items: center;
           justify-content: center;
         }
