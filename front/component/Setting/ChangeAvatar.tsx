@@ -15,7 +15,6 @@ const ChangeAvatar = () => {
     [showModal]
   );
 
-  console.log(showModal);
   return (
     <div className="setting-component">
       {showModal && (

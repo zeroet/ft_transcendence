@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
+import fetcher from "../../Utils/fetcher";
+import { UserInfo } from "../../../interfaceType";
 
 const ChangeAvatarModal = ({
   modal,
@@ -11,21 +13,51 @@ const ChangeAvatarModal = ({
   ) => void;
 }) => {
   const router = useRouter();
+  const {
+    data: user,
+    error,
+    isValidating,
+  } = useSWR<UserInfo>("/api/users", fetcher);
+
   // const [avatar, setAvatar] = useState<Blob>();
-  const [avatar, setAvatar] = useState<string>();
+  const [avatar, setAvatar] = useState<any>();
 
   const getNewAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      // formData.append("image_url", file.name);
-      console.log(event.target.files[0]);
-      setAvatar(URL.createObjectURL(event.target.files[0]));
-      // setAvatar(event.target.files[0])
-      // console.log(typeof URL.createObjectURL(event.target.files[0]));
-      // URL.revokeObjectURL(event.target.files[0]);
+      // 확장자 추출
+      const last_dot = event.target.files[0].name.lastIndexOf(".");
+      const extentionOfFile = event.target.files[0].name.substring(
+        last_dot + 1
+      );
+      // 확장자가 png, jpg, jpeg일때만 업로드
+      if (
+        extentionOfFile === "png" ||
+        extentionOfFile === "jpg" ||
+        extentionOfFile === "jpeg"
+      ) {
+        // formData.append("image_url", file.name);
+        // console.log(event.target.files[0]);
+        // setAvatar(URL.createObjectURL(event.target.files[0]));
+        const reader = new FileReader();
+        reader.readAsDataURL(event.target.files[0]);
+        reader.onload = function (e) {
+          if (e.target?.result) {
+            // console.log(e.target?.result);
+            // console.log(typeof e.target?.result);
+            setAvatar(e.target?.result);
+          }
+        };
+        // URL.createObjectURL(event.target.files[0]);
+        // setAvatar(event.target.files[0])
+        // console.log(typeof URL.createObjectURL(event.target.files[0]));
+        // URL.revokeObjectURL(event.target.files[0]);
+      } else {
+        alert("File should be pgn, jpg or");
+      }
     }
   };
 
-  console.log(avatar);
+  // console.log(avatar);
 
   const setNewAvatar = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -38,7 +70,8 @@ const ChangeAvatarModal = ({
         .then(() => {
           router.push("/Home");
         })
-        .catch((err) => console.log(`error for avatar`, err));
+        .catch((err) => console.log(`error for avatar`, err))
+        .finally(() => modal(e));
     } else {
       modal(e);
     }
