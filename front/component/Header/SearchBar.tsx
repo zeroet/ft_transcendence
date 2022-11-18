@@ -52,21 +52,26 @@ const SearchBar = () => {
           src={"/images/search.png"}
         />
       </div>
-      {data.users &&
-        inputValue !== "" &&
-        data.users.map((user: any) => {
-          if (user.firstName.includes(inputValue)) {
-            return (
-              <div key={user.id}>
-                <SearchBarModal image={user.image} name={user.firstName} />
-              </div>
-            );
-          }
-        })}
+      <div className="user-list">
+        {data.users &&
+          inputValue !== "" &&
+          data.users.map((user: any) => {
+            if (user.firstName.includes(inputValue)) {
+              return (
+                <div key={user.id}>
+                  <SearchBarModal image={user.image} name={user.firstName} />
+                </div>
+              );
+            }
+          })}
+      </div>
       <style jsx>{`
+        user-list {
+        }
+
         div {
           margin-right: 20px;
-          overflow: hidden;
+          // overflow: hidden;
         }
 
         .searchBar {

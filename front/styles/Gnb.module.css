@@ -23,7 +23,7 @@
   margin: 0;
   padding-left: 0;
   flex-wrap: wrap;
-  height: 101px;
+  /* height: 101px; */
 }
 
 .navbar_menu li {
