@@ -101,21 +101,21 @@ export class AuthService implements IAuthService {
     return refresh;
   }
 
-  setAccessToken(@Response() res, id: number) {
-    res.cookie(
-      Cookies.ACCESS_TOKEN,
-      this.getAccessToken(id),
-      this.accessTokenCookieOptions,
-    );
-  }
+  // setAccessToken(@Response() res, id: number) {
+  //   res.cookie(
+  //     Cookies.ACCESS_TOKEN,
+  //     this.getAccessToken(id),
+  //     this.accessTokenCookieOptions,
+  //   );
+  // }
 
-  setRefreshToken(@Response() res, id: number) {
-    res.cookie(
-      Cookies.REFRESH_TOKEN,
-      this.getRefreshToken(id),
-      this.refreshTokenCookieOptions,
-    );
-  }
+  // setRefreshToken(@Response() res, id: number) {
+  //   res.cookie(
+  //     Cookies.REFRESH_TOKEN,
+  //     this.getRefreshToken(id),
+  //     this.refreshTokenCookieOptions,
+  //   );
+  // }
 
   async updateRefreshTokenHash(id: number, refreshToken: string) {
     const hash = await this.hashData(refreshToken);
