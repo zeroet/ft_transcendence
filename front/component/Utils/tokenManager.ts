@@ -1,11 +1,7 @@
 import axios from "axios";
+import { TokenType } from "../../interfaceType";
 
-interface cookieType {
-  accessToken?: string;
-  refreshToken?: string;
-}
-
-export default function tokenManager(cookie: cookieType) {
+export default function tokenManager(cookie: TokenType) {
   const accessToken = cookie["accessToken"];
   const refreshToken = cookie["refreshToken"];
   if (accessToken) {
