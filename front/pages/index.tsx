@@ -5,6 +5,19 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function Enter({ path }: { path: string }) {
+  const router = useRouter();
+  const onClickLink = async (e: React.MouseEvent<HTMLDivElement>) => {
+    await axios
+      .get(path, {
+        headers: {
+          "Cache-Control": "max-age=0",
+        },
+      })
+      .then((res) => {
+        router.push("/Home");
+      })
+      .catch((err) => console.log(err));
+  };
   return (
     <div>
       <Head>
@@ -12,9 +25,15 @@ export default function Enter({ path }: { path: string }) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <div>
-        <Link href={path}>
-          <img src="/images/Group.png" alt="enterImg" className="enterImg" />
-        </Link>
+        {path === "/api/auth/login" ? (
+          <div onClick={onClickLink}>
+            <img src="/images/Group.png" alt="enterImg" className="enterImg" />
+          </div>
+        ) : (
+          <Link href={path}>
+            <img src="/images/Group.png" alt="enterImg" className="enterImg" />
+          </Link>
+        )}
         <style jsx>{`
           div {
             width: 100%;
