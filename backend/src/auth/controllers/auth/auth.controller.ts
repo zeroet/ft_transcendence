@@ -19,8 +19,8 @@ export class AuthController {
   constructor(@Inject('AUTH_SERVICE') private authService: AuthService) {}
 
   @UseGuards(JwtRefreshAuthGuard)
-  @Get('login')
   @Redirect('http://localhost:8000/Home', 301)
+  @Get('login')
   async login(@Request() req, @Response({ passthrough: true }) res) {
     console.log('login user');
     if (!req.user) {
@@ -29,14 +29,11 @@ export class AuthController {
     }
     this.authService.setAccessToken(res, req.user.id);
     this.authService.setRefreshToken(res, req.user.id);
-    return 'http://localhost:8000/Home';
   }
 
   @UseGuards(FtAuthGurad)
   @Get('signup')
-  ftLogin() {
-    console.log('42 signup');
-  }
+  signup() {}
 
   @UseGuards(FtAuthGurad)
   @Redirect('http://localhost:8000/Home', 301)
@@ -52,11 +49,5 @@ export class AuthController {
   @Get('logout')
   async logout(@Response({ passthrough: true }) res) {
     res.cookie(Cookies.ACCESS_TOKEN, '', this.authService.defaultCookieOptions);
-    // res.cookie(
-    //   Cookies.REFRESH_TOKEN,
-    //   '',
-    //   this.authService.defaultCookieOptions,
-    // );
-    // return res.sendStatus(200);
   }
 }
