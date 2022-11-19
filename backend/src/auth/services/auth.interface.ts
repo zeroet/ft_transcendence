@@ -6,7 +6,6 @@ export interface IAuthService {
   refreshTokenCookieOptions;
   validateUser(userDetails: UserDetails);
   createUser(userDetails: UserDetails);
-  getTokens(id: number);
   getAccessToken(id: number);
   getAccessToken(id: number);
   setRefreshToken(id: number, refreshToken: string);
