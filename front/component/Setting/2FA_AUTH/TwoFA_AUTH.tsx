@@ -28,7 +28,7 @@ const TwoFA_AUTH = ({
       e?.preventDefault();
       console.log(data.two_factor);
       await axios
-        .post("/api/settig/setOtp", {
+        .post("/api/setting/setOtp", {
           set: !data.two_factor,
         })
         .then(() => {
