@@ -1,6 +1,7 @@
 import { UserDetails } from 'src/utils/types';
 
 export interface IAuthService {
+  defaultCookieOptions;
   validateUser(userDetails: UserDetails);
   createUser(userDetails: UserDetails);
   getTokens(id: number);

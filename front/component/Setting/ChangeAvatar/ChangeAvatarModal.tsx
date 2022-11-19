@@ -86,7 +86,7 @@ const ChangeAvatarModal = ({
         <h2>Change Avatar</h2>
       </div>
       <form className="createForm" method="post">
-        {avatar && typeof avatar === "string" ? (
+        {avatar && typeof avatar === "string" && (
           <img
             className="upload-image"
             height={150}
@@ -94,15 +94,15 @@ const ChangeAvatarModal = ({
             src={avatar}
             alt="The current file"
           />
-        ) : (
-          <div className="upload-file">
-            <img height={27} src={"/images/search.png"} />
-            <label className="label" htmlFor="avatar">
-              UPLOAD FILE
-            </label>
-            <input onChange={getNewAvatar} type="file" id="avatar" />
-          </div>
         )}
+        <div className="upload-file">
+          <img height={27} src={"/images/search.png"} />
+          <label className="label" htmlFor="avatar">
+            UPLOAD FILE
+          </label>
+          <input onChange={getNewAvatar} type="file" id="avatar" />
+        </div>
+
         <div className="buttonDiv">
           <button onClick={setNewAvatar} type="submit" className="ok">
             Submit
@@ -115,6 +115,7 @@ const ChangeAvatarModal = ({
       <style jsx>{`
         .upload-image {
           border: 2px solid black;
+          margin-top: 20px;
         }
 
         label {
@@ -146,7 +147,7 @@ const ChangeAvatarModal = ({
           left: 33%;
 
           width: 500px;
-          height: 300px;
+          // height: 300px;
 
           background-color: white;
           border: 1px inset black;
@@ -178,6 +179,7 @@ const ChangeAvatarModal = ({
         .buttonDiv {
           // background-color: yellow;
           margin-top: 10px;
+          margin-bottom: 20px;
         }
         .ok {
           font-family: "Fragment Mono", monospace;

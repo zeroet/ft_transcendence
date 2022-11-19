@@ -4,7 +4,20 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function Enter() {
+export default function Enter({ path }: { path: string }) {
+  const router = useRouter();
+  const onClickLink = async (e: React.MouseEvent<HTMLDivElement>) => {
+    await axios
+      .get(path, {
+        headers: {
+          "Cache-Control": "max-age=0",
+        },
+      })
+      .then((res) => {
+        router.push("/Home");
+      })
+      .catch((err) => console.log(err));
+  };
   return (
     <div>
       <Head>
@@ -12,13 +25,15 @@ export default function Enter() {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <div>
-        <Link href="/api/auth/login">
-          <img
-            src="/images/Group.png"
-            alt="enterImg"
-            className="enterImg"
-          />
-        </Link>
+        {path === "/api/auth/login" ? (
+          <div onClick={onClickLink}>
+            <img src="/images/Group.png" alt="enterImg" className="enterImg" />
+          </div>
+        ) : (
+          <Link href={path}>
+            <img src="/images/Group.png" alt="enterImg" className="enterImg" />
+          </Link>
+        )}
         <style jsx>{`
           div {
             width: 100%;
@@ -39,15 +54,21 @@ export default function Enter() {
 export function getServerSideProps(context: any) {
   const cookie = cookies(context);
   const { accessToken, refreshToken } = cookie;
-  if ((accessToken || refreshToken)) {
+  if (accessToken && refreshToken) {
     return {
       redirect: {
         destination: "/Home",
         permanent: false,
       },
     };
+  } else if (!accessToken && !refreshToken) {
+    return {
+      props: {
+        path: "/api/auth/signup",
+      },
+    };
   }
   return {
-    props: {},
+    props: { path: "/api/auth/login" },
   };
 }

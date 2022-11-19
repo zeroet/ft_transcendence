@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "src/typeorm";
+import { serialize } from "v8";
 
 @Injectable()
 export class ProfileService {
@@ -12,7 +13,7 @@ export class ProfileService {
         await this.userRepository.update(userID, {
             username: newUserName
         });
-        const user = this.userRepository.findOneBy({id:1});
+        const user = this.userRepository.findOneBy({id: userID});
         console.log("in the username");
         console.log((await user).username);
     }
@@ -21,5 +22,17 @@ export class ProfileService {
         await this.userRepository.update(userID, {
             image_url: newUserImage
         });
+    }
+
+    async getOtp(userID: number) {
+        const user = await this.userRepository.findOneBy({ id: userID });
+        return user;
+    }
+
+    async setOtp(id: number, set: boolean) {
+        if (set === true)
+            await this.userRepository.update(id, { two_factor: true });
+        else (set === false)
+            await this.userRepository.update(id, { two_factor: false });
     }
 }

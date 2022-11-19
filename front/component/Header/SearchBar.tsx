@@ -27,8 +27,7 @@ const SearchBar = () => {
     (e: React.MouseEvent<HTMLImageElement>) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log(inputValue);
-      setInputValue("");
+      // setInputValue("");
     },
     [inputValue]
   );

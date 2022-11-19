@@ -3,7 +3,7 @@ export interface IUser {
   email: string;
   image_url: string;
   username: string;
-  nickname: string;
+  two_factor: boolean;
   created_at: Date;
   modified_at: Date;
 }

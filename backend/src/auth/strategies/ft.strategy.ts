@@ -17,15 +17,17 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
       clientID: process.env.FT_CLIENT_ID,
       clientSecret: process.env.FT_CLIENT_SECRET,
       callbackURL: process.env.FT_CALLBACK_URL,
-      scope: ['public'],
+      // scope: ['public'],
     });
   }
 
   async validate(accessToken: string, refreshToken: string) {
+    console.log('validate func');
     const req = this.httpService.get(`https://api.intra.42.fr/v2/me`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     try {
+      console.log('af get request to 42');
       const { data } = await lastValueFrom(req);
       if (!data) throw new UnauthorizedException();
       const { login: intra_id, email, image_url, displayname: username } = data;

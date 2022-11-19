@@ -12,14 +12,14 @@ export class User implements IUser {
   @Column({ unique: true, nullable: false, length: 30 })
   email: string;
 
-  @Column({ type: 'text', nullable: true})
+  @Column({ type: 'text', nullable: true })
   image_url: string;
 
   @Column({ nullable: false, length: 30 })
   username: string;
 
-  @Column({ default: null, nullable: true, length: 30 })
-  nickname: string;
+  // @Column({ default: null, nullable: true, length: 30 })
+  // nickname: string;
 
   @Column({ default: new Date() })
   created_at: Date;
@@ -30,6 +30,6 @@ export class User implements IUser {
   // @Column({ nullable: true })
   // hashed_refresh_token: string;
 
-  // @Column()
-  // two_factor: boolean;
+  @Column({ default: false })
+  two_factor: boolean;
 }
