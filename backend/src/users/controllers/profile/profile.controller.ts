@@ -30,7 +30,10 @@ export class ProfileController {
   @UseGuards(JwtAccessAuthGuard)
   @Post('userimage')
   async changeUserImage(@Request() req, @Body() newUserImage: profileDTO) {
-    await this.profileService.updateUserImage(req.user.id, newUserImage.image_url);
+    await this.profileService.updateUserImage(
+      req.user.id,
+      newUserImage.image_url,
+    );
   }
 
   @UseGuards(JwtAccessAuthGuard)
@@ -40,7 +43,7 @@ export class ProfileController {
   }
   @UseGuards(JwtAccessAuthGuard)
   @Post('setOtp')
-  async setOtp(@Request() req, @Body() set:boolean) {
+  async setOtp(@Request() req, @Body() set: boolean) {
     await this.profileService.setOtp(req.user.id, set);
   }
 }
