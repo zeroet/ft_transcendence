@@ -27,8 +27,8 @@ export class User implements IUser {
   @Column({ default: new Date() })
   modified_at: Date;
 
-  // @Column({ nullable: true })
-  // hashed_refresh_token: string;
+  @Column({ nullable: true })
+  hashed_refresh_token: string;
 
   @Column({ default: false })
   two_factor: boolean;

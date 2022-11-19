@@ -101,23 +101,20 @@ export class AuthService implements IAuthService {
     return refresh;
   }
 
-  // setAccessToken(@Response() res, id: number) {
-  //   res.cookie(
-  //     Cookies.ACCESS_TOKEN,
-  //     this.getAccessToken(id),
-  //     this.accessTokenCookieOptions,
-  //   );
-  // }
-
-  // setRefreshToken(@Response() res, id: number) {
-  //   res.cookie(
-  //     Cookies.REFRESH_TOKEN,
-  //     this.getRefreshToken(id),
-  //     this.refreshTokenCookieOptions,
-  //   );
-  // }
+  async setRefreshToken(id: number, refreshToken: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (user) {
+      await this.userRepository.update(id, {
+        hashed_refresh_token: await this.updateRefreshTokenHash(
+          id,
+          refreshToken,
+        ),
+      });
+    }
+  }
 
   async updateRefreshTokenHash(id: number, refreshToken: string) {
     const hash = await this.hashData(refreshToken);
+    return hash;
   }
 }
