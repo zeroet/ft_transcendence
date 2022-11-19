@@ -3,9 +3,11 @@ import cookies from "next-cookies";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { use } from "react";
 
 export default function Enter({ path }: { path: string }) {
   const router = useRouter();
+
   const onClickLink = async (e: React.MouseEvent<HTMLDivElement>) => {
     await axios
       .get(path, {
@@ -16,8 +18,12 @@ export default function Enter({ path }: { path: string }) {
       .then((res) => {
         router.push("/Home");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        router.push("/api/auth/signup");
+      });
   };
+
   return (
     <div>
       <Head>
