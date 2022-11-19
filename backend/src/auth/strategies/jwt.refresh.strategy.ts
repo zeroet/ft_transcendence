@@ -19,14 +19,14 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
     });
   }
 
-  async validate(req: Request, payload: any) {
+  async validate(payload: any) {
     console.log('validate func in jwt.refresh', payload);
     //const refreshToken = req.get(`${Cookies.REFRESH_TOKEN}`);
     // .replace('Bearer', '')
     // .trim();
-    const refreshToken = req.cookies?.refreshToken;
+    // const refreshToken = req.cookies?.refreshToken;
     const user = await this.userService.getUserById(payload.id);
-    console.log(refreshToken);
+    // console.log(refreshToken);
     return user;
     // return {
     //   ...payload,
