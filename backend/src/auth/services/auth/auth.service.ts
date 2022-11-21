@@ -51,30 +51,6 @@ export class AuthService implements IAuthService {
     return this.userRepository.save(user);
   }
 
-  async getTokens(id: number) {
-    const [access, refresh] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          sub: id,
-        },
-        {
-          secret: process.env.JWT_ACCESS_SECRET,
-          expiresIn: `${process.env.JWT_ACCESS_EXPIRATION_TIME}`,
-        },
-      ),
-      this.jwtService.signAsync(
-        {
-          sub: id,
-        },
-        {
-          secret: process.env.JWT_REFRESH_SECRET,
-          expiresIn: `${process.env.JWT_REFRESH_EXPIRATION_TIME}`,
-        },
-      ),
-    ]);
-    return { access_token: access, refresh_token: refresh };
-  }
-
   getAccessToken(id: number) {
     const access = this.jwtService.sign(
       {
@@ -101,23 +77,20 @@ export class AuthService implements IAuthService {
     return refresh;
   }
 
-  setAccessToken(@Response() res, id: number) {
-    res.cookie(
-      Cookies.ACCESS_TOKEN,
-      this.getAccessToken(id),
-      this.accessTokenCookieOptions,
-    );
-  }
-
-  setRefreshToken(@Response() res, id: number) {
-    res.cookie(
-      Cookies.REFRESH_TOKEN,
-      this.getRefreshToken(id),
-      this.refreshTokenCookieOptions,
-    );
+  async setRefreshToken(id: number, refreshToken: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (user) {
+      await this.userRepository.update(id, {
+        hashed_refresh_token: await this.updateRefreshTokenHash(
+          id,
+          refreshToken,
+        ),
+      });
+    }
   }
 
   async updateRefreshTokenHash(id: number, refreshToken: string) {
     const hash = await this.hashData(refreshToken);
+    return hash;
   }
 }
