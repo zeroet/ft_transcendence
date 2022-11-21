@@ -12,8 +12,9 @@ import Loading from "../component/errorAndLoading/Loading";
 export default function Game() {
   const [socket, setSocket] = useState<Socket>();
   useEffect(() => {
-    const socket_game = socketIOClient("http://localhost:8080/game");
+    const socket_game = socketIOClient("http://localhost:8080");
     setSocket(socket_game);
+    console.log(socket_game);
     return () => {
       socket_game.disconnect();
     };
