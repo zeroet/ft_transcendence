@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
+import socketIOClient from "socket.io-client";
 
 export default function GameBody() {
   const [waitModal, setWaitModal] = useState(false);
@@ -22,10 +23,13 @@ export default function GameBody() {
   }, []);
 
   useEffect(() => {
-    // const socket = io('/api/test');
+    // const socket = io("http://localhost:8080/game");
     // console.log(socket);
+
+    const socket = socketIOClient("http://localhost:8080/game");
+    socket.emit("message", "hello");
     return () => {
-      // socket off
+      socket.disconnect();
     };
   }, []);
   return (
@@ -40,9 +44,8 @@ export default function GameBody() {
         />
       ) : (
         <div>
-          <div className="ring">Loading</div>
-          <div onClick={onClickCancle} className="cancle">
-            Cancle
+          <div onClick={onClickCancle} className="ring">
+            Loading
           </div>
         </div>
       )}
