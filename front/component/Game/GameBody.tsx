@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
-import socketIOClient from "socket.io-client";
+import Loading from "../errorAndLoading/Loading";
 
-export default function GameBody() {
+export default function GameBody({ socket }: { socket: Socket }) {
   const [waitModal, setWaitModal] = useState(false);
 
   const onClickWaitModal = useCallback(
@@ -22,16 +22,10 @@ export default function GameBody() {
     // socket 취소
   }, []);
 
-  useEffect(() => {
-    // const socket = io("http://localhost:8080/game");
-    // console.log(socket);
-
-    const socket = socketIOClient("http://localhost:8080/game");
-    socket.emit("message", "hello");
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  if (socket) {
+    console.log("game body ", socket);
+  }
+  if (!socket) return <Loading />;
   return (
     <div className={styles.box}>
       {!waitModal ? (
