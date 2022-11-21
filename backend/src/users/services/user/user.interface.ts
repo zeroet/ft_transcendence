@@ -1,7 +1,7 @@
 import { UserDto } from 'src/users/dto/user.dto';
 
 export interface IUserService {
-  getCurrentUser();
+  getCurrentUser(id: number);
   getUserById(id: number);
   updateUserById(id: number);
   // createUser(user: UserDto);
