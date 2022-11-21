@@ -27,8 +27,16 @@ export class AuthController {
       console.log('login user doesnt exist');
       throw res.redirect(301, 'http://localhost:8080/auth/signup');
     }
-    this.authService.setAccessToken(res, req.user.id);
-    this.authService.setRefreshToken(res, req.user.id);
+    res.cookie(
+      Cookies.ACCESS_TOKEN,
+      this.authService.getAccessToken(req.user.id),
+      this.authService.accessTokenCookieOptions,
+    );
+    res.cookie(
+      Cookies.REFRESH_TOKEN,
+      this.authService.getRefreshToken(req.user.id),
+      this.authService.refreshTokenCookieOptions,
+    );
   }
 
   @UseGuards(FtAuthGurad)
@@ -40,14 +48,25 @@ export class AuthController {
   @Get('redirect')
   async redirect(@Request() req, @Response({ passthrough: true }) res) {
     console.log('redirect func');
-    this.authService.setAccessToken(res, req.user.id);
-    this.authService.setRefreshToken(res, req.user.id);
+    res.cookie(
+      Cookies.ACCESS_TOKEN,
+      this.authService.getAccessToken(req.user.id),
+      this.authService.accessTokenCookieOptions,
+    );
+    res.cookie(
+      Cookies.REFRESH_TOKEN,
+      this.authService.getRefreshToken(req.user.id),
+      this.authService.refreshTokenCookieOptions,
+    );
   }
 
   @UseGuards(JwtAccessAuthGuard)
   @Redirect('http://localhost:8000', 301)
   @Get('logout')
   async logout(@Response({ passthrough: true }) res) {
-    res.cookie(Cookies.ACCESS_TOKEN, '', this.authService.defaultCookieOptions);
+    res.clearCookie(
+      Cookies.ACCESS_TOKEN,
+      this.authService.defaultCookieOptions,
+    );
   }
 }
