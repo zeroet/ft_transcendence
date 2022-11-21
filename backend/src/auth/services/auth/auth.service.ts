@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
 import { Cookies, UserDetails } from 'src/utils/types';
 import { Repository } from 'typeorm';
-import { IAuthService } from '../auth.interface';
+import { IAuthService } from './auth.interface';
 import * as bcrypt from 'bcrypt';
 import { CookieOptions } from 'express';
 

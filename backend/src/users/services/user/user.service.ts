@@ -9,8 +9,8 @@ export class UserService implements IUserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
-  getCurrentUser(): Promise<User> {
-    return this.userRepository.findOneBy({ id: 1 });
+  getCurrentUser(id:number): Promise<User> {
+    return this.userRepository.findOneBy({ id });
   }
   getUserById(id: number): Promise<User> {
     const user = this.userRepository.findOneBy({ id });
