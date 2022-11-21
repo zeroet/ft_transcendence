@@ -9,11 +9,13 @@ import {
   UnauthorizedException,
   Get,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { IUser } from 'src/typeorm/interfaces/IUser';
 import { ProfileService } from 'src/users/services/profile/profile.service';
 import { profileDTO } from '../../dto/profile.dto';
 
+@ApiTags('SETTING')
 @Controller('setting')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
