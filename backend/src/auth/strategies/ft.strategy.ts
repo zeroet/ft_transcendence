@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-oauth2';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
-import { IAuthService } from '../services/auth.interface';
+import { IAuthService } from '../services/auth/auth.interface';
 
 @Injectable()
 export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
