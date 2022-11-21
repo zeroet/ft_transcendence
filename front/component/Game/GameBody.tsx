@@ -2,7 +2,35 @@ import { useEffect, useRef, useState } from "react";
 import styles from "../../styles/LayoutBox.module.css";
 
 export default function GameBody() {
-  return <div className={styles.box}>game body</div>;
+  const [waitModal, setWaitModal] = useState(false);
+
+  const onClickWaitModal = (e: React.MouseEvent<HTMLImageElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWaitModal((curr) => !curr);
+  };
+  return (
+    <div className={styles.box}>
+      {!waitModal ? (
+        <img
+          onClick={onClickWaitModal}
+          className="img-vector"
+          src="/images/Vector.png"
+          width={300}
+          height={90}
+        />
+      ) : (
+        <div>haha</div>
+      )}
+      <style jsx>{`
+        div {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      `}</style>
+    </div>
+  );
 }
 //   const [leftPaddle, setLeftPaddle] = useState<number>(50);
 //   const [myScore, setMySore] = useState<number>(0);
