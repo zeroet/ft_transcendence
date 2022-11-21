@@ -1,3 +1,4 @@
+import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -15,6 +16,15 @@ import { UserService } from './services/user/user.service';
     TypeOrmModule.forFeature([User]),
     JwtModule.register({}),
     PassportModule,
+    MailerModule.forRoot({
+      transport: {
+        host: '',
+        auth: {
+          user: '',
+          pass: '',
+        },
+      },
+    }),
   ],
   controllers: [UsersController, ProfileController],
   providers: [
