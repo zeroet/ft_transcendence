@@ -8,18 +8,22 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { IUserService } from 'src/users/services/user/user.interface';
+import {JwtAccessAuthGuard} from 'src/auth/guards/jwt.access-auth.guard'
 
 @Controller('users')
 export class UsersController {
   constructor(
     @Inject('USER_SERVICE') private readonly userService: IUserService,
   ) {}
+
+  @UseGuards(JwtAccessAuthGuard)
   @Get()
-  async getCurrentUser() {
-    // async getUsers() {
-    const users = await this.userService.getCurrentUser();
+  async getCurrentUser(@Request() req) {
+    const users = await this.userService.getCurrentUser(req.user.id);
     return users;
   }
 

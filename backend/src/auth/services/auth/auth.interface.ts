@@ -7,6 +7,6 @@ export interface IAuthService {
   validateUser(userDetails: UserDetails);
   createUser(userDetails: UserDetails);
   getAccessToken(id: number);
-  getAccessToken(id: number);
+  getRefreshToken(id: number);
   setRefreshToken(id: number, refreshToken: string);
 }
