@@ -18,19 +18,27 @@ export default function Game({ accessToken }: { accessToken: string }) {
       },
     });
     setSocket(socket_game);
-    console.log(socket_game);
+    // 필요한지모르겠음
+    // socket?.connect();
     // console.log(socket_game);
     return () => {
       socket_game.disconnect();
     };
   }, []);
+
   if (!socket) return <Loading />;
   return (
     <Layout>
       <Title title="Game" />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr" }}>
+      <div>
         <GameList socket={socket} />
         <GameBody socket={socket} />
+        <style jsx>{`
+          div {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+          }
+        `}</style>
       </div>
     </Layout>
   );
