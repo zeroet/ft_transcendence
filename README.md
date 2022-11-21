@@ -1,6 +1,7 @@
 # ft_transcendence
 
 # Barcodepong API 문서
+서버 실행하고 해당 url 들어가면 swagger api 문서 볼 수 있습니다.
 http://localhost:8080/api 
 
 # Makefile : 처음빼면 다시 하실필요없습니다.
