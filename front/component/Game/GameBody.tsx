@@ -26,7 +26,7 @@ export default function GameBody() {
     // const socket = io("http://localhost:8080/game");
     // console.log(socket);
 
-    const socket = socketIOClient("http://localhost:8080/game");
+    const socket = socketIOClient("http://localhost:8080");
     socket.emit("message", "hello");
     return () => {
       socket.disconnect();
