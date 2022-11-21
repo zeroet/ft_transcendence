@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
-import socketIOClient from "socket.io-client";
 
-export default function GameBody() {
+export default function GameBody({ socket }: { socket: Socket }) {
   const [waitModal, setWaitModal] = useState(false);
 
+  console.log("game body ", socket);
   const onClickWaitModal = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
       e.preventDefault();
@@ -22,16 +22,6 @@ export default function GameBody() {
     // socket 취소
   }, []);
 
-  useEffect(() => {
-    // const socket = io("http://localhost:8080/game");
-    // console.log(socket);
-
-    const socket = socketIOClient("http://localhost:8080");
-    socket.emit("message", "hello");
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
   return (
     <div className={styles.box}>
       {!waitModal ? (

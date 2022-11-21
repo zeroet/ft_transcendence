@@ -1,6 +1,9 @@
+import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
 
-export default function GameList() {
+export default function GameList({ socket }: { socket: Socket }) {
+  console.log("game list", socket);
+
   return (
     <div className={styles.box}>
       <h1>Game List</h1>
