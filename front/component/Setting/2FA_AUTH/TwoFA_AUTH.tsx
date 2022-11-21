@@ -26,21 +26,23 @@ const TwoFA_AUTH = ({
     ) => {
       e?.stopPropagation();
       e?.preventDefault();
-      console.log(data.two_factor);
-      await axios
-        .post("/api/setting/setOtp", {
-          set: !data.two_factor,
-        })
-        .then(() => {
-          router.push("/Home");
-        })
-        .catch((err) => console.log(err));
+      if (data) {
+        await axios
+          .post("/api/setting/setOtp", {
+            set: !data.two_factor,
+          })
+          .then(() => {
+            settwoFactor(data.two_factor);
+            router.push("/Home");
+          })
+          .catch((err) => console.log(err));
+      }
     },
     []
   );
 
+  // console.log(data.two_factor);
   //   console.log(data.two_factor);
-
   if (error) return <Error />;
   if (!data) return <Loading />;
   return (
