@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
 
 export default function GameBody() {
@@ -9,6 +10,8 @@ export default function GameBody() {
     e.stopPropagation();
     setWaitModal((curr) => !curr);
   };
+
+  useEffect(() => {}, []);
   return (
     <div className={styles.box}>
       {!waitModal ? (
