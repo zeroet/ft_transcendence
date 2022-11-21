@@ -21,10 +21,12 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   }
 
   async validate(payload: any) {
-    console.log(payload);
-    const user = await this.userService.getUserById(payload);
-    console.log('current user before update:', user);
-    if (!user) throw new UnauthorizedException('Unauthorized User');
-    return user;
+    console.log('validate', payload);
+    if (payload !== undefined) {
+      const user = await this.userService.getUserById(payload.id);
+      console.log('current user before update:', user);
+      if (!user) throw new UnauthorizedException('Unauthorized User');
+      return user;
+    }
   }
 }
