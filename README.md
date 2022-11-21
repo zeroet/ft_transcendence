@@ -1,5 +1,8 @@
 # ft_transcendence
 
+# Barcodepong API 문서
+http://localhost:8080/api 
+
 # Makefile : 처음빼면 다시 하실필요없습니다.
 make : docker-compose
 make fclean : container, volume, network, image 모두삭제
