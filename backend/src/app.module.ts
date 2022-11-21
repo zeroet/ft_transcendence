@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { entities } from './typeorm/index';
+import { GameModule } from 'src/game/game.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { entities } from './typeorm/index';
     }),
     AuthModule,
     UsersModule,
+    GameModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
