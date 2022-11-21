@@ -5,6 +5,9 @@ import styles from "../../styles/LayoutBox.module.css";
 export default function GameBody() {
   const [waitModal, setWaitModal] = useState(false);
 
+  const socket = io('/api/test');
+
+  console.log(socket);
   const onClickWaitModal = (e: React.MouseEvent<HTMLImageElement>) => {
     e.preventDefault();
     e.stopPropagation();
