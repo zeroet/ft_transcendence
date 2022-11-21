@@ -9,10 +9,14 @@ import { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import Loading from "../component/errorAndLoading/Loading";
 
-export default function Game() {
+export default function Game({ accessToken }: { accessToken: string }) {
   const [socket, setSocket] = useState<Socket>();
   useEffect(() => {
-    const socket_game = socketIOClient("http://localhost:8080");
+    const socket_game = socketIOClient("http://localhost:8080", {
+      extraHeaders: {
+        accessToken,
+      },
+    });
     setSocket(socket_game);
     console.log(socket_game);
     return () => {
@@ -43,5 +47,9 @@ export function getServerSideProps(context: any) {
     };
   }
   tokenManager(cookie);
-  return { props: {} };
+  return {
+    props: {
+      accessToken,
+    },
+  };
 }
