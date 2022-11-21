@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
+import Loading from "../errorAndLoading/Loading";
 
 export default function GameBody({ socket }: { socket: Socket }) {
   const [waitModal, setWaitModal] = useState(false);
 
-  console.log("game body ", socket);
   const onClickWaitModal = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
       e.preventDefault();
@@ -22,6 +22,10 @@ export default function GameBody({ socket }: { socket: Socket }) {
     // socket 취소
   }, []);
 
+  if (socket) {
+    console.log("game body ", socket);
+  }
+  if (!socket) return <Loading />;
   return (
     <div className={styles.box}>
       {!waitModal ? (
