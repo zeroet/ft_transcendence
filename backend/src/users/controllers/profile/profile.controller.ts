@@ -43,7 +43,7 @@ export class ProfileController {
   }
   @UseGuards(JwtAccessAuthGuard)
   @Post('setOtp')
-  async setOtp(@Request() req, @Body() set: boolean) {
-    await this.profileService.setOtp(req.user.id, set);
+  async setOtp(@Request() req, @Body() set) {
+    await this.profileService.setOtp(req.user.id, set.set);
   }
 }
