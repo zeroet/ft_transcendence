@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { IUser } from '../interfaces/IUser';
 
 @Entity({ name: 'users' })
@@ -18,13 +24,10 @@ export class User implements IUser {
   @Column({ nullable: false, length: 30 })
   username: string;
 
-  // @Column({ default: null, nullable: true, length: 30 })
-  // nickname: string;
-
-  @Column({ default: new Date() })
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column({ default: new Date() })
+  @UpdateDateColumn()
   modified_at: Date;
 
   @Column({ nullable: true })
