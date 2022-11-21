@@ -3,7 +3,7 @@ import cookies from "next-cookies";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { use } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Enter({ path }: { path: string }) {
   const router = useRouter();
@@ -24,6 +24,63 @@ export default function Enter({ path }: { path: string }) {
       });
   };
 
+  interface XYType {
+    x: number;
+    y: number;
+  }
+
+  const ball = useRef<XYType>({
+    x: 50,
+    y: 50,
+  });
+
+  const ballDirection = useRef<XYType>({
+    x: 1,
+    y: 1,
+  });
+
+  const ballMovement = () => {
+    if (
+      ball.current.x <= 2 ||
+      ball.current.x >= 94 ||
+      ball.current.y <= 0 ||
+      ball.current.y >= 97
+    ) {
+      if (ball.current.x <= 2) {
+        // ballDirectionX.current *= -1;
+        ballDirection.current.x *= -1;
+        ball.current.x += 1;
+        // ball.current.x = 50;
+        // ball.current.x = 50;
+      }
+      if (ball.current.x >= 94) {
+        ballDirection.current.x *= -1;
+        ball.current.x -= 1;
+        // ball.current.x = 50;
+        // ball.current.x = 50;
+      }
+      if (ball.current.y <= 0) {
+        ballDirection.current.y *= -1;
+        ball.current.y += 1;
+      }
+      if (ball.current.y >= 97) {
+        ballDirection.current.y *= -1;
+        ball.current.y -= 1;
+      }
+    }
+    // setBallDirection((curr) => curr * -1);
+    ball.current.x += ballDirection.current.x * 0.075;
+    ball.current.y += ballDirection.current.y * 0.05;
+  };
+
+  const [rerender, setRerender] = useState(0);
+
+  useEffect(() => {
+    setInterval(() => {
+      ballMovement();
+      setRerender((curr) => curr + 1);
+    }, 5);
+  }, []);
   return (
     <div>
       <Head>
@@ -31,6 +88,7 @@ export default function Enter({ path }: { path: string }) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <div>
+        <div className="ball"></div>
         {path === "/api/auth/login" ? (
           <div onClick={onClickLink}>
             <img src="/images/Group.png" alt="enterImg" className="enterImg" />
@@ -50,6 +108,27 @@ export default function Enter({ path }: { path: string }) {
           }
           .enterImg {
             height: 150px;
+          }
+
+          :root {
+            --hue: 200;
+            --saturation: 0%;
+            --foreground-color: hsl(var(--hue), var(--saturation), 75%);
+            --background-color: hsl(var(--hue), var(--saturation), 20%);
+          }
+
+          .ball {
+            --x: ${ball.current.x};
+            --y: ${ball.current.y};
+
+            position: absolute;
+            background-color: black;
+            left: calc(var(--x) * 1vw);
+            top: calc(var(--y) * 1vh);
+            trasform: traslate(-50%, -50%);
+            border-radius: 50%;
+            width: 2.5vh;
+            height: 2.5vh;
           }
         `}</style>
       </div>
