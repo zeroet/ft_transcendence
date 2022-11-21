@@ -9,6 +9,8 @@ export default function Enter({ path }: { path: string }) {
   const router = useRouter();
 
   const onClickLink = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     await axios
       .get(path, {
         headers: {
@@ -69,18 +71,20 @@ export default function Enter({ path }: { path: string }) {
       }
     }
     // setBallDirection((curr) => curr * -1);
-    ball.current.x += ballDirection.current.x * 0.075;
-    ball.current.y += ballDirection.current.y * 0.05;
+    ball.current.x += ballDirection.current.x * 0.2;
+    ball.current.y += ballDirection.current.y * 0.2;
   };
 
   const [rerender, setRerender] = useState(0);
 
   useEffect(() => {
-    setInterval(() => {
+    const timer = setInterval(() => {
       ballMovement();
       setRerender((curr) => curr + 1);
     }, 5);
+    return () => clearInterval(timer);
   }, []);
+
   return (
     <div>
       <Head>
@@ -90,8 +94,13 @@ export default function Enter({ path }: { path: string }) {
       <div>
         <div className="ball"></div>
         {path === "/api/auth/login" ? (
-          <div onClick={onClickLink}>
-            <img src="/images/Group.png" alt="enterImg" className="enterImg" />
+          <div>
+            <img
+              onClick={onClickLink}
+              src="/images/Group.png"
+              alt="enterImg"
+              className="enterImg"
+            />
           </div>
         ) : (
           <Link href={path}>

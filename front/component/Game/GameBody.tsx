@@ -1,8 +1,135 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
+import Loading from "../errorAndLoading/Loading";
 
-export default function GameBody() {
-  return <div className={styles.box}>game body</div>;
+export default function GameBody({ socket }: { socket: Socket }) {
+  const [waitModal, setWaitModal] = useState(false);
+
+  const onClickWaitModal = useCallback(
+    (e: React.MouseEvent<HTMLImageElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setWaitModal((curr) => !curr);
+    },
+    []
+  );
+
+  const onClickCancle = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWaitModal((curr) => !curr);
+    // socket 취소
+  }, []);
+
+  if (socket) {
+    console.log("game body ", socket);
+  }
+  if (!socket) return <Loading />;
+  return (
+    <div className={styles.box}>
+      {!waitModal ? (
+        <img
+          onClick={onClickWaitModal}
+          className="img-vector"
+          src="/images/Vector.png"
+          width={300}
+          height={90}
+        />
+      ) : (
+        <div>
+          <div onClick={onClickCancle} className="ring">
+            Loading
+          </div>
+        </div>
+      )}
+      <style jsx>{`
+        .cancle {
+          cursor: grab;
+          border: 2px solid;
+        }
+
+        div {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: visible;
+        }
+
+        .ring {
+          position: relative;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 150px;
+          height: 150px;
+          background: transparent;
+          border: 3px solid #3c3c3c;
+          border-radius: 50%;
+          text-align: center;
+          line-height: 150px;
+          font-family: sans-serif;
+          font-size: 20px;
+          color: black;
+          letter-spacing: 4px;
+          text-transform: uppercase;
+          text-shadow: 0 0 10px white;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .ring:before {
+          content: "";
+          position: absolute;
+          top: -3px;
+          left: -3px;
+          width: 100%;
+          height: 100%;
+          border: 3px solid transparent;
+          border-top: 3px solid white;
+          border-right: 3px solid white;
+          border-radius: 50%;
+          animation: animateC 2s linear infinite;
+        }
+        span {
+          display: block;
+          position: absolute;
+          top: calc(50% - 2px);
+          left: 50%;
+          width: 50%;
+          height: 4px;
+          background: transparent;
+          transform-origin: left;
+          animation: animate 2s linear infinite;
+        }
+        span:before {
+          content: "";
+          position: absolute;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: #fff000;
+          top: -6px;
+          right: -8px;
+          box-shadow: 0 0 20px #fff000;
+        }
+        @keyframes animateC {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        @keyframes animate {
+          0% {
+            transform: rotate(45deg);
+          }
+          100% {
+            transform: rotate(405deg);
+          }
+        }
+      `}</style>
+    </div>
+  );
 }
 //   const [leftPaddle, setLeftPaddle] = useState<number>(50);
 //   const [myScore, setMySore] = useState<number>(0);
