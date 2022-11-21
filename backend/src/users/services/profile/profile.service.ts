@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/typeorm';
-import { serialize } from 'v8';
 
 @Injectable()
 export class ProfileService {
@@ -34,15 +33,5 @@ export class ProfileService {
     if (user) {
       await this.userRepository.save({ ...user, two_factor });
     }
-    // await this.userRepository
-    //   .createQueryBuilder()
-    //   .update()
-    //   .set({ two_factor })
-    //   .where('id=:id', { id })
-    //   .execute();
-    // if (set === true)
-    // await this.userRepository.update(id, { two_factor: set });
-    // else (set === false)
-    // await this.userRepository.update(id, { two_factor: set });
   }
 }
