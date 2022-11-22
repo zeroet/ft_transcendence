@@ -24,6 +24,7 @@ const TwoFA_AUTH = ({
   const onChangeCode = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setCodeFromQRCode(e.target.value);
+      // console.log("code form", codeFromQRCode);
     },
     [codeFromQRCode]
   );
@@ -33,10 +34,13 @@ const TwoFA_AUTH = ({
     async (
       e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
     ) => {
-      e?.stopPropagation();
-      e?.preventDefault();
+      e.stopPropagation();
+      e.preventDefault();
+      console.log("on CLick");
+      console.log("code qr", codeFromQRCode);
+
       if (data) {
-        if (!data.two_factor_activated && codeFromQRCode) {
+        if (!data.two_factor_activated) {
           await axios
             .post("/api/two-factor/activate", {
               set: true,
@@ -44,7 +48,6 @@ const TwoFA_AUTH = ({
             })
             .then(() => {
               setCodeFromQRCode("");
-              // settwoFactor(true);
               mutate("/api/users");
               router.push("/Home");
             })
@@ -67,8 +70,12 @@ const TwoFA_AUTH = ({
         }
       }
     },
-    []
+    [codeFromQRCode]
   );
+
+  if (data) {
+    console.log(data.two_factor_activated);
+  }
 
   // console.log(data.two_factor_activated);
   if (error) return <Error />;
