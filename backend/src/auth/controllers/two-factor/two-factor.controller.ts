@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
   Inject,
   Post,
   Req,
@@ -13,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
+import { JwtTwoFactorAuthGuard } from 'src/auth/guards/jwt.two-factor-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { TwoFactorService } from 'src/auth/services/two-factor/two-factor.service';
 import { Cookies } from 'src/utils/types';
@@ -99,6 +99,15 @@ export class TwoFactorContorller {
     if (!isCodeValid) {
       throw new UnauthorizedException('Invalid authentication code');
     }
+    await this.twoFactorService.setTwoFactorActivated(req.user.id, set);
+  }
+
+  @ApiOperation({ summary: 'Deactivate 2FA' })
+  @UseGuards(JwtTwoFactorAuthGuard)
+  @Post('deactivate')
+  async deactivateTwoFactor(@Req() req, @Body() { set, two_factor_code }) {
+    if (!req.user.two_factor_activated)
+      throw new BadRequestException('Two factor is not activated');
     await this.twoFactorService.setTwoFactorActivated(req.user.id, set);
   }
 }

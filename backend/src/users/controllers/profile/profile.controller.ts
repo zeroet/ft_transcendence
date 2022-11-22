@@ -42,11 +42,11 @@ export class ProfileController {
     );
   }
 
-  @UseGuards(JwtAccessAuthGuard)
-  @Get('otp')
-  async getOtp(@Request() req): Promise<IUser> {
-    return await this.profileService.getOtp(req.user.id);
-  }
+  // @UseGuards(JwtAccessAuthGuard)
+  // @Get('otp')
+  // async getOtp(@Request() req): Promise<IUser> {
+  //   return await this.profileService.getOtp(req.user.id);
+  // }
   // @UseGuards(JwtAccessAuthGuard)
   // @Post('setOtp')
   // async setOtp(@Request() req, @Body() { set, two_factor_code }) {

@@ -55,10 +55,10 @@ export class ProfileService {
     });
   }
 
-  async getOtp(userID: number) {
-    const user = await this.userRepository.findOneBy({ id: userID });
-    return user;
-  }
+  // async getOtp(userID: number) {
+  //   const user = await this.userRepository.findOneBy({ id: userID });
+  //   return user;
+  // }
 
   // async setOtp(id: number, two_factor_enabled: boolean) {
   //   const user = await this.userRepository.findOneBy({ id });
