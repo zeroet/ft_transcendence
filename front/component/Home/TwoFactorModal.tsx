@@ -71,6 +71,10 @@ export default function TwoFactorModal () {
             outline: none;
             margin-bottom: 20px;
           }
+          .submitform {
+            // background-color: yellow;
+            padding-left: 50px;
+            padding-top: 20px;
         
   
         `}
