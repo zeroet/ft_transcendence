@@ -107,6 +107,8 @@ export class TwoFactorContorller {
   @UseGuards(JwtAccessAuthGuard)
   @Post('activate')
   async activateTwoFactor(@Req() req, @Body() { set, two_factor_code }) {
+    console.log('two factor activated', req.user.two_factor_activated);
+    console.log('two factor secret', req.user.two_factor_secret);
     if (req.user.two_factor_activated)
       throw new BadRequestException('Two factor is already activated');
     if (!req.user.two_factor_secret)
