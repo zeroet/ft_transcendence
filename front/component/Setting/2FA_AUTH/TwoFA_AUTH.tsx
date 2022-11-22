@@ -21,10 +21,12 @@ const TwoFA_AUTH = ({
   // const [twoFactor, settwoFactor] = useState(false);
   const [codeFromQRCode, setCodeFromQRCode] = useState<string>("");
 
-  const onChangeCode = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setCodeFromQRCode(e.target.value);
-    // console.log(e.target.value);
-  }, []);
+  const onChangeCode = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setCodeFromQRCode(e.target.value);
+    },
+    [codeFromQRCode]
+  );
 
   // console.log(data.two_factor);
   const onClick2FA = useCallback(
@@ -74,7 +76,7 @@ const TwoFA_AUTH = ({
   return (
     <div className="box">
       <div className="title">
-        <h2>Change Name</h2>
+        <h2>Two Factor</h2>
       </div>
       <form className="createForm" method="post">
         <div className="submitform">
@@ -89,7 +91,8 @@ const TwoFA_AUTH = ({
               <input
                 onChange={onChangeCode}
                 placeholder="Code please"
-                type={"text"}
+                type="text"
+                value={codeFromQRCode}
               />
             </div>
           )}
