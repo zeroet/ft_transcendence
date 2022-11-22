@@ -26,12 +26,12 @@ export class TwoFactorService {
   }
 
   async pipeQrCodeStream(stream: Response, otpAuthUrl: string) {
-    return toFileStream(stream, otpAuthUrl);
+    return await toFileStream(stream, otpAuthUrl);
   }
 
-  async validateTwoFactorCode(twoFactorCode: string, user: UserDto) {
+  async validateTwoFactorCode(two_factor_code: string, user: UserDto) {
     return authenticator.verify({
-      token: twoFactorCode,
+      token: two_factor_code,
       secret: user.two_factor_secret,
     });
   }
