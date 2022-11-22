@@ -1,10 +1,13 @@
+import Router from "next/router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
+import useSocket from "../Utils/socket";
 
-export default function GameBody({ socket }: { socket: Socket }) {
+export default function GameBody({ accessToken }: { accessToken: string }) {
   const [waitModal, setWaitModal] = useState(false);
+  const [socket, disconnet] = useSocket(accessToken, "game");
 
   const onClickWaitModal = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
@@ -19,11 +22,15 @@ export default function GameBody({ socket }: { socket: Socket }) {
     e.preventDefault();
     e.stopPropagation();
     setWaitModal((curr) => !curr);
-    // socket 취소
+
+    Router.push("/Game/1");
   }, []);
 
   if (socket) {
-    console.log("game body ", socket);
+    socket.on("connect", () => {
+      console.log("game body with connect event", socket.id);
+    });
+    console.log("game body", socket.id);
   }
   if (!socket) return <Loading />;
   return (
@@ -131,6 +138,7 @@ export default function GameBody({ socket }: { socket: Socket }) {
     </div>
   );
 }
+
 //   const [leftPaddle, setLeftPaddle] = useState<number>(50);
 //   const [myScore, setMySore] = useState<number>(0);
 //   const [otherSideScore, setOtherSideSore] = useState<number>(0);

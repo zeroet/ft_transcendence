@@ -13,9 +13,11 @@ import Error from "../component/errorAndLoading/Error";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 
-
 export default function Home(): JSX.Element {
- 
+  const { data, error } = useSWR("/api/users", fetcher);
+
+  if (error) return <Error />;
+  if (!data) return <Loading />;
   return (
     <Layout>
       <Title title="Home" />
@@ -24,10 +26,11 @@ export default function Home(): JSX.Element {
           display: "grid",
           gridTemplateColumns: "3fr 1.2fr",
           minHeight: "600px",
-        }}>
-        <TwoFactorModal />
+        }}
+      >
+        {/* {data.two_factor && <TwoFactorModal />} */}
         <Profile />
-        <FriendStatus />       
+        <FriendStatus />
       </div>
     </Layout>
   );
@@ -48,7 +51,7 @@ setCookie는 쓸필없고
 export function getServerSideProps(context: any) {
   const cookie = cookies(context);
   const { accessToken, refreshToken } = cookie;
-  if (!(accessToken)) {
+  if (!accessToken) {
     return {
       redirect: {
         destination: "/",
