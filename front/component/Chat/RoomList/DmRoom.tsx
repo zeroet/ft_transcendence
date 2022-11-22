@@ -11,7 +11,7 @@ const DmRoom = ({title, id}: DmRoomTyp) => {
     return (
         <div >
           <Link href={`/DmRoom/${id}`} legacyBehavior>
-            <a >
+            <a>
                 DM ${id} : ${title}
             </a>
          </Link>
