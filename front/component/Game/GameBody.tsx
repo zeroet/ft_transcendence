@@ -1,10 +1,18 @@
+import Router, { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
+import useSocket from "../Utils/socket";
+import GameSettingModal from "./GameBody/GameSettingModal";
 
-export default function GameBody({ socket }: { socket: Socket }) {
+export default function GameBody({ accessToken }: { accessToken: string }) {
   const [waitModal, setWaitModal] = useState(false);
+  const [settingModal, setSettingModal] = useState(false);
+  const [ballSpeed, setBallSpeed] = useState<number>(0);
+  const [ballSize, setBallsize] = useState<number>(0);
+  const [socket, disconnet] = useSocket(accessToken, "game");
+  const router = useRouter();
 
   const onClickWaitModal = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
@@ -19,16 +27,42 @@ export default function GameBody({ socket }: { socket: Socket }) {
     e.preventDefault();
     e.stopPropagation();
     setWaitModal((curr) => !curr);
-    // socket 취소
+    // Router.push("/Game/1");
   }, []);
 
+  const closeSettingModal = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSettingModal((curr) => !curr);
+    setWaitModal((curr) => !curr);
+    //지금은 setTimeout 때문에 계속 바뀜
+    // router.push("/Game");
+  };
+
+  /**
+   * socket.on('ready', ()=> {
+   *   setSettingModal(true);
+   * })
+   */
+  // 큐 찾아서 들어가는 시간
+  // 나중에는 소켓 on으로 큐에 들어가게되면 setSettingModal 을 바꿔주면된다.
+  setTimeout(() => {
+    setSettingModal(true);
+  }, 2000);
+  /**
+   *
+   */
+
   if (socket) {
-    console.log("game body ", socket);
+    socket.on("connect", () => {
+      console.log("game body with connect event", socket.id);
+    });
+    console.log("game body", socket.id);
   }
   if (!socket) return <Loading />;
   return (
     <div className={styles.box}>
-      {!waitModal ? (
+      {!waitModal && !settingModal && (
         <img
           onClick={onClickWaitModal}
           className="img-vector"
@@ -36,19 +70,32 @@ export default function GameBody({ socket }: { socket: Socket }) {
           width={300}
           height={90}
         />
-      ) : (
+      )}
+      {waitModal && !settingModal && (
         <div>
           <div onClick={onClickCancle} className="ring">
             Loading
           </div>
         </div>
       )}
+      {/* 내가 오너일때 */}
+      {settingModal && (
+        <div className="modal-background">
+          <GameSettingModal
+            accessToken={accessToken}
+            closeSettingModal={closeSettingModal}
+          />
+        </div>
+      )}
       <style jsx>{`
-        .cancle {
-          cursor: grab;
-          border: 2px solid;
+        .modal-background {
+          position: fixed;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          background: rgba(0, 0, 0, 0.8);
         }
-
         div {
           display: flex;
           justify-content: center;
@@ -131,6 +178,7 @@ export default function GameBody({ socket }: { socket: Socket }) {
     </div>
   );
 }
+
 //   const [leftPaddle, setLeftPaddle] = useState<number>(50);
 //   const [myScore, setMySore] = useState<number>(0);
 //   const [otherSideScore, setOtherSideSore] = useState<number>(0);
