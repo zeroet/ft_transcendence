@@ -6,8 +6,16 @@ import { TokenType } from "../interfaceType";
 import axios from "axios";
 import cookies from "next-cookies";
 import tokenManager from "../component/Utils/tokenManager";
+import fetcher from "../component/Utils/fetcher";
+import useSWR from "swr";
+import { useState } from "react";
+import Error from "../component/errorAndLoading/Error";
+import Loading from "../component/errorAndLoading/Loading";
+import TwoFactorModal from "../component/Home/TwoFactorModal";
+
 
 export default function Home(): JSX.Element {
+ 
   return (
     <Layout>
       <Title title="Home" />
@@ -16,10 +24,10 @@ export default function Home(): JSX.Element {
           display: "grid",
           gridTemplateColumns: "3fr 1.2fr",
           minHeight: "600px",
-        }}
-      >
+        }}>
+        <TwoFactorModal />
         <Profile />
-        <FriendStatus />
+        <FriendStatus />       
       </div>
     </Layout>
   );
