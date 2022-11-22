@@ -16,15 +16,6 @@ import { UserService } from './services/user/user.service';
     TypeOrmModule.forFeature([User]),
     JwtModule.register({}),
     PassportModule,
-    MailerModule.forRoot({
-      transport: {
-        host: '',
-        auth: {
-          user: '',
-          pass: '',
-        },
-      },
-    }),
   ],
   controllers: [UsersController, ProfileController],
   providers: [

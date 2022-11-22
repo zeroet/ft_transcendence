@@ -36,4 +36,11 @@ export class UserDto {
     description: 'username',
   })
   username: string;
+
+  @ApiProperty({
+    required: false,
+    example: 'NUGQEHCBAAERQBQ6',
+    description: 'two_factor_secret',
+  })
+  two_factor_secret: string;
 }

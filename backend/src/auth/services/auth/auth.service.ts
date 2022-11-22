@@ -55,6 +55,7 @@ export class AuthService implements IAuthService {
     const access = this.jwtService.sign(
       {
         sub: id,
+        two_factor: false,
       },
       {
         secret: process.env.JWT_ACCESS_SECRET,

@@ -3,7 +3,9 @@ export interface IUser {
   email: string;
   image_url: string;
   username: string;
-  two_factor: boolean;
   created_at: Date;
   modified_at: Date;
+  hashed_refresh_token: string;
+  two_factor_activated: boolean;
+  two_factor_secret: string;
 }
