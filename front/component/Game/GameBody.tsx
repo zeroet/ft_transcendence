@@ -1,3 +1,4 @@
+import Router from "next/router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
@@ -21,7 +22,8 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     e.preventDefault();
     e.stopPropagation();
     setWaitModal((curr) => !curr);
-    // socket 취소
+    
+    Router.push('/Game/1')
   }, []);
 
   useEffect(() => {
@@ -140,6 +142,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     </div>
   );
 }
+
 //   const [leftPaddle, setLeftPaddle] = useState<number>(50);
 //   const [myScore, setMySore] = useState<number>(0);
 //   const [otherSideScore, setOtherSideSore] = useState<number>(0);
