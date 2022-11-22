@@ -46,7 +46,7 @@ export class TwoFactorContorller {
     type: TwoFactorCode,
     description: '6 digits code for 2FA',
   })
-  @UseGuards(JwtAccessAuthGuard)
+  @UseGuards(JwtTwoFactorAuthGuard)
   @Post('authenticate')
   async authenticate(
     @User() user,
