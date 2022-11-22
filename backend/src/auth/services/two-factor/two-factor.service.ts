@@ -17,7 +17,11 @@ export class TwoFactorService {
   async generateTwoFactorSecret(user: UserDto) {
     const secret = authenticator.generateSecret();
 
-    const otpAuthUrl = authenticator.keyuri(user.email, 'Barcodepong', secret);
+    const otpAuthUrl = authenticator.keyuri(
+      user.email,
+      process.env.APP_NAME,
+      secret,
+    );
     await this.userService.setTwoFactorSecret(secret, user.id);
     return {
       secret,

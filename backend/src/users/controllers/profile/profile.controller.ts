@@ -1,21 +1,6 @@
-import {
-  Body,
-  Controller,
-  Post,
-  UseGuards,
-  Request,
-  Res,
-  Inject,
-  BadRequestException,
-  UnauthorizedException,
-  Get,
-  Query,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
-import { IUser } from 'src/typeorm/interfaces/IUser';
 import { ProfileService } from 'src/users/services/profile/profile.service';
 import { profileDTO } from '../../dto/profile.dto';
 
@@ -40,32 +25,4 @@ export class ProfileController {
       newUserImage.image_url,
     );
   }
-
-  // @UseGuards(JwtAccessAuthGuard)
-  // @Get('otp')
-  // async getOtp(@Request() req): Promise<IUser> {
-  //   return await this.profileService.getOtp(req.user.id);
-  // }
-  // @UseGuards(JwtAccessAuthGuard)
-  // @Post('setOtp')
-  // async setOtp(@Request() req, @Body() { set, two_factor_code }) {
-  //   const isCodeValid = this.profileService.validateTwoFactorCode(
-  //     two_factor_code,
-  //     req.user,
-  //   );
-  //   if (!isCodeValid) {
-  //     throw new UnauthorizedException('Invalid authentication code');
-  //   }
-  //   await this.profileService.setOtp(req.user.id, set);
-  // }
-
-  // @UseGuards(JwtAccessAuthGuard)
-  // @Get('generate')
-  // async register(@Req() req, @Res() res: Response) {
-  //   console.log('generate');
-  //   const { otpAuthUrl } = await this.profileService.generateTwoFactorSecret(
-  //     req.user,
-  //   );
-  //   return this.profileService.pipeQrCodeStream(res, otpAuthUrl);
-  // }
 }
