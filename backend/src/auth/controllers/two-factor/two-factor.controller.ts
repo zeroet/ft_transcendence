@@ -151,7 +151,7 @@ export class TwoFactorContorller {
   @ApiBody({
     required: true,
     type: 'boolean',
-    description: 'true value',
+    description: 'true',
   })
   @ApiOperation({ summary: 'Deactivate 2FA' })
   @UseGuards(JwtTwoFactorAuthGuard)
@@ -161,5 +161,19 @@ export class TwoFactorContorller {
     if (!user.two_factor_activated)
       throw new BadRequestException('Two factor is not activated');
     await this.twoFactorService.setTwoFactorActivated(user.id, set);
+  }
+
+  @ApiBody({
+    required: true,
+    type: 'boolean',
+    description: 'true',
+  })
+  @ApiOperation({ summary: 'Valid 2FA' })
+  @Post('valid')
+  async validTwoFactor(@User() user, @Body() { valid }) {
+    console.log('valid() valid:', valid);
+    // if (!user.two_factor_valid)
+    //   throw new BadRequestException('Two factor is not activated');
+    await this.twoFactorService.setTwoFactorValid(user.id, valid);
   }
 }

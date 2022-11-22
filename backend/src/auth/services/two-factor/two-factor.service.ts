@@ -46,4 +46,11 @@ export class TwoFactorService {
       await this.userRepository.save({ ...user, two_factor_activated });
     }
   }
+
+  async setTwoFactorValid(id: number, two_factor_valid: boolean) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (user) {
+      await this.userRepository.save({ ...user, two_factor_valid });
+    }
+  }
 }
