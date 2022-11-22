@@ -2,9 +2,11 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
+import useSocket from "../Utils/socket";
 
-export default function GameBody({ socket }: { socket: Socket }) {
+export default function GameBody({ accessToken }: { accessToken: string }) {
   const [waitModal, setWaitModal] = useState(false);
+  const [socket, disconnet] = useSocket(accessToken, "game");
 
   const onClickWaitModal = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
@@ -22,8 +24,15 @@ export default function GameBody({ socket }: { socket: Socket }) {
     // socket 취소
   }, []);
 
+  useEffect(() => {
+    return () => {
+      // 언마운트시 소켓 제거
+      disconnet();
+    };
+  }, []);
+
   if (socket) {
-    console.log("game body ", socket);
+    console.log("game body ", socket.id);
   }
   if (!socket) return <Loading />;
   return (

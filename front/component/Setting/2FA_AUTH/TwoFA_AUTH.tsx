@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
 import fetcher from "../../Utils/fetcher";
@@ -33,6 +33,7 @@ const TwoFA_AUTH = ({
           })
           .then(() => {
             settwoFactor(data.two_factor);
+            mutate("/api/users");
             router.push("/Home");
           })
           .catch((err) => console.log(err));

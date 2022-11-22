@@ -4,35 +4,35 @@ import Error from "../errorAndLoading/Error";
 import Loading from "../errorAndLoading/Loading";
 import fetcher from "../Utils/fetcher";
 
-export default function TwoFactorModal () {
+export default function TwoFactorModal() {
+  const { data, error } = useSWR(`/api/users`, fetcher);
+  const [ShowModal, setModal] = useState<string>();
+  const PassWord = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setModal(e.target.value.trim());
+  };
 
-    const {data, error} = useSWR(`/api/users`, fetcher)
-    const [ShowModal, setModal]= useState<string>();
-    const PassWord = (e:React.ChangeEvent<HTMLInputElement>)=> {setModal(e.target.value.trim())};
-  
-    if(error) return <Error />
-    if(!data) return <Loading />
-  
-    return (
-        <div>
-        {
-            (<div className = "modal-background">
-               <div className="box">
-                <div className="title">
-                    <h2>2Fa Auth</h2>
-                </div>
-                <form>
-              
-                <div className="submitform">
-                <label>VERIFICATION PASSWORD  </label> 
-                  <input type="text" onChange={PassWord} />
-                </div>
-              
-              </form>  
+  if (error) return <Error />;
+  if (!data) return <Loading />;
+
+  return (
+    <div>
+      {
+        <div className="modal-background">
+          <div className="box">
+            <div className="title">
+              <h2>2Fa Auth</h2>
+            </div>
+            <form>
+              <div className="submitform">
+                <label>VERIFICATION PASSWORD </label>
+                <input type="text" onChange={PassWord} />
               </div>
-              </div>
-          )}    
-            <style jsx>{`
+            </form>
+          </div>
+        </div>
+      }
+      <style jsx>
+        {`
            .modal-background {
             position: fixed;
             top: 0;
@@ -78,6 +78,7 @@ export default function TwoFactorModal () {
         
   
         `}
-        </style>
-        </div>
-)}
+      </style>
+    </div>
+  );
+}

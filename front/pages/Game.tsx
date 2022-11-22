@@ -4,35 +4,24 @@ import GameList from "../component/Game/GameList";
 import Layout from "../component/Layout";
 import Title from "../component/Title";
 import tokenManager from "../component/Utils/tokenManager";
-import socketIOClient from "socket.io-client";
 import { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import Loading from "../component/errorAndLoading/Loading";
+import useSocket from "../component/Utils/socket";
 
 export default function Game({ accessToken }: { accessToken: string }) {
-  const [socket, setSocket] = useState<Socket>();
-  useEffect(() => {
-    const socket_game = socketIOClient("http://localhost:8080", {
-      extraHeaders: {
-        accessToken,
-      },
-    });
-    setSocket(socket_game);
-    // 필요한지모르겠음
-    // socket?.connect();
-    // console.log(socket_game);
-    return () => {
-      socket_game.disconnect();
-    };
-  }, []);
+  const [socket, disconnet] = useSocket(accessToken, "game");
 
+  if (socket) {
+    console.log("game body", socket.id);
+  }
   if (!socket) return <Loading />;
   return (
     <Layout>
       <Title title="Game" />
       <div>
-        <GameList socket={socket} />
-        <GameBody socket={socket} />
+        <GameList accessToken={accessToken} />
+        <GameBody accessToken={accessToken} />
         <style jsx>{`
           div {
             display: grid;
