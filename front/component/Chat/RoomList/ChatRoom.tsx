@@ -1,5 +1,11 @@
+import Link from "next/link";
 import { useState } from "react";
+import useSWR from "swr";
+import Error from "../../errorAndLoading/Error";
+import Loading from "../../errorAndLoading/Loading";
+import fetcher from "../../Utils/fetcher";
 import CreateChat from "./CreateChat";
+import EachRoom from "./EachRoom";
 
 export default function ChatRoom() {
   const [showCreateChatModal, setShowCreateChatModal] =
@@ -12,6 +18,14 @@ export default function ChatRoom() {
   const onClose = () => {
     setShowCreateChatModal(false);
   };
+
+  const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
+
+  if (data) {
+    console.log(data);
+  }
+  if (error) return <Error />;
+  if (!data) return <Loading />;
 
   return (
     <div className="ChatRoom">
@@ -27,12 +41,16 @@ export default function ChatRoom() {
         </button>
       </div>
       <hr />
-      {/* 여기도 map? */}
-      <ul>
-        <li>chat room 1</li>
-        <li>chat room 2</li>
-        <li>chat room 3</li>
-      </ul>
+      {
+        <ul key={data.posts.id}>
+          {data.posts &&
+            data.posts.map((post: any) => (
+              <li>
+                <EachRoom title={post.title} id={post.id} />
+              </li>
+            ))}
+        </ul>
+      }
       <style jsx>{`
         h1 {
           font-family: "Fragment Mono", monospace;
@@ -66,6 +84,7 @@ export default function ChatRoom() {
           right: 0;
           background: rgba(0, 0, 0, 0.8);
         }
+       
       `}</style>
     </div>
   );
