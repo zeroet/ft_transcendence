@@ -32,7 +32,10 @@ export class AuthController {
     }
     res.cookie(
       Cookies.ACCESS_TOKEN,
-      this.authService.getAccessToken(req.user.id),
+      this.authService.getAccessToken(
+        req.user.id,
+        req.user.two_factor_activated,
+      ),
       this.authService.accessTokenCookieOptions,
     );
     res.cookie(
@@ -55,7 +58,7 @@ export class AuthController {
     console.log('redirect func');
     res.cookie(
       Cookies.ACCESS_TOKEN,
-      this.authService.getAccessToken(req.user.id),
+      this.authService.getAccessToken(req.user.id, false),
       this.authService.accessTokenCookieOptions,
     );
     res.cookie(

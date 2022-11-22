@@ -33,7 +33,7 @@ export class TwoFactorService {
     return await toFileStream(stream, otpAuthUrl);
   }
 
-  async validateTwoFactorCode(two_factor_code: string, user: UserDto) {
+  validateTwoFactorCode(two_factor_code: string, user: UserDto) {
     return authenticator.verify({
       token: two_factor_code,
       secret: user.two_factor_secret,

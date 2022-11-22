@@ -51,11 +51,12 @@ export class AuthService implements IAuthService {
     return this.userRepository.save(user);
   }
 
-  getAccessToken(id: number) {
+  getAccessToken(id: number, two_factor_activated: boolean) {
+    // console.log('getAccessToken() two_factor_activated:', two_factor_activated);
     const access = this.jwtService.sign(
       {
         sub: id,
-        two_factor: false,
+        two_factor_activated: two_factor_activated,
       },
       {
         secret: process.env.JWT_ACCESS_SECRET,
