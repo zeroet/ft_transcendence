@@ -22,19 +22,15 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     e.preventDefault();
     e.stopPropagation();
     setWaitModal((curr) => !curr);
-    
-    Router.push('/Game/1')
-  }, []);
 
-  useEffect(() => {
-    return () => {
-      // 언마운트시 소켓 제거
-      disconnet();
-    };
+    Router.push("/Game/1");
   }, []);
 
   if (socket) {
-    console.log("game body ", socket.id);
+    socket.on("connect", () => {
+      console.log("game body with connect event", socket.id);
+    });
+    console.log("game body", socket.id);
   }
   if (!socket) return <Loading />;
   return (

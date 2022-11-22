@@ -7,9 +7,16 @@ import tokenManager from "../../component/Utils/tokenManager";
 const PlayGame = ({ accessToken }: { accessToken: string }) => {
   const [socket, disconnet] = useSocket(accessToken, "game");
 
+  /**
+   *
+   */
   if (socket) {
     console.log("in play game", socket.id);
   }
+
+  /**
+   *
+   */
 
   const [leftPaddle, setLeftPaddle] = useState<number>(50);
   const [myScore, setMySore] = useState<number>(0);
@@ -91,8 +98,8 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
     ball.current.y += ballDirection.current.y * 0.05;
   };
 
-  console.log(ball.current.x);
-  console.log(ball.current.y);
+  //   console.log(ball.current.x);
+  //   console.log(ball.current.y);
 
   useEffect(() => {
     window.addEventListener("keydown", onChangeftPaddle);
@@ -107,6 +114,16 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
     }, 5);
   }, []);
 
+  /**
+   *  언마운트가 아닌, 게임이 끝난후에 소켓 제거하자!!!!!!!!!!
+   */
+  //   // 게임완료후에 소켓제거
+  //   useEffect(() => {
+  //     return () => {
+  //       // 언마운트시 소켓 제거
+  //       disconnet();
+  //     };
+  //   }, []);
   // setInterval(() => {
   //   // ballMovement();
   //   console.log("ha");

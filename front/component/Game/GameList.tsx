@@ -6,9 +6,12 @@ import useSocket from "../Utils/socket";
 export default function GameList({ accessToken }: { accessToken: string }) {
   const [socket, disconnet] = useSocket(accessToken, "game");
 
+
+
   if (socket) {
     console.log("game list ", socket.id);
   }
+  
   if (!socket) return <Loading />;
   return (
     <div className={styles.box}>

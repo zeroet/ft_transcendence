@@ -13,6 +13,7 @@ const useSocket = (
       socket[socketType].disconnect();
       delete socket[socketType];
     }
+    console.log("===================disconnet socket==============");
   }, [socketType]);
 
   if (!socket[socketType]) {
@@ -21,6 +22,9 @@ const useSocket = (
         accessToken,
       },
     });
+    console.log("=================create new socket==========================");
+  } else {
+    console.log("======================use socket=====================");
   }
 
   return [socket[socketType], disconnect];

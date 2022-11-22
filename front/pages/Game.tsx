@@ -13,8 +13,12 @@ export default function Game({ accessToken }: { accessToken: string }) {
   const [socket, disconnet] = useSocket(accessToken, "game");
 
   if (socket) {
-    console.log("game body", socket.id);
+    socket.on("connect", () => {
+      console.log("game", socket.id);
+    });
   }
+
+ 
   if (!socket) return <Loading />;
   return (
     <Layout>
