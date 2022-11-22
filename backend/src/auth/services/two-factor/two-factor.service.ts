@@ -36,11 +36,6 @@ export class TwoFactorService {
     });
   }
 
-  async getOtp(userID: number) {
-    const user = await this.userRepository.findOneBy({ id: userID });
-    return user;
-  }
-
   async setTwoFactorActivated(id: number, two_factor_activated: boolean) {
     const user = await this.userRepository.findOneBy({ id });
     if (user) {
