@@ -38,4 +38,7 @@ export class User implements IUser {
 
   @Column({ nullable: true })
   two_factor_secret: string;
+
+  @Column({ default: false })
+  two_factor_valid: boolean;
 }

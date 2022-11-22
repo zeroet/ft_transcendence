@@ -8,4 +8,5 @@ export interface IUser {
   hashed_refresh_token: string;
   two_factor_activated: boolean;
   two_factor_secret: string;
+  two_factor_valid: boolean;
 }
