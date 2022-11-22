@@ -21,6 +21,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout>
       <Title title="Home" />
+      {data.two_factor_activated && !data.two_factor_valid && <TwoFactorModal />}
       <div
         style={{
           display: "grid",

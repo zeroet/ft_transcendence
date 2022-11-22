@@ -8,8 +8,13 @@ import { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import Loading from "../component/errorAndLoading/Loading";
 import useSocket from "../component/Utils/socket";
+import Error from "../component/errorAndLoading/Error";
+import TwoFactorModal from "../component/Home/TwoFactorModal";
+import useSWR from "swr";
+import fetcher from "../component/Utils/fetcher";
 
 export default function Game({ accessToken }: { accessToken: string }) {
+  const { data, error } = useSWR("/api/users", fetcher);
   const [socket, disconnet] = useSocket(accessToken, "game");
 
   if (socket) {
@@ -18,11 +23,14 @@ export default function Game({ accessToken }: { accessToken: string }) {
     });
   }
 
- 
-  if (!socket) return <Loading />;
+  if (error) return <Error />;
+  if (!data || !socket) return <Loading />;
   return (
     <Layout>
       <Title title="Game" />
+      {data.two_factor_activated && !data.two_factor_valid && (
+        <TwoFactorModal />
+      )}
       <div>
         <GameList accessToken={accessToken} />
         <GameBody accessToken={accessToken} />

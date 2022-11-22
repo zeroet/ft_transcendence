@@ -3,6 +3,9 @@ import React, { useCallback, useState } from "react";
 import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
 
+// 오너가 아니면, 일반 체크만 하는 페이지도 만들어야한다
+
+
 const GameSettingModal = ({
   accessToken,
   closeSettingModal,
@@ -14,22 +17,31 @@ const GameSettingModal = ({
   const [socket, disconnet] = useSocket(accessToken, "game");
   const [speed, setSpeed] = useState<string>("50");
   const [ballSize, setBallSize] = useState<string>("50");
+  const [roomName, setRoomName] = useState<string>("");
 
   const onClickSubmit = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log("=========================ball speed", speed);
-      console.log("=========================ball size", ballSize);
+
+      if (!roomName) {
+        alert("Room name please");
+        return;
+      }
+      setRoomName("");
       setSpeed("50");
       setBallSize("50");
+
+      console.log("=========================ball speed", speed);
+      console.log("=========================ball size", ballSize);
+      console.log("=========================ball size", roomName);
 
       // socket 에 emit!!으로 스피트, 볼사이즈 넘겨준다.
 
       // 그리고 게임시작
       router.push("/Game/1");
     },
-    [speed, ballSize]
+    [speed, ballSize, roomName]
   );
 
   const onChangeSpeed = useCallback(
@@ -49,6 +61,14 @@ const GameSettingModal = ({
     [ballSize]
   );
 
+  const onChangeRoomName = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setRoomName(e.target.value);
+      console.log(roomName.trim());
+    },
+    [roomName]
+  );
+
   //   if (socket && socket.id) {
   //     console.log(`game speed and ball setting modal ${socket.id}`);
   //   }
@@ -60,6 +80,15 @@ const GameSettingModal = ({
       </div>
       <form className="createForm" method="post">
         <div className="submitform">
+          <div className="input input-text">
+            <p>Room Name</p>
+            <input
+              onChange={onChangeRoomName}
+              value={roomName}
+              className="input-bar"
+              type="text"
+            />
+          </div>
           <div className="input">
             <p>Speed</p>
             <input
@@ -92,6 +121,9 @@ const GameSettingModal = ({
         .input-bar {
           width: 300px;
         }
+        .input-text {
+          height: 40px;
+        }
         .submitform {
           display: grid;
           grid-template-rows: 1fr 1fr;
@@ -105,7 +137,7 @@ const GameSettingModal = ({
           left: 33%;
 
           width: 500px;
-          height: 300px;
+          height: 330px;
 
           background-color: white;
           border: 1px inset black;
