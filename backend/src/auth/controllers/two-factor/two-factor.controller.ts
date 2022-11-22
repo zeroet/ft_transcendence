@@ -42,11 +42,6 @@ export class TwoFactorContorller {
   })
   @ApiBody({
     required: true,
-    type: 'boolean',
-    description: 'true value',
-  })
-  @ApiBody({
-    required: true,
     type: TwoFactorCode,
     description: '6 digits code for 2FA',
   })
@@ -103,6 +98,16 @@ export class TwoFactorContorller {
     // return result;
   }
 
+  @ApiBody({
+    required: true,
+    type: 'boolean',
+    description: 'true value',
+  })
+  @ApiBody({
+    required: true,
+    type: TwoFactorCode,
+    description: '6 digits code for 2FA',
+  })
   @ApiOperation({ summary: 'Activate 2FA' })
   @UseGuards(JwtAccessAuthGuard)
   @Post('activate')
@@ -142,6 +147,11 @@ export class TwoFactorContorller {
     );
   }
 
+  @ApiBody({
+    required: true,
+    type: 'boolean',
+    description: 'true value',
+  })
   @ApiOperation({ summary: 'Deactivate 2FA' })
   @UseGuards(JwtTwoFactorAuthGuard)
   @Post('deactivate')
