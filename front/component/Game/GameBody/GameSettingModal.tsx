@@ -23,16 +23,13 @@ const GameSettingModal = ({
       console.log("=========================ball size", ballSize);
       setSpeed("50");
       setBallSize("50");
-      
-      
+
       // socket 에 emit!!으로 스피트, 볼사이즈 넘겨준다.
-      
-      
-      
+
       // 그리고 게임시작
       router.push("/Game/1");
     },
-    []
+    [speed, ballSize]
   );
 
   const onChangeSpeed = useCallback(
@@ -41,7 +38,7 @@ const GameSettingModal = ({
       setSpeed(e.target.value);
       console.log(speed);
     },
-    []
+    [speed]
   );
 
   const onChangeBallSize = useCallback(
@@ -49,7 +46,7 @@ const GameSettingModal = ({
       console.log(e.target.value);
       setBallSize(e.target.value);
     },
-    []
+    [ballSize]
   );
 
   //   if (socket && socket.id) {
