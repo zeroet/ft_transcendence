@@ -105,7 +105,7 @@ export class TwoFactorContorller {
   @ApiOperation({ summary: 'Deactivate 2FA' })
   @UseGuards(JwtTwoFactorAuthGuard)
   @Post('deactivate')
-  async deactivateTwoFactor(@Req() req, @Body() { set, two_factor_code }) {
+  async deactivateTwoFactor(@Req() req, @Body() { set }) {
     if (!req.user.two_factor_activated)
       throw new BadRequestException('Two factor is not activated');
     await this.twoFactorService.setTwoFactorActivated(req.user.id, set);
