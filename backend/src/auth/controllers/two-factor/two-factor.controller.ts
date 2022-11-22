@@ -168,6 +168,7 @@ export class TwoFactorContorller {
     type: 'boolean',
     description: 'true',
   })
+  @UseGuards(JwtTwoFactorAuthGuard)
   @ApiOperation({ summary: 'Valid 2FA' })
   @Post('valid')
   async validTwoFactor(@User() user, @Body() { valid }) {
