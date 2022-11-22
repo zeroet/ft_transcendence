@@ -53,6 +53,7 @@ export class TwoFactorContorller {
     @Res({ passthrough: true }) res,
     @Body() { two_factor_code },
   ) {
+    console.log('authenticate() two_factor_code:', two_factor_code);
     if (!user.two_factor_activated || !user.two_factor_secret)
       throw new BadRequestException('Two Factor is not activated');
     const isCodeValid = this.twoFactorService.validateTwoFactorCode(
