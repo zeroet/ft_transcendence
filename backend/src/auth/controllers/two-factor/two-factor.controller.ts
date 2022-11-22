@@ -72,7 +72,7 @@ export class TwoFactorContorller {
       this.authService.getRefreshToken(user.id),
       this.authService.refreshTokenCookieOptions,
     );
-    // return req.user;
+    return true;
   }
 
   @ApiOperation({
