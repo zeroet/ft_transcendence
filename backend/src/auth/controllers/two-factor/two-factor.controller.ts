@@ -10,7 +10,14 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
+import { TwoFactorCode } from 'src/auth/dto/twofactorcode.dto';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtTwoFactorAuthGuard } from 'src/auth/guards/jwt.two-factor-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
@@ -32,6 +39,16 @@ export class TwoFactorContorller {
   })
   @ApiBadRequestResponse({
     description: 'You can authenticate only if you activated 2FA',
+  })
+  @ApiBody({
+    required: true,
+    type: 'boolean',
+    description: 'true value',
+  })
+  @ApiBody({
+    required: true,
+    type: TwoFactorCode,
+    description: '6 digits code for 2FA',
   })
   @UseGuards(JwtAccessAuthGuard)
   @Post('authenticate')
@@ -74,12 +91,16 @@ export class TwoFactorContorller {
   @Get('generate')
   async register(@Req() req, @Res() res: Response) {
     console.log('generate');
-    if (!req.user.two_factor_activated)
-      throw new BadRequestException('Two factor is not activated');
+    // if (!req.user.two_factor_activated)
+    //   throw new BadRequestException('Two factor is not activated');
     const { otpAuthUrl } = await this.twoFactorService.generateTwoFactorSecret(
       req.user,
     );
+    // console.log('otpauthurl', otpAuthUrl);
+    // const result = this.twoFactorService.pipeQrCodeStream(res, otpAuthUrl);
+    // console.log('result', typeof result, result);
     return this.twoFactorService.pipeQrCodeStream(res, otpAuthUrl);
+    // return result;
   }
 
   @ApiOperation({ summary: 'Activate 2FA' })

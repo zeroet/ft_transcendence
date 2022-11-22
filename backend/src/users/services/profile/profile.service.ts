@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/typeorm';
-import { MailerService } from '@nestjs-modules/mailer';
 import { UserDto } from 'src/users/dto/user.dto';
 import { authenticator } from 'otplib';
 import { IUserService } from '../user/user.interface';
