@@ -22,6 +22,7 @@ import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtTwoFactorAuthGuard } from 'src/auth/guards/jwt.two-factor-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { TwoFactorService } from 'src/auth/services/two-factor/two-factor.service';
+import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies } from 'src/utils/types';
 
 @ApiTags('TWO_FACTOR')
@@ -48,27 +49,27 @@ export class TwoFactorContorller {
   @UseGuards(JwtAccessAuthGuard)
   @Post('authenticate')
   async authenticate(
-    @Req() req,
+    @User() user,
     @Res({ passthrough: true }) res,
     @Body() { two_factor_code },
   ) {
-    if (!req.user.two_factor_activated || !req.user.two_factor_secret)
+    if (!user.two_factor_activated || !user.two_factor_secret)
       throw new BadRequestException('Two Factor is not activated');
     const isCodeValid = this.twoFactorService.validateTwoFactorCode(
       two_factor_code,
-      req.user,
+      user,
     );
     if (!isCodeValid) {
       throw new UnauthorizedException('Invalid authentication code');
     }
     res.cookie(
       Cookies.ACCESS_TOKEN,
-      this.authService.getAccessToken(req.user.id, true),
+      this.authService.getAccessToken(user.id, true),
       this.authService.accessTokenCookieOptions,
     );
     res.cookie(
       Cookies.REFRESH_TOKEN,
-      this.authService.getRefreshToken(req.user.id),
+      this.authService.getRefreshToken(user.id),
       this.authService.refreshTokenCookieOptions,
     );
     // return req.user;
@@ -84,12 +85,12 @@ export class TwoFactorContorller {
   })
   @UseGuards(JwtAccessAuthGuard)
   @Get('generate')
-  async register(@Req() req, @Res() res: Response) {
+  async register(@User() user, @Res() res: Response) {
     console.log('generate');
     // if (!req.user.two_factor_activated)
     //   throw new BadRequestException('Two factor is not activated');
     const { otpAuthUrl } = await this.twoFactorService.generateTwoFactorSecret(
-      req.user,
+      user,
     );
     // console.log('otpauthurl', otpAuthUrl);
     // const result = this.twoFactorService.pipeQrCodeStream(res, otpAuthUrl);
@@ -112,29 +113,29 @@ export class TwoFactorContorller {
   @UseGuards(JwtAccessAuthGuard)
   @Post('activate')
   async activateTwoFactor(
-    @Req() req,
+    @User() user,
     @Res({ passthrough: true }) res,
     @Body() { set, two_factor_code },
   ) {
-    console.log('two factor activated:', req.user.two_factor_activated);
-    console.log('two factor secret:', req.user.two_factor_secret);
+    console.log('two factor activated:', user.two_factor_activated);
+    console.log('two factor secret:', user.two_factor_secret);
     console.log('two factor code:', two_factor_code);
-    if (req.user.two_factor_activated)
+    if (user.two_factor_activated)
       throw new BadRequestException('Two factor is already activated');
-    if (!req.user.two_factor_secret)
+    if (!user.two_factor_secret)
       throw new BadRequestException(
         'You have to generate QR code for 2FA before activating it',
       );
     const isCodeValid = this.twoFactorService.validateTwoFactorCode(
       two_factor_code,
-      req.user,
+      user,
     );
     console.log('iscodeinvalid:', isCodeValid);
     if (!isCodeValid) {
       console.log('code invalid');
       throw new UnauthorizedException('Invalid authentication code');
     }
-    await this.twoFactorService.setTwoFactorActivated(req.user.id, set);
+    await this.twoFactorService.setTwoFactorActivated(user.id, set);
     // console.log(
     //   'activate() user.two_factor_activated:',
     //   req.user.two_factor_activated,
@@ -142,7 +143,7 @@ export class TwoFactorContorller {
     console.log('activate() set:', set);
     res.cookie(
       Cookies.ACCESS_TOKEN,
-      this.authService.getAccessToken(req.user.id, set),
+      this.authService.getAccessToken(user.id, set),
       this.authService.accessTokenCookieOptions,
     );
   }
@@ -155,10 +156,10 @@ export class TwoFactorContorller {
   @ApiOperation({ summary: 'Deactivate 2FA' })
   @UseGuards(JwtTwoFactorAuthGuard)
   @Post('deactivate')
-  async deactivateTwoFactor(@Req() req, @Body() { set }) {
+  async deactivateTwoFactor(@User() user, @Body() { set }) {
     console.log('deactivate() set:', set);
-    if (!req.user.two_factor_activated)
+    if (!user.two_factor_activated)
       throw new BadRequestException('Two factor is not activated');
-    await this.twoFactorService.setTwoFactorActivated(req.user.id, set);
+    await this.twoFactorService.setTwoFactorActivated(user.id, set);
   }
 }

@@ -13,6 +13,7 @@ import { FtAuthGurad } from 'src/auth/guards/ft-auth.guard';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtRefreshAuthGuard } from 'src/auth/guards/jwt.refresh-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
+import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies } from 'src/utils/types';
 
 @ApiTags('AUTH')
@@ -24,23 +25,20 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Redirect('http://localhost:8000/Home', 301)
   @Get('login')
-  async login(@Request() req, @Response({ passthrough: true }) res) {
+  async login(@User() user, @Response({ passthrough: true }) res) {
     console.log('login user');
-    if (!req.user) {
+    if (!user) {
       console.log('login user doesnt exist');
       throw res.redirect(301, 'http://localhost:8080/auth/signup');
     }
     res.cookie(
       Cookies.ACCESS_TOKEN,
-      this.authService.getAccessToken(
-        req.user.id,
-        req.user.two_factor_activated,
-      ),
+      this.authService.getAccessToken(user.id, user.two_factor_activated),
       this.authService.accessTokenCookieOptions,
     );
     res.cookie(
       Cookies.REFRESH_TOKEN,
-      this.authService.getRefreshToken(req.user.id),
+      this.authService.getRefreshToken(user.id),
       this.authService.refreshTokenCookieOptions,
     );
   }
@@ -54,16 +52,16 @@ export class AuthController {
   @UseGuards(FtAuthGurad)
   @Redirect('http://localhost:8000/Home', 301)
   @Get('redirect')
-  async redirect(@Request() req, @Response({ passthrough: true }) res) {
-    console.log('redirect func');
+  async redirect(@User() user, @Response({ passthrough: true }) res) {
+    console.log('redirect()');
     res.cookie(
       Cookies.ACCESS_TOKEN,
-      this.authService.getAccessToken(req.user.id, false),
+      this.authService.getAccessToken(user.id, false),
       this.authService.accessTokenCookieOptions,
     );
     res.cookie(
       Cookies.REFRESH_TOKEN,
-      this.authService.getRefreshToken(req.user.id),
+      this.authService.getRefreshToken(user.id),
       this.authService.refreshTokenCookieOptions,
     );
   }
