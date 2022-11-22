@@ -28,7 +28,7 @@ export default function Home(): JSX.Element {
           minHeight: "600px",
         }}
       >
-        {/* {data.two_factor && <TwoFactorModal />} */}
+        {/* {data.two_factor_activated && <TwoFactorModal />} */}
         <Profile />
         <FriendStatus />
       </div>

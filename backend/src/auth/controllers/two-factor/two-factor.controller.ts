@@ -74,8 +74,8 @@ export class TwoFactorContorller {
   @Get('generate')
   async register(@Req() req, @Res() res: Response) {
     console.log('generate');
-    if (!req.user.two_factor_activated)
-      throw new BadRequestException('Two factor is not activated');
+    // if (!req.user.two_factor_activated)
+    //   throw new BadRequestException('Two factor is not activated');
     const { otpAuthUrl } = await this.twoFactorService.generateTwoFactorSecret(
       req.user,
     );

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
@@ -18,7 +18,14 @@ const TwoFA_AUTH = ({
   const { data, error, isValidating } = useSWR("/api/users", fetcher);
   //   console.log(data);
   // state필요없고, get으로 데이터 넣고, post로 업데이트해야한다.
-  const [twoFactor, settwoFactor] = useState(false);
+  // const [twoFactor, settwoFactor] = useState(false);
+  const [codeFromQRCode, setCodeFromQRCode] = useState<string>("");
+
+  const onChangeCode = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setCodeFromQRCode(e.target.value);
+    // console.log(e.target.value);
+  }, []);
+
   // console.log(data.two_factor);
   const onClick2FA = useCallback(
     async (
@@ -27,23 +34,41 @@ const TwoFA_AUTH = ({
       e?.stopPropagation();
       e?.preventDefault();
       if (data) {
-        await axios
-          .post("/api/setting/setOtp", {
-            set: !data.two_factor,
-          })
-          .then(() => {
-            settwoFactor(data.two_factor);
-            mutate("/api/users");
-            router.push("/Home");
-          })
-          .catch((err) => console.log(err));
+        if (!data.two_factor_activated && codeFromQRCode) {
+          await axios
+            .post("/api/two-factor/activate", {
+              set: true,
+              two_factor_code: codeFromQRCode,
+            })
+            .then(() => {
+              setCodeFromQRCode("");
+              // settwoFactor(true);
+              mutate("/api/users");
+              router.push("/Home");
+            })
+            .catch((err) => {
+              console.log(err);
+              alert("Wrong code");
+            });
+        } else if (data.two_factor_activated) {
+          await axios
+            .post("/api/two-factor/deactivate", {
+              set: false,
+            })
+            .then(() => {
+              setCodeFromQRCode("");
+              // settwoFactor(false);
+              mutate("/api/users");
+              router.push("/Home");
+            })
+            .catch((err) => console.log(err));
+        }
       }
     },
     []
   );
 
-  // console.log(data.two_factor);
-  //   console.log(data.two_factor);
+  // console.log(data.two_factor_activated);
   if (error) return <Error />;
   if (!data) return <Loading />;
   return (
@@ -53,16 +78,25 @@ const TwoFA_AUTH = ({
       </div>
       <form className="createForm" method="post">
         <div className="submitform">
-          <img src="/favicon.ico" width={70} height={70} />
-          {data.two_factor === true ? (
-            <div className="is-active">ACTIVED</div>
+          {data.two_factor_activated === true ? (
+            <div className="activated">
+              <img src="/favicon.ico" width={70} height={70} />
+              <div className="is-active">ACTIVATED</div>
+            </div>
           ) : (
-            <div className="is-active">DEACTIVED</div>
+            <div>
+              <img alt={data} src={"/api/two-factor/generate"} />
+              <input
+                onChange={onChangeCode}
+                placeholder="Code please"
+                type={"text"}
+              />
+            </div>
           )}
         </div>
         <div className="buttonDiv">
           <button onClick={onClick2FA} className="ok">
-            {data.two_factor === false ? "ACTIVATE" : "DEACTIVATE"}
+            {data.two_factor_activated === false ? "ACTIVATE" : "DEACTIVATE"}
           </button>
           <button onClick={modal} className="cancel">
             Cancel
@@ -70,6 +104,11 @@ const TwoFA_AUTH = ({
         </div>
       </form>
       <style jsx>{`
+        .activated {
+          padding-top: 50px;
+          width: 200px;
+          height: 180px;
+        }
         .buttonDiv {
           display: flex;
           flex-direction: column;
@@ -93,7 +132,7 @@ const TwoFA_AUTH = ({
           left: 33%;
 
           width: 500px;
-          height: 300px;
+          height: 550px;
 
           background-color: white;
           border: 1px inset black;
