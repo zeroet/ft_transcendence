@@ -1,11 +1,10 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import useSWR, { mutate } from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
 import fetcher from "../../Utils/fetcher";
-import TwoFactor from "../TwoFactor";
 
 const TwoFA_AUTH = ({
   modal,
@@ -29,8 +28,8 @@ const TwoFA_AUTH = ({
     [codeFromQRCode]
   );
 
-  const changeTwoFactorValidToTrue = useCallback(async () => {
-    axios
+  const changeTwoFactorValidToFalse = useCallback(async () => {
+    await axios
       .post("/api/two-factor/valid", { valid: false })
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
@@ -55,8 +54,8 @@ const TwoFA_AUTH = ({
             })
             .then(() => {
               setCodeFromQRCode("");
-              mutate("/api/users");
-              changeTwoFactorValidToTrue();
+              // mutate("/api/users");
+              changeTwoFactorValidToFalse();
               router.push("/Home");
             })
             .catch((err) => {
@@ -70,7 +69,7 @@ const TwoFA_AUTH = ({
             })
             .then(() => {
               // settwoFactor(false);
-              mutate("/api/users");
+              // mutate("/api/users");
               router.push("/Home");
             })
             .catch((err) => console.log(err));
