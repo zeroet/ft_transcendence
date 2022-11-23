@@ -10,11 +10,14 @@ import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import fetcher from "../component/Utils/fetcher";
 import useSWR from "swr";
+import axios from "axios";
 
 export default function Chat() {
   const { data, error } = useSWR("/api/users", fetcher);
 
-  if (error) return <Error />;
+  if (error) {
+    axios.get("/api/auth/refresh");
+  }
   if (!data) return <Loading />;
   return (
     <Layout>

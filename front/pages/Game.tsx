@@ -12,6 +12,7 @@ import Error from "../component/errorAndLoading/Error";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import fetcher from "../component/Utils/fetcher";
+import axios from "axios";
 
 export default function Game({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users", fetcher);
@@ -23,7 +24,9 @@ export default function Game({ accessToken }: { accessToken: string }) {
     });
   }
 
-  if (error) return <Error />;
+  if (error) {
+    axios.get("/api/auth/refresh");
+  }
   if (!data || !socket) return <Loading />;
   return (
     <Layout>

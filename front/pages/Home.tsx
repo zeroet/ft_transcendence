@@ -10,12 +10,15 @@ import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import fetcherNoCache from "../component/Utils/fetcherNoCache";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function Home() {
   const { data, error } = useSWR("/api/users", fetcherNoCache);
   const router = useRouter();
 
-  if (error) return <Error />;
+  if (error) {
+    axios.get("/api/auth/refresh");
+  }
   if (!data) return <Loading />;
   return (
     <Layout>
