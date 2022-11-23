@@ -93,11 +93,7 @@ export class TwoFactorContorller {
     const { otpAuthUrl } = await this.twoFactorService.generateTwoFactorSecret(
       user,
     );
-    // console.log('otpauthurl', otpAuthUrl);
-    // const result = this.twoFactorService.pipeQrCodeStream(res, otpAuthUrl);
-    // console.log('result', typeof result, result);
     return this.twoFactorService.pipeQrCodeStream(res, otpAuthUrl);
-    // return result;
   }
 
   @ApiBody({
@@ -137,11 +133,6 @@ export class TwoFactorContorller {
       throw new UnauthorizedException('Invalid authentication code');
     }
     await this.twoFactorService.setTwoFactorActivated(user.id, set);
-    // console.log(
-    //   'activate() user.two_factor_activated:',
-    //   req.user.two_factor_activated,
-    // );
-    console.log('activate() set:', set);
     res.cookie(
       Cookies.ACCESS_TOKEN,
       this.authService.getAccessToken(user.id, set),
@@ -174,8 +165,6 @@ export class TwoFactorContorller {
   @Post('valid')
   async validTwoFactor(@User() user, @Body() { valid }) {
     console.log('valid() valid:', valid);
-    // if (!user.two_factor_valid)
-    //   throw new BadRequestException('Two factor is not activated');
     await this.twoFactorService.setTwoFactorValid(user.id, valid);
   }
 }

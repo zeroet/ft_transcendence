@@ -2,10 +2,8 @@ import {
   Controller,
   Get,
   Inject,
-  Post,
   Redirect,
-  Request,
-  Response,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -29,7 +27,7 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Redirect('http://localhost:8000/Home', 301)
   @Get('login')
-  async login(@User() user, @Response({ passthrough: true }) res) {
+  async login(@User() user, @Res({ passthrough: true }) res) {
     console.log('login user');
     if (!user) {
       console.log('login user doesnt exist');
@@ -56,7 +54,7 @@ export class AuthController {
   @UseGuards(FtAuthGurad)
   @Redirect('http://localhost:8000/Home', 301)
   @Get('redirect')
-  async redirect(@User() user, @Response({ passthrough: true }) res) {
+  async redirect(@User() user, @Res({ passthrough: true }) res) {
     console.log('redirect()');
     res.cookie(
       Cookies.ACCESS_TOKEN,
@@ -74,12 +72,11 @@ export class AuthController {
   @UseGuards(JwtAccessAuthGuard)
   @Redirect('http://localhost:8000', 301)
   @Get('logout')
-  async logout(@User() user, @Response({ passthrough: true }) res) {
+  async logout(@User() user, @Res({ passthrough: true }) res) {
     res.clearCookie(
       Cookies.ACCESS_TOKEN,
       this.authService.defaultCookieOptions,
     );
-    // user.two_factor_valid = false;
     await this.twoFactorSerivce.setTwoFactorValid(user.id, false);
   }
 }
