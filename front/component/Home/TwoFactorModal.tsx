@@ -29,7 +29,7 @@ export default function TwoFactorModal() {
       }
       console.log("onClickOk 안의 password값 ", password);
       await axios
-        .post("/api/two_factor/authenticate", {
+        .post("/api/two-factor/authenticate", {
           two_factor_code: password,
         })
         .then((res) => {
@@ -44,7 +44,7 @@ export default function TwoFactorModal() {
 
   const updateValide = useCallback(async () => {
     await axios
-      .post("/api/two_factor/valid", {
+      .post("/api/two-factor/valid", {
         valid: true,
       })
       .then((res) => {

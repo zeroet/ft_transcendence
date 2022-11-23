@@ -70,10 +70,11 @@ export class AuthController {
   @UseGuards(JwtAccessAuthGuard)
   @Redirect('http://localhost:8000', 301)
   @Get('logout')
-  async logout(@Response({ passthrough: true }) res) {
+  async logout(@User() user, @Response({ passthrough: true }) res) {
     res.clearCookie(
       Cookies.ACCESS_TOKEN,
       this.authService.defaultCookieOptions,
     );
+    user.two_factor_valid = false;
   }
 }
