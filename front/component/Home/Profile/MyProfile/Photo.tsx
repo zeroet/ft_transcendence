@@ -4,11 +4,12 @@ import useSWR from "swr";
 import Error from "../../../errorAndLoading/Error";
 import Loading from "../../../errorAndLoading/Loading";
 import fetcher from "../../../Utils/fetcher";
+import axios from "axios";
 
 const Photo = () => {
   const { data: user, error } = useSWR<UserInfo>("/api/users", fetcher);
 
-  if (error) return <Error />;
+  if (error)  axios.get("/api/auth/refresh");
   if (!user) return <Loading />;
   return (
     <div>

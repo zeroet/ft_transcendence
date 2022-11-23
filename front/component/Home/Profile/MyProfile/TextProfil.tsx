@@ -3,6 +3,7 @@ import Error from "../../../errorAndLoading/Error";
 import Loading from "../../../errorAndLoading/Loading";
 import fetcher from "../../../Utils/fetcher";
 import { UserInfo } from "../../../../interfaceType";
+import axios from "axios";
 
 const TextProfil = () => {
   const { data: user, error } = useSWR<UserInfo>("/api/users", fetcher);
@@ -15,7 +16,7 @@ const TextProfil = () => {
   const victory = 44432;
   const winRate = Math.round((victory / (loss + victory)) * 100);
 
-  if (error) return <Error />;
+  if (error) axios.get("/api/auth/refresh");
   if (!user) return <Loading />;
   return (
     <div>
