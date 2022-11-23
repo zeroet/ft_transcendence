@@ -1,9 +1,11 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Inject, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { IDmService } from 'src/chat/services/dm/dm.interface';
 
 @ApiTags('DM')
 @Controller('dm')
 export class DmController {
+  constructor(@Inject('DM_SERVICE') private dmSerivce: IDmService) {}
   @ApiOperation({
     summary: 'Get messages for a DM / 특정 디엠의 대화내용 가져오기',
   })
