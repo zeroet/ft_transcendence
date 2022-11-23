@@ -4,11 +4,14 @@ export interface TokenType {
 }
 
 export interface UserInfo {
-  created_at: string;
+  intra_id: string;
   email: string;
-  id: number;
   image_url: string;
-  modified_at: string;
   username: string;
-  nickname: string;
+  created_at: Date;
+  modified_at: Date;
+  hashed_refresh_token: string;
+  two_factor_activated: boolean;
+  two_factor_secret: string;
+  two_factor_valid: boolean;
 }

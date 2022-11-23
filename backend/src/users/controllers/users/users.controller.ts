@@ -16,6 +16,7 @@ import { IUserService } from 'src/users/services/user/user.interface';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserDto } from 'src/users/dto/user.dto';
+import { User } from 'src/utils/decorators/user.decorator';
 
 @ApiTags('USERS')
 @Controller('users')
@@ -32,10 +33,10 @@ export class UsersController {
   @ApiOperation({ summary: 'get current user' })
   @UseGuards(JwtAccessAuthGuard)
   @Get()
-  async getCurrentUser(@Request() req) {
-    const user = await this.userService.getCurrentUser(req.user.id);
-    if (!user) throw new UnauthorizedException('user not found');
-    return user;
+  async getCurrentUser(@User() user) {
+    const CurrentUser = await this.userService.getCurrentUser(user.id);
+    if (!CurrentUser) throw new UnauthorizedException('user not found');
+    return CurrentUser;
   }
 
   @ApiResponse({

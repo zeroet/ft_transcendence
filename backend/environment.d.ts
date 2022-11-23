@@ -7,6 +7,7 @@ declare namespace NodeJS {
     POSTGRES_DB?: string;
     DATABASE_URL?: string;
 
+    APP_NAME?: string;
     SERVER_PORT?: string;
     BASE_DOMAIN?: string;
     SERVER_URL?: string;
@@ -22,9 +23,5 @@ declare namespace NodeJS {
     JWT_REFRESH_SECRET?: string;
     JWT_ACCESS_EXPIRATION_TIME?: string;
     JWT_REFRESH_EXPIRATION_TIME?: string;
-
-    TF_CLIENT_ID?: string;
-    TF_CLIENT_SECRET?: string;
-    TF_REFRESH_TOKEN?: string;
   }
 }
