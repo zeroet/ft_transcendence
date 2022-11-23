@@ -43,6 +43,7 @@ const SearchBar = () => {
             className="barInput"
             placeholder="ex) Hyungyoo"
             type={"text"}
+            value={inputValue}
           />
         </div>
         <img
@@ -59,7 +60,11 @@ const SearchBar = () => {
               if (user.firstName.includes(inputValue)) {
                 return (
                   <div key={user.id}>
-                    <SearchBarModal image={user.image} name={user.firstName} />
+                    <SearchBarModal
+                      setInputValue={setInputValue}
+                      image={user.image}
+                      name={user.firstName}
+                    />
                   </div>
                 );
               }
@@ -74,11 +79,12 @@ const SearchBar = () => {
 
         div {
           margin-right: 20px;
-          // overflow: hidden;
+          overflow: visible;
         }
 
         .searchBar {
-          padding: 0.4rem;
+          padding: 0px;
+          margin: 0px;
           display: grid;
           justify-content: center;
           align-content: center;
