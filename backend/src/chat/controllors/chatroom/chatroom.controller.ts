@@ -27,4 +27,8 @@ export class ChatroomController {
   @ApiOperation({ summary: 'get all members from a chatroom' })
   @Get(':chatroom_id/members')
   getAllMembers() {}
+
+  @ApiOperation({ summary: 'post members to a chatroom' })
+  @Post(':chatroom_id/members')
+  postMembers() {}
 }
