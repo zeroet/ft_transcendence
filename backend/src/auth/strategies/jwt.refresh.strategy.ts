@@ -18,8 +18,9 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   }
 
   async validate(payload: any) {
-    // console.log('jwt.refresh.strategy validate()');
+    console.log('jwt.refresh.strategy validate()');
     if (payload !== undefined) {
+      // console.log('refresh payload:', payload);
       const user = await this.userService.getUserById(payload.id);
       if (!user) throw new UnauthorizedException('Unauthorized User');
       return user;

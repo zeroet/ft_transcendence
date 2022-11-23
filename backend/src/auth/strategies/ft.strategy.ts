@@ -22,7 +22,7 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
   }
 
   async validate(accessToken: string, refreshToken: string) {
-    // console.log('ft.strategy validate() ');
+    console.log('ft.strategy validate()');
     const req = this.httpService.get(`https://api.intra.42.fr/v2/me`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
