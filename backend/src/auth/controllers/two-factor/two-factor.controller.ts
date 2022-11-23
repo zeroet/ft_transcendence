@@ -15,7 +15,11 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { TwoFactorCode } from 'src/auth/dto/twofactorcode.dto';
+import {
+  TwoFactorActivatedDto,
+  TwoFactorCodeDto,
+  TwoFactorValidDto,
+} from 'src/auth/dto';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtTwoFactorAuthGuard } from 'src/auth/guards/jwt.two-factor-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
@@ -41,7 +45,7 @@ export class TwoFactorContorller {
   })
   @ApiBody({
     required: true,
-    type: TwoFactorCode,
+    type: TwoFactorCodeDto,
     description: '6 digits code for 2FA',
   })
   @UseGuards(JwtAccessAuthGuard)
@@ -101,7 +105,7 @@ export class TwoFactorContorller {
   })
   @ApiBody({
     required: true,
-    type: TwoFactorCode,
+    type: TwoFactorCodeDto,
     description: '6 digits code for 2FA',
   })
   @ApiOperation({ summary: 'Activate 2FA / 2FA 활성화' })
@@ -140,7 +144,7 @@ export class TwoFactorContorller {
 
   @ApiBody({
     required: true,
-    type: 'boolean',
+    type: TwoFactorActivatedDto,
     description: 'true',
   })
   @ApiOperation({ summary: 'Deactivate 2FA / 2FA 비활성화' })
@@ -155,7 +159,7 @@ export class TwoFactorContorller {
 
   @ApiBody({
     required: true,
-    type: 'boolean',
+    type: TwoFactorValidDto,
     description: 'true',
   })
   @UseGuards(JwtTwoFactorAuthGuard)
