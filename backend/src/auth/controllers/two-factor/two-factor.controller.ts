@@ -112,9 +112,9 @@ export class TwoFactorContorller {
     @Res({ passthrough: true }) res,
     @Body() { set, two_factor_code },
   ) {
-    console.log('two factor activated:', user.two_factor_activated);
-    console.log('two factor secret:', user.two_factor_secret);
-    console.log('two factor code:', two_factor_code);
+    // console.log('two factor activated:', user.two_factor_activated);
+    // console.log('two factor secret:', user.two_factor_secret);
+    // console.log('two factor code:', two_factor_code);
     if (user.two_factor_activated)
       throw new BadRequestException('Two factor is already activated');
     if (!user.two_factor_secret)
@@ -125,9 +125,9 @@ export class TwoFactorContorller {
       user.two_factor_secret,
       two_factor_code,
     );
-    console.log('is code valid:', isCodeValid);
+    // console.log('is code valid:', isCodeValid);
     if (!isCodeValid) {
-      console.log('code invalid');
+      // console.log('code invalid');
       throw new UnauthorizedException('Invalid authentication code');
     }
     await this.twoFactorService.setTwoFactorActivated(user.id, set);
