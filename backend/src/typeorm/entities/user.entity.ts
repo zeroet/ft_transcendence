@@ -21,7 +21,7 @@ export class User implements IUser {
   @Column({ type: 'text', nullable: true })
   image_url: string;
 
-  @Column({ nullable: false, length: 30 })
+  @Column({ unique: true, nullable: false, length: 30 })
   username: string;
 
   @CreateDateColumn()
