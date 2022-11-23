@@ -4,18 +4,15 @@ import GameList from "../component/Game/GameList";
 import Layout from "../component/Layout";
 import Title from "../component/Title";
 import tokenManager from "../component/Utils/tokenManager";
-import { Socket } from "socket.io-client";
-import { useEffect, useState } from "react";
 import Loading from "../component/errorAndLoading/Loading";
 import useSocket from "../component/Utils/socket";
-import Error from "../component/errorAndLoading/Error";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
-import fetcher from "../component/Utils/fetcher";
 import axios from "axios";
+import fetcherNoCache from "../component/Utils/fetcherNoCache";
 
 export default function Game({ accessToken }: { accessToken: string }) {
-  const { data, error } = useSWR("/api/users", fetcher);
+  const { data, error } = useSWR("/api/users", fetcherNoCache);
   const [socket, disconnet] = useSocket(accessToken, "game");
 
   if (socket) {
