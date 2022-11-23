@@ -1,5 +1,8 @@
 # ft_transcendence
 
+# 추가해야할 사항
+사용자상태(user state), 유니크한 이름(unique username), 친구(friend)
+
 # Barcodepong API 문서
 서버 실행하고 해당 url 들어가면 swagger api 문서 볼 수 있습니다.
 http://localhost:8080/api 
