@@ -9,7 +9,7 @@ import axios from "axios";
 const Photo = () => {
   const { data: user, error } = useSWR<UserInfo>("/api/users", fetcher);
 
-  if (error)  axios.get("/api/auth/refresh");
+  if (error) axios.get("/api/auth/refresh");
   if (!user) return <Loading />;
   return (
     <div>
@@ -21,9 +21,8 @@ const Photo = () => {
           // display: relative;
           width: 203px;
           height: 203px;
+          margin: auto;
           margin-top: 50px;
-          margin-left: 15px;
-          margin-right: auto;
         }
 
         div {
