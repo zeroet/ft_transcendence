@@ -21,9 +21,7 @@ export default function Setting() {
   return (
     <Layout>
       <Title title="Setting" />
-      {data.two_factor_activated && !data.two_factor_valid && (
-        <TwoFactorModal />
-      )}
+      {data.two_factor_activated && !data.two_factor_valid && <TwoFactorModal />}
       <div className={styles.setting}>
         <div className="dummy"></div>
         <div className="set-list">
