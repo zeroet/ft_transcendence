@@ -4,15 +4,15 @@ import React from "react";
 
 interface EachRoomTye {
   title: string;
-  id: string;
+  chatroom_id: string;
 }
 
-const EachRoom = ({ title, id }: EachRoomTye) => {
+const EachRoom = ({ title, chatroom_id }: EachRoomTye) => {
   return (
     <div>
-      <Link href={`/ChatRoom/${id}`} legacyBehavior>
+      <Link href={`/ChatRoom/${chatroom_id}`} legacyBehavior>
         <a>
-          Room ${id}: ${title}
+          Room ${chatroom_id}: ${title}
         </a>
       </Link>
       <style jsx>{`
