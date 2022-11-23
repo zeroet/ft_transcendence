@@ -44,9 +44,11 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
    */
   // 큐 찾아서 들어가는 시간
   // 나중에는 소켓 on으로 큐에 들어가게되면 setSettingModal 을 바꿔주면된다.
-  setTimeout(() => {
-    setSettingModal(true);
-  }, 2000);
+  if (waitModal) {
+    setTimeout(() => {
+      setSettingModal(true);
+    }, 2000);
+  }
   /**
    *
    */
@@ -94,6 +96,9 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
         </div>
       )}
       <style jsx>{`
+        img {
+          cursor: pointer;
+        }
         .modal-background {
           position: fixed;
           top: 0;
@@ -128,6 +133,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
           text-transform: uppercase;
           text-shadow: 0 0 10px white;
           box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+          cursor: pointer;
         }
         .ring:before {
           content: "";
