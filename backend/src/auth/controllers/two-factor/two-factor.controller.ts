@@ -46,7 +46,7 @@ export class TwoFactorContorller {
     type: TwoFactorCode,
     description: '6 digits code for 2FA',
   })
-  @UseGuards(JwtTwoFactorAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   @Post('authenticate')
   async authenticate(
     @User() user,
@@ -176,6 +176,6 @@ export class TwoFactorContorller {
     console.log('valid() valid:', valid);
     // if (!user.two_factor_valid)
     //   throw new BadRequestException('Two factor is not activated');
-    await this.twoFactorService.setTwoFactorValid(user.id, valid);
+    await this.twoFactorService.setTwoFactorValid(user.id, false);
   }
 }
