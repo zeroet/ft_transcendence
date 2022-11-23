@@ -22,3 +22,8 @@ export interface infoOfHistory {
   secondPlayer: string;
   point: string;
 }
+
+export interface XYType {
+  x: number;
+  y: number;
+}
