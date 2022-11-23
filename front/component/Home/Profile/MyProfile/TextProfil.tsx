@@ -5,15 +5,15 @@ import fetcher from "../../../Utils/fetcher";
 import { UserInfo } from "../../../../interfaceType";
 
 const TextProfil = () => {
-  const { data: user, error, mutate } = useSWR<UserInfo>("/api/users", fetcher);
+  const { data: user, error } = useSWR<UserInfo>("/api/users", fetcher);
 
   /*
    1. useSWR with new API for loss, victory, winRate
   */
 
-  const loss = 1;
-  const victory = 4;
-  const winRate = (victory / (loss + victory)) * 100;
+  const loss = 1432;
+  const victory = 44432;
+  const winRate = Math.round((victory / (loss + victory)) * 100);
 
   if (error) return <Error />;
   if (!user) return <Loading />;

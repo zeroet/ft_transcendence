@@ -1,9 +1,4 @@
-interface infoOfHistory {
-  winOrLoss: string;
-  firstPlayer: string;
-  secondPlayer: string;
-  point: string;
-}
+import { infoOfHistory } from "../../../interfaceType";
 
 const EachHistory = ({
   winOrLoss,

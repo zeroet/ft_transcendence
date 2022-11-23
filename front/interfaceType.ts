@@ -15,3 +15,10 @@ export interface UserInfo {
   two_factor_secret: string;
   two_factor_valid: boolean;
 }
+
+export interface infoOfHistory {
+  winOrLoss: string;
+  firstPlayer: string;
+  secondPlayer: string;
+  point: string;
+}
