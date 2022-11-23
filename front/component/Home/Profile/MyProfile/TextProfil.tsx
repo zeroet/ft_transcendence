@@ -20,9 +20,7 @@ const TextProfil = () => {
   return (
     <div>
       <div className="name">
-        <h1 className="userName">
-          {user.nickname ? user.nickname : user.username}
-        </h1>
+        <h1 className="userName">{user.username}</h1>
       </div>
       <div className="info">
         <h3 className="victory">ViCTORY: {victory}</h3>

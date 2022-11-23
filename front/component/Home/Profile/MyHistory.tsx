@@ -92,6 +92,7 @@ const MyHistory = () => {
           height: 95%;
           background: #ffffff;
           border: 1px solid #000000;
+          border-radius: 10%;
         }
       `}</style>
     </div>
