@@ -32,6 +32,10 @@ const Photo = () => {
         div {
           overflow: visible;
         }
+
+        img {
+          border-radius: 50%;
+        }
       `}</style>
     </div>
   );

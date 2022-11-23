@@ -1,16 +1,14 @@
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
+import GameReadyModal from "./GameBody/GameReadyModal";
 import GameSettingModal from "./GameBody/GameSettingModal";
 
 export default function GameBody({ accessToken }: { accessToken: string }) {
   const [waitModal, setWaitModal] = useState(false);
   const [settingModal, setSettingModal] = useState(false);
-  const [ballSpeed, setBallSpeed] = useState<number>(0);
-  const [ballSize, setBallsize] = useState<number>(0);
   const [socket, disconnet] = useSocket(accessToken, "game");
   const router = useRouter();
 
@@ -36,7 +34,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     setSettingModal((curr) => !curr);
     setWaitModal((curr) => !curr);
     //지금은 setTimeout 때문에 계속 바뀜
-    // router.push("/Game");
+    router.push("/Home");
   };
 
   /**
@@ -79,9 +77,17 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
         </div>
       )}
       {/* 내가 오너일때 */}
-      {settingModal && (
+      {/* {settingModal && (
         <div className="modal-background">
           <GameSettingModal
+            accessToken={accessToken}
+            closeSettingModal={closeSettingModal}
+          />
+        </div>
+      )} */}
+      {settingModal && (
+        <div className="modal-background">
+          <GameReadyModal
             accessToken={accessToken}
             closeSettingModal={closeSettingModal}
           />
