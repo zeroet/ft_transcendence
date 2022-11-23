@@ -5,7 +5,6 @@ import {
   Get,
   Inject,
   Post,
-  Req,
   Res,
   UnauthorizedException,
   UseGuards,
@@ -14,14 +13,13 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiOperation,
-  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { TwoFactorCode } from 'src/auth/dto/twofactorcode.dto';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtTwoFactorAuthGuard } from 'src/auth/guards/jwt.two-factor-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
-import { TwoFactorService } from 'src/auth/services/two-factor/two-factor.service';
+import { ITwoFactorService } from 'src/auth/services/two-factor/two-factor.interface';
 import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies } from 'src/utils/types';
 
@@ -29,7 +27,7 @@ import { Cookies } from 'src/utils/types';
 @Controller('two-factor')
 export class TwoFactorContorller {
   constructor(
-    @Inject('TWO_FACTOR_SERVICE') private twoFactorService: TwoFactorService,
+    @Inject('TWO_FACTOR_SERVICE') private twoFactorService: ITwoFactorService,
     @Inject('AUTH_SERVICE') private authService: IAuthService,
   ) {}
 
@@ -57,8 +55,8 @@ export class TwoFactorContorller {
     if (!user.two_factor_activated || !user.two_factor_secret)
       throw new BadRequestException('Two Factor is not activated');
     const isCodeValid = this.twoFactorService.validateTwoFactorCode(
+      user.two_factor_secret,
       two_factor_code,
-      user,
     );
     if (!isCodeValid) {
       throw new UnauthorizedException('Invalid authentication code');
@@ -90,7 +88,7 @@ export class TwoFactorContorller {
     console.log('generate');
     // if (!req.user.two_factor_activated)
     //   throw new BadRequestException('Two factor is not activated');
-    const { otpAuthUrl } = await this.twoFactorService.generateTwoFactorSecret(
+    const otpAuthUrl = await this.twoFactorService.generateTwoFactorSecret(
       user,
     );
     return this.twoFactorService.pipeQrCodeStream(res, otpAuthUrl);
@@ -124,10 +122,10 @@ export class TwoFactorContorller {
         'You have to generate QR code for 2FA before activating it',
       );
     const isCodeValid = this.twoFactorService.validateTwoFactorCode(
+      user.two_factor_secret,
       two_factor_code,
-      user,
     );
-    console.log('iscodeinvalid:', isCodeValid);
+    console.log('is code valid:', isCodeValid);
     if (!isCodeValid) {
       console.log('code invalid');
       throw new UnauthorizedException('Invalid authentication code');

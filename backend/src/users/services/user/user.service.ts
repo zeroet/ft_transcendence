@@ -19,8 +19,4 @@ export class UserService implements IUserService {
     return user;
   }
   updateUserById(id: number) {}
-
-  async setTwoFactorSecret(secret: string, id: number) {
-    return this.userRepository.update(id, { two_factor_secret: secret });
-  }
 }

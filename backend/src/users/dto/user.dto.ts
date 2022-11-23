@@ -50,4 +50,11 @@ export class UserDto {
     description: 'two_factor_secret',
   })
   two_factor_secret: string;
+
+  @ApiProperty({
+    required: false,
+    example: 'false',
+    description: 'two_factor_valid',
+  })
+  two_factor_valid: boolean;
 }
