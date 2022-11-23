@@ -10,7 +10,7 @@ export default function TwoFactorModal() {
   const { data, error, mutate } = useSWR(`/api/users`, fetcher);
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
-  
+
   const onChangePassword = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setPassword(e.target.value.trim());
@@ -55,7 +55,7 @@ export default function TwoFactorModal() {
       })
       .then((res) => {
         console.log(res);
-        mutate("/api/users");
+        mutate({ ...data, two_factor_valid: true });
         console.log("유저데이터 valid값 true인지 : ", data.two_factor_valid);
       })
       .catch((err) => {

@@ -8,7 +8,7 @@ const Logout = () => {
     e.stopPropagation();
     e.preventDefault();
     // await axios
-    //   .post("/api/two-factor/valid", { valid: false })
+    //   .post("", { valid: false })
     //   .then((res) => console.log(res))
     //   .catch((err) => console.log(err));
     await axios.get("/api/auth/logout", {
