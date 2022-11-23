@@ -2,15 +2,28 @@ import FriendStatus from "../component/Home/FriendStatus";
 import Layout from "../component/Layout";
 import Profile from "../component/Home/Profile";
 import Title from "../component/Title";
-import { TokenType } from "../interfaceType";
-import axios from "axios";
 import cookies from "next-cookies";
 import tokenManager from "../component/Utils/tokenManager";
+import useSWR from "swr";
+import Error from "../component/errorAndLoading/Error";
+import Loading from "../component/errorAndLoading/Loading";
+import TwoFactorModal from "../component/Home/TwoFactorModal";
+import fetcherNoCache from "../component/Utils/fetcherNoCache";
 
-export default function Home(): JSX.Element {
+export default function Home() {
+  const { data, error } = useSWR("/api/users", fetcherNoCache);
+
+  if (data) {
+    console.log(data.two_factor_valid);
+  }
+  if (error) return <Error />;
+  if (!data) return <Loading />;
   return (
     <Layout>
       <Title title="Home" />
+      {data.two_factor_activated && !data.two_factor_valid && (
+        <TwoFactorModal />
+      )}
       <div
         style={{
           display: "grid",
@@ -18,6 +31,7 @@ export default function Home(): JSX.Element {
           minHeight: "600px",
         }}
       >
+        {/* {data.two_factor_activated && <TwoFactorModal />} */}
         <Profile />
         <FriendStatus />
       </div>
@@ -40,7 +54,7 @@ setCookie는 쓸필없고
 export function getServerSideProps(context: any) {
   const cookie = cookies(context);
   const { accessToken, refreshToken } = cookie;
-  if (!(accessToken)) {
+  if (!accessToken) {
     return {
       redirect: {
         destination: "/",

@@ -57,7 +57,7 @@ const ChangeAvatarModal = ({
    * 얻은 값을 post함 (FileReader로 얻은값)
    */
   const setNewAvatar = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       e.preventDefault();
       if (avatar) {

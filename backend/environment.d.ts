@@ -7,6 +7,7 @@ declare namespace NodeJS {
     POSTGRES_DB?: string;
     DATABASE_URL?: string;
 
+    APP_NAME?: string;
     SERVER_PORT?: string;
     BASE_DOMAIN?: string;
     SERVER_URL?: string;

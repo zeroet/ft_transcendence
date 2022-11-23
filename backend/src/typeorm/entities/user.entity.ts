@@ -34,5 +34,11 @@ export class User implements IUser {
   hashed_refresh_token: string;
 
   @Column({ default: false })
-  two_factor: boolean;
+  two_factor_activated: boolean;
+
+  @Column({ nullable: true })
+  two_factor_secret: string;
+
+  @Column({ default: false })
+  two_factor_valid: boolean;
 }

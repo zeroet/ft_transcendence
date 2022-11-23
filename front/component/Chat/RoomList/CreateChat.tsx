@@ -1,16 +1,40 @@
-import { useState, useEffect } from "react";
-// import addChat from "./ChatRoom.tsx";
+import React, { useState, useEffect, FC, useCallback } from "react";
+import axios from "axios";
 
-export default function CreateChat({ onClose }) {
+interface Props {
+  onClose: () => void;
+}
+const CreateChat: FC<Props> = ({ onClose }) => {
   // let [showModal, setShowModal] = useState<boolean>(true);
   //   useEffect(() => {
   //     const width = window.outerWidth / 2;
   //     const heigth = window.outerHeight / 2;
   //   }, []);
-  const createRoom = (e) => {
-    e.preventDefault();
-    alert("create room button");
+  const [RoomName, setName] = useState<string>();
+  const [RoomPw, setPw] = useState<string>();
+  //alert("create room button");
+
+  const Name = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value.trim());
   };
+  const Pw = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setPw(e.target.value.trim());
+
+  const createRoom = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      axios
+        .post("api/roomName", { Name: RoomName, Password: RoomPw })
+        .then(() => {
+          setName("");
+          setPw("");
+        })
+        .catch((error) => {
+          console.dir(error);
+        });
+    },
+    [RoomName, RoomPw]
+  );
 
   const cancelRoom = () => {
     onClose();
@@ -25,11 +49,12 @@ export default function CreateChat({ onClose }) {
         <div className="submitform">
           <label>name</label>
           <div>
-            <input type="text" required />
+            <input onChange={Name} type="text" />
           </div>
           <label>password</label>
           <div>
             <input
+              onChange={Pw}
               type="password"
               placeholder="for private room (more than 4 caracters)"
             />
@@ -110,4 +135,6 @@ export default function CreateChat({ onClose }) {
       `}</style>
     </div>
   );
-}
+};
+
+export default CreateChat;

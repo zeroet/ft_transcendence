@@ -1,9 +1,184 @@
-import { useEffect, useRef, useState } from "react";
+import Router, { useRouter } from "next/router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Socket } from "socket.io-client";
 import styles from "../../styles/LayoutBox.module.css";
+import Loading from "../errorAndLoading/Loading";
+import useSocket from "../Utils/socket";
+import GameSettingModal from "./GameBody/GameSettingModal";
 
-export default function GameBody() {
-  return <div className={styles.box}>game body</div>;
+export default function GameBody({ accessToken }: { accessToken: string }) {
+  const [waitModal, setWaitModal] = useState(false);
+  const [settingModal, setSettingModal] = useState(false);
+  const [ballSpeed, setBallSpeed] = useState<number>(0);
+  const [ballSize, setBallsize] = useState<number>(0);
+  const [socket, disconnet] = useSocket(accessToken, "game");
+  const router = useRouter();
+
+  const onClickWaitModal = useCallback(
+    (e: React.MouseEvent<HTMLImageElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setWaitModal((curr) => !curr);
+    },
+    []
+  );
+
+  const onClickCancle = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWaitModal((curr) => !curr);
+    // Router.push("/Game/1");
+  }, []);
+
+  const closeSettingModal = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSettingModal((curr) => !curr);
+    setWaitModal((curr) => !curr);
+    //지금은 setTimeout 때문에 계속 바뀜
+    // router.push("/Game");
+  };
+
+  /**
+   * socket.on('ready', ()=> {
+   *   setSettingModal(true);
+   * })
+   */
+  // 큐 찾아서 들어가는 시간
+  // 나중에는 소켓 on으로 큐에 들어가게되면 setSettingModal 을 바꿔주면된다.
+  setTimeout(() => {
+    setSettingModal(true);
+  }, 2000);
+  /**
+   *
+   */
+
+  if (socket) {
+    socket.on("connect", () => {
+      console.log("game body with connect event", socket.id);
+    });
+    console.log("game body", socket.id);
+  }
+  if (!socket) return <Loading />;
+  return (
+    <div className={styles.box}>
+      {!waitModal && !settingModal && (
+        <img
+          onClick={onClickWaitModal}
+          className="img-vector"
+          src="/images/Vector.png"
+          width={300}
+          height={90}
+        />
+      )}
+      {waitModal && !settingModal && (
+        <div>
+          <div onClick={onClickCancle} className="ring">
+            Loading
+          </div>
+        </div>
+      )}
+      {/* 내가 오너일때 */}
+      {settingModal && (
+        <div className="modal-background">
+          <GameSettingModal
+            accessToken={accessToken}
+            closeSettingModal={closeSettingModal}
+          />
+        </div>
+      )}
+      <style jsx>{`
+        .modal-background {
+          position: fixed;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          background: rgba(0, 0, 0, 0.8);
+        }
+        div {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: visible;
+        }
+
+        .ring {
+          position: relative;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 150px;
+          height: 150px;
+          background: transparent;
+          border: 3px solid #3c3c3c;
+          border-radius: 50%;
+          text-align: center;
+          line-height: 150px;
+          font-family: sans-serif;
+          font-size: 20px;
+          color: black;
+          letter-spacing: 4px;
+          text-transform: uppercase;
+          text-shadow: 0 0 10px white;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .ring:before {
+          content: "";
+          position: absolute;
+          top: -3px;
+          left: -3px;
+          width: 100%;
+          height: 100%;
+          border: 3px solid transparent;
+          border-top: 3px solid white;
+          border-right: 3px solid white;
+          border-radius: 50%;
+          animation: animateC 2s linear infinite;
+        }
+        span {
+          display: block;
+          position: absolute;
+          top: calc(50% - 2px);
+          left: 50%;
+          width: 50%;
+          height: 4px;
+          background: transparent;
+          transform-origin: left;
+          animation: animate 2s linear infinite;
+        }
+        span:before {
+          content: "";
+          position: absolute;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: #fff000;
+          top: -6px;
+          right: -8px;
+          box-shadow: 0 0 20px #fff000;
+        }
+        @keyframes animateC {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        @keyframes animate {
+          0% {
+            transform: rotate(45deg);
+          }
+          100% {
+            transform: rotate(405deg);
+          }
+        }
+      `}</style>
+    </div>
+  );
 }
+
 //   const [leftPaddle, setLeftPaddle] = useState<number>(50);
 //   const [myScore, setMySore] = useState<number>(0);
 //   const [otherSideScore, setOtherSideSore] = useState<number>(0);

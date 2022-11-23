@@ -1,8 +1,8 @@
-import { Injectable, Response } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
-import { Cookies, UserDetails } from 'src/utils/types';
+import { UserDetails } from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { IAuthService } from './auth.interface';
 import * as bcrypt from 'bcrypt';
@@ -51,10 +51,12 @@ export class AuthService implements IAuthService {
     return this.userRepository.save(user);
   }
 
-  getAccessToken(id: number) {
+  getAccessToken(id: number, two_factor_activated: boolean) {
+    // console.log('getAccessToken() two_factor_activated:', two_factor_activated);
     const access = this.jwtService.sign(
       {
         sub: id,
+        two_factor_activated: two_factor_activated,
       },
       {
         secret: process.env.JWT_ACCESS_SECRET,

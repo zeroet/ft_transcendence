@@ -29,3 +29,4 @@ down :
 	docker-compose down
 
 .PHONY: all fclean re frontend backend nginx
+

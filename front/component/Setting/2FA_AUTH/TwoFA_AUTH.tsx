@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
-import useSWR from "swr";
+import React, { useCallback, useEffect, useState } from "react";
+import useSWR, { mutate } from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
 import fetcher from "../../Utils/fetcher";
@@ -18,48 +18,103 @@ const TwoFA_AUTH = ({
   const { data, error, isValidating } = useSWR("/api/users", fetcher);
   //   console.log(data);
   // state필요없고, get으로 데이터 넣고, post로 업데이트해야한다.
-  const [twoFactor, settwoFactor] = useState(false);
+  // const [twoFactor, settwoFactor] = useState(false);
+  const [codeFromQRCode, setCodeFromQRCode] = useState<string>("");
+
+  const onChangeCode = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setCodeFromQRCode(e.target.value);
+      console.log("code form", codeFromQRCode);
+    },
+    [codeFromQRCode]
+  );
+
+  const changeTwoFactorValidToTrue = useCallback(async () => {
+    axios
+      .post("/api/two-factor/valid", { valid: false })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  }, []);
+
   // console.log(data.two_factor);
   const onClick2FA = useCallback(
     async (
       e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
     ) => {
-      e?.stopPropagation();
-      e?.preventDefault();
-      console.log(data.two_factor);
-      await axios
-        .post("/api/setting/setOtp", {
-          set: !data.two_factor,
-        })
-        .then(() => {
-          router.push("/Home");
-        })
-        .catch((err) => console.log(err));
+      e.stopPropagation();
+      e.preventDefault();
+      console.log("on CLick");
+      console.log("code qr", codeFromQRCode);
+
+      if (data) {
+        if (!data.two_factor_activated) {
+          await axios
+            .post("/api/two-factor/activate", {
+              set: true,
+              two_factor_code: codeFromQRCode,
+            })
+            .then(() => {
+              setCodeFromQRCode("");
+              mutate("/api/users");
+              changeTwoFactorValidToTrue();
+              router.push("/Home");
+            })
+            .catch((err) => {
+              console.log(err);
+              alert("Wrong code");
+            });
+        } else if (data.two_factor_activated) {
+          await axios
+            .post("/api/two-factor/deactivate", {
+              set: false,
+            })
+            .then(() => {
+              // settwoFactor(false);
+              mutate("/api/users");
+              router.push("/Home");
+            })
+            .catch((err) => console.log(err));
+        }
+        setCodeFromQRCode("");
+      }
     },
-    []
+    [codeFromQRCode]
   );
 
-  //   console.log(data.two_factor);
+  if (data) {
+    console.log(data.two_factor_activated);
+  }
 
+  // console.log(data.two_factor_activated);
   if (error) return <Error />;
   if (!data) return <Loading />;
   return (
     <div className="box">
       <div className="title">
-        <h2>Change Name</h2>
+        <h2>Two Factor</h2>
       </div>
       <form className="createForm" method="post">
         <div className="submitform">
-          <img src="/favicon.ico" width={70} height={70} />
-          {data.two_factor === true ? (
-            <div className="is-active">ACTIVED</div>
+          {data.two_factor_activated === true ? (
+            <div className="activated">
+              <img src="/favicon.ico" width={70} height={70} />
+              <div className="is-active">ACTIVATED</div>
+            </div>
           ) : (
-            <div className="is-active">DEACTIVED</div>
+            <div>
+              <img alt={data} src={"/api/two-factor/generate"} />
+              <input
+                onChange={onChangeCode}
+                placeholder="Code please"
+                type="text"
+                value={codeFromQRCode}
+              />
+            </div>
           )}
         </div>
         <div className="buttonDiv">
           <button onClick={onClick2FA} className="ok">
-            {data.two_factor === false ? "ACTIVATE" : "DEACTIVATE"}
+            {data.two_factor_activated === false ? "ACTIVATE" : "DEACTIVATE"}
           </button>
           <button onClick={modal} className="cancel">
             Cancel
@@ -67,6 +122,11 @@ const TwoFA_AUTH = ({
         </div>
       </form>
       <style jsx>{`
+        .activated {
+          padding-top: 50px;
+          width: 200px;
+          height: 180px;
+        }
         .buttonDiv {
           display: flex;
           flex-direction: column;
@@ -90,7 +150,7 @@ const TwoFA_AUTH = ({
           left: 33%;
 
           width: 500px;
-          height: 300px;
+          height: 550px;
 
           background-color: white;
           border: 1px inset black;

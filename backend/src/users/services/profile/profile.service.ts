@@ -6,8 +6,9 @@ import { User } from 'src/typeorm';
 @Injectable()
 export class ProfileService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(User) private userRepository: Repository<User>, // private readonly mailerService: MailerService,
   ) {}
+
   async updateUserName(userID: number, newUserName: string) {
     await this.userRepository.update(userID, {
       username: newUserName,
@@ -21,17 +22,5 @@ export class ProfileService {
     await this.userRepository.update(userID, {
       image_url: newUserImage,
     });
-  }
-
-  async getOtp(userID: number) {
-    const user = await this.userRepository.findOneBy({ id: userID });
-    return user;
-  }
-
-  async setOtp(id: number, two_factor: boolean) {
-    const user = await this.userRepository.findOneBy({ id });
-    if (user) {
-      await this.userRepository.save({ ...user, two_factor });
-    }
   }
 }
