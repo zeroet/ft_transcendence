@@ -24,10 +24,17 @@ const TwoFA_AUTH = ({
   const onChangeCode = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setCodeFromQRCode(e.target.value);
-      // console.log("code form", codeFromQRCode);
+      console.log("code form", codeFromQRCode);
     },
     [codeFromQRCode]
   );
+
+  const changeTwoFactorValidToTrue = useCallback(async () => {
+    axios
+      .post("/api/two-factor/valid", { valid: false })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  }, []);
 
   // console.log(data.two_factor);
   const onClick2FA = useCallback(
@@ -49,6 +56,7 @@ const TwoFA_AUTH = ({
             .then(() => {
               setCodeFromQRCode("");
               mutate("/api/users");
+              changeTwoFactorValidToTrue();
               router.push("/Home");
             })
             .catch((err) => {
@@ -61,13 +69,13 @@ const TwoFA_AUTH = ({
               set: false,
             })
             .then(() => {
-              setCodeFromQRCode("");
               // settwoFactor(false);
               mutate("/api/users");
               router.push("/Home");
             })
             .catch((err) => console.log(err));
         }
+        setCodeFromQRCode("");
       }
     },
     [codeFromQRCode]
