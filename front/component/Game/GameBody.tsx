@@ -9,8 +9,6 @@ import GameSettingModal from "./GameBody/GameSettingModal";
 export default function GameBody({ accessToken }: { accessToken: string }) {
   const [waitModal, setWaitModal] = useState(false);
   const [settingModal, setSettingModal] = useState(false);
-  const [ballSpeed, setBallSpeed] = useState<number>(0);
-  const [ballSize, setBallsize] = useState<number>(0);
   const [socket, disconnet] = useSocket(accessToken, "game");
   const router = useRouter();
 

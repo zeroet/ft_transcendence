@@ -4,6 +4,11 @@ import Loading from "../../component/errorAndLoading/Loading";
 import useSocket from "../../component/Utils/socket";
 import tokenManager from "../../component/Utils/tokenManager";
 
+interface XYType {
+  x: number;
+  y: number;
+}
+
 const PlayGame = ({ accessToken }: { accessToken: string }) => {
   const [socket, disconnet] = useSocket(accessToken, "game");
 
@@ -40,11 +45,6 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
    *
    * y = 0 ~ 97
    */
-
-  interface XYType {
-    x: number;
-    y: number;
-  }
 
   // ball x
   // const ballX = useRef<number>(50);
