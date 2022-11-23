@@ -13,13 +13,17 @@ import { FtAuthGurad } from 'src/auth/guards/ft-auth.guard';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtRefreshAuthGuard } from 'src/auth/guards/jwt.refresh-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
+import { TwoFactorService } from 'src/auth/services/two-factor/two-factor.service';
 import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies } from 'src/utils/types';
 
 @ApiTags('AUTH')
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject('AUTH_SERVICE') private authService: IAuthService) {}
+  constructor(
+    @Inject('AUTH_SERVICE') private authService: IAuthService,
+    @Inject('TWO_FACTOR_SERVICE') private twoFactorSerivce: TwoFactorService,
+  ) {}
 
   @ApiOperation({ summary: 'login with jwt' })
   @UseGuards(JwtRefreshAuthGuard)
@@ -75,6 +79,7 @@ export class AuthController {
       Cookies.ACCESS_TOKEN,
       this.authService.defaultCookieOptions,
     );
-    user.two_factor_valid = false;
+    // user.two_factor_valid = false;
+    await this.twoFactorSerivce.setTwoFactorValid(user.id, false);
   }
 }
