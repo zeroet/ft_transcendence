@@ -33,9 +33,13 @@ export default function TwoFactorModal() {
           two_factor_code: password,
         })
         .then((res) => {
+          console.log(res);
           updateValide();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          alert("Wrong Password");
+        });
       setPassword("");
       console.log(password);
     },
