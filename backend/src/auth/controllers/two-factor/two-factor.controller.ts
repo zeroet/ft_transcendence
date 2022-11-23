@@ -65,6 +65,7 @@ export class TwoFactorContorller {
     if (!isCodeValid) {
       throw new UnauthorizedException('Invalid authentication code');
     }
+    const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,
       this.authService.getAccessToken(user.id, true),
@@ -72,9 +73,10 @@ export class TwoFactorContorller {
     );
     res.cookie(
       Cookies.REFRESH_TOKEN,
-      this.authService.getRefreshToken(user.id),
+      refreshToken,
       this.authService.refreshTokenCookieOptions,
     );
+    this.authService.setRefreshToken(user.id, refreshToken);
     return true;
   }
 
