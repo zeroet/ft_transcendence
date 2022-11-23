@@ -7,10 +7,10 @@ const Logout = () => {
   const logout = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
-    await axios
-      .post("/api/two-factor/valid", { valid: false })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    // await axios
+    //   .post("/api/two-factor/valid", { valid: false })
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
     await axios.get("/api/auth/logout", {
       headers: { "Cache-Control": "no-cache" },
     });

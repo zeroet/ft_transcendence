@@ -176,6 +176,6 @@ export class TwoFactorContorller {
     console.log('valid() valid:', valid);
     // if (!user.two_factor_valid)
     //   throw new BadRequestException('Two factor is not activated');
-    await this.twoFactorService.setTwoFactorValid(user.id, false);
+    await this.twoFactorService.setTwoFactorValid(user.id, valid);
   }
 }

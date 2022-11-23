@@ -1,4 +1,5 @@
 import axios from "axios";
+import Router, { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 import useSWR, { mutate } from "swr";
 import Error from "../errorAndLoading/Error";
@@ -8,7 +9,8 @@ import fetcher from "../Utils/fetcher";
 export default function TwoFactorModal() {
   const { data, error, mutate } = useSWR(`/api/users`, fetcher);
   const [password, setPassword] = useState<string>("");
-
+  const router = useRouter();
+  
   const onChangePassword = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setPassword(e.target.value.trim());
@@ -53,7 +55,7 @@ export default function TwoFactorModal() {
       })
       .then((res) => {
         console.log(res);
-        mutate({ ...data, two_factor_valid: true });
+        mutate("/api/users");
         console.log("유저데이터 valid값 true인지 : ", data.two_factor_valid);
       })
       .catch((err) => {

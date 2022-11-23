@@ -16,6 +16,9 @@ import TwoFactorModal from "../component/Home/TwoFactorModal";
 export default function Home(): JSX.Element {
   const { data, error } = useSWR("/api/users", fetcher);
 
+  if (data) {
+    console.log(data.two_factor_valid);
+  }
   if (error) return <Error />;
   if (!data) return <Loading />;
   return (
