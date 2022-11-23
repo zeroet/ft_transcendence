@@ -32,7 +32,7 @@ export class TwoFactorContorller {
   ) {}
 
   @ApiOperation({
-    summary: 'Two factor authentication',
+    summary: 'Two factor authentication / 2FA 인증',
     description:
       'You can authenticate by google authenticator with 2FA activated',
   })
@@ -75,7 +75,8 @@ export class TwoFactorContorller {
   }
 
   @ApiOperation({
-    summary: 'Generate QR code for 2FA before two factor authentication',
+    summary:
+      'Generate QR code for 2FA before two factor authentication / 2FA 인증 전 2FA를 위한 QR코드 생성',
     description:
       'It generates a QR code for 2FA, you can authenticate it by google authenticator app',
   })
@@ -104,7 +105,7 @@ export class TwoFactorContorller {
     type: TwoFactorCode,
     description: '6 digits code for 2FA',
   })
-  @ApiOperation({ summary: 'Activate 2FA' })
+  @ApiOperation({ summary: 'Activate 2FA / 2FA 활성화' })
   @UseGuards(JwtAccessAuthGuard)
   @Post('activate')
   async activateTwoFactor(
@@ -143,7 +144,7 @@ export class TwoFactorContorller {
     type: 'boolean',
     description: 'true',
   })
-  @ApiOperation({ summary: 'Deactivate 2FA' })
+  @ApiOperation({ summary: 'Deactivate 2FA / 2FA 비활성화' })
   @UseGuards(JwtTwoFactorAuthGuard)
   @Post('deactivate')
   async deactivateTwoFactor(@User() user, @Body() { set }) {
@@ -159,7 +160,7 @@ export class TwoFactorContorller {
     description: 'true',
   })
   @UseGuards(JwtTwoFactorAuthGuard)
-  @ApiOperation({ summary: 'Valid 2FA' })
+  @ApiOperation({ summary: 'Valid 2FA / 2FA 적용 유효성 확인' })
   @Post('valid')
   async validTwoFactor(@User() user, @Body() { valid }) {
     console.log('valid() valid:', valid);
