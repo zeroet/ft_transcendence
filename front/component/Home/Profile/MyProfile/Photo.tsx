@@ -6,18 +6,14 @@ import Loading from "../../../errorAndLoading/Loading";
 import fetcher from "../../../Utils/fetcher";
 
 const Photo = () => {
-  const {
-    data: user,
-    error,
-    isValidating,
-  } = useSWR<UserInfo>("/api/users", fetcher);
+  const { data: user, error } = useSWR<UserInfo>("/api/users", fetcher);
 
   if (error) return <Error />;
   if (!user) return <Loading />;
   return (
     <div>
       <div className="photo">
-        <img height={200} width={200} src={user.image_url} />
+        <img height={240} width={240} src={user.image_url} />
       </div>
       <style jsx>{`
         .photo {
@@ -25,7 +21,7 @@ const Photo = () => {
           width: 203px;
           height: 203px;
           margin-top: 50px;
-          margin-left: auto;
+          margin-left: 15px;
           margin-right: auto;
         }
 

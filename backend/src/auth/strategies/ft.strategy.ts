@@ -22,12 +22,12 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
   }
 
   async validate(accessToken: string, refreshToken: string) {
-    // console.log('validate() ');
+    console.log('ft.strategy validate()');
     const req = this.httpService.get(`https://api.intra.42.fr/v2/me`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     try {
-      console.log('af get request to 42');
+      // console.log('af get request to 42');
       const { data } = await lastValueFrom(req);
       if (!data) throw new UnauthorizedException();
       // console.log('data:', data);
@@ -42,7 +42,7 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
       return this.authService.validateUser(userDetails);
     } catch (error) {
       console.error(error);
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Failed to authenticate by 42API');
     }
   }
 }

@@ -28,11 +28,12 @@ export class AuthController {
   @Redirect('http://localhost:8000/Home', 301)
   @Get('login')
   async login(@User() user, @Res({ passthrough: true }) res) {
-    console.log('login user');
+    console.log('auth/login()');
     if (!user) {
       console.log('login user doesnt exist');
       throw res.redirect(301, 'http://localhost:8080/auth/signup');
     }
+    console.log('auth/login() set cookies');
     res.cookie(
       Cookies.ACCESS_TOKEN,
       this.authService.getAccessToken(user.id, user.two_factor_activated),
@@ -56,9 +57,30 @@ export class AuthController {
   @Get('redirect')
   async redirect(@User() user, @Res({ passthrough: true }) res) {
     console.log('redirect()');
+
+    const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,
       this.authService.getAccessToken(user.id, false),
+      this.authService.accessTokenCookieOptions,
+    );
+    res.cookie(
+      Cookies.REFRESH_TOKEN,
+      refreshToken,
+      this.authService.refreshTokenCookieOptions,
+    );
+    this.authService.setRefreshToken(user.id, refreshToken);
+  }
+
+  @ApiOperation({ summary: 'request reissue access token by refresh token' })
+  @UseGuards(JwtRefreshAuthGuard)
+  @Get('refresh')
+  refresh(@User() user, @Res({ passthrough: true }) res) {
+    console.log('auth/refresh()');
+    // this.authService.setRefreshToken(user.id, )
+    res.cookie(
+      Cookies.ACCESS_TOKEN,
+      this.authService.getAccessToken(user.id, user.two_factor_activated),
       this.authService.accessTokenCookieOptions,
     );
     res.cookie(

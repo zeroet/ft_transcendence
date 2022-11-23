@@ -12,16 +12,21 @@ import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import fetcher from "../component/Utils/fetcher";
+import axios from "axios";
 
 export default function Setting() {
   const { data, error } = useSWR("/api/users", fetcher);
 
-  if (error) return <Error />;
+  if (error) {
+    axios.get("/api/auth/refresh");
+  }
   if (!data) return <Loading />;
   return (
     <Layout>
       <Title title="Setting" />
-      {data.two_factor_activated && !data.two_factor_valid && <TwoFactorModal />}
+      {data.two_factor_activated && !data.two_factor_valid && (
+        <TwoFactorModal />
+      )}
       <div className={styles.setting}>
         <div className="dummy"></div>
         <div className="set-list">

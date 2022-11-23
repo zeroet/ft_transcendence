@@ -4,9 +4,20 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import { XYType } from "../interfaceType";
 
 export default function Enter({ path }: { path: string }) {
   const router = useRouter();
+  const [rerender, setRerender] = useState(0);
+  const ball = useRef<XYType>({
+    x: 50,
+    y: 50,
+  });
+
+  const ballDirection = useRef<XYType>({
+    x: 1,
+    y: 1,
+  });
 
   const onClickLink = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -26,21 +37,6 @@ export default function Enter({ path }: { path: string }) {
       });
   };
 
-  interface XYType {
-    x: number;
-    y: number;
-  }
-
-  const ball = useRef<XYType>({
-    x: 50,
-    y: 50,
-  });
-
-  const ballDirection = useRef<XYType>({
-    x: 1,
-    y: 1,
-  });
-
   const ballMovement = () => {
     if (
       ball.current.x <= 2 ||
@@ -52,14 +48,10 @@ export default function Enter({ path }: { path: string }) {
         // ballDirectionX.current *= -1;
         ballDirection.current.x *= -1;
         ball.current.x += 1;
-        // ball.current.x = 50;
-        // ball.current.x = 50;
       }
       if (ball.current.x >= 94) {
         ballDirection.current.x *= -1;
         ball.current.x -= 1;
-        // ball.current.x = 50;
-        // ball.current.x = 50;
       }
       if (ball.current.y <= 0) {
         ballDirection.current.y *= -1;
@@ -70,12 +62,9 @@ export default function Enter({ path }: { path: string }) {
         ball.current.y -= 1;
       }
     }
-    // setBallDirection((curr) => curr * -1);
     ball.current.x += ballDirection.current.x * 0.2;
     ball.current.y += ballDirection.current.y * 0.2;
   };
-
-  const [rerender, setRerender] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {

@@ -34,8 +34,12 @@ export class UsersController {
   @UseGuards(JwtAccessAuthGuard)
   @Get()
   async getCurrentUser(@User() user) {
+    console.log('users/getCurrentUser()');
     const CurrentUser = await this.userService.getCurrentUser(user.id);
-    if (!CurrentUser) throw new UnauthorizedException('user not found');
+    if (!CurrentUser) {
+      console.log('users/getCurrentUser() current user not found');
+      throw new UnauthorizedException('user not found');
+    }
     return CurrentUser;
   }
 
