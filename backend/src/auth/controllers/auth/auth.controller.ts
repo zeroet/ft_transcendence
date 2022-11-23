@@ -30,7 +30,6 @@ export class AuthController {
   @Redirect('http://localhost:8000/Home', 301)
   @Get('login')
   async login(@User() user, @Res({ passthrough: true }) res) {
-    console.log('auth/login()');
     if (!user) {
       console.log('login user doesnt exist');
       throw res.redirect(301, 'http://localhost:8080/auth/signup');
@@ -60,8 +59,6 @@ export class AuthController {
   @Redirect('http://localhost:8000/Home', 301)
   @Get('redirect')
   async redirect(@User() user, @Res({ passthrough: true }) res) {
-    console.log('redirect()');
-
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,
@@ -83,7 +80,6 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Get('refresh')
   refresh(@User() user, @Res({ passthrough: true }) res) {
-    console.log('auth/refresh()');
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,
