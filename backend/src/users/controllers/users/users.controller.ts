@@ -30,7 +30,9 @@ export class UsersController {
     description: 'success',
     type: UserDto,
   })
-  @ApiOperation({ summary: 'get current user' })
+  @ApiOperation({
+    summary: 'Get current user / 현재 로그인된 사용자 정보요청',
+  })
   @UseGuards(JwtAccessAuthGuard)
   @Get()
   async getCurrentUser(@User() user) {
@@ -48,7 +50,7 @@ export class UsersController {
     description: 'success',
     type: UserDto,
   })
-  @ApiOperation({ summary: 'get one user by id' })
+  @ApiOperation({ summary: 'Get one user by id / id로 특정 사용자 정보요청' })
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
     const user = this.userService.getUserById(id);
