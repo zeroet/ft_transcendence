@@ -45,8 +45,8 @@ export default function ChatRoom() {
         <ul key={data.posts.id}>
           {data.posts &&
             data.posts.map((post: any) => (
-              <li>
-                <EachRoom title={post.title} id={post.id} />
+              <li key={post.id}>
+                <EachRoom title={post.title} chatroom_id={post.id} />
               </li>
             ))}
         </ul>
