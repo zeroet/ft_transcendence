@@ -34,8 +34,7 @@ export class AuthController {
       console.log('login user doesnt exist');
       throw res.redirect(301, 'http://localhost:8080/auth/signup');
     }
-    // console.log('auth/login() set cookies');
-    const refreshToken = this.authService.getRefreshToken(user.id);
+    console.log('auth/login() set cookies');
     res.cookie(
       Cookies.ACCESS_TOKEN,
       this.authService.getAccessToken(user.id, user.two_factor_activated),
@@ -43,10 +42,9 @@ export class AuthController {
     );
     res.cookie(
       Cookies.REFRESH_TOKEN,
-      refreshToken,
+      this.authService.getRefreshToken(user.id),
       this.authService.refreshTokenCookieOptions,
     );
-    this.authService.setRefreshToken(user.id, refreshToken);
   }
 
   @ApiOperation({ summary: 'Signup with 42API / 42API를 이용한 사용자등록' })
