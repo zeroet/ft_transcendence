@@ -1,13 +1,12 @@
 import axios from "axios";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 import useSWR, { mutate } from "swr";
 import Error from "../errorAndLoading/Error";
 import Loading from "../errorAndLoading/Loading";
-import fetcher from "../Utils/fetcher";
 
 export default function TwoFactorModal() {
-  const { data, error, mutate } = useSWR(`/api/users`, fetcher);
+  const { data, error, mutate } = useSWR(`/api/users`);
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
 

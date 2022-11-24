@@ -1,10 +1,9 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
-import fetcher from "../../Utils/fetcher";
 
 const TwoFA_AUTH = ({
   modal,
@@ -14,7 +13,7 @@ const TwoFA_AUTH = ({
   ) => void;
 }) => {
   const router = useRouter();
-  const { data, error, isValidating } = useSWR("/api/users", fetcher);
+  const { data, error } = useSWR("/api/users");
   //   console.log(data);
   // state필요없고, get으로 데이터 넣고, post로 업데이트해야한다.
   // const [twoFactor, settwoFactor] = useState(false);

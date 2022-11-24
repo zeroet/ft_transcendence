@@ -5,20 +5,26 @@ import Title from "../component/Title";
 import cookies from "next-cookies";
 import tokenManager from "../component/Utils/tokenManager";
 import useSWR from "swr";
-import Error from "../component/errorAndLoading/Error";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
-import fetcherNoCache from "../component/Utils/fetcherNoCache";
 import { useRouter } from "next/router";
 import axios from "axios";
 
 export default function Home() {
-  const { data, error } = useSWR("/api/users", fetcherNoCache);
+  const { data, error } = useSWR("/api/users");
   const router = useRouter();
 
-  if (error) {
-    axios.get("/api/auth/refresh");
+
+  if (data) {
+    console.log(
+      "activate",
+      data.two_factor_activated,
+      "valid",
+      data.two_factor_valid
+    );
   }
+  // SWR Config에 errorRetry 추가방법 찾기 
+  if (error) axios.get("/api/auth/refresh");
   if (!data) return <Loading />;
   return (
     <Layout>

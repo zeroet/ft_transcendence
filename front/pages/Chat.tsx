@@ -5,19 +5,15 @@ import RoomList from "../component/Chat/RoomList";
 import Title from "../component/Title";
 import cookies from "next-cookies";
 import tokenManager from "../component/Utils/tokenManager";
-import Error from "../component/errorAndLoading/Error";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
-import fetcher from "../component/Utils/fetcher";
 import useSWR from "swr";
 import axios from "axios";
 
 export default function Chat() {
-  const { data, error } = useSWR("/api/users", fetcher);
+  const { data, error } = useSWR("/api/users");
 
-  if (error) {
-    axios.get("/api/auth/refresh");
-  }
+  if (error) axios.get("/api/auth/refresh");
   if (!data) return <Loading />;
   return (
     <Layout>
