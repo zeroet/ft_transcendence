@@ -46,7 +46,7 @@ const ChangeAvatarModal = ({
             }
           };
         } else {
-          alert("File should be pgn, jpg or");
+          alert("File should be pgn, or jpg");
         }
       }
     },
