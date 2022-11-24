@@ -36,15 +36,16 @@ const ChangeNameModal = ({
       e.stopPropagation();
       e.preventDefault();
       if (newNickName.length >= 1 && newNickName.length <= 10) {
-        await axios
-          .post("/api/setting/username?", {
+        try {
+          await axios.post("/api/setting/username?", {
             username: newNickName,
-          })
-          .then(() => {
-            mutate("/api/users");
-          })
-          .catch((err) => console.log(err));
-        router.push("/Home");
+          });
+          mutate("/api/users");
+        } catch (err) {
+          console.log(err);
+        } finally {
+          router.push("/Home");
+        }
       } else {
         alert("new nickname should be less then 10 characters");
         modal(e);

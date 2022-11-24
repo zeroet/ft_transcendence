@@ -29,18 +29,15 @@ export default function TwoFactorModal() {
         return;
       }
       console.log("onClickOk 안의 password값 ", password);
-      await axios
-        .post("/api/two-factor/authenticate", {
+      try {
+        await axios.post("/api/two-factor/authenticate", {
           two_factor_code: password,
-        })
-        .then((res) => {
-          console.log(res);
-          updateValide();
-        })
-        .catch((err) => {
-          console.log(err);
-          alert("Wrong Password");
         });
+        updateValide();
+      } catch (e) {
+        console.log(e);
+        alert("Wrong Password");
+      }
       setPassword("");
       console.log(password);
     },
@@ -48,19 +45,16 @@ export default function TwoFactorModal() {
   );
 
   const updateValide = useCallback(async () => {
-    await axios
-      .post("/api/two-factor/valid", {
+    try {
+      await axios.post("/api/two-factor/valid", {
         valid: true,
-      })
-      .then((res) => {
-        console.log(res);
-        mutate({ ...data, two_factor_valid: true });
-        console.log("유저데이터 valid값 true인지 : ", data.two_factor_valid);
-      })
-      .catch((err) => {
-        alert("Error for Verification password");
-        console.log(err);
       });
+      mutate({ ...data, two_factor_valid: true });
+      console.log("유저데이터 valid값 true인지 : ", data.two_factor_valid);
+    } catch (e) {
+      alert("Error for Verification password");
+      console.log(e);
+    }
   }, []);
 
   if (error) return <Error />;

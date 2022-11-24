@@ -22,19 +22,17 @@ export default function Enter({ path }: { path: string }) {
   const onClickLink = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    await axios
-      .get(path, {
+    try {
+      await axios.get(path, {
         headers: {
           "Cache-Control": "max-age=0",
         },
-      })
-      .then((res) => {
-        router.push("/Home");
-      })
-      .catch((err) => {
-        console.log(err);
-        router.push("/api/auth/signup");
       });
+      router.push("/Home");
+    } catch (err) {
+      console.log(err);
+      router.push("/api/auth/signup");
+    }
   };
 
   const ballMovement = () => {

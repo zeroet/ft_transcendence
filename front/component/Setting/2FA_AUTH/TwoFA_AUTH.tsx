@@ -68,8 +68,9 @@ const TwoFA_AUTH = ({
             router.push("/Home");
           } catch (e) {
             console.log(e);
+          } finally {
+            setCodeFromQRCode("");
           }
-          setCodeFromQRCode("");
         }
       }
     },
