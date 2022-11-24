@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
+import { mutate } from "swr";
 
 const ChangeNameModal = ({
   modal,
@@ -39,7 +40,9 @@ const ChangeNameModal = ({
           .post("/api/setting/username?", {
             username: newNickName,
           })
-          .then(() => {})
+          .then(() => {
+            mutate("/api/users");
+          })
           .catch((err) => console.log(err));
         router.push("/Home");
       } else {

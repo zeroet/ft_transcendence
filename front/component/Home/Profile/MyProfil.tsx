@@ -1,5 +1,3 @@
-import useSWR from "swr";
-import fetcher from "../../Utils/fetcher";
 import Photo from "./MyProfile/Photo";
 import TextProfil from "./MyProfile/TextProfil";
 

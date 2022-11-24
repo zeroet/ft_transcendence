@@ -7,19 +7,15 @@ import TwoFactor from "../component/Setting/TwoFactor";
 import Title from "../component/Title";
 import tokenManager from "../component/Utils/tokenManager";
 import styles from "../styles/LayoutBox.module.css";
-import Error from "../component/errorAndLoading/Error";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
-import fetcher from "../component/Utils/fetcher";
 import axios from "axios";
 
 export default function Setting() {
-  const { data, error } = useSWR("/api/users", fetcher);
+  const { data, error } = useSWR("/api/users");
 
-  if (error) {
-    axios.get("/api/auth/refresh");
-  }
+  if (error) axios.get("/api/auth/refresh");
   if (!data) return <Loading />;
   return (
     <Layout>

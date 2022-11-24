@@ -9,10 +9,9 @@ import useSocket from "../component/Utils/socket";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
-import fetcherNoCache from "../component/Utils/fetcherNoCache";
 
 export default function Game({ accessToken }: { accessToken: string }) {
-  const { data, error } = useSWR("/api/users", fetcherNoCache);
+  const { data, error } = useSWR("/api/users");
   const [socket, disconnet] = useSocket(accessToken, "game");
 
   if (socket) {
@@ -21,9 +20,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
     });
   }
 
-  if (error) {
-    axios.get("/api/auth/refresh");
-  }
+  if (error) axios.get("/api/auth/refresh");
   if (!data || !socket) return <Loading />;
   return (
     <Layout>

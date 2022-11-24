@@ -1,9 +1,13 @@
 import axios from "axios";
 
 const fetcher = async (url: string) => {
-  return await (
-    await axios.get(url)
-  ).data;
+  try {
+    return await (
+      await axios.get(url)
+    ).data;
+  } catch (e) {
+    throw e;
+  }
 };
 
 export default fetcher;
