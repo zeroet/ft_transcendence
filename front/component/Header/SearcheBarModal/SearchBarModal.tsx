@@ -32,7 +32,6 @@ const SearchBarModal = ({
           color: white;
           background-color: black;
           border: 1px solid black;
-          cursor: pointer;
         }
         .search-bar-modal {
           display: flex;

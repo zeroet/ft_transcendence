@@ -31,6 +31,7 @@ const ChangeAvatar = () => {
           font-weight: bold;
           overflow: visible;
           height: 100%;
+          text-transform: uppercase;
         }
 
         .modal-background {

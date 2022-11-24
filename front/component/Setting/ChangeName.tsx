@@ -18,7 +18,7 @@ const ChangeName = () => {
         </div>
       )}
       <div className="div-lettre" onClick={modal}>
-        ChangeName
+        Change Name
       </div>
       <style jsx>
         {`
@@ -28,6 +28,7 @@ const ChangeName = () => {
             overflow: visible;
             width: 100%;
             height: 100%;
+            text-transform: uppercase;
           }
           .modal-background {
             position: fixed;
