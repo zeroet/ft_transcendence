@@ -63,6 +63,7 @@ const ChangeNameModal = ({
         <div className="submitform">
           <div>
             <input
+              className="contexte"
               onChange={getNewNickName}
               type="text"
               placeholder="new nickname should be less then 10 characters"
@@ -142,6 +143,9 @@ const ChangeNameModal = ({
           padding: 10px 20px;
           border: 1px solid black;
           cursor: pointer;
+        }
+        .contexte {
+          text-align: center;
         }
       `}</style>
     </div>
