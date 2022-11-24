@@ -131,6 +131,7 @@ export class TwoFactorContorller {
       throw new UnauthorizedException('Invalid authentication code');
     }
     await this.twoFactorService.setTwoFactorActivated(user.id, set);
+    await this.twoFactorService.setTwoFactorValid(user.id, true);
     res.cookie(
       Cookies.ACCESS_TOKEN,
       this.authService.getAccessToken(user.id, set),
