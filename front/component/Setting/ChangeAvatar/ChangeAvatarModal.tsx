@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
+import { mutate } from "swr";
 
 const ChangeAvatarModal = ({
   modal,
@@ -61,11 +62,12 @@ const ChangeAvatarModal = ({
       e.stopPropagation();
       e.preventDefault();
       if (avatar) {
-        axios
+        await axios
           .post("/api/setting/userimage", {
             image_url: avatar,
           })
           .then(() => {
+            mutate("/api/users");
             router.push("/Home");
           })
           .catch((err) => {
