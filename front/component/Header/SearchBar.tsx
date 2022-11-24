@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import useSWR from "swr";
 import Error from "../errorAndLoading/Error";
 import Loading from "../errorAndLoading/Loading";
-import fetcher from "../Utils/fetcher";
 import SearchBarModal from "./SearcheBarModal/SearchBarModal";
 
 const SearchBar = () => {
@@ -11,10 +10,7 @@ const SearchBar = () => {
   /**
    * dummy data
    */
-  const { data, error, isValidating } = useSWR(
-    "https://dummyjson.com/users",
-    fetcher
-  );
+  const { data, error, isValidating } = useSWR("https://dummyjson.com/users");
 
   const onChangeInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement> | undefined) => {

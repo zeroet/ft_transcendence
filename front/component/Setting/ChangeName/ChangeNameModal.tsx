@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
+import { mutate } from "swr";
 
 const ChangeNameModal = ({
   modal,
@@ -26,7 +27,7 @@ const ChangeNameModal = ({
   /**
    * submit버튼을 누르면, useState로 관리되는 newNickName이
    * axios를 통해서, post요청을 함.
-   * 글자수는 1 ~ 10
+   * 글자수는 1 ~ 20
    * 마지막으로 newNickName을 리셋해주고
    * modal함수를 실행하여, modal을 닫고 Home으로 페이지 이동
    */
@@ -34,16 +35,19 @@ const ChangeNameModal = ({
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       e.preventDefault();
-      if (newNickName.length >= 1 && newNickName.length <= 10) {
-        await axios
-          .post("/api/setting/username?", {
+      if (newNickName.length >= 1 && newNickName.length <= 20) {
+        try {
+          await axios.post("/api/setting/username?", {
             username: newNickName,
-          })
-          .then(() => {})
-          .catch((err) => console.log(err));
-        router.push("/Home");
+          });
+          mutate("/api/users");
+        } catch (err) {
+          console.log(err);
+        } finally {
+          router.push("/Home");
+        }
       } else {
-        alert("new nickname should be less then 10 characters");
+        alert("new nickname should be 1 ~ 20 characters");
         modal(e);
       }
     },

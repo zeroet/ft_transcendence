@@ -1,12 +1,10 @@
 import useSWR from "swr";
-import Error from "../../../errorAndLoading/Error";
 import Loading from "../../../errorAndLoading/Loading";
-import fetcher from "../../../Utils/fetcher";
 import { UserInfo } from "../../../../interfaceType";
 import axios from "axios";
 
 const TextProfil = () => {
-  const { data: user, error } = useSWR<UserInfo>("/api/users", fetcher);
+  const { data: user, error } = useSWR<UserInfo>("/api/users");
 
   /*
    1. useSWR with new API for loss, victory, winRate
@@ -16,7 +14,7 @@ const TextProfil = () => {
   const victory = 44432;
   const winRate = Math.round((victory / (loss + victory)) * 100);
 
-  if (error) axios.get("/api/auth/refresh");
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!user) return <Loading />;
   return (
     <div>

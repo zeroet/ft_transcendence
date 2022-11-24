@@ -4,7 +4,6 @@ import React, { useCallback, useState } from "react";
 import useSWR, { mutate } from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
-import fetcher from "../../Utils/fetcher";
 
 const TwoFA_AUTH = ({
   modal,
@@ -14,7 +13,7 @@ const TwoFA_AUTH = ({
   ) => void;
 }) => {
   const router = useRouter();
-  const { data, error, isValidating } = useSWR("/api/users", fetcher);
+  const { data, error } = useSWR("/api/users");
   //   console.log(data);
   // state필요없고, get으로 데이터 넣고, post로 업데이트해야한다.
   // const [twoFactor, settwoFactor] = useState(false);
@@ -29,10 +28,12 @@ const TwoFA_AUTH = ({
   );
 
   const changeTwoFactorValidToFalse = useCallback(async () => {
-    await axios
-      .post("/api/two-factor/valid", { valid: false })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    try {
+      await axios.post("/api/two-factor/valid", { valid: true });
+      await mutate("/api/users");
+    } catch (e) {
+      console.log(e);
+    }
   }, []);
 
   // console.log(data.two_factor);
@@ -42,39 +43,35 @@ const TwoFA_AUTH = ({
     ) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log("on CLick");
       console.log("code qr", codeFromQRCode);
-
       if (data) {
         if (!data.two_factor_activated) {
-          await axios
-            .post("/api/two-factor/activate", {
+          try {
+            await axios.post("/api/two-factor/activate", {
               set: true,
               two_factor_code: codeFromQRCode,
-            })
-            .then(() => {
-              setCodeFromQRCode("");
-              // mutate("/api/users");
-              changeTwoFactorValidToFalse();
-              router.push("/Home");
-            })
-            .catch((err) => {
-              console.log(err);
-              alert("Wrong code");
             });
+            setCodeFromQRCode("");
+            console.log(data.two_factor_valid, "is valid valuie");
+            await changeTwoFactorValidToFalse();
+            router.push("/Home");
+          } catch (e) {
+            console.log(e);
+            alert("Wrong code");
+          }
         } else if (data.two_factor_activated) {
-          await axios
-            .post("/api/two-factor/deactivate", {
+          try {
+            await axios.post("/api/two-factor/deactivate", {
               set: false,
-            })
-            .then(() => {
-              // settwoFactor(false);
-              // mutate("/api/users");
-              router.push("/Home");
-            })
-            .catch((err) => console.log(err));
+            });
+            mutate("/api/users");
+            router.push("/Home");
+          } catch (e) {
+            console.log(e);
+          } finally {
+            setCodeFromQRCode("");
+          }
         }
-        setCodeFromQRCode("");
       }
     },
     [codeFromQRCode]

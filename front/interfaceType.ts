@@ -4,7 +4,6 @@ export interface TokenType {
 }
 
 export interface UserInfo {
-  id: number;
   intra_id: string;
   email: string;
   image_url: string;
@@ -27,41 +26,4 @@ export interface infoOfHistory {
 export interface XYType {
   x: number;
   y: number;
-}
-
-export interface IChatroom {
-  chatroom_id: number;
-  owner_id: number;
-  chatroom_name: string;
-  password: string;
-  max_member_num: number;
-  created_at: Date;
-  modified_at: Date;
-}
-
-export interface IChatContent {
-  chat_content_id: number;
-  chatroom_id: number;
-  user_id: number;
-  content: string;
-  created_at: Date;
-  modified_at: Date;
-}
-
-export interface IChatMember {
-  user_id: number;
-  chatroom_id: number;
-  muted_date: Date;
-  ban_date: Date;
-  created_at: Date;
-  modified_at: Date;
-}
-
-export interface IDm {
-  dm_id: number;
-  sender_id: number;
-  receiver_id: number;
-  content: string;
-  created_at: Date;
-  modified_at: Date;
 }

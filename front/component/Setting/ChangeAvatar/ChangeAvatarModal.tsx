@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
+import { mutate } from "swr";
 
 const ChangeAvatarModal = ({
   modal,
@@ -45,7 +46,7 @@ const ChangeAvatarModal = ({
             }
           };
         } else {
-          alert("File should be pgn, jpg or");
+          alert("File should be pgn, or jpg");
         }
       }
     },
@@ -61,21 +62,19 @@ const ChangeAvatarModal = ({
       e.stopPropagation();
       e.preventDefault();
       if (avatar) {
-        axios
-          .post("/api/setting/userimage", {
+        try {
+          await axios.post("/api/setting/userimage", {
             image_url: avatar,
-          })
-          .then(() => {
-            router.push("/Home");
-          })
-          .catch((err) => {
-            console.log(`error for avatar`, err);
-            alert("Size of file is too big, please less than 10kb");
-          })
-          .finally(() => modal(e));
-      } else {
-        modal(e);
+          });
+          mutate("/api/users");
+          router.push("/Home");
+        } catch (err) {
+          console.log(`error for avatar`, err);
+          alert("Size of file is too big, please less than 10kb");
+          console.log(e);
+        }
       }
+      modal(e);
     },
     [avatar]
   );

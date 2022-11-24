@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
+import { mutate } from "swr";
+import useSocket from "../Utils/socket";
 
-const Logout = () => {
+const Logout = ({ accessToken }: { accessToken: string }) => {
   const router = useRouter();
+  const [_, disconnet] = useSocket(accessToken, "game");
   const logout = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
@@ -11,10 +14,20 @@ const Logout = () => {
     //   .post("", { valid: false })
     //   .then((res) => console.log(res))
     //   .catch((err) => console.log(err));
-    await axios.get("/api/auth/logout", {
-      headers: { "Cache-Control": "no-cache" },
-    });
-    router.push("/");
+    try {
+      await axios.post("/api/two-factor/valid", {
+        valid: false,
+      });
+      mutate("/api/users");
+      await axios.get("/api/auth/logout", {
+        headers: { "Cache-Control": "no-cache" },
+      });
+      // 로그아웃시 소켓 삭제
+      disconnet();
+      router.push("/");
+    } catch (e) {
+      console.log(e);
+    }
   }, []);
 
   return (
