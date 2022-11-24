@@ -41,6 +41,7 @@ const Logout = ({ accessToken }: { accessToken: string }) => {
           width: 100%;
           height: 100%;
           text-transform: uppercase;
+          cursor: pointer;
         }
       `}</style>
     </div>

@@ -28,6 +28,7 @@ const TwoFactor = () => {
             overflow: visible;
             width: 100%;
             height: 100%;
+            cursor: pointer;
           }
           .modal-background {
             position: fixed;
