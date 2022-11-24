@@ -5,10 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { XYType } from "../interfaceType";
+import { GetServerSideProps } from "next";
 
 export default function Enter({ path }: { path: string }) {
   const router = useRouter();
-  const [rerender, setRerender] = useState(0);
+  const [_, setRerender] = useState(0);
   const ball = useRef<XYType>({
     x: 50,
     y: 50,
@@ -43,7 +44,6 @@ export default function Enter({ path }: { path: string }) {
       ball.current.y >= 97
     ) {
       if (ball.current.x <= 2) {
-        // ballDirectionX.current *= -1;
         ballDirection.current.x *= -1;
         ball.current.x += 1;
       }
@@ -132,7 +132,7 @@ export default function Enter({ path }: { path: string }) {
   );
 }
 
-export function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken, refreshToken } = cookie;
   if (accessToken && refreshToken) {
@@ -152,4 +152,4 @@ export function getServerSideProps(context: any) {
   return {
     props: { path: "/api/auth/login" },
   };
-}
+};
