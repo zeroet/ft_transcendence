@@ -87,7 +87,7 @@ const TwoFA_AUTH = ({
   return (
     <div className="box">
       <div className="title">
-        <h2>2FA Auth</h2>
+        <h2>Two Factor</h2>
       </div>
       <form className="createForm" method="post">
         <div className="submitform">
@@ -100,9 +100,8 @@ const TwoFA_AUTH = ({
             <div>
               <img alt={data} src={"/api/two-factor/generate"} />
               <input
-                className="contexte"
                 onChange={onChangeCode}
-                placeholder="Code please (6 numbers)"
+                placeholder="Code please"
                 type="text"
                 value={codeFromQRCode}
               />
@@ -125,10 +124,10 @@ const TwoFA_AUTH = ({
           height: 180px;
         }
         .buttonDiv {
-          // display: flex;
-          // flex-direction: column;
-          // align-items: center;
-          // justify-content: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
         }
         .is-active {
           color: black;
@@ -143,11 +142,11 @@ const TwoFA_AUTH = ({
         .box {
           font-family: "Fragment Mono", monospace;
           position: fixed;
-          top: 15%;
-          left: 37%;
+          top: 30%;
+          left: 33%;
 
-          width: 400px;
-          height: 500px;
+          width: 500px;
+          height: 550px;
 
           background-color: white;
           border: 1px inset black;
@@ -168,7 +167,7 @@ const TwoFA_AUTH = ({
         input {
           // background-color: tomato;
           font-family: "Fragment Mono", monospace;
-          width: 200px;
+          width: 400px;
           height: 30px;
           border-top: none;
           border-left: none;
@@ -176,7 +175,6 @@ const TwoFA_AUTH = ({
           border-bottom: 2px solid black;
           outline: none;
           margin-bottom: 20px;
-          margin-top: 10px;
         }
         input::placeholder {
           text-align: center;
@@ -207,9 +205,6 @@ const TwoFA_AUTH = ({
           border: 1px solid black;
           cursor: pointer;
           margin-bottom: 20px;
-        }
-        .contexte {
-          text-align: center;
         }
       `}</style>
     </div>

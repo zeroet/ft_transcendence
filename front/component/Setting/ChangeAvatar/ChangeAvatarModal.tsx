@@ -46,7 +46,7 @@ const ChangeAvatarModal = ({
             }
           };
         } else {
-          alert("File should be PNG, JPG, JPEG");
+          alert("File should be pgn, or jpg");
         }
       }
     },
@@ -95,13 +95,13 @@ const ChangeAvatarModal = ({
           />
         )}
         <div className="upload-file">
+          <img height={27} src={"/images/search.png"} />
           <label className="label" htmlFor="avatar">
             UPLOAD FILE
           </label>
-          <img height={15} src={"/images/fileicon.png"} />
           <input onChange={getNewAvatar} type="file" id="avatar" />
         </div>
-        <h1>(less than 10KB with png, jpg, jpeg file only)</h1>
+
         <div className="buttonDiv">
           <button onClick={setNewAvatar} type="submit" className="ok">
             Submit
@@ -117,28 +117,22 @@ const ChangeAvatarModal = ({
           margin-top: 20px;
         }
 
-        .label {
+        label {
           width: 100%;
           margin-top: 3px;
           color: black;
-          cursor: pointer;
         }
-        h1 {
-          color: red;
-          font-family: "Fragment Mono", monospace;
-          font-size: 15px;
-        }
-        img {
-          padding-left: 10px;
+
+        .upload-file {
+          display: flex;
         }
 
         .upload-file {
           margin-top: 30px;
-          padding-top: 10px;
+          margin-bottom: 30px;
           border: 2px solid black;
-          width: 300px;
-          height: 30px;
-          text-align: center;
+          width: 250px;
+          display: flex;
         }
 
         input {
@@ -156,11 +150,13 @@ const ChangeAvatarModal = ({
 
           background-color: white;
           border: 1px inset black;
+          // box-shadow: 10px 10px;
           text-transform: uppercase;
         }
         .title {
           background-color: black;
           color: white;
+          // height: 100%;
         }
 
         .createForm {
@@ -170,9 +166,10 @@ const ChangeAvatarModal = ({
           align-items: center;
         }
 
-        .label {
-          // padding-left: 20px;
-        }
+        // input::placeholder {
+        //   text-align: center;
+        //   color: red;
+        // }
 
         button {
           text-align: center;
@@ -180,7 +177,7 @@ const ChangeAvatarModal = ({
         }
         .buttonDiv {
           // background-color: yellow;
-          // margin-top: 5px;
+          margin-top: 10px;
           margin-bottom: 20px;
         }
         .ok {
