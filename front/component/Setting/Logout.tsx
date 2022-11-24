@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
+import { mutate } from "swr";
 
 const Logout = () => {
   const router = useRouter();
@@ -15,6 +16,7 @@ const Logout = () => {
       await axios.post("/api/two-factor/valid", {
         valid: false,
       });
+      mutate("/api/users");
       await axios.get("/api/auth/logout", {
         headers: { "Cache-Control": "no-cache" },
       });
