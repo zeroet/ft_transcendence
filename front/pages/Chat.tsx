@@ -14,7 +14,7 @@ import { GetServerSideProps } from "next";
 export default function Chat({ refreshToken }: { refreshToken: string }) {
   const { data, error } = useSWR("/api/users");
 
-  if (error) axios.get("/api/auth/refresh");
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
     <Layout>

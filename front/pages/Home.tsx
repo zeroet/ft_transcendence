@@ -24,7 +24,8 @@ export default function Home() {
     );
   }
   // SWR Config에 errorRetry 추가방법 찾기
-  if (error) axios.get("/api/auth/refresh");
+
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
     <Layout>

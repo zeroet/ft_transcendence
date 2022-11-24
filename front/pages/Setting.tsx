@@ -16,7 +16,7 @@ import { GetServerSideProps } from "next";
 export default function Setting() {
   const { data, error } = useSWR("/api/users");
 
-  if (error) axios.get("/api/auth/refresh");
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
     <Layout>
@@ -36,7 +36,7 @@ export default function Setting() {
         <style jsx>{`
           .dummy {
           }
-          
+
           .set-list {
             // background-color: yellow;
             display: grid;

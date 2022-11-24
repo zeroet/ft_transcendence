@@ -21,7 +21,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
     });
   }
 
-  if (error) axios.get("/api/auth/refresh");
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socket) return <Loading />;
   return (
     <Layout>
