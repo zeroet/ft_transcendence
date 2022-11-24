@@ -10,10 +10,13 @@ const useSocket = (
 ): [Socket | undefined, () => void] => {
   const disconnect = useCallback(() => {
     if (socket[socketType]) {
+      console.log(
+        socket[socketType].id,
+        "===================disconnet socket=============="
+      );
       socket[socketType].disconnect();
       delete socket[socketType];
     }
-    console.log("===================disconnet socket==============");
   }, [socketType]);
 
   if (!socket[socketType]) {
