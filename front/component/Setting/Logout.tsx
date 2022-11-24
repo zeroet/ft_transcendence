@@ -4,9 +4,9 @@ import { useCallback } from "react";
 import { mutate } from "swr";
 import useSocket from "../Utils/socket";
 
-const Logout = ({ refreshToken }: { refreshToken: string }) => {
+const Logout = ({ accessToken }: { accessToken: string }) => {
   const router = useRouter();
-  const [_, disconnet] = useSocket(refreshToken, "game");
+  const [_, disconnet] = useSocket(accessToken, "game");
   const logout = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
