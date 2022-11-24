@@ -14,7 +14,7 @@ const TextProfil = () => {
   const victory = 44432;
   const winRate = Math.round((victory / (loss + victory)) * 100);
 
-  if (error) axios.get("/api/auth/refresh");
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!user) return <Loading />;
   return (
     <div>

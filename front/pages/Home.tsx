@@ -9,11 +9,11 @@ import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { GetServerSideProps } from "next";
 
 export default function Home() {
   const { data, error } = useSWR("/api/users");
   const router = useRouter();
-
 
   if (data) {
     console.log(
@@ -23,8 +23,9 @@ export default function Home() {
       data.two_factor_valid
     );
   }
-  // SWR Config에 errorRetry 추가방법 찾기 
-  if (error) axios.get("/api/auth/refresh");
+  // SWR Config에 errorRetry 추가방법 찾기
+
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
     <Layout>
@@ -47,19 +48,7 @@ export default function Home() {
   );
 }
 
-/*
-https://sihus.tistory.com/34
-https://github.com/andreizanik/cookies-next
-
-
-
-setCookie는 쓸필없고
- deleteCookie 는 로그아웃에 이용
-
- 쿠키를 axios에 자동으로 넣을수있는 설정을 해야한다.
-*/
-
-export function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken, refreshToken } = cookie;
   if (!accessToken) {
@@ -72,4 +61,4 @@ export function getServerSideProps(context: any) {
   }
   tokenManager(cookie);
   return { props: {} };
-}
+};

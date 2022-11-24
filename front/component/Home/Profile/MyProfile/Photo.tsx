@@ -9,7 +9,7 @@ import axios from "axios";
 const Photo = () => {
   const { data: user, error } = useSWR<UserInfo>("/api/users", fetcher);
 
-  if (error) axios.get("/api/auth/refresh");
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!user) return <Loading />;
   return (
     <div>

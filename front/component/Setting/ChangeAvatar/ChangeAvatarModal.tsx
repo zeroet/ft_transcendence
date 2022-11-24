@@ -62,22 +62,19 @@ const ChangeAvatarModal = ({
       e.stopPropagation();
       e.preventDefault();
       if (avatar) {
-        await axios
-          .post("/api/setting/userimage", {
+        try {
+          await axios.post("/api/setting/userimage", {
             image_url: avatar,
-          })
-          .then(() => {
-            mutate("/api/users");
-            router.push("/Home");
-          })
-          .catch((err) => {
-            console.log(`error for avatar`, err);
-            alert("Size of file is too big, please less than 10kb");
-          })
-          .finally(() => modal(e));
-      } else {
-        modal(e);
+          });
+          mutate("/api/users");
+          router.push("/Home");
+        } catch (err) {
+          console.log(`error for avatar`, err);
+          alert("Size of file is too big, please less than 10kb");
+          console.log(e);
+        }
       }
+      modal(e);
     },
     [avatar]
   );

@@ -9,6 +9,7 @@ import useSocket from "../component/Utils/socket";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
+import { GetServerSideProps } from "next";
 
 export default function Game({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
@@ -20,7 +21,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
     });
   }
 
-  if (error) axios.get("/api/auth/refresh");
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socket) return <Loading />;
   return (
     <Layout>
@@ -42,7 +43,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
   );
 }
 
-export function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken, refreshToken } = cookie;
   if (!accessToken) {
@@ -59,4 +60,4 @@ export function getServerSideProps(context: any) {
       accessToken,
     },
   };
-}
+};

@@ -11,11 +11,12 @@ import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
+import { GetServerSideProps } from "next";
 
 export default function Setting() {
   const { data, error } = useSWR("/api/users");
 
-  if (error) axios.get("/api/auth/refresh");
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
     <Layout>
@@ -34,8 +35,8 @@ export default function Setting() {
         <div className="dummy"></div>
         <style jsx>{`
           .dummy {
-            // background-color: green;
           }
+
           .set-list {
             // background-color: yellow;
             display: grid;
@@ -48,7 +49,7 @@ export default function Setting() {
   );
 }
 
-export function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken, refreshToken } = cookie;
   if (!accessToken) {
@@ -61,4 +62,4 @@ export function getServerSideProps(context: any) {
   }
   tokenManager(cookie);
   return { props: {} };
-}
+};
