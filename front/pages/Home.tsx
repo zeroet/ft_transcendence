@@ -15,16 +15,8 @@ export default function Home() {
   const { data, error } = useSWR("/api/users");
   const router = useRouter();
 
-  if (data) {
-    console.log(
-      "activate",
-      data.two_factor_activated,
-      "valid",
-      data.two_factor_valid
-    );
-  }
-  // SWR Config에 errorRetry 추가방법 찾기
 
+  // SWR Config에 errorRetry 추가방법 찾기
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
