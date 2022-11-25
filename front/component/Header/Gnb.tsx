@@ -1,13 +1,26 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useCallback } from "react";
 import styles from "styles/Gnb.module.css";
 import SearchBar from "./SearchBar";
 
 export default function Gnb() {
+  const router = useRouter();
   // const router = useRouter();
+  const onClickImg42 = useCallback((e: React.MouseEvent<HTMLImageElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push("/");
+  }, []);
   return (
     <div className="header">
       <nav className={styles.navbar}>
-        <img src="/images/42Logo.png" alt="42logo" className={styles.logo} />
+        <img
+          onClick={onClickImg42}
+          src="/images/42Logo.png"
+          alt="42logo"
+          className={styles.logo}
+        />
         <ul className={styles.navbar_menu}>
           <li>
             <Link href="/Home" legacyBehavior>
@@ -40,6 +53,9 @@ export default function Gnb() {
           display: flex;
           justify-content: space-between;
           align-items: center;
+        }
+        img {
+          cursor: pointer;
         }
       `}</style>
     </div>

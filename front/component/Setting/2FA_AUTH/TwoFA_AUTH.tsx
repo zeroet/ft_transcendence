@@ -4,7 +4,6 @@ import React, { useCallback, useState } from "react";
 import useSWR, { mutate } from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
-import fetcher from "../../Utils/fetcher";
 
 const TwoFA_AUTH = ({
   modal,
@@ -14,7 +13,7 @@ const TwoFA_AUTH = ({
   ) => void;
 }) => {
   const router = useRouter();
-  const { data, error, isValidating } = useSWR("/api/users", fetcher);
+  const { data, error } = useSWR("/api/users");
   //   console.log(data);
   // state필요없고, get으로 데이터 넣고, post로 업데이트해야한다.
   // const [twoFactor, settwoFactor] = useState(false);
@@ -29,10 +28,12 @@ const TwoFA_AUTH = ({
   );
 
   const changeTwoFactorValidToFalse = useCallback(async () => {
-    await axios
-      .post("/api/two-factor/valid", { valid: false })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    try {
+      await axios.post("/api/two-factor/valid", { valid: true });
+      await mutate("/api/users");
+    } catch (e) {
+      console.log(e);
+    }
   }, []);
 
   // console.log(data.two_factor);
@@ -42,39 +43,35 @@ const TwoFA_AUTH = ({
     ) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log("on CLick");
       console.log("code qr", codeFromQRCode);
-
       if (data) {
         if (!data.two_factor_activated) {
-          await axios
-            .post("/api/two-factor/activate", {
+          try {
+            await axios.post("/api/two-factor/activate", {
               set: true,
               two_factor_code: codeFromQRCode,
-            })
-            .then(() => {
-              setCodeFromQRCode("");
-              // mutate("/api/users");
-              changeTwoFactorValidToFalse();
-              router.push("/Home");
-            })
-            .catch((err) => {
-              console.log(err);
-              alert("Wrong code");
             });
+            setCodeFromQRCode("");
+            console.log(data.two_factor_valid, "is valid valuie");
+            await changeTwoFactorValidToFalse();
+            router.push("/Home");
+          } catch (e) {
+            console.log(e);
+            alert("Wrong code");
+          }
         } else if (data.two_factor_activated) {
-          await axios
-            .post("/api/two-factor/deactivate", {
+          try {
+            await axios.post("/api/two-factor/deactivate", {
               set: false,
-            })
-            .then(() => {
-              // settwoFactor(false);
-              // mutate("/api/users");
-              router.push("/Home");
-            })
-            .catch((err) => console.log(err));
+            });
+            mutate("/api/users");
+            router.push("/Home");
+          } catch (e) {
+            console.log(e);
+          } finally {
+            setCodeFromQRCode("");
+          }
         }
-        setCodeFromQRCode("");
       }
     },
     [codeFromQRCode]
@@ -90,7 +87,7 @@ const TwoFA_AUTH = ({
   return (
     <div className="box">
       <div className="title">
-        <h2>Two Factor</h2>
+        <h2>2FA Auth</h2>
       </div>
       <form className="createForm" method="post">
         <div className="submitform">
@@ -103,8 +100,9 @@ const TwoFA_AUTH = ({
             <div>
               <img alt={data} src={"/api/two-factor/generate"} />
               <input
+                className="contexte"
                 onChange={onChangeCode}
-                placeholder="Code please"
+                placeholder="Code please (6 numbers)"
                 type="text"
                 value={codeFromQRCode}
               />
@@ -126,12 +124,6 @@ const TwoFA_AUTH = ({
           width: 200px;
           height: 180px;
         }
-        .buttonDiv {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-        }
         .is-active {
           color: black;
           font-family: "Doppio One";
@@ -145,15 +137,13 @@ const TwoFA_AUTH = ({
         .box {
           font-family: "Fragment Mono", monospace;
           position: fixed;
-          top: 30%;
-          left: 33%;
-
-          width: 500px;
-          height: 550px;
+          top: 15%;
+          left: 37%;
+          width: 400px;
+          height: 500px;
 
           background-color: white;
           border: 1px inset black;
-          // box-shadow: 10px 10px;
           text-transform: uppercase;
         }
         .title {
@@ -170,7 +160,7 @@ const TwoFA_AUTH = ({
         input {
           // background-color: tomato;
           font-family: "Fragment Mono", monospace;
-          width: 400px;
+          width: 200px;
           height: 30px;
           border-top: none;
           border-left: none;
@@ -178,6 +168,7 @@ const TwoFA_AUTH = ({
           border-bottom: 2px solid black;
           outline: none;
           margin-bottom: 20px;
+          margin-top: 10px;
         }
         input::placeholder {
           text-align: center;
@@ -186,6 +177,9 @@ const TwoFA_AUTH = ({
         button {
           text-align: center;
           padding-top: 20px;
+        }
+        .contexte {
+          text-align: center;
         }
         .buttonDiv {
           // background-color: yellow;
