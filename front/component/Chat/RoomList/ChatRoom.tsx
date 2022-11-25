@@ -39,8 +39,8 @@ export default function ChatRoom() {
         <button onClick={addChat} className="button" type="button">
           +
         </button>
+        <hr />
       </div>
-      <hr />
       {
         <ul key={data.posts.id}>
           {data.posts &&
@@ -69,7 +69,9 @@ export default function ChatRoom() {
         }
 
         .chat-div {
+          position: fixed;
           display: flex;
+          flex-direction: column;
           justify-content: space-between;
           align-items: center;
         }
@@ -84,7 +86,6 @@ export default function ChatRoom() {
           right: 0;
           background: rgba(0, 0, 0, 0.8);
         }
-       
       `}</style>
     </div>
   );
