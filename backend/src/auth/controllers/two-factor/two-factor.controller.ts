@@ -27,7 +27,7 @@ import { ITwoFactorService } from 'src/auth/services/two-factor/two-factor.inter
 import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies } from 'src/utils/types';
 
-@ApiTags('TWO_FACTOR')
+@ApiTags('TWO-FACTOR')
 @Controller('two-factor')
 export class TwoFactorContorller {
   constructor(

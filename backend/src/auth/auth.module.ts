@@ -12,7 +12,7 @@ import { JwtRefreshStrategy } from './strategies/jwt.refresh.strategy';
 import { UsersModule } from 'src/users/users.module';
 import { TwoFactorContorller } from './controllers/two-factor/two-factor.controller';
 import { TwoFactorService } from './services/two-factor/two-factor.service';
-import { JwtTwoFactorStrategy } from './strategies/jwt.twofactor.strategy';
+import { JwtTwoFactorStrategy } from './strategies/jwt.two-factor.strategy';
 
 @Module({
   imports: [

@@ -33,7 +33,7 @@ export class ChatroomController {
 
   @ApiOperation({
     summary:
-      'Get all members from a chatroom / 특정 대화방의 모든 참여자내역 가져오기',
+      'Get all members from a chatroom / 특정 대화방의 모든 참여자목록 가져오기',
   })
   @Get(':chatroom_id/members')
   getAllMembers() {}
