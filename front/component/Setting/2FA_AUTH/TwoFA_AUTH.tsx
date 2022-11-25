@@ -27,7 +27,7 @@ const TwoFA_AUTH = ({
     [codeFromQRCode]
   );
 
-  const changeTwoFactorValidToFalse = useCallback(async () => {
+  const changeTwoFactorValidToTrue = useCallback(async () => {
     try {
       await axios.post("/api/two-factor/valid", { valid: true });
       await mutate("/api/users");
@@ -53,7 +53,8 @@ const TwoFA_AUTH = ({
             });
             setCodeFromQRCode("");
             console.log(data.two_factor_valid, "is valid valuie");
-            await changeTwoFactorValidToFalse();
+            await changeTwoFactorValidToTrue();
+            modal(e);
             router.push("/Home");
           } catch (e) {
             console.log(e);
@@ -64,7 +65,8 @@ const TwoFA_AUTH = ({
             await axios.post("/api/two-factor/deactivate", {
               set: false,
             });
-            mutate("/api/users");
+            await mutate("/api/users");
+            modal(e);
             router.push("/Home");
           } catch (e) {
             console.log(e);
