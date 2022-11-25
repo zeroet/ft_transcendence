@@ -5,7 +5,6 @@ import useSocket from "../../Utils/socket";
 
 // 오너가 아니면, 일반 체크만 하는 페이지도 만들어야한다
 
-
 const GameSettingModal = ({
   accessToken,
   closeSettingModal,
@@ -14,7 +13,7 @@ const GameSettingModal = ({
   closeSettingModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   const router = useRouter();
-  const [socket, disconnet] = useSocket(accessToken, "game");
+  const [socket] = useSocket(accessToken, "game");
   const [speed, setSpeed] = useState<string>("50");
   const [ballSize, setBallSize] = useState<string>("50");
   const [roomName, setRoomName] = useState<string>("");

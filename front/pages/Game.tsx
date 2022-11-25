@@ -13,7 +13,7 @@ import { GetServerSideProps } from "next";
 
 export default function Game({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
-  const [socket, disconnet] = useSocket(accessToken, "game");
+  const [socket] = useSocket(accessToken, "game");
 
   // if (socket) {
   //   socket.on("connect", () => {
@@ -44,7 +44,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
-  const { accessToken, refreshToken } = cookie;
+  const { accessToken } = cookie;
   if (!accessToken) {
     return {
       redirect: {
