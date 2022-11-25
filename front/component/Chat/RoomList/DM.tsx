@@ -2,7 +2,7 @@ import useSWR from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
 import fetcher from "../../Utils/fetcher";
-import DmRoom from "./EachDmRoom";
+import EachDmRoom from "./EachDmRoom";
 
 export default function DM() {
   const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
@@ -20,7 +20,7 @@ export default function DM() {
           {data.posts &&
             data.posts.map((post: any) => (
               <li>
-                <DmRoom title={post.title} id={post.id} />
+                <EachDmRoom title={post.title} id={post.id} />
               </li>
             ))}
         </ul>
