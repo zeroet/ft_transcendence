@@ -104,6 +104,7 @@ export default function Enter({ path }: { path: string }) {
           }
           .enterImg {
             height: 150px;
+            cursor: pointer;
           }
 
           :root {

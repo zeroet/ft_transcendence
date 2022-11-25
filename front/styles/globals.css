@@ -12,7 +12,7 @@ h1,
 button {
   background-color: white;
   border-style: none;
-  font-family: "Doppio One";
+  font-family: "Fragment Mono", monospace;
   font-style: normal;
   font-weight: 400;
   font-size: 30px;
@@ -40,14 +40,13 @@ div {
   box-shadow: 10px 10px;
   margin: 30px;
   border: 2px solid;
-  font-family: "Doppio One";
+  font-family: "Fragment Mono", monospace;
   font-style: normal;
   font-weight: 400;
   font-size: 25px;
   line-height: 20px;
   text-align: center;
   padding-top: 12px;
-  cursor: pointer;
 }
 
 .setting-component:hover {
@@ -58,7 +57,9 @@ div {
 }
 
 .errorAndLoading {
-  color: greenyellow;
+  font-family: "Fragment Mono", monospace;
+  /* color: greenyellow; */
+  color: mediumaquamarine;
 }
 /* a {
   color: inherit;

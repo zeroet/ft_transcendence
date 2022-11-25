@@ -27,7 +27,7 @@ const TwoFA_AUTH = ({
     [codeFromQRCode]
   );
 
-  const changeTwoFactorValidToFalse = useCallback(async () => {
+  const changeTwoFactorValidToTrue = useCallback(async () => {
     try {
       await axios.post("/api/two-factor/valid", { valid: true });
       await mutate("/api/users");
@@ -53,7 +53,8 @@ const TwoFA_AUTH = ({
             });
             setCodeFromQRCode("");
             console.log(data.two_factor_valid, "is valid valuie");
-            await changeTwoFactorValidToFalse();
+            await changeTwoFactorValidToTrue();
+            modal(e);
             router.push("/Home");
           } catch (e) {
             console.log(e);
@@ -64,7 +65,8 @@ const TwoFA_AUTH = ({
             await axios.post("/api/two-factor/deactivate", {
               set: false,
             });
-            mutate("/api/users");
+            await mutate("/api/users");
+            modal(e);
             router.push("/Home");
           } catch (e) {
             console.log(e);
@@ -124,12 +126,6 @@ const TwoFA_AUTH = ({
           width: 200px;
           height: 180px;
         }
-        .buttonDiv {
-          // display: flex;
-          // flex-direction: column;
-          // align-items: center;
-          // justify-content: center;
-        }
         .is-active {
           color: black;
           font-family: "Doppio One";
@@ -145,13 +141,11 @@ const TwoFA_AUTH = ({
           position: fixed;
           top: 15%;
           left: 37%;
-
           width: 400px;
           height: 500px;
 
           background-color: white;
           border: 1px inset black;
-          // box-shadow: 10px 10px;
           text-transform: uppercase;
         }
         .title {
@@ -186,6 +180,9 @@ const TwoFA_AUTH = ({
           text-align: center;
           padding-top: 20px;
         }
+        .contexte {
+          text-align: center;
+        }
         .buttonDiv {
           // background-color: yellow;
           margin-top: 10px;
@@ -207,9 +204,6 @@ const TwoFA_AUTH = ({
           border: 1px solid black;
           cursor: pointer;
           margin-bottom: 20px;
-        }
-        .contexte {
-          text-align: center;
         }
       `}</style>
     </div>

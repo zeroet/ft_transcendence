@@ -1,20 +1,19 @@
 import Link from "next/link";
-import React from "react";
 
-
-interface EachRoomTye {
+interface EachDmRoomType {
   title: string;
   id: string;
 }
 
-const EachRoom = ({ title, id }: EachRoomTye) => {
+const EachDmRoom = ({ title, id }: EachDmRoomType) => {
   return (
     <div>
-      <Link href={`/ChatRoom/${id}`} legacyBehavior>
+      <Link href={`/EachDmRoom/${id}`} legacyBehavior>
         <a>
-          Room ${id}: ${title}
+          DM ${id} : ${title}
         </a>
       </Link>
+
       <style jsx>{`
         a {
           text-decoration: none;
@@ -25,4 +24,4 @@ const EachRoom = ({ title, id }: EachRoomTye) => {
   );
 };
 
-export default EachRoom;
+export default EachDmRoom;

@@ -11,7 +11,7 @@ const GameReadyModal = ({
   closeSettingModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   const router = useRouter();
-  const [socket, disconnet] = useSocket(accessToken, "game");
+  const [socket] = useSocket(accessToken, "game");
 
   const onClickSubmit = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {

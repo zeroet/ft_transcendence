@@ -15,6 +15,7 @@ export default function Home() {
   const { data, error } = useSWR("/api/users");
   const router = useRouter();
 
+
   // SWR Config에 errorRetry 추가방법 찾기
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
@@ -41,7 +42,7 @@ export default function Home() {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
-  const { accessToken, refreshToken } = cookie;
+  const { accessToken } = cookie;
   if (!accessToken) {
     return {
       redirect: {
