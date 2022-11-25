@@ -2,7 +2,7 @@ import useSWR from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
 import fetcher from "../../Utils/fetcher";
-import DmRoom from "./DmRoom";
+import EachDmRoom from "./EachDmRoom";
 
 export default function DM() {
   const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
@@ -15,16 +15,14 @@ export default function DM() {
 
   return (
     <div className="DM">
-      <h1>DM</h1>
-      <hr />
       {
         <ul key={data.posts.id}>
-          {data.posts && 
-            data.posts.map((post: any) => 
-            <li>
-              <DmRoom title={post.title} id={post.id}/>
-            </li>
-            )}
+          {data.posts &&
+            data.posts.map((post: any) => (
+              <li>
+                <EachDmRoom title={post.title} id={post.id} />
+              </li>
+            ))}
         </ul>
       }
       <style jsx>
@@ -39,9 +37,8 @@ export default function DM() {
             text-transform: uppercase;
           }
           .DM {
-            height: 50%;
+            height: 300px;
           }
-          
         `}
       </style>
     </div>
