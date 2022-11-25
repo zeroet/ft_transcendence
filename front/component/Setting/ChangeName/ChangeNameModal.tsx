@@ -48,7 +48,7 @@ const ChangeNameModal = ({
         }
       } else {
         alert("new nickname should be 1 ~ 20 characters");
-        modal(e);
+        // modal(e);
       }
     },
     [newNickName]
@@ -114,6 +114,7 @@ const ChangeNameModal = ({
           border-bottom: 2px solid black;
           outline: none;
           margin-bottom: 20px;
+          text-align: center;
         }
         input::placeholder {
           text-align: center;
