@@ -1,9 +1,15 @@
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { IChatMember } from '../interfaces/IChatMemeber';
 
 @Entity({ name: 'chat_member' })
 export class ChatMember implements IChatMember {
-  @Column()
+  @PrimaryGeneratedColumn()
   user_id: number;
 
   @Column()

@@ -21,4 +21,8 @@ Cookie: accessToken = {{accessToken}}
 
 
 
+### Get all chatrooms
+Get {{serverUrl}}/chatroom/ HTTP/1.1
+Cookie: accessToken = {{accessToken}}
+
 

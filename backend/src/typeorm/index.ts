@@ -1,5 +1,9 @@
+import { ChatContent } from './entities/chatContent.entity';
+import { ChatMember } from './entities/chatMember.entitiy';
+import { Chatroom } from './entities/chatroom.entity';
+import { Dm } from './entities/dm.entity';
 import { User } from './entities/user.entity';
 
-export const entities = [User];
+export const entities = [User, Chatroom, ChatMember, ChatContent, Dm];
 
-export { User };
+export { User, Chatroom, ChatMember, ChatContent, Dm };

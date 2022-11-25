@@ -18,7 +18,7 @@ export class Chatroom implements IChatroom {
   @Column({ unique: true, nullable: false, length: 30 })
   chatroom_name: string;
 
-  @Column({ default: null })
+  @Column({ default: null, nullable: true, length: 30 })
   password: string;
 
   @Column()
