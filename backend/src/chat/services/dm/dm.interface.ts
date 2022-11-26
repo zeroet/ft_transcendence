@@ -1,1 +1,4 @@
-export interface IDmService {}
+export interface IDmService {
+  getMessages();
+  postMessage();
+}

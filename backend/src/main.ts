@@ -21,7 +21,7 @@ async function bootstrap() {
   );
   const config = new DocumentBuilder()
     .setTitle('Barcodepong API')
-    .setDescription('API Document for Barcodepong development')
+    .setDescription('API Documentation for Barcodepong development')
     .setVersion('1.0')
     .build();
 

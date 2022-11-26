@@ -1,8 +1,13 @@
+import { IChatroom } from './IChatroom';
+import { IUser } from './IUser';
+
 export interface IChatContent {
-  chat_content_id: number;
-  chatroom_id: number;
-  user_id: number;
+  chatContentId: number;
+  chatroomId: number;
+  userId: number;
   content: string;
-  created_at: Date;
-  modified_at: Date;
+  createdAt: Date;
+  modifiedAt: Date;
+  Chatroom: IChatroom;
+  User: IUser;
 }

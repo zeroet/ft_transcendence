@@ -1,8 +1,12 @@
+import { IUser } from './IUser';
+
 export interface IDm {
-  dm_id: number;
-  sender_id: number;
-  receiver_id: number;
+  dmId: number;
+  senderId: number;
+  receiverId: number;
   content: string;
-  created_at: Date;
-  modified_at: Date;
+  createdAt: Date;
+  modifiedAt: Date;
+  Sender: IUser;
+  Receiver: IUser;
 }
