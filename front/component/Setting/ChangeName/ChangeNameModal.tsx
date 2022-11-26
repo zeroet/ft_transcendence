@@ -35,19 +35,20 @@ const ChangeNameModal = ({
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       e.preventDefault();
-      if (newNickName.length >= 1 && newNickName.length <= 20) {
+      if (newNickName.length >= 1 && newNickName.length <= 30) {
         try {
           await axios.post("/api/setting/username?", {
             username: newNickName,
           });
           mutate("/api/users");
+          setNewNickName("");
         } catch (err) {
           console.log(err);
         } finally {
           router.push("/Home");
         }
       } else {
-        alert("new nickname should be 1 ~ 20 characters");
+        alert("new nickname should be 1 ~ 30 characters");
         // modal(e);
       }
     },
@@ -65,7 +66,7 @@ const ChangeNameModal = ({
             <input
               onChange={getNewNickName}
               type="text"
-              placeholder="new nickname should be less then 10 characters"
+              placeholder="new nickname should be less then 30 characters"
             />
           </div>
         </div>

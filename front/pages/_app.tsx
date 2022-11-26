@@ -8,9 +8,8 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <SWRConfig
       value={{
-        onError: (error, key) => {
+        onError: (error) => {
           if (error) {
-            // axios.get("/api/auth/refresh");
             console.log("here is _app", error);
           }
         },

@@ -11,7 +11,7 @@ import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 
-export default function Chat({ refreshToken }: { refreshToken: string }) {
+export default function Chat() {
   const { data, error } = useSWR("/api/users");
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
@@ -33,7 +33,7 @@ export default function Chat({ refreshToken }: { refreshToken: string }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
-  const { accessToken, refreshToken } = cookie;
+  const { accessToken } = cookie;
   if (!accessToken) {
     return {
       redirect: {
@@ -43,5 +43,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   tokenManager(cookie);
-  return { props: { refreshToken } };
+  return { props: {} };
 };
