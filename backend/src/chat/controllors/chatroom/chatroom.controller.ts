@@ -1,11 +1,13 @@
-import { Controller, Get, Inject, Post } from '@nestjs/common';
+import { Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { IChatroomService } from 'src/chat/services/chatromm/chatroom.interface';
 import { User } from 'src/utils/decorators/user.decorator';
 
 @ApiTags('CHATROOM')
 @Controller('chatroom')
+@UseGuards(JwtAccessAuthGuard)
 export class ChatroomController {
   constructor(
     @Inject('CHATROOM_SERVICE') private chatroomService: IChatroomService,

@@ -7,7 +7,7 @@ export class CreateChatroomDto {
     description: 'chatroom name',
   })
   @IsString()
-  chatroom_name: string;
+  chatroomName: string;
 
   @ApiProperty({
     type: 'string',

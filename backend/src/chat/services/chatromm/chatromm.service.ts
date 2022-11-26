@@ -20,8 +20,13 @@ export class ChatrommService implements IChatroomService {
   getAllChatrooms() {
     this.chatroomRepository.find();
   }
-  createChatroom(user_id: number, createChatroomDto: CreateChatroomDto) {
-    const chatroom = this.chatroomRepository.createQueryBuilder('chatroom');
+  createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
+    const chatroom = this.chatroomRepository.create({
+      ownerId: userId,
+      ...createChatroomDto,
+    });
+    return this.chatroomRepository.save(chatroom);
+    // const chatroom = this.chatroomRepository.createQueryBuilder('chatroom');
     //   .innerJoinAndSelect();
     // return this.chatroomRepository.save(chatroom);
   }
