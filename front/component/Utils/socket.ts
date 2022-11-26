@@ -27,7 +27,7 @@ const useSocket = (
     });
     console.log("=================create new socket==========================");
   } else {
-    console.log("======================use socket=====================");
+    // console.log("======================use socket=====================");
   }
 
   return [socket[socketType], disconnect];
