@@ -27,6 +27,7 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
   // https://www.daleseo.com/css-position/
   // https://linguinecode.com/post/how-to-use-react-useref-with-typescript
   // //////////////////////////////////////////////////////// ref 원도우 사이즈 알기위함
+  // ref를 이용해서 윈도우 사이즈를 얻어, right paddle오른쪽값주고, 공도 relative로 사이즈를 주자
   const windowSize = useRef();
 
   const { data, error } = useSWR("/api/users");
