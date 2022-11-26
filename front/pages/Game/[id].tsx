@@ -9,25 +9,88 @@ import TwoFactorModal from "../../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { useEffect } from "react";
-import PlayGame from "../../component/Game/GameBody/PlayGame";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+
+interface GameElement {
+  ballX: string;
+  ballY: string;
+  ballSize: number;
+  leftPaddle: number;
+  rightPaddle: number;
+  myScore: string;
+  otherSideScore: string;
+}
 
 export default function Gaming({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
   const [socket] = useSocket(accessToken, "game");
   const router = useRouter();
-  console.log(`we are room : ${router}`);
+
+  // 마운트 파트
+  // 게임
+  //   const [gameChanged, setGameChanged] = useState<GameElement | undefined>(undefined);
+  const [gameChanged, setGameChanged] = useState<GameElement | undefined>({
+    ballX: "50",
+    ballY: "50",
+    ballSize: 50,
+    leftPaddle: 50,
+    rightPaddle: 50,
+    myScore: "1",
+    otherSideScore: "3",
+  });
+
+  const onChangeftPaddle = (e: KeyboardEvent) => {
+    if (gameChanged === undefined) return;
+    const key = e.key;
+    if (key === "w" || key === "s") {
+      if (!(gameChanged.leftPaddle > 0 && gameChanged.leftPaddle < 100)) return;
+      if (key === "w") {
+        // real
+        socket?.emit("paddle", {
+          key: "up",
+        });
+        // test
+        // console.log(gameChanged.leftPaddle);
+        // setGameChanged({
+        //   ...gameChanged,
+        //   leftPaddle: gameChanged.leftPaddle - 1,
+        // });
+        console.log(gameChanged);
+        console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
+      } else {
+        // real
+        socket?.emit("paddle", {
+          key: "down",
+        });
+        // test
+        // setGameChanged({
+        //   ...gameChanged,
+        //   leftPaddle: gameChanged.leftPaddle + 1,
+        // });
+        console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
+      }
+    }
+  };
 
   useEffect((): (() => void) => {
-    socket?.on("connect", () => {
-      console.log("game", socket.id);
+    console.log(
+      `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
+    );
+    window.addEventListener("keydown", onChangeftPaddle);
+    socket?.on("playGame", (res: GameElement) => {
+      setGameChanged(res);
+      // setState!!!로 리렌더하면서 애니메이션
     });
     return () => {
-      socket?.off("connect");
-      console.log(`id.tsx에서 마운트내려가는지 : ${router.query.id}`);
+      console.log(`mount off play game ${router.query.id} room!`);
+      socket?.off("playGame");
+      socket?.off("paddle");
     };
-  });
+  }, [router.query.id]);
+  // deps 는 state들 바뀔때마다?하지않아도될듯
+  // set는 변하지않아도되므로!
+
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socket) return <Loading />;
   return (
@@ -36,13 +99,85 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
       {data.two_factor_activated && !data.two_factor_valid && (
         <TwoFactorModal />
       )}
-      <div>
+      <div className="grid-div">
         <GameList accessToken={accessToken} />
-        <PlayGame accessToken={accessToken} />
-        <style jsx>{`
-          div {
+        <div className="play-game">
+          <div className="score">
+            <div className="score">{gameChanged?.myScore}</div>
+            <div className="score">{gameChanged?.otherSideScore}</div>
+          </div>
+          <div className="ball"></div>
+          <div className="paddle left"></div>
+          <div className="paddle right"></div>
+        </div>
+        <style jsx global>{`
+          .grid-div {
             display: grid;
             grid-template-columns: 1fr 3fr;
+          }
+
+          *,
+          *::after,
+          *::before {
+            box-sizing: border-box;
+          }
+
+          :root {
+            --hue: 200;
+            --saturation: 0%;
+            --foreground-color: hsl(var(--hue), var(--saturation), 75%);
+            --background-color: hsl(var(--hue), var(--saturation), 20%);
+          }
+
+          .play-game {
+            //   padding: 10px;
+            margin: 15px;
+            background-color: var(--background-color);
+          }
+
+          .paddle {
+            position: absolute;
+            background-color: var(--foreground-color);
+            width: 1vh;
+            top: calc(var(--position) * 1vh);
+            height: 10vh;
+            trasform: traslate(-50%);
+          }
+
+          .left {
+            --position: ${gameChanged?.leftPaddle};
+          }
+
+          .right {
+            --position: ${gameChanged?.rightPaddle};
+            right: 1vw;
+          }
+
+          .score {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 7vh;
+            color: var(--foregroud-color);
+          }
+
+          .score > * {
+            flex-grow: 1;
+            flex-basis: 0;
+          }
+
+          .ball {
+            --x: ${gameChanged?.ballX};
+            --y: ${gameChanged?.ballY};
+
+            position: absolute;
+            background-color: var(--foreground-color);
+            left: calc(var(--x) * 1vw);
+            top: calc(var(--y) * 1vh);
+            trasform: traslate(-50%, -50%);
+            border-radius: 50%;
+            width: ${gameChanged && gameChanged.ballSize / 2}px;
+            height: ${gameChanged && gameChanged.ballSize / 2}px;
           }
         `}</style>
       </div>
