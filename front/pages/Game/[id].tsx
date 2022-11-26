@@ -1,219 +1,58 @@
 import cookies from "next-cookies";
-import { useEffect, useRef, useState } from "react";
+import GameList from "../../component/Game/GameList";
+import Layout from "../../component/Layout";
+import Title from "../../component/Title";
+import tokenManager from "../../component/Utils/tokenManager";
 import Loading from "../../component/errorAndLoading/Loading";
 import useSocket from "../../component/Utils/socket";
-import tokenManager from "../../component/Utils/tokenManager";
+import TwoFactorModal from "../../component/Home/TwoFactorModal";
+import useSWR from "swr";
+import axios from "axios";
+import { GetServerSideProps } from "next";
+import { useEffect } from "react";
+import PlayGame from "../../component/Game/GameBody/PlayGame";
+import { useRouter } from "next/router";
 
-interface XYType {
-  x: number;
-  y: number;
+export default function Gaming({ accessToken }: { accessToken: string }) {
+  const { data, error } = useSWR("/api/users");
+  const [socket] = useSocket(accessToken, "game");
+  const router = useRouter();
+  console.log(`we are room : ${router}`);
+
+  useEffect((): (() => void) => {
+    socket?.on("connect", () => {
+      console.log("game", socket.id);
+    });
+    return () => {
+      socket?.off("connect");
+      console.log(`id.tsx에서 마운트내려가는지 : ${router.query.id}`);
+    };
+  });
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!data || !socket) return <Loading />;
+  return (
+    <Layout>
+      <Title title="Game" />
+      {data.two_factor_activated && !data.two_factor_valid && (
+        <TwoFactorModal />
+      )}
+      <div>
+        <GameList accessToken={accessToken} />
+        <PlayGame accessToken={accessToken} />
+        <style jsx>{`
+          div {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+          }
+        `}</style>
+      </div>
+    </Layout>
+  );
 }
 
-const PlayGame = ({ accessToken }: { accessToken: string }) => {
-  /**
-   *
-   */
-  const [socket] = useSocket(accessToken, "game");
-  useEffect(() => {
-    if (socket) {
-      console.log("in play game", socket.id);
-    }
-  }, []);
-
-  /**
-   *
-   */
-
-  const [leftPaddle, setLeftPaddle] = useState<number>(50);
-  const [myScore, setMySore] = useState<number>(0);
-  const [otherSideScore, setOtherSideSore] = useState<number>(0);
-
-  const onChangeftPaddle = (e: KeyboardEvent) => {
-    const key = e.key;
-    if (key === "w" || key === "s") {
-      if (!(leftPaddle > 0 && leftPaddle < 100)) return;
-      if (key === "w") {
-        setLeftPaddle((curr) => curr - 0.8);
-      } else {
-        setLeftPaddle((curr) => curr + 0.8);
-      }
-    }
-  };
-
-  // serverside!!!!!!!!!!!
-  /**
-   * x 2 ~ 94
-   *
-   * y = 0 ~ 97
-   */
-
-  // ball x
-  // const ballX = useRef<number>(50);
-  // const ballY = useRef<number>(50);
-  const ball = useRef<XYType>({
-    x: 50,
-    y: 50,
-  });
-  // ball speed
-  const [ballSpeed, setBallSpeed] = useState<number>(250);
-  // 상대편 플레이어
-  const [rightPaddle, setRightPaddle] = useState<number>(50);
-  // ball movement
-
-  const ballDirection = useRef<XYType>({
-    x: 1,
-    y: 1,
-  });
-
-  const ballMovement = () => {
-    if (
-      ball.current.x <= 2 ||
-      ball.current.x >= 94 ||
-      ball.current.y <= 0 ||
-      ball.current.y >= 97
-    ) {
-      if (ball.current.x <= 2) {
-        // ballDirectionX.current *= -1;
-        ballDirection.current.x *= -1;
-        ball.current.x += 1;
-        // ball.current.x = 50;
-        // ball.current.x = 50;
-      }
-      if (ball.current.x >= 94) {
-        ballDirection.current.x *= -1;
-        ball.current.x -= 1;
-        // ball.current.x = 50;
-        // ball.current.x = 50;
-      }
-      if (ball.current.y <= 0) {
-        ballDirection.current.y *= -1;
-        ball.current.y += 1;
-      }
-      if (ball.current.y >= 97) {
-        ballDirection.current.y *= -1;
-        ball.current.y -= 1;
-      }
-    }
-    // setBallDirection((curr) => curr * -1);
-    ball.current.x += ballDirection.current.x * 0.075;
-    ball.current.y += ballDirection.current.y * 0.05;
-  };
-
-  //   console.log(ball.current.x);
-  //   console.log(ball.current.y);
-
-  useEffect(() => {
-    window.addEventListener("keydown", onChangeftPaddle);
-  }, []);
-
-  const [rerender, setRerender] = useState(0);
-
-  useEffect(() => {
-    setInterval(() => {
-      ballMovement();
-      setRerender((curr) => curr + 1);
-    }, 5);
-  }, []);
-
-  /**
-   *  언마운트가 아닌, 게임이 끝난후에 소켓 제거하자!!!!!!!!!!
-   */
-  //   // 게임완료후에 소켓제거
-  //   useEffect(() => {
-  //     return () => {
-  //       // 언마운트시 소켓 제거
-  //       disconnet();
-  //     };
-  //   }, []);
-  // setInterval(() => {
-  //   // ballMovement();
-  //   console.log("ha");
-  // }, 1500);
-  // setRerender((curr) => curr + 1);
-  if (!socket) return <Loading />;
-  return (
-    <div>
-      <div className="score">
-        <div className="score">{myScore}</div>
-        <div className="score">{otherSideScore}</div>
-      </div>
-      <div className="ball"></div>
-      <div className="paddle left"></div>
-      <div className="paddle right"></div>
-      <style jsx global>{`
-        *,
-        *::after,
-        *::before {
-          box-sizing: border-box;
-        }
-
-        :root {
-          --hue: 200;
-          --saturation: 0%;
-          --foreground-color: hsl(var(--hue), var(--saturation), 75%);
-          --background-color: hsl(var(--hue), var(--saturation), 20%);
-        }
-
-        body {
-          padding: 10px;
-          background-color: var(--background-color);
-        }
-
-        .paddle {
-          position: absolute;
-          background-color: var(--foreground-color);
-          width: 1vh;
-          top: calc(var(--position) * 1vh);
-          height: 10vh;
-          trasform: traslate(-50%);
-        }
-
-        .left {
-          --position: ${leftPaddle};
-          left: 1vw;
-        }
-
-        .right {
-          --position: ${rightPaddle};
-          right: 1vw;
-        }
-
-        .score {
-          display: flex;
-          justify-content: center;
-          font-weight: bold;
-          font-size: 7vh;
-          color: var(--foregroud-color);
-        }
-
-        .score > * {
-          flex-grow: 1;
-          flex-basis: 0;
-        }
-
-        .ball {
-          --x: ${ball.current.x};
-          --y: ${ball.current.y};
-
-          position: absolute;
-          background-color: var(--foreground-color);
-          left: calc(var(--x) * 1vw);
-          top: calc(var(--y) * 1vh);
-          trasform: traslate(-50%, -50%);
-          border-radius: 50%;
-          width: 2.5vh;
-          height: 2.5vh;
-        }
-      `}</style>
-    </div>
-  );
-};
-
-export default PlayGame;
-
-export function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
-  const { accessToken, refreshToken } = cookie;
+  const { accessToken } = cookie;
   if (!accessToken) {
     return {
       redirect: {
@@ -228,4 +67,4 @@ export function getServerSideProps(context: any) {
       accessToken,
     },
   };
-}
+};

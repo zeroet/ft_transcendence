@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import Loading from "../../../component/errorAndLoading/Loading";
 import useSocket from "../../../component/Utils/socket";
@@ -5,59 +6,93 @@ import useSocket from "../../../component/Utils/socket";
 interface GameElement {
   ballX: string;
   ballY: string;
-  leftPaddle: string;
-  rightPaddle: string;
+  ballSize: number;
+  leftPaddle: number;
+  rightPaddle: number;
   myScore: string;
   otherSideScore: string;
 }
 
 const PlayGame = ({ accessToken }: { accessToken: string }) => {
+  //방 이름 확인
+  const router = useRouter();
+  console.log(router.query.id);
+
   const [socket] = useSocket(accessToken, "game");
-  const [gameChanged, setGameChanged] = useState<GameElement>({
-    ballX: "",
-    ballY: "",
-    leftPaddle: "",
-    rightPaddle: "",
-    myScore: "",
-    otherSideScore: "",
+  // 나중에 실재로 사용할 state/ socket으로 위치를 받은후에 나타내야한다.
+  //   const [gameChanged, setGameChanged] = useState<GameElement | undefined>(undefined);
+
+  const [gameChanged, setGameChanged] = useState<GameElement | undefined>({
+    ballX: "50",
+    ballY: "50",
+    ballSize: 50,
+    leftPaddle: 50,
+    rightPaddle: 50,
+    myScore: "1",
+    otherSideScore: "3",
   });
 
   // 내가 패들 수정. socket.emit으로 보내야함
-  const onChangeftPaddle = useCallback((e: KeyboardEvent) => {
+  const onChangeftPaddle = (e: KeyboardEvent) => {
+    if (gameChanged === undefined) return;
     const key = e.key;
     if (key === "w" || key === "s") {
-      if (!(gameChanged.leftPaddle > "0" && gameChanged.leftPaddle < "100"))
-        return;
+      if (!(gameChanged.leftPaddle > 0 && gameChanged.leftPaddle < 100)) return;
       if (key === "w") {
+        // real
         socket?.emit("paddle", {
-          key: "w",
+          key: "up",
         });
+        // test
+        console.log(gameChanged.leftPaddle);
+        setGameChanged({
+          ...gameChanged,
+          leftPaddle: gameChanged.leftPaddle - 1,
+        });
+        console.log(gameChanged);
+        console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
       } else {
+        // real
         socket?.emit("paddle", {
-          key: "s",
+          key: "down",
         });
+        // test
+        setGameChanged({
+          ...gameChanged,
+          leftPaddle: gameChanged.leftPaddle + 1,
+        });
+        console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
       }
     }
-  }, []);
+  };
 
   useEffect((): (() => void) => {
+    console.log(
+      `mount on play game ============================ ${router.query.id} room!`
+    );
     window.addEventListener("keydown", onChangeftPaddle);
     console.log("in play game", socket?.id);
     socket?.on("playGame", (res: GameElement) => {
       setGameChanged(res);
       // setState!!!로 리렌더하면서 애니메이션
     });
-    return () => socket?.off("playGame");
+    return () => {
+      console.log(
+        `mount off play game ============================ ${router.query.id} room!`
+      );
+      socket?.off("playGame");
+      socket?.off("paddle");
+    };
   }, []);
   // deps 는 state들 바뀔때마다?하지않아도될듯
   // set는 변하지않아도되므로!
 
   if (!socket) return <Loading />;
   return (
-    <div>
+    <div className="play-game">
       <div className="score">
-        <div className="score">{gameChanged.myScore}</div>
-        <div className="score">{gameChanged.otherSideScore}</div>
+        <div className="score">{gameChanged?.myScore}</div>
+        <div className="score">{gameChanged?.otherSideScore}</div>
       </div>
       <div className="ball"></div>
       <div className="paddle left"></div>
@@ -76,8 +111,9 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
           --background-color: hsl(var(--hue), var(--saturation), 20%);
         }
 
-        body {
-          padding: 10px;
+        .play-game {
+          //   padding: 10px;
+          margin: 15px;
           background-color: var(--background-color);
         }
 
@@ -91,12 +127,11 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
         }
 
         .left {
-          --position: ${gameChanged.leftPaddle};
-          left: 1vw;
+          --position: ${gameChanged?.leftPaddle};
         }
 
         .right {
-          --position: ${gameChanged.rightPaddle};
+          --position: ${gameChanged?.rightPaddle};
           right: 1vw;
         }
 
@@ -114,8 +149,8 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
         }
 
         .ball {
-          --x: ${gameChanged.ballX};
-          --y: ${gameChanged.ballY};
+          --x: ${gameChanged?.ballX};
+          --y: ${gameChanged?.ballY};
 
           position: absolute;
           background-color: var(--foreground-color);
@@ -123,8 +158,8 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
           top: calc(var(--y) * 1vh);
           trasform: traslate(-50%, -50%);
           border-radius: 50%;
-          width: 2.5vh;
-          height: 2.5vh;
+          width: ${gameChanged && gameChanged.ballSize / 2}px;
+          height: ${gameChanged && gameChanged.ballSize / 2}px;
         }
       `}</style>
     </div>
