@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect } from "react";
 import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
 
@@ -18,21 +18,30 @@ const GameReadyModal = ({
       e.stopPropagation();
       e.preventDefault();
 
-      /**
-       * 게임으로 고!
-       *
-       */
-      router.push("/Game/1");
-      /**
-       *
-       */
+      socket?.emit("game_setting", {
+        roomName: "",
+        speed: " ",
+        ballSize: "",
+      });
+
+      //테스트용 원래는 useEffect에서 해야함
+      console.log("game ready modal click ok");
+      router.push(`/Game/test!!!`);
     },
     []
   );
 
-  //   if (socket && socket.id) {
-  //     console.log(`game speed and ball setting modal ${socket.id}`);
-  //   }
+  useEffect((): (() => void) => {
+    console.log("in game ready modal", socket?.id);
+    socket?.on("ready", (roonNameFromSocket) => {
+      router.push(`/Game/${roonNameFromSocket}`);
+    });
+    return () => {
+      console.log("off socket in game ready modal");
+      socket?.off("ready");
+      socket?.off("game_setting");
+    };
+  }, []);
   if (!socket) return <Loading />;
   return (
     <div className="box">
