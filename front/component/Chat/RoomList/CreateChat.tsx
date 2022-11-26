@@ -21,9 +21,12 @@ const CreateChat: FC<Props> = ({ onClose }) => {
     setPw(e.target.value.trim());
 
   const createRoom = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      axios
+      console.log(RoomName);
+      console.log(RoomPw);
+
+      await axios
         .post("/api/chatroom", { chatroomName: RoomName, password: RoomPw })
         .then(() => {
           setName("");

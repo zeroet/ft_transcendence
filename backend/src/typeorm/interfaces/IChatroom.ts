@@ -1,3 +1,4 @@
+import { IChatContent } from './IChatContent';
 import { IChatMember } from './IChatMemeber';
 
 export interface IChatroom {
@@ -9,4 +10,5 @@ export interface IChatroom {
   createdAt: Date;
   modifiedAt: Date;
   ChatMember: IChatMember[];
+  ChatContent: IChatContent[];
 }

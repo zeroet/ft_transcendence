@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
@@ -24,7 +24,13 @@ export class ChatroomController {
   })
   @ApiOperation({ summary: 'Create a chatroom / 대화방 생성하기' })
   @Post()
-  createChatroom(@User() user, createChatroomDto: CreateChatroomDto) {
+  async createChatroom(
+    @User() user,
+    @Body() createChatroomDto: CreateChatroomDto,
+  ) {
+    // console.log('createChatroom()');
+    // console.log('user:', user);
+    // console.log('dto:', createChatroomDto);
     return this.chatroomService.createChatroom(user.id, createChatroomDto);
   }
 
