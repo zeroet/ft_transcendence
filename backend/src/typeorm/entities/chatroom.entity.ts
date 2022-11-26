@@ -2,31 +2,54 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IChatContent } from '../interfaces/IChatContent';
+import { IChatMember } from '../interfaces/IChatMemeber';
 import { IChatroom } from '../interfaces/IChatroom';
+import { ChatContent } from './chatContent.entity';
+import { ChatMember } from './chatMember.entitiy';
 
 @Entity({ name: 'chatroom' })
 export class Chatroom implements IChatroom {
-  @PrimaryGeneratedColumn()
-  chatroom_id: number;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'chatroom_id' })
+  chatroomId: number;
 
-  @Column()
-  owner_id: number;
+  @Column({ type: 'int', name: 'owner_id' })
+  ownerId: number;
 
-  @Column({ unique: true, nullable: false, length: 30 })
-  chatroom_name: string;
+  @Column({
+    type: 'varchar',
+    name: 'chatroom_name',
+    unique: true,
+    nullable: false,
+    length: 30,
+  })
+  chatroomName: string;
 
-  @Column({ default: null, nullable: true, length: 30 })
+  @Column({
+    type: 'varchar',
+    name: 'password',
+    default: null,
+    nullable: true,
+    length: 30,
+  })
   password: string;
 
-  @Column()
-  max_member_num: number;
+  // @Column()
+  // maxMemberNum: number;
 
-  @CreateDateColumn()
-  readonly created_at: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  readonly createdAt: Date;
 
-  @UpdateDateColumn()
-  readonly modified_at: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
+  readonly modifiedAt: Date;
+
+  @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.Chatroom)
+  ChatMember: IChatMember[];
+
+  @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.Chatroom)
+  ChatContent: IChatContent[];
 }

@@ -1,8 +1,11 @@
+import { IChatroom } from './IChatroom';
+
 export interface IChatMember {
-  user_id: number;
-  chatroom_id: number;
-  muted_date: Date;
-  ban_date: Date;
-  created_at: Date;
-  modified_at: Date;
+  userId: number;
+  chatroomId: number;
+  mutedDate: Date;
+  banDate: Date;
+  createdAt: Date;
+  modifiedAt: Date;
+  Chatroom: IChatroom;
 }

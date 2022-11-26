@@ -2,28 +2,36 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { IChatMember } from '../interfaces/IChatMemeber';
+import { IChatroom } from '../interfaces/IChatroom';
+import { Chatroom } from './chatroom.entity';
 
 @Entity({ name: 'chat_member' })
 export class ChatMember implements IChatMember {
-  @PrimaryGeneratedColumn()
-  user_id: number;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'user_id' })
+  userId: number;
 
-  @Column()
-  chatroom_id: number;
+  @Column({ type: 'int', name: 'chatroom_id' })
+  chatroomId: number;
 
-  @Column()
-  muted_date: Date;
+  @Column({ type: 'timestamp', name: 'muted_date' })
+  mutedDate: Date;
 
-  @Column()
-  ban_date: Date;
+  @Column({ type: 'timestamp', name: 'ban_date' })
+  banDate: Date;
 
-  @CreateDateColumn()
-  readonly created_at: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  readonly createdAt: Date;
 
-  @UpdateDateColumn()
-  readonly modified_at: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
+  readonly modifiedAt: Date;
+
+  @ManyToOne((type) => Chatroom, (Chatroom) => Chatroom.ChatMember)
+  @JoinColumn({ name: 'chatroom_id', referencedColumnName: 'chatroomId' })
+  Chatroom: IChatroom;
 }
