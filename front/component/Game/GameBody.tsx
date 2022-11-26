@@ -1,5 +1,4 @@
-import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
@@ -7,51 +6,58 @@ import GameReadyModal from "./GameBody/GameReadyModal";
 import GameSettingModal from "./GameBody/GameSettingModal";
 
 export default function GameBody({ accessToken }: { accessToken: string }) {
-  const [waitModal, setWaitModal] = useState(false);
   const [settingModal, setSettingModal] = useState(false);
   const [socket] = useSocket(accessToken, "game");
-  const router = useRouter();
+  const [ownerOrPlayer, setOwnerOrPlayer] = useState<string>("");
 
   const onClickWaitModal = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      setWaitModal((curr) => !curr);
+      setSettingModal(true);
     },
-    []
+    [settingModal]
   );
 
-  const onClickCancle = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setWaitModal((curr) => !curr);
-    // Router.push("/Game/1");
-  }, []);
+  const onClickCancle = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setSettingModal(false);
+    },
+    [settingModal]
+  );
 
-  const closeSettingModal = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setSettingModal((curr) => !curr);
-    setWaitModal((curr) => !curr);
-    //지금은 setTimeout 때문에 계속 바뀜
-    router.push("/Home");
-  };
+  const closeSettingModal = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setSettingModal(false);
+    },
+    [settingModal]
+  );
 
-  /**
-   * socket.on('ready', ()=> {
-   *   setSettingModal(true);
-   * })
-   */
-  // 큐 찾아서 들어가는 시간
-  // 나중에는 소켓 on으로 큐에 들어가게되면 setSettingModal 을 바꿔주면된다.
-  if (waitModal) {
+  // 위의 대체를 위해서 setTimeout 3초
+  if (settingModal) {
     setTimeout(() => {
-      setSettingModal(true);
-    }, 2000);
+      setOwnerOrPlayer("owner");
+    }, 3000);
   }
-  /**
-   *
-   */
+
+  useEffect((): (() => void) => {
+    if (settingModal) {
+      console.log("게임 대기큐!", socket?.id);
+      socket?.on("waiting_queue", (res) => {
+        // 받았으면, 오너인지 아니면, 플레이어인지 확인
+        setOwnerOrPlayer("owner");
+        // or
+        setOwnerOrPlayer("player");
+      });
+    }
+    return () => {
+      socket?.off("waiting_queue");
+    };
+  }, [settingModal]);
 
   if (socket) {
     socket.on("connect", () => {
@@ -62,7 +68,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
   if (!socket) return <Loading />;
   return (
     <div className={styles.box}>
-      {!waitModal && !settingModal && (
+      {!settingModal && (
         <img
           onClick={onClickWaitModal}
           className="img-vector"
@@ -71,7 +77,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
           height={90}
         />
       )}
-      {waitModal && !settingModal && (
+      {settingModal && ownerOrPlayer === "" && (
         <div>
           <div onClick={onClickCancle} className="ring">
             Loading
@@ -79,15 +85,15 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
         </div>
       )}
       {/* 내가 오너일때 */}
-      {/* {settingModal && (
+      {settingModal && ownerOrPlayer === "owner" && (
         <div className="modal-background">
           <GameSettingModal
             accessToken={accessToken}
             closeSettingModal={closeSettingModal}
           />
         </div>
-      )} */}
-      {settingModal && (
+      )}
+      {settingModal && ownerOrPlayer === "player" && (
         <div className="modal-background">
           <GameReadyModal
             accessToken={accessToken}
