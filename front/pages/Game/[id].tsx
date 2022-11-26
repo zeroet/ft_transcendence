@@ -23,8 +23,12 @@ interface GameElement {
 }
 
 export default function Gaming({ accessToken }: { accessToken: string }) {
+  // https://www.kindacode.com/article/react-get-the-position-x-y-of-an-element/
+  // https://www.daleseo.com/css-position/
+  // https://linguinecode.com/post/how-to-use-react-useref-with-typescript
   // //////////////////////////////////////////////////////// ref 원도우 사이즈 알기위함
   const windowSize = useRef();
+
   const { data, error } = useSWR("/api/users");
   const [socket] = useSocket(accessToken, "game");
   const router = useRouter();
