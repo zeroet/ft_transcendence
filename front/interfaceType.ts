@@ -29,38 +29,37 @@ export interface XYType {
 }
 
 export interface IChatroom {
-  chatroom_id: number;
-  owner_id: number;
-  chatroom_name: string;
+  chatroomId: number;
+  ownerId: number;
+  chatroomName: string;
   password: string;
-  max_member_num: number;
-  created_at: Date;
-  modified_at: Date;
+  createdAt: Date;
+  modifiedAt: Date;
 }
 
 export interface IChatMember {
-  user_id: number;
-  chatroom_id: number;
-  muted_date: Date;
-  ban_date: Date;
-  created_at: Date;
-  modified_at: Date;
+  userId: number;
+  chatroomId: number;
+  mutedDate: Date;
+  banDate: Date;
+  createdAt: Date;
+  modifiedAt: Date;
 }
 
 export interface IChatContent {
-  chat_content_id: number;
-  chatroom_id: number;
-  user_id: number;
+  chatContentId: number;
+  chatroomId: number;
+  userId: number;
   content: string;
-  created_at: Date;
-  modified_at: Date;
+  createdAt: Date;
+  modifiedAt: Date;
 }
 
 export interface IDm {
-  dm_id: number;
-  sender_id: number;
-  receiver_id: number;
+  dmId: number;
+  senderId: number;
+  receiverId: number;
   content: string;
-  created_at: Date;
-  modified_at: Date;
+  createdAt: Date;
+  modifiedAt: Date;
 }

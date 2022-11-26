@@ -8,9 +8,11 @@ import {
 } from 'typeorm';
 import { IChatContent } from '../interfaces/IChatContent';
 import { IChatMember } from '../interfaces/IChatMemeber';
+import { IDm } from '../interfaces/IDm';
 import { IUser } from '../interfaces/IUser';
 import { ChatContent } from './chatContent.entity';
 import { ChatMember } from './chatMember.entitiy';
+import { Dm } from './dm.entity';
 
 @Entity({ name: 'users' })
 export class User implements IUser {
@@ -70,4 +72,10 @@ export class User implements IUser {
 
   @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.User)
   ChatContent: IChatContent[];
+
+  @OneToMany((type) => Dm, (Dm) => Dm.Sender)
+  DmSender: IDm[];
+
+  @OneToMany((type) => Dm, (Dm) => Dm.Receiver)
+  DmReceiver: IDm[];
 }
