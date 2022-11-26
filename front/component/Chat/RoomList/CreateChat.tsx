@@ -24,13 +24,16 @@ const CreateChat: FC<Props> = ({ onClose }) => {
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       axios
-        .post("api/roomName", { Name: RoomName, Password: RoomPw })
+        .post("/api/chatroom", { chatroomName: RoomName, password: RoomPw })
         .then(() => {
           setName("");
           setPw("");
         })
         .catch((error) => {
           console.dir(error);
+        })
+        .finally(() => {
+          cancelRoom();
         });
     },
     [RoomName, RoomPw]
