@@ -1,29 +1,41 @@
-import cookies from "next-cookies";
 import { useCallback, useEffect, useState } from "react";
 import Loading from "../../../component/errorAndLoading/Loading";
 import useSocket from "../../../component/Utils/socket";
-import tokenManager from "../../../component/Utils/tokenManager";
+
+interface GameElement {
+  ballX: string;
+  ballY: string;
+  leftPaddle: string;
+  rightPaddle: string;
+  myScore: string;
+  otherSideScore: string;
+}
 
 const PlayGame = ({ accessToken }: { accessToken: string }) => {
   const [socket] = useSocket(accessToken, "game");
-  const [leftPaddle, setLeftPaddle] = useState<number>(50);
-  const [myScore, setMySore] = useState<number>(0);
-  const [rightPaddle, setRightPaddle] = useState<number>(50);
-  const [otherSideScore, setOtherSideSore] = useState<number>(0);
-  const [ball, setBall] = useState<{ x: string; y: string }>({
-    x: "50",
-    y: "50",
+  const [gameChanged, setGameChanged] = useState<GameElement>({
+    ballX: "",
+    ballY: "",
+    leftPaddle: "",
+    rightPaddle: "",
+    myScore: "",
+    otherSideScore: "",
   });
 
   // 내가 패들 수정. socket.emit으로 보내야함
   const onChangeftPaddle = useCallback((e: KeyboardEvent) => {
     const key = e.key;
     if (key === "w" || key === "s") {
-      if (!(leftPaddle > 0 && leftPaddle < 100)) return;
+      if (!(gameChanged.leftPaddle > "0" && gameChanged.leftPaddle < "100"))
+        return;
       if (key === "w") {
-        setLeftPaddle((curr) => curr - 0.8);
+        socket?.emit("paddle", {
+          key: "w",
+        });
       } else {
-        setLeftPaddle((curr) => curr + 0.8);
+        socket?.emit("paddle", {
+          key: "s",
+        });
       }
     }
   }, []);
@@ -31,8 +43,9 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
   useEffect((): (() => void) => {
     window.addEventListener("keydown", onChangeftPaddle);
     console.log("in play game", socket?.id);
-    socket?.on("playGame", (res) => {
-      console.log(res);
+    socket?.on("playGame", (res: GameElement) => {
+      setGameChanged(res);
+      // setState!!!로 리렌더하면서 애니메이션
     });
     return () => socket?.off("playGame");
   }, []);
@@ -43,8 +56,8 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
   return (
     <div>
       <div className="score">
-        <div className="score">{myScore}</div>
-        <div className="score">{otherSideScore}</div>
+        <div className="score">{gameChanged.myScore}</div>
+        <div className="score">{gameChanged.otherSideScore}</div>
       </div>
       <div className="ball"></div>
       <div className="paddle left"></div>
@@ -78,12 +91,12 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
         }
 
         .left {
-          --position: ${leftPaddle};
+          --position: ${gameChanged.leftPaddle};
           left: 1vw;
         }
 
         .right {
-          --position: ${rightPaddle};
+          --position: ${gameChanged.rightPaddle};
           right: 1vw;
         }
 
@@ -101,8 +114,8 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
         }
 
         .ball {
-          --x: ${ball.x};
-          --y: ${ball.y};
+          --x: ${gameChanged.ballX};
+          --y: ${gameChanged.ballY};
 
           position: absolute;
           background-color: var(--foreground-color);
@@ -119,25 +132,6 @@ const PlayGame = ({ accessToken }: { accessToken: string }) => {
 };
 
 export default PlayGame;
-
-export function getServerSideProps(context: any) {
-  const cookie = cookies(context);
-  const { accessToken, refreshToken } = cookie;
-  if (!accessToken) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  tokenManager(cookie);
-  return {
-    props: {
-      accessToken,
-    },
-  };
-}
 
 /**
  * 
