@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
-import { Chatroom } from 'src/typeorm';
+import { ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
 import { Repository } from 'typeorm';
 import { IChatroomService } from './chatroom.interface';
 
@@ -10,12 +10,19 @@ export class ChatrommService implements IChatroomService {
   constructor(
     @InjectRepository(Chatroom)
     private chatroomRepository: Repository<Chatroom>,
+    @InjectRepository(ChatMember)
+    private chatMemebrRepository: Repository<ChatMember>,
+    @InjectRepository(ChatContent)
+    private chatContentRepository: Repository<ChatContent>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
   getAllChatrooms() {
     this.chatroomRepository.find();
   }
   createChatroom(user_id: number, createChatroomDto: CreateChatroomDto) {
-    // const chatroom = this.chatroomRepository.createQueryBuilder('chatroom');
+    const chatroom = this.chatroomRepository.createQueryBuilder('chatroom');
+    //   .innerJoinAndSelect();
     // return this.chatroomRepository.save(chatroom);
   }
   getOneChatroom() {

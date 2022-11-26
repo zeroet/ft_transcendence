@@ -1,4 +1,5 @@
 import { IChatroom } from './IChatroom';
+import { IUser } from './IUser';
 
 export interface IChatContent {
   chatContentId: number;
@@ -8,4 +9,5 @@ export interface IChatContent {
   createdAt: Date;
   modifiedAt: Date;
   Chatroom: IChatroom;
+  User: IUser;
 }

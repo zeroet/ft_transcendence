@@ -9,7 +9,9 @@ import {
 } from 'typeorm';
 import { IChatContent } from '../interfaces/IChatContent';
 import { IChatroom } from '../interfaces/IChatroom';
+import { IUser } from '../interfaces/IUser';
 import { Chatroom } from './chatroom.entity';
+import { User } from './user.entity';
 
 @Entity({ name: 'chat_content' })
 export class ChatContent implements IChatContent {
@@ -34,4 +36,8 @@ export class ChatContent implements IChatContent {
   @ManyToOne((type) => Chatroom, (Chatroom) => Chatroom.ChatContent)
   @JoinColumn()
   Chatroom: IChatroom;
+
+  @ManyToOne((type) => User, (User) => User.ChatContent)
+  @JoinColumn({ name: 'user', referencedColumnName: 'id' })
+  User: IUser;
 }
