@@ -7,8 +7,8 @@ import fetcher from "../../Utils/fetcher";
 import EachRoom from "./EachRoom";
 
 export default function ChatRoom() {
-  const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
-  // const { data, error } = useSWR(`api/chatroom`, fetcher);
+  // const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
+  const { data, error } = useSWR(`/api/chatroom`, fetcher);
 
   if (data) {
     console.log(data);
@@ -19,16 +19,19 @@ export default function ChatRoom() {
   return (
     <div>
       <div className="list">
-        {
-          <ul key={data.posts.id}>
-            {data.posts &&
-              data.posts.map((post: any) => (
-                <li>
-                  <EachRoom title={post.title} id={post.id} />
+        <ul>
+          {data &&
+            data.map((post: any) => {
+              return (
+                <li key={post.chatroomId}>
+                  <EachRoom
+                    title={post.chatroomName}
+                    chatroomId={post.chatroomId}
+                  />
                 </li>
-              ))}
-          </ul>
-        }
+              );
+            })}
+        </ul>
       </div>
       <style jsx>{`
         .list {

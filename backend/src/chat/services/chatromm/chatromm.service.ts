@@ -17,10 +17,11 @@ export class ChatrommService implements IChatroomService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
-  getAllChatrooms() {
-    this.chatroomRepository.find();
+  async getAllChatrooms() {
+    return await this.chatroomRepository.find();
   }
   async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
+    // console.log('password:', createChatroomDto.password);
     const chatroom = await this.chatroomRepository.create({
       ownerId: userId,
       ...createChatroomDto,
