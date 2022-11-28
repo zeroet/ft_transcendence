@@ -21,28 +21,28 @@ const useSocket = (
   }, [socketType]);
 
   if (!socket[socketType]) {
-    let backURL;
     if (socketType === "game") {
-      backURL = "http://localhost:8080";
-      console.log(`backURL for ${socketType}`);
-    } else if (socketType === "chat") {
-      backURL = "http://localhost:8080/chat";
-    }
-    if (backURL) {
-      socket[socketType] = socketIOClient(backURL, {
+      socket[socketType] = socketIOClient("http://localhost:8080", {
         extraHeaders: {
           accessToken,
         },
       });
-      console.log(
-        `=================create new socket========================== ${socketType}`
-      );
-    } else {
-      console.log("소켓 못만듬! url이 정의되지않음");
+    } else if (socketType === "chat") {
+      socket[socketType] = socketIOClient("http://localhost:8080", {
+        extraHeaders: {
+          accessToken,
+        },
+        path: "/chat",
+      });
     }
+    console.log(`backURL for ${socketType}`);
+    console.log(
+      `=================create new socket========================== ${socketType}`
+    );
   } else {
     // console.log("use socket in socket.ts");
   }
+  console.log(socket);
 
   return [socket[socketType], disconnect];
 };

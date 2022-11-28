@@ -17,7 +17,7 @@ import { UserService } from 'src/users/services/user/user.service';
 import { User } from 'src/utils/decorators/user.decorator';
 
 // @UseGuards(JwtAccessAuthGuard)
-@WebSocketGateway({ path: '/chat', cors: process.env.CLINET_URL })
+@WebSocketGateway({ path: '/chat', cors: '*' })
 export class EventsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -27,6 +27,7 @@ export class EventsGateway
     @Inject('USER_SERVICE') private userService: UserService,
     private readonly jwtAccessStrategy: JwtAccessStrategy,
   ) {}
+
 
   @SubscribeMessage('message')
   handleMessage(
@@ -59,6 +60,7 @@ export class EventsGateway
       socket.handshake.headers.accesstoken,
     );
     console.log('chat socket connected', currentUser.id);
+    console.log(`chat cliendt id : ${socket.id}`)
     this.logger.log('user has been connected');
     this.logger.log(`Server path:${this.server.path} connected`);
   }
