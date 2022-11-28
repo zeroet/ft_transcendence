@@ -47,11 +47,11 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
    *
    */
   const [gameChanged, setGameChanged] = useState<GameElement | undefined>({
-    ballX: 50,
-    ballY: 50,
+    ballX: 1475, // 0 ~ 1375
+    ballY: 730, // 0 ~ 730
     ballSize: 50,
-    leftPaddle: 20,
-    rightPaddle: 30,
+    leftPaddle: 650, // 0 ~ 650
+    rightPaddle: 50,
     myScore: "1",
     otherSideScore: "3",
   });
@@ -71,9 +71,9 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
       if (!(gameChanged.leftPaddle > 0 && gameChanged.leftPaddle < 100)) return;
       if (key === "w") {
         // real
-        socket?.emit("paddle", {
-          key: "up",
-        });
+        // socket?.emit("paddle", {
+        //   key: "up",
+        // });
         // test
         const value = gameChanged.leftPaddle - 1;
         setGameChanged({
@@ -160,6 +160,8 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
             margin: 15px;
             background-color: var(--background-color);
             overflow: hidden;
+            width: 1500px;
+            height: 750px;
           }
 
           .paddle {
@@ -172,12 +174,14 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
           }
 
           .left {
-            --position: ${gameChanged?.leftPaddle};
+            // --position: ${gameChanged?.leftPaddle}px;
+            top: ${gameChanged && gameChanged.leftPaddle - 105}px;
           }
 
           .right {
-            --position: ${gameChanged?.rightPaddle};
-            left: ${window?.innerWidth - 10}px;
+            // --position: ${gameChanged?.rightPaddle}px;
+            top: ${gameChanged && gameChanged.rightPaddle - 105}px;
+            left: ${1500 - 10}px;
           }
 
           .score {
@@ -194,13 +198,15 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
           }
 
           .ball {
-            --x: ${gameChanged?.ballX};
-            --y: ${gameChanged?.ballY};
+            // --x: ${gameChanged && gameChanged.ballX - 80}px;
+            // --y: ${gameChanged && gameChanged.ballY - 80}px;
 
             position: relative;
             background-color: var(--foreground-color);
-            left: calc(var(--x) * 1vw);
-            top: calc(var(--y) * 1vh);
+            // left: calc(var(--x) * 1vw);
+            // top: calc(var(--y) * 1vh);
+            left: ${gameChanged && gameChanged.ballX}px;
+            top: ${gameChanged && gameChanged.ballY - 80}px;
             trasform: traslate(-50%, -50%);
             border-radius: 50%;
             width: ${gameChanged && gameChanged.ballSize / 2}px;
@@ -223,7 +229,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  tokenManager(cookie);
+  // tokenManager(cookie);
   return {
     props: {
       accessToken,
