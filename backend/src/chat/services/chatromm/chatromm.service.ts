@@ -22,11 +22,29 @@ export class ChatrommService implements IChatroomService {
   }
   async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
     // console.log('password:', createChatroomDto.password);
-    const chatroom = await this.chatroomRepository.create({
+    const user = await this.userRepository.findOneByOrFail({ id: userId });
+    const chatroom = this.chatroomRepository.create({
       ownerId: userId,
       ...createChatroomDto,
     });
-    return await this.chatroomRepository.save(chatroom);
+    const createdChatroom = await this.chatroomRepository.save(chatroom);
+    const { chatroomId } = createdChatroom;
+    const chatroomMemebr = this.chatMemebrRepository.create({
+      userId,
+      chatroomId,
+      Chatroom: chatroom,
+      User: user,
+    });
+    await this.chatMemebrRepository.save(chatroomMemebr);
+    return chatroom;
+
+    // const chatroomContent = this.chatContentRepository.create({
+    //   chatroomId,
+    //   userId,
+    //   Chatroom: chatroom,
+    //   User: user,
+    // });
+
     // const chatroom = this.chatroomRepository.createQueryBuilder('chatroom');
     //   .innerJoinAndSelect();
     // return this.chatroomRepository.save(chatroom);
@@ -43,10 +61,18 @@ export class ChatrommService implements IChatroomService {
   postMessages() {
     throw new Error('Method not implemented.');
   }
-  getAllMembers() {
-    throw new Error('Method not implemented.');
+  getAllMembers(chatroomId: number) {
+    return this.userRepository
+      .createQueryBuilder('users')
+      .innerJoin(
+        'users.chatroom',
+        'chatroom',
+        'chatroom.chatroomId=chatroomId',
+        { chatroomId },
+      )
+      .getMany();
   }
   postMembers() {
-    throw new Error('Method not implemented.');
+    // const chatroom = await this.chatroomRepository.findOneByOrFail({chatroomId})
   }
 }
