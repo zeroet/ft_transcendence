@@ -65,5 +65,5 @@ export class ChatroomController {
       'Post members to a chatroom / 특정 대화방에 새로운 참여자 추가하기',
   })
   @Post(':chatroomId/members')
-  postMembers() {}
+  postMembers(@Body() chatroomId: number) {}
 }

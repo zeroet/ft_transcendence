@@ -72,7 +72,13 @@ export class ChatrommService implements IChatroomService {
       )
       .getMany();
   }
-  postMembers() {
+  postMembers(chatroomId: number) {
     // const chatroom = await this.chatroomRepository.findOneByOrFail({chatroomId})
+    const chatroom = this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .where('chatroom.chatroomId=chatroomId', { chatroomId })
+      .getOne();
+    if (!chatroom) return null;
+    // const user = this.userRepository.createQueryBuilder
   }
 }

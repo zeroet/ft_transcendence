@@ -8,6 +8,6 @@ export interface IChatroomService {
   updateChatroom();
   getMessages();
   postMessages();
-  getAllMembers(ChatroomId: number);
-  postMembers();
+  getAllMembers(chatroomId: number);
+  postMembers(chatroomId: number);
 }

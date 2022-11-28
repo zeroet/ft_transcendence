@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { Inject, Logger, UseGuards } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -11,15 +11,22 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
+import { JwtAccessStrategy } from 'src/auth/strategies/jwt.access.strategy';
+import { IUser } from 'src/typeorm/interfaces/IUser';
+import { UserService } from 'src/users/services/user/user.service';
+import { User } from 'src/utils/decorators/user.decorator';
 
-@UseGuards(JwtAccessAuthGuard)
-@WebSocketGateway({ path: '/chat' })
+// @UseGuards(JwtAccessAuthGuard)
+@WebSocketGateway({ path: '/chat', cors: process.env.CLINET_URL })
 export class EventsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer() public server: Server;
   protected readonly logger = new Logger(EventsGateway.name);
-  constructor() {}
+  constructor(
+    @Inject('USER_SERVICE') private userService: UserService,
+    private readonly jwtAccessStrategy: JwtAccessStrategy,
+  ) {}
 
   @SubscribeMessage('message')
   handleMessage(
@@ -31,21 +38,33 @@ export class EventsGateway
 
   @SubscribeMessage('dm')
   handleDmMessage(
-    @MessageBody() dm: string,
+    @MessageBody() dmMessage: string,
     @ConnectedSocket() socket: Socket,
   ) {
-    this.server.emit('dm', socket.id, dm);
+    this.server.emit('dm', socket.id, dmMessage);
   }
 
   afterInit(server: any) {
+    console.log(`Server path:${this.server.path}`);
     this.logger.log(`Server path:${this.server.path}`);
   }
 
-  handleConnection(@ConnectedSocket() socket: Socket) {
+  @SubscribeMessage('test')
+  test(socket: Socket, data: string) {
+    socket.on('test', () => console.log('test', data));
+  }
+
+  async handleConnection(socket: Socket) {
+    const currentUser = await this.jwtAccessStrategy.validate(
+      socket.handshake.headers.accesstoken,
+    );
+    console.log('chat socket connected', currentUser.id);
+    this.logger.log('user has been connected');
     this.logger.log(`Server path:${this.server.path} connected`);
   }
 
-  handleDisconnect(@ConnectedSocket() socket: Socket) {
+  handleDisconnect(socket: Socket) {
     this.logger.log(`Server path:${this.server.path} disconnected`);
+    console.log('chat socket disconnected');
   }
 }
