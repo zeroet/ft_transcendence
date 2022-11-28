@@ -51,6 +51,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  tokenManager(cookie);
+  // tokenManager(cookie);
   return { props: {} };
 };
