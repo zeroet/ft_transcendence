@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { Socket } from "socket.io-client";
 import socketIOClient from "socket.io-client";
-import path from "path";
 
 const socket: { [key: string]: Socket } = {};
 
@@ -22,21 +21,29 @@ const useSocket = (
   }, [socketType]);
 
   if (!socket[socketType]) {
-    const pathURL = socketType === "game" ? "" : "/chat";
+    const path = socketType === "chat" ? "/chat" : "";
+    // if (socketType === "game") {
+    //   socket[socketType] = socketIOClient("http://localhost:8080", {
+    //     extraHeaders: {
+    //       accessToken,
+    //     },
+    //   });
+    // } else if (socketType === "chat") {
     socket[socketType] = socketIOClient("http://localhost:8080", {
       extraHeaders: {
         accessToken,
-        path: pathURL,
       },
+      path,
     });
-    // console.log(`backURL for ${socketType}`);
-    console.log(
-      `=================create new socket========================== ${socketType}`
-    );
-  } else {
-    // console.log("use socket in socket.ts");
   }
-  // console.log(socket);
+  // console.log(`backURL for ${socketType}`);
+  console.log(
+    `=================create new socket========================== ${socketType}`
+  );
+  // } else {
+  // console.log("use socket in socket.ts");
+  // }
+  console.log(socket);
 
   return [socket[socketType], disconnect];
 };
