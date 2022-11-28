@@ -17,11 +17,8 @@ export default function Chat({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
   const [socket] = useSocket(accessToken, "chat");
 
-  useEffect(() => {
-    console.log(`chat socket id : ${socket?.id}`);
-  }, []);
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!data) return <Loading />;
+  if (!data || !socket) return <Loading />;
   return (
     <Layout>
       <Title title="Chat" />
