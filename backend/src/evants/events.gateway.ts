@@ -1,4 +1,4 @@
-import { Inject, Logger, UseGuards } from '@nestjs/common';
+import { Inject, Logger, Req, UseGuards } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -16,17 +16,36 @@ import { IUser } from 'src/typeorm/interfaces/IUser';
 import { UserService } from 'src/users/services/user/user.service';
 import { User } from 'src/utils/decorators/user.decorator';
 
-// @UseGuards(JwtAccessAuthGuard)
-@WebSocketGateway({ path: '/chat', cors: process.env.CLINET_URL })
-export class EventsGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
-  @WebSocketServer() public server: Server;
+@WebSocketGateway({
+  // namespace: 'chat',
+  cors: process.env.CLINET_URL,
+  // cors: '*',
+})
+export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   protected readonly logger = new Logger(EventsGateway.name);
   constructor(
     @Inject('USER_SERVICE') private userService: UserService,
     private readonly jwtAccessStrategy: JwtAccessStrategy,
   ) {}
+
+  @WebSocketServer() server: Server;
+
+  // @UseGuards(JwtAccessAuthGuard)
+  async handleConnection(@ConnectedSocket() socket: Socket, @User() user) {
+    const currentUser = await this.jwtAccessStrategy.validate(
+      socket.handshake.headers.accesstoken,
+    );
+    console.log('chat socket connected', currentUser);
+
+    // console.log('chat socket connected', user);
+    this.logger.log('user has been connected');
+    // this.logger.log(`Server path:${this.server} connected`);
+  }
+
+  handleDisconnect(socket: Socket) {
+    this.logger.log(`Server path:${this.server.path} disconnected`);
+    console.log('chat socket disconnected');
+  }
 
   @SubscribeMessage('message')
   handleMessage(
@@ -44,27 +63,13 @@ export class EventsGateway
     this.server.emit('dm', socket.id, dmMessage);
   }
 
-  afterInit(server: any) {
-    console.log(`Server path:${this.server.path}`);
-    this.logger.log(`Server path:${this.server.path}`);
-  }
+  // afterInit(server: any) {
+  //   console.log(`Server path:${this.server.path}`);
+  //   this.logger.log(`Server path:${this.server.path}`);
+  // }
 
   @SubscribeMessage('test')
   test(socket: Socket, data: string) {
     socket.on('test', () => console.log('test', data));
-  }
-
-  async handleConnection(socket: Socket) {
-    const currentUser = await this.jwtAccessStrategy.validate(
-      socket.handshake.headers.accesstoken,
-    );
-    console.log('chat socket connected', currentUser.id);
-    this.logger.log('user has been connected');
-    this.logger.log(`Server path:${this.server.path} connected`);
-  }
-
-  handleDisconnect(socket: Socket) {
-    this.logger.log(`Server path:${this.server.path} disconnected`);
-    console.log('chat socket disconnected');
   }
 }
