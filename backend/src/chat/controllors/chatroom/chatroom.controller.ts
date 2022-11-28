@@ -35,35 +35,35 @@ export class ChatroomController {
   }
 
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
-  @Get(':chatroom_id')
+  @Get(':chatroomId')
   getOneChatroom() {}
 
   @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
-  @Post(':chatroom_id/update')
+  @Post(':chatroomId/update')
   updateChatroom() {}
 
   @ApiOperation({
     summary:
       'Get all contents for a chatroom / 특정 대화방의 모든 대화내용 가져오기',
   })
-  @Get(':chatroom_id/contents')
+  @Get(':chatroomId/contents')
   getMessages() {}
 
   @ApiOperation({ summary: 'Post contents / 특정 대화방에 대화내용 입력하기' })
-  @Post(':chatroom_id/contents')
+  @Post(':chatroomId/contents')
   postMessages() {}
 
   @ApiOperation({
     summary:
       'Get all members from a chatroom / 특정 대화방의 모든 참여자목록 가져오기',
   })
-  @Get(':chatroom_id/members')
-  getAllMembers() {}
+  @Get(':chatroomId/members')
+  getAllMembers(@Body() chatroomId: number) {}
 
   @ApiOperation({
     summary:
       'Post members to a chatroom / 특정 대화방에 새로운 참여자 추가하기',
   })
-  @Post(':chatroom_id/members')
+  @Post(':chatroomId/members')
   postMembers() {}
 }
