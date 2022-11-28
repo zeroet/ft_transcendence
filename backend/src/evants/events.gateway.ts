@@ -1,4 +1,4 @@
-import { Inject, Logger, UseGuards } from '@nestjs/common';
+import { Inject, Logger, Req, UseGuards } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -27,7 +27,6 @@ export class EventsGateway
     @Inject('USER_SERVICE') private userService: UserService,
     private readonly jwtAccessStrategy: JwtAccessStrategy,
   ) {}
-
 
   @SubscribeMessage('message')
   handleMessage(
@@ -60,7 +59,7 @@ export class EventsGateway
       socket.handshake.headers.accesstoken,
     );
     console.log('chat socket connected', currentUser.id);
-    console.log(`chat cliendt id : ${socket.id}`)
+    console.log(`chat cliendt id : ${socket.id}`);
     this.logger.log('user has been connected');
     this.logger.log(`Server path:${this.server.path} connected`);
   }
