@@ -6,7 +6,8 @@ import useSocket from "../Utils/socket";
 
 const Logout = ({ accessToken }: { accessToken: string }) => {
   const router = useRouter();
-  const [_, disconnet] = useSocket(accessToken, "game");
+  const [, disconnetGame] = useSocket(accessToken, "game");
+  const [, disconnetChat] = useSocket(accessToken, "chat");
   const logout = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
@@ -23,7 +24,8 @@ const Logout = ({ accessToken }: { accessToken: string }) => {
         headers: { "Cache-Control": "no-cache" },
       });
       // 로그아웃시 소켓 삭제
-      disconnet();
+      disconnetGame();
+      disconnetChat();
       router.push("/");
     } catch (e) {
       console.log(e);

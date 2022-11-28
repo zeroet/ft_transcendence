@@ -8,18 +8,18 @@ import EachRoom from "./EachRoom";
 
 export default function ChatRoom() {
   // const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
-  const { data, error } = useSWR(`/api/chatroom`, fetcher);
+  // const { data, error } = useSWR(`/api/chatroom`, fetcher);
 
-  if (data) {
-    console.log(data);
-  }
-  if (error) return <Error />;
-  if (!data) return <Loading />;
+  // if (data) {
+  //   console.log(data);
+  // }
+  // if (error) return <Error />;
+  // if (!data) return <Loading />;
 
   return (
     <div>
       <div className="list">
-        <ul>
+        {/* <ul>
           {data &&
             data.map((post: any) => {
               return (
@@ -31,7 +31,7 @@ export default function ChatRoom() {
                 </li>
               );
             })}
-        </ul>
+        </ul> */}
       </div>
       <style jsx>{`
         .list {

@@ -10,10 +10,16 @@ import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
+import useSocket from "../component/Utils/socket";
+import { useEffect } from "react";
 
-export default function Chat() {
+export default function Chat({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
+  const [socket] = useSocket(accessToken, "chat");
 
+  useEffect(() => {
+    console.log(`chat socket id : ${socket?.id}`);
+  }, []);
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
@@ -43,5 +49,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   // tokenManager(cookie);
-  return { props: {} };
+  return { props: { accessToken } };
 };

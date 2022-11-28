@@ -17,6 +17,7 @@ const CreateChat: FC<Props> = ({ onClose }) => {
   const Name = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value.trim());
   };
+  
   const Pw = (e: React.ChangeEvent<HTMLInputElement>) =>
     setPw(e.target.value.trim());
 
