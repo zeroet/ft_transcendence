@@ -25,7 +25,7 @@ export default function Chat({ accessToken }: { accessToken: string }) {
         <TwoFactorModal />
       )}
       <div style={{ display: "grid", gridTemplateColumns: "2fr 4fr 2fr" }}>
-        <RoomList />
+        <RoomList accessToken={accessToken} />
         <ChatBody />
         <Participant />
       </div>

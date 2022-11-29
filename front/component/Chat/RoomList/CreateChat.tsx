@@ -20,7 +20,7 @@ const CreateChat: FC<Props> = ({ onClose }) => {
       e.preventDefault();
       console.log(RoomName);
       console.log(RoomPw);
-      if (RoomPw && RoomPw.length < 4) {
+      if (RoomPw && RoomPw.length < 4 && RoomPw.length > 1) {
         setPw("");
         return;
       }
@@ -32,7 +32,7 @@ const CreateChat: FC<Props> = ({ onClose }) => {
         })
         .catch((error) => {
           console.dir(error);
-          alert("Error : create chat room failed");
+          alert("We have already same room name");
         })
         .finally(() => {
           onClose();
