@@ -23,11 +23,20 @@ export class ChatroomService implements IChatroomService {
   async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
     // console.log('password:', createChatroomDto.password);
     // const user = await this.userRepository.findOneByOrFail({ id: userId });
-    const chatroom = this.chatroomRepository.create({
+    const { chatroomName } = createChatroomDto;
+    const chatroom = this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .where('chatroom.chatroomName=chatroomName', { chatroomName })
+      .getOne();
+    if (!chatroom)
+      throw new NotFoundException(
+        `Chatroom of name: ${chatroomName} not found`,
+      );
+    const Newchatroom = this.chatroomRepository.create({
       ownerId: userId,
       ...createChatroomDto,
     });
-    const createdChatroom = await this.chatroomRepository.save(chatroom);
+    const createdChatroom = await this.chatroomRepository.save(Newchatroom);
 
     // const { chatroomId } = createdChatroom;
     // const chatroomMemebr = this.chatMemebrRepository.create({

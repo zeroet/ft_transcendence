@@ -20,10 +20,10 @@ export class ChatMember implements IChatMember {
   @PrimaryGeneratedColumn({ type: 'int', name: 'chatroom_member_id' })
   chatroomMemberId: number;
 
-  @Column({ type: 'int', name: 'user_id', primary: true })
+  @Column({ type: 'int', name: 'user_id' })
   userId: number;
 
-  @Column({ type: 'int', name: 'chatroom_id', primary: true })
+  @Column({ type: 'int', name: 'chatroom_id' })
   chatroomId: number;
 
   @Column({ type: 'timestamp', name: 'muted_date', nullable: true })
