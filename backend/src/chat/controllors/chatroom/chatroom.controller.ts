@@ -3,6 +3,7 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { IChatroomService } from 'src/chat/services/chatromm/chatroom.interface';
+import { IUser } from 'src/typeorm/interfaces/IUser';
 import { User } from 'src/utils/decorators/user.decorator';
 
 @ApiTags('CHATROOM')
@@ -25,7 +26,7 @@ export class ChatroomController {
   @ApiOperation({ summary: 'Create a chatroom / 대화방 생성하기' })
   @Post()
   async createChatroom(
-    @User() user,
+    @User() user: IUser,
     @Body() createChatroomDto: CreateChatroomDto,
   ) {
     // console.log('createChatroom()');
@@ -65,5 +66,7 @@ export class ChatroomController {
       'Post members to a chatroom / 특정 대화방에 새로운 참여자 추가하기',
   })
   @Post(':chatroomId/members')
-  postMembers(@Body() chatroomId: number) {}
+  postMembers(@User() user: IUser, @Body() chatroomId: number) {
+    this.chatroomService.postMembers(user.id, chatroomId);
+  }
 }

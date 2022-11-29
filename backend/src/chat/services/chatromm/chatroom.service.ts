@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { IChatroomService } from './chatroom.interface';
 
 @Injectable()
-export class ChatrommService implements IChatroomService {
+export class ChatroomService implements IChatroomService {
   constructor(
     @InjectRepository(Chatroom)
     private chatroomRepository: Repository<Chatroom>,
@@ -22,20 +22,19 @@ export class ChatrommService implements IChatroomService {
   }
   async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
     // console.log('password:', createChatroomDto.password);
-    const user = await this.userRepository.findOneByOrFail({ id: userId });
+    // const user = await this.userRepository.findOneByOrFail({ id: userId });
     const chatroom = this.chatroomRepository.create({
       ownerId: userId,
       ...createChatroomDto,
     });
     const createdChatroom = await this.chatroomRepository.save(chatroom);
-    const { chatroomId } = createdChatroom;
-    const chatroomMemebr = this.chatMemebrRepository.create({
-      userId,
-      chatroomId,
-      Chatroom: chatroom,
-      User: user,
-    });
-    await this.chatMemebrRepository.save(chatroomMemebr);
+
+    // const { chatroomId } = createdChatroom;
+    // const chatroomMemebr = this.chatMemebrRepository.create({
+    //   userId: userId,
+    //   chatroomId: createdChatroom.chatroomId,
+    // });
+    // await this.chatMemebrRepository.save(chatroomMemebr);
     return chatroom;
 
     // const chatroomContent = this.chatContentRepository.create({
@@ -72,13 +71,23 @@ export class ChatrommService implements IChatroomService {
       )
       .getMany();
   }
-  postMembers(chatroomId: number) {
+  async postMembers(userId: number, chatroomId: number) {
     // const chatroom = await this.chatroomRepository.findOneByOrFail({chatroomId})
     const chatroom = this.chatroomRepository
       .createQueryBuilder('chatroom')
       .where('chatroom.chatroomId=chatroomId', { chatroomId })
       .getOne();
-    if (!chatroom) return null;
-    // const user = this.userRepository.createQueryBuilder
+    if (!chatroom)
+      throw new NotFoundException(`Chatroom of id: ${chatroomId} not found`);
+    const user = this.userRepository
+      .createQueryBuilder('users')
+      .where('users.id=userId', { userId })
+      .getOne();
+    if (!user) throw new NotFoundException(`User not found`);
+    const chatroomMember = this.chatMemebrRepository.create({
+      userId,
+      chatroomId,
+    });
+    await this.chatMemebrRepository.save(chatroomMember);
   }
 }

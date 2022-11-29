@@ -9,5 +9,5 @@ export interface IChatroomService {
   getMessages();
   postMessages();
   getAllMembers(chatroomId: number);
-  postMembers(chatroomId: number);
+  postMembers(userId: number, chatroomId: number);
 }

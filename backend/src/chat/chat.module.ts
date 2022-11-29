@@ -6,7 +6,7 @@ import { ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { ChatroomController } from './controllors/chatroom/chatroom.controller';
 import { DmController } from './controllors/dm/dm.controller';
-import { ChatrommService } from './services/chatromm/chatromm.service';
+import { ChatroomService } from './services/chatromm/chatroom.service';
 import { DmService } from './services/dm/dm.service';
 
 @Module({
@@ -17,7 +17,7 @@ import { DmService } from './services/dm/dm.service';
   controllers: [DmController, ChatroomController],
   providers: [
     { provide: 'DM_SERVICE', useClass: DmService },
-    { provide: 'CHATROOM_SERVICE', useClass: ChatrommService },
+    { provide: 'CHATROOM_SERVICE', useClass: ChatroomService },
     ChatEventsGateway,
     JwtAccessStrategy,
   ],
