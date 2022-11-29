@@ -71,15 +71,15 @@ export class ChatroomService implements IChatroomService {
   async getOneChatroom(chatroomId: number) {
     // console.log('getOneChatroom() typeof chatroomId:', typeof chatroomId);
 
-    const chatroom = await this.chatroomRepository
-      .createQueryBuilder('chatroom')
-      .leftJoinAndSelect(
-        'chatroom.ChatMember',
-        'chat_member',
-        'chat_member.chatroom_id=chatroom_id',
-        { chatroomId },
-      );
-    const chatroom2 = await this.chatroomRepository.findOne({
+    // const chatroom = await this.chatroomRepository
+    //   .createQueryBuilder('chatroom')
+    //   .leftJoinAndSelect(
+    //     'chatroom.ChatMember',
+    //     'chat_member',
+    //     'chat_member.chatroom_id=chatroom_id',
+    //     { chatroomId },
+    //   );
+    const chatroom = await this.chatroomRepository.findOne({
       where: {
         chatroomId: chatroomId,
       },
