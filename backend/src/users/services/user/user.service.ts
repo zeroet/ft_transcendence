@@ -17,11 +17,11 @@ export class UserService implements IUserService {
     return await this.userRepository.findOneBy({ id: id });
   }
   async getUserById(id: number): Promise<User> {
-    console.log('getUserById() id:', id);
+    // console.log('getUserById() id:', id);
     // if (id !== undefined) {
     // const user = await this.userRepository.findOneBy({ id: id });
     const user = await this.userRepository.findOne({ where: { id } });
-    console.log('getUserById() user:', user);
+    // console.log('getUserById() user:', user);
     // console.log('getuserbyid:', user);
     if (!user) throw new NotFoundException(`User by #id ${id} not found`);
     return user;

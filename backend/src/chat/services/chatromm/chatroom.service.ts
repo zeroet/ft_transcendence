@@ -45,12 +45,12 @@ export class ChatroomService implements IChatroomService {
     });
     const createdChatroom = await this.chatroomRepository.save(Newchatroom);
 
-    // const { chatroomId } = createdChatroom;
-    // const chatroomMemebr = this.chatMemebrRepository.create({
-    //   userId: userId,
-    //   chatroomId: createdChatroom.chatroomId,
-    // });
-    // await this.chatMemebrRepository.save(chatroomMemebr);
+    const { chatroomId } = createdChatroom;
+    const chatroomMemebr = this.chatMemebrRepository.create({
+      userId: userId,
+      chatroomId: createdChatroom.chatroomId,
+    });
+    await this.chatMemebrRepository.save(chatroomMemebr);
     this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
     return chatroom;
 
@@ -66,6 +66,7 @@ export class ChatroomService implements IChatroomService {
     // return this.chatroomRepository.save(chatroom);
   }
   async getOneChatroom(chatroomId: number) {
+    console.log('getOneChatroom() typeof chatroomId:', typeof chatroomId);
     const chatroom = await this.chatroomRepository.findOneBy({
       chatroomId: chatroomId,
     });

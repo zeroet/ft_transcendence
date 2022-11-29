@@ -22,7 +22,7 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
 
   async validate(payload: any) {
     // console.log('jwt.access.strategy validate()');
-    console.log('jwt.access.strategy payload:', payload);
+    // console.log('jwt.access.strategy payload:', payload);
     const decoded = this.jwtService.decode(payload);
     // const { id } = payload;
 

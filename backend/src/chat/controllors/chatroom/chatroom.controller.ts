@@ -8,7 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { IChatroomService } from 'src/chat/services/chatromm/chatroom.interface';
@@ -22,32 +22,17 @@ export class ChatroomController {
   constructor(
     @Inject('CHATROOM_SERVICE') private chatroomService: IChatroomService,
   ) {}
-  @ApiOperation({ summary: 'Get all chatrooms / 모든 대화방 가져오기' })
-  @Get()
-  getAllChatrooms() {
-    return this.chatroomService.getAllChatrooms();
-  }
 
-  @ApiBody({
-    required: true,
-    type: CreateChatroomDto,
+  @ApiParam({
+    name: 'chatroomId',
+    example: 1,
   })
-  @ApiOperation({ summary: 'Create a chatroom / 대화방 생성하기' })
-  @Post()
-  async createChatroom(
-    @User() user: IUser,
-    @Body() createChatroomDto: CreateChatroomDto,
-  ) {
-    // console.log('createChatroom()');
-    // console.log('user:', user);
-    // console.log('dto:', createChatroomDto);
-    return this.chatroomService.createChatroom(user.id, createChatroomDto);
-  }
-
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':chatroomId')
-  getOneChatroom(@Param(ParseIntPipe) chatroomId: number) {
-    return this.chatroomService.getOneChatroom(chatroomId);
+  async getOneChatroom(@Param() { chatroomId }) {
+    // console.log('getOneChatroom():', chatroomId);
+    // console.log('getOneChatroom():', typeof chatroomId);
+    return await this.chatroomService.getOneChatroom(chatroomId);
   }
 
   @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
@@ -79,5 +64,27 @@ export class ChatroomController {
   @Post(':chatroomId/members')
   postMembers(@User() user: IUser, @Body() chatroomId: number) {
     this.chatroomService.postMembers(user.id, chatroomId);
+  }
+
+  @ApiOperation({ summary: 'Get all chatrooms / 모든 대화방 가져오기' })
+  @Get()
+  getAllChatrooms() {
+    return this.chatroomService.getAllChatrooms();
+  }
+
+  @ApiBody({
+    required: true,
+    type: CreateChatroomDto,
+  })
+  @ApiOperation({ summary: 'Create a chatroom / 대화방 생성하기' })
+  @Post()
+  async createChatroom(
+    @User() user: IUser,
+    @Body() createChatroomDto: CreateChatroomDto,
+  ) {
+    // console.log('createChatroom()');
+    // console.log('user:', user);
+    // console.log('dto:', createChatroomDto);
+    return this.chatroomService.createChatroom(user.id, createChatroomDto);
   }
 }
