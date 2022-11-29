@@ -5,6 +5,7 @@ import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
 import fetcher from "../../Utils/fetcher";
 import useSocket from "../../Utils/socket";
+import { IChatroom } from "../../../interfaceType";
 // import EachRoom from "./delete apres";
 
 export default function ChatRoom({ accessToken }: { accessToken: string }) {
@@ -13,6 +14,7 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
   // if (data) {
   //   console.log(data);
   // }
+
   useEffect(() => {
     socket?.on("newRoomList", (data: string) => {
       console.log(data);
@@ -28,9 +30,9 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
     <div>
       <div className="list">
         <ul>
-          {data.map((room: any) => {
+          {data.map((room: IChatroom) => {
             return (
-              <div key={room.id} className="room-li">
+              <div key={room.chatroomId} className="room-li">
                 {/* link 추가해야함 */}
                 <li>{room.chatroomName}</li>
                 <img

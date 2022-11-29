@@ -13,7 +13,7 @@ const SearchBarModal = ({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      alert("버튼누르면 바로 api 친구추가요청");
+      alert(name);
       setInputValue("");
     },
     []
