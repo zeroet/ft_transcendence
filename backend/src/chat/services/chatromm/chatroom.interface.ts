@@ -3,11 +3,11 @@ import { User } from 'src/utils/decorators/user.decorator';
 
 export interface IChatroomService {
   getAllChatrooms();
-  createChatroom(user_id: number, createChatroomDto: CreateChatroomDto);
-  getOneChatroom();
+  createChatroom(userId: number, createChatroomDto: CreateChatroomDto);
+  getOneChatroom(chatroomId: number);
   updateChatroom();
   getMessages();
   postMessages();
-  getAllMembers();
-  postMembers();
+  getAllMembers(chatroomId: number);
+  postMembers(userId: number, chatroomId: number);
 }

@@ -5,7 +5,6 @@ import ChangeName from "../component/Setting/ChangeName";
 import Logout from "../component/Setting/Logout";
 import TwoFactor from "../component/Setting/TwoFactor";
 import Title from "../component/Title";
-import tokenManager from "../component/Utils/tokenManager";
 import styles from "../styles/LayoutBox.module.css";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";

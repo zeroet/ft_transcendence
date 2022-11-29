@@ -5,25 +5,25 @@ import fetcher from "../../Utils/fetcher";
 import EachDmRoom from "./EachDmRoom";
 
 export default function DM() {
-  const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
+  // const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
 
-  if (data) {
-    console.log(data);
-  }
-  if (error) return <Error />;
-  if (!data) return <Loading />;
+  // if (data) {
+  //   console.log(data);
+  // }
+  // if (error) return <Error />;
+  // if (!data) return <Loading />;
 
   return (
     <div className="DM">
       {
-        <ul key={data.posts.id}>
-          {data.posts &&
-            data.posts.map((post: any) => (
-              <li>
-                <EachDmRoom title={post.title} id={post.id} />
-              </li>
-            ))}
-        </ul>
+        // <ul key={data.posts.id}>
+        //   {data.posts &&
+        //     data.posts.map((post: any) => (
+        //       <li>
+        //         <EachDmRoom title={post.title} id={post.id} />
+        //       </li>
+        //     ))}
+        // </ul>
       }
       <style jsx>
         {`

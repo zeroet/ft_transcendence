@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -13,18 +14,22 @@ import { IUser } from '../interfaces/IUser';
 import { Chatroom } from './chatroom.entity';
 import { User } from './user.entity';
 
+@Index('user_id', ['userId'], {})
 @Entity({ name: 'chat_member' })
 export class ChatMember implements IChatMember {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'user_id' })
+  @PrimaryGeneratedColumn({ type: 'int', name: 'chatroom_member_id' })
+  chatroomMemberId: number;
+
+  @Column({ type: 'int', name: 'user_id' })
   userId: number;
 
   @Column({ type: 'int', name: 'chatroom_id' })
   chatroomId: number;
 
-  @Column({ type: 'timestamp', name: 'muted_date' })
+  @Column({ type: 'timestamp', name: 'muted_date', nullable: true })
   mutedDate: Date;
 
-  @Column({ type: 'timestamp', name: 'ban_date' })
+  @Column({ type: 'timestamp', name: 'ban_date', nullable: true })
   banDate: Date;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
