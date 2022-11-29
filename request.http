@@ -2,7 +2,7 @@
 @serverUrl = http://localhost:8080
 
 # @accessToken = {{login.response.cookie.accessToken}}
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHdvX2ZhY3Rvcl9hY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE2Njk3NTUyMTYsImV4cCI6MTY2OTc1ODgxNn0.HHuSxymYpNVuXP7aep6tu0vWBJsBQwFgvSNJbPwjugI
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHdvX2ZhY3Rvcl9hY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE2Njk3NTg3MjAsImV4cCI6MTY2OTc2MjMyMH0.q1Aojo7ocZq6EwcmpacfqVg4vsKqy_M_x2gkFy_IMT0
 
 
 ### Get current user info
@@ -26,7 +26,7 @@ Get {{serverUrl}}/chatroom/ HTTP/1.1
 Cookie: accessToken = {{accessToken}}
 
 ### Get a chatroom
-Get {{serverUrl}}/chatroom/1/ HTTP/1.1
+Get {{serverUrl}}/chatroom/2/ HTTP/1.1
 Cookie: accessToken = {{accessToken}}
 
 ### Get all memebers from a chatroom

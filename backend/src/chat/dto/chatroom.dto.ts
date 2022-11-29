@@ -26,13 +26,13 @@ export class ChatroomDto {
   password: string;
 
   @ApiProperty({
-    type: 'timestamp',
+    type: 'string',
     description: 'created time',
   })
   createdAt: Date;
 
   @ApiProperty({
-    type: 'timestamp',
+    type: 'string',
     description: 'modified time',
   })
   modifedAt: Date;
