@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Room } from './interfaces/room';
 import { Socket } from 'socket.io';
+import { IoAdapter } from '@nestjs/platform-socket.io';
+import { Server } from 'http';
 
 @Injectable()
 export class RoomService{
     
-    size: number;
-    Players: Array<any>;
+    size: number = 0;
+    Players: Array<any> = [];
     rooms: Map<string, Room> = new Map();
 
     addUser(user) {
-        if (this.Players.find(user) === user)
-            return false;
+        for (const socket of this.Players)
+            if (socket === user) return false;
         this.Players.push(user);
         this.size += 1;
         return true;
@@ -24,22 +26,33 @@ export class RoomService{
     }
 
     readyQueue() {
-        const player1 = this.Players[0];
-        player1.emit('createRoom', { playerId: player1 });
+        const owner = this.Players[0];
+        owner.emit('createRoom', {isOwner: true});
     }
     
     isOwner(client: Socket)
     {
-        if(this.Players[0] === client)
+        if(this.Players[0].id === client.id)
             return true;
         return false;
     }
 
-    createRoom(roomId: string) {
-        this.Players[0].join(roomId);
-        this.Players[1].join(roomId);
-        const room = new Room();
-        this.rooms.set(roomId, room);
-        this.Players.splice(0);
+    createRoom(roomName: string) {
+        this.Players[0].join(roomName);
+        this.Players[0].data.roomName = roomName;
+        this.Players[1].join(roomName);
+        this.Players[1].data.roomName = roomName;
+
+
+        
+        // const room = new Room(this.Players[0], this.Players[1]);
+        // this.rooms.set(roomId, room);
+        // this.Players.shift();
+        // this.Players.shift();
+        // this.size = 0;
+
+        // const newRoom = this.rooms.get(roomId)
+        // console.log(newRoom.Player[0].id);
+        return ;
     }
 }
