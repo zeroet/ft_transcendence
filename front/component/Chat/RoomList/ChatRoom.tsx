@@ -32,18 +32,19 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
         <ul>
           {data.map((room: IChatroom) => {
             return (
-              <div key={room.chatroomId} className="room-li">
-                {/* link 추가해야함 */}
-                <li>{room.chatroomName}</li>
-                <img
-                  src={
-                    room.password
-                      ? "/images/private_room.png"
-                      : "/images/public_room.png"
-                  }
-                  width="40px"
-                />
-              </div>
+              <Link href={`/ChatRoom/${room.chatroomId}`} key={room.chatroomId}>
+                <div className="room-li">
+                  <li>{room.chatroomName}</li>
+                  <img
+                    src={
+                      room.password
+                        ? "/images/private_room.png"
+                        : "/images/public_room.png"
+                    }
+                    width="40px"
+                  />
+                </div>
+              </Link>
             );
           })}
         </ul>
