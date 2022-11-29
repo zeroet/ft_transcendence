@@ -1,15 +1,10 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   Inject,
   NotFoundException,
   Param,
   ParseIntPipe,
-  Patch,
-  Post,
-  Request,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -45,6 +40,7 @@ export class UsersController {
     }
     return CurrentUser;
   }
+
   @ApiOperation({
     summary: 'Get all users / 로그인된 모든 사용자 정보요청',
   })
