@@ -1,4 +1,12 @@
-import { Inject } from '@nestjs/common';
+import {
+  Body,
+  ExecutionContext,
+  HttpException,
+  Inject,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import {
   ConnectedSocket,
   MessageBody,
@@ -9,36 +17,45 @@ import {
 import { Server, Socket } from 'socket.io';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
+import { dataCollectionPhase } from 'typeorm-model-generator/dist/src/Engine';
+import { GameService } from './game.service';
+import { RoomName } from './interfaces/room';
+import { RoomService } from './room.service';
 
 @WebSocketGateway({ cors: '*' })
 export class GameEvents {
   constructor(
     @Inject('USER_SERVICE') private readonly userService: UserService,
-    @Inject('AUTH_SERVICE') private authService: IAuthService,
   ) {}
 
   @WebSocketServer()
   server: Server;
 
-  // @UseGuards(JwtAccessAuthGuard)
-  async handleConnection(client: Socket) {
-    const payload = await this.authService.verify(
-      client.handshake.headers.accesstoken,
-    );
-    const user = await this.userService.getUserById(payload.id);
-    !user && client.disconnect();
-    console.log('websocket', user);
-    console.log(`CLient Conneted: ${client.id}`);
+  room: RoomService = new RoomService();
+  game: GameService = new GameService();
+
+  handleConnection(client: Socket) {
+    console.log('Lobby', client.id);
   }
 
   handleDisConnection(clinet: Socket) {
     console.log(`Client Disconnected: ${clinet.id}`);
   }
 
+  @SubscribeMessage('Queue')
+  readyGame(@ConnectedSocket() client: any) {
+    if (!this.room.addUser(client)) return;
+    if (this.room.isFull()) this.room.readyQueue();
+  }
+
   @SubscribeMessage('createRoom')
-  createBrotliCompress(client: Socket, roomId: string) {
-    client.join(roomId);
-    client.emit('getMessage', { message: 'enter Room' });
+  createBrotliCompress(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: RoomName,
+  ) {
+    if (this.room.isOwner(client)) this.room.createRoom(data[1].name);
+    else console.log('Im not owner');
+    this.server.to(client.data.roomName).emit('game', 'INTHEGAME');
   }
 
   @SubscribeMessage('message')
