@@ -10,18 +10,31 @@ export default function ChatRoomBody({
 }) {
   const { data, error } = useSWR(`/api/chatroom/${chatroomId}`);
 
-  console.log(typeof chatroomId);
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
     <div className={styles.box}>
-      <h1>{data.chatroomName}</h1>
+      <div className="roomname-img">
+        <h1>{data.chatroomName}</h1>
+        <img
+          src={
+            data.password
+              ? "/images/private_room.png"
+              : "/images/public_room.png"
+          }
+          width="45px"
+        />
+      </div>
       <hr />
       <div className="c-body">
         <h1>여기에 채팅구현하면 됨</h1>
       </div>
       <style jsx>
         {`
+          .roomname-img {
+            display: flex;
+            align-items: center;
+          }
           h1 {
             font-family: "Fragment Mono", monospace;
             font-size: 25px;

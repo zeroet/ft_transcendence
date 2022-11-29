@@ -9,4 +9,5 @@ export interface IAuthService {
   getAccessToken(id: number, two_factor_activated: boolean);
   getRefreshToken(id: number);
   setRefreshToken(id: number, refreshToken: string);
+  verify(accessToken: any);
 }

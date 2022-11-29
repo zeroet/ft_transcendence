@@ -15,32 +15,34 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
-import { AuthService } from 'src/auth/services/auth/auth.service';
-import { JwtAccessStrategy } from 'src/auth/strategies/jwt.access.strategy';
+import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
+import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
 import { dataCollectionPhase } from 'typeorm-model-generator/dist/src/Engine';
 import { GameService } from './game.service';
 import { RoomName } from './interfaces/room';
 import { RoomService } from './room.service';
 
-
+@UseGuards(JwtWsGuard)
 @WebSocketGateway({ cors: '*' })
 export class GameEvents {
-  
   constructor(
     @Inject('USER_SERVICE') private readonly userService: UserService,
-    ) {}
-    
-    
-    @WebSocketServer()
-    server: Server;
-    
-    room: RoomService = new RoomService;
-    game: GameService = new GameService;
+    @Inject('AUTH_SERVICE') private authService: IAuthService,
+  ) {}
 
-    
-  handleConnection(client: Socket) {
+  @WebSocketServer()
+  server: Server;
+
+  room: RoomService = new RoomService();
+  game: GameService = new GameService();
+
+  async handleConnection(client: Socket) {
+    const payload = await this.authService.verify(
+      client.handshake.headers.accesstoken,
+    );
+    const user = await this.userService.getUserById(payload.id);
+    !user && client.disconnect();
     console.log('Lobby', client.id);
   }
 
@@ -50,18 +52,17 @@ export class GameEvents {
 
   @SubscribeMessage('Queue')
   readyGame(@ConnectedSocket() client: any) {
-      if (!this.room.addUser(client))
-        return ;
-      if (this.room.isFull())
-        this.room.readyQueue();
+    if (!this.room.addUser(client)) return;
+    if (this.room.isFull()) this.room.readyQueue();
   }
 
   @SubscribeMessage('createRoom')
-  createBrotliCompress(@ConnectedSocket() client :Socket, @MessageBody() data:RoomName) {
-    if(this.room.isOwner(client))
-        this.room.createRoom(data[1].name);
-    else
-      console.log('Im not owner');
+  createBrotliCompress(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: RoomName,
+  ) {
+    if (this.room.isOwner(client)) this.room.createRoom(data[1].name);
+    else console.log('Im not owner');
     this.server.to(client.data.roomName).emit('game', 'INTHEGAME');
   }
 

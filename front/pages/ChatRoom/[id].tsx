@@ -1,4 +1,3 @@
-import ChatBody from "../../component/Chat/ChatBody";
 import Layout from "../../component/Layout";
 import Participant from "../../component/Chat/Participant";
 import RoomList from "../../component/Chat/RoomList";
@@ -10,37 +9,69 @@ import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import useSocket from "../../component/Utils/socket";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import ChatRoomBody from "../../component/ChatRoom/ChatRoomBody";
+import PWModal from "../../component/ChatRoom/PWModal";
 
-export default function Chat({ accessToken }: { accessToken: string }) {
-  const { data, error } = useSWR("/api/users");
+export default function Chat({
+  accessToken,
+  id,
+}: {
+  accessToken: string;
+  id: string;
+}) {
+  const { data: userData, error: userError } = useSWR("/api/users");
+  // roomData를 가지고, 오너가 볼수있는 모달을 추가하고, 비밀번호 추가하고
+  const { data: roomData, error: roomError } = useSWR(`/api/chatroom/${id}`);
   const [socket] = useSocket(accessToken, "chat");
-  const router = useRouter();
+  const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
-  // // chat room name
-  // console.log(router.query.id);
+  /**
+   * 패스워드 모달! 라우팅으로 룸 데이터가 바뀌는순간, 리랜더를 발생시켜
+   * setShowPWModal을 true로 리셋
+   */
+  useEffect(() => {
+    if (roomData) {
+      console.log(`i am in room ${roomData.chatroomName}`);
+    }
+    return () => {
+      if (roomData) {
+        console.log(`1 am out room ${roomData.chatroomName}`);
+      }
+      setShowPWModal(true);
+    };
+  }, [roomData]);
 
-  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!data || !socket) return <Loading />;
+  if (userError || roomError)
+    axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!userData || !roomData || !socket) return <Loading />;
   return (
     <Layout>
-      <Title title="Chat" />
-      {data.two_factor_activated && !data.two_factor_valid && (
+      <Title title="ChatRoom" />
+      {userData.two_factor_activated && !userData.two_factor_valid && (
         <TwoFactorModal />
       )}
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 4fr 2fr" }}>
+      {roomData && roomData.password && showPWModal && (
+        <PWModal setShowPWModal={setShowPWModal} password={roomData.password} />
+      )}
+      <div className="component-style">
         <RoomList accessToken={accessToken} />
-        <ChatRoomBody chatroomId={router.query.id} />
+        <ChatRoomBody chatroomId={id} />
         <Participant />
       </div>
+      <style jsx>{`
+        .component-style {
+          display: grid;
+          grid-template-columns: 2fr 4fr 2fr;
+        }
+      `}</style>
     </Layout>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
+  const { id } = context.query;
   const { accessToken } = cookie;
   if (!accessToken) {
     return {
@@ -50,6 +81,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  // tokenManager(cookie);
-  return { props: { accessToken } };
+  return { props: { accessToken, id } };
 };

@@ -1,6 +1,7 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+  BaseWsExceptionFilter,
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
@@ -10,21 +11,24 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { JwtAccessStrategy } from 'src/auth/strategies/jwt.access.strategy';
+import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
+import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { Chatroom } from 'src/typeorm';
-import { UserService } from 'src/users/services/user/user.service';
+import { IUserService } from 'src/users/services/user/user.interface';
 import { Repository } from 'typeorm';
 
+// @UseFilters(new BaseWsExceptionFilter())
+@UseGuards(JwtWsGuard)
 @WebSocketGateway({ path: '/chat', cors: '*' })
 export class ChatEventsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   protected readonly logger = new Logger(ChatEventsGateway.name);
   constructor(
-    @Inject('USER_SERVICE') private userService: UserService,
+    @Inject('AUTH_SERVICE') private authService: IAuthService,
+    @Inject('USER_SERVICE') private userService: IUserService,
     @InjectRepository(Chatroom)
-    private chatroomRepository: Repository<Chatroom>,
-    private readonly jwtAccessStrategy: JwtAccessStrategy,
+    private chatroomRepository: Repository<Chatroom>, // private readonly jwtAccessStrategy: JwtAccessStrategy,
   ) {}
 
   @WebSocketServer()
@@ -58,11 +62,16 @@ export class ChatEventsGateway
   }
 
   async handleConnection(socket: Socket) {
-    const currentUser = await this.jwtAccessStrategy.validate(
+    const payload = await this.authService.verify(
       socket.handshake.headers.accesstoken,
     );
-    this.logger.log(`User id:${currentUser.id} has been connected`);
-    this.logger.log(`Chat socket id:${socket.id} connected`);
+    // console.log(socket.handshake.headers.accesstoken);
+    // this.logger.debug('Chat events handleConnection(): ', payload.id);
+    const user = await this.userService.getUserById(payload.id);
+    !user && socket.disconnect();
+
+    this.logger.debug(`User id:${user.id} has been connected`);
+    this.logger.debug(`Chat socket id:${socket.id} connected`);
   }
 
   handleDisconnect(socket: Socket) {

@@ -1,13 +1,11 @@
-import React, { useState, useEffect, FC, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
-interface Props {
-  onClose: () => void;
-}
-const CreateChat: FC<Props> = ({ onClose }) => {
-  const [RoomName, setName] = useState<string>();
-  const [RoomPw, setPw] = useState<string>();
-
+const CreateChat = ({ onClose }: { onClose: () => void }) => {
+  const [RoomName, setName] = useState<string>("");
+  const [RoomPw, setPw] = useState<string>("");
+  const router = useRouter();
   const Name = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value.trim());
   };
@@ -18,17 +16,20 @@ const CreateChat: FC<Props> = ({ onClose }) => {
   const createRoom = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      console.log(RoomName);
-      console.log(RoomPw);
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 1) {
         setPw("");
         return;
       }
       await axios
         .post("/api/chatroom", { chatroomName: RoomName, password: RoomPw })
-        .then(() => {
+        .then(async (res) => {
           setName("");
           setPw("");
+          return await res.data.chatroomId;
+        })
+        .then((chatroomId) => {
+          router.push(`/ChatRoom/${chatroomId}`);
+          console.log(`we move to /ChatRoom/${chatroomId}`);
         })
         .catch((error) => {
           console.dir(error);
@@ -50,7 +51,7 @@ const CreateChat: FC<Props> = ({ onClose }) => {
       <div className="title">
         <h2>Create Chat Room</h2>
       </div>
-      <form>
+      <form method="post">
         <div className="submitform">
           <label>name</label>
           <div>
