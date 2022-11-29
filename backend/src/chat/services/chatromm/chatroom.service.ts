@@ -20,6 +20,10 @@ export class ChatroomService implements IChatroomService {
     private dataSource: DataSource,
     private chatEventsGateway: ChatEventsGateway,
   ) {}
+
+  async findById(chatroomId: number) {
+    return await this.chatroomRepository.findOneBy({ chatroomId: chatroomId });
+  }
   async getAllChatrooms() {
     return await this.chatroomRepository.find();
   }
@@ -29,7 +33,6 @@ export class ChatroomService implements IChatroomService {
 
     // const queryRunner = this.dataSource.createQueryRunner();
     // queryRunner.connect();
-    console.log(createChatroomDto.chatroomName);
     const { chatroomName } = createChatroomDto;
     const chatroom = this.chatroomRepository
       .createQueryBuilder('chatroom')
@@ -45,7 +48,6 @@ export class ChatroomService implements IChatroomService {
     });
     const createdChatroom = await this.chatroomRepository.save(newChatroom);
 
-    const { chatroomId } = createdChatroom;
     const chatroomMemebr = this.chatMemebrRepository.create({
       userId: userId,
       chatroomId: createdChatroom.chatroomId,
@@ -68,11 +70,25 @@ export class ChatroomService implements IChatroomService {
   }
   async getOneChatroom(chatroomId: number) {
     // console.log('getOneChatroom() typeof chatroomId:', typeof chatroomId);
-    const chatroom = await this.chatroomRepository.findOneBy({
-      chatroomId: chatroomId,
+
+    const chatroom = await this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .leftJoinAndSelect(
+        'chatroom.ChatMember',
+        'chat_member',
+        'chat_member.chatroom_id=chatroom_id',
+        { chatroomId },
+      );
+    const chatroom2 = await this.chatroomRepository.findOne({
+      where: {
+        chatroomId: chatroomId,
+      },
+      // relations: ['ChatMember'],
     });
+    // const chatroom = await this.findById(chatroomId);
     if (!chatroom)
       throw new NotFoundException(`Chatroom of id:${chatroomId} not found`);
+    console.log('current chatroom info:', chatroom);
     return chatroom;
   }
   updateChatroom() {
