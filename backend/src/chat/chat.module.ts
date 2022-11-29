@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtAccessStrategy } from 'src/auth/strategies/jwt.access.strategy';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
@@ -13,6 +14,7 @@ import { DmService } from './services/dm/dm.service';
   imports: [
     TypeOrmModule.forFeature([User, Chatroom, ChatMember, ChatContent]),
     UsersModule,
+    JwtModule,
   ],
   controllers: [DmController, ChatroomController],
   providers: [

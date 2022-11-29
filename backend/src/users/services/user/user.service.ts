@@ -10,10 +10,10 @@ export class UserService implements IUserService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async getCurrentUser(id: number): Promise<User> {
-    return await this.userRepository.findOneBy({ id });
+    return await this.userRepository.findOneBy({ id: id });
   }
   async getUserById(id: number): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id: id });
     // console.log('getuserbyid:', user);
     if (!user) throw new NotFoundException(`User by #id ${id} not found`);
     return user;
