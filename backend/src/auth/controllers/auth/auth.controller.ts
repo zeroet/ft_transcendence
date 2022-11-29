@@ -61,7 +61,7 @@ export class AuthController {
   @Redirect('http://localhost:8000/Home', 301)
   @Get('redirect')
   async redirect(@User() user, @Res({ passthrough: true }) res) {
-    console.log('redirect()', user);
+    // console.log('redirect()', user);
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,

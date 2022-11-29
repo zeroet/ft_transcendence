@@ -45,6 +45,17 @@ export class UsersController {
     }
     return CurrentUser;
   }
+  @ApiOperation({
+    summary: 'Get all users / 로그인된 모든 사용자 정보요청',
+  })
+  @Get('all')
+  async getAllUsers() {
+    const users = await this.userService.getAllUsers();
+    if (!users) {
+      throw new NotFoundException('No existing users found');
+    }
+    return users;
+  }
 
   @ApiResponse({
     status: 200,
@@ -58,18 +69,6 @@ export class UsersController {
     const user = await this.userService.getUserById(id);
     if (!user) throw new UnauthorizedException('user not found');
     return user;
-  }
-
-  @ApiOperation({
-    summary: 'Get all users / 로그인된 모든 사용자 정보요청',
-  })
-  @Get('all')
-  async getAllUsers() {
-    const users = await this.userService.getAllUsers();
-    if (!users) {
-      throw new NotFoundException('No existing users found');
-    }
-    return users;
   }
 
   // @Patch(':id')

@@ -20,7 +20,8 @@ export class UserService implements IUserService {
   }
 
   async getAllUsers() {
-    return await this.userRepository.find();
+    const users = await this.userRepository.find();
+    if (users) return users;
   }
   updateUserById(id: number) {}
 }
