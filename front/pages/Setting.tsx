@@ -5,7 +5,6 @@ import ChangeName from "../component/Setting/ChangeName";
 import Logout from "../component/Setting/Logout";
 import TwoFactor from "../component/Setting/TwoFactor";
 import Title from "../component/Title";
-import tokenManager from "../component/Utils/tokenManager";
 import styles from "../styles/LayoutBox.module.css";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
@@ -51,7 +50,7 @@ export default function Setting({ accessToken }: { accessToken: string }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
-  const { accessToken, refreshToken } = cookie;
+  const { accessToken } = cookie;
   if (!accessToken) {
     return {
       redirect: {
@@ -60,6 +59,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  tokenManager(cookie);
+  // tokenManager(cookie);
   return { props: { accessToken } };
 };

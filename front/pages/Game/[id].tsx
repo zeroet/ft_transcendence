@@ -1,218 +1,226 @@
 import cookies from "next-cookies";
-import { useEffect, useRef, useState } from "react";
+import GameList from "../../component/Game/GameList";
+import Layout from "../../component/Layout";
+import Title from "../../component/Title";
+import tokenManager from "../../component/Utils/tokenManager";
 import Loading from "../../component/errorAndLoading/Loading";
 import useSocket from "../../component/Utils/socket";
-import tokenManager from "../../component/Utils/tokenManager";
+import TwoFactorModal from "../../component/Home/TwoFactorModal";
+import useSWR from "swr";
+import axios from "axios";
+import { GetServerSideProps } from "next";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 
-interface XYType {
-  x: number;
-  y: number;
+interface GameElement {
+  ballX: number;
+  ballY: number;
+  ballSize: number;
+  leftPaddle: number;
+  rightPaddle: number;
+  myScore: string;
+  otherSideScore: string;
 }
 
-const PlayGame = ({ accessToken }: { accessToken: string }) => {
-  const [socket, disconnet] = useSocket(accessToken, "game");
+export default function Gaming({ accessToken }: { accessToken: string }) {
+  // https://www.kindacode.com/article/react-get-the-position-x-y-of-an-element/
+  // https://www.daleseo.com/css-position/
+  // https://linguinecode.com/post/how-to-use-react-useref-with-typescript
+  // //////////////////////////////////////////////////////// ref 원도우 사이즈 알기위함
+  // ref를 이용해서 윈도우 사이즈를 얻어, right paddle오른쪽값주고, 공도 relative로 사이즈를 주자
+  const windowSize = useRef();
 
+  const { data, error } = useSWR("/api/users");
+  const [socket] = useSocket(accessToken, "game");
+  const router = useRouter();
+
+  console.log(windowSize);
+  // 마운트 파트
+  // 게임
+  //   const [gameChanged, setGameChanged] = useState<GameElement | undefined>(undefined);
+  /**
+   * ///////////////////////////////////////////////////////모든 위치 : 볼, 패들 을 중간값으로 주어야한다.
+   */
   /**
    *
-   */
-  if (socket) {
-    console.log("in play game", socket.id);
-  }
-
-  /**
+   *
    *
    */
+  const [gameChanged, setGameChanged] = useState<GameElement | undefined>({
+    ballX: 1475, // 0 ~ 1375
+    ballY: 730, // 0 ~ 730
+    ballSize: 50,
+    leftPaddle: 650, // 0 ~ 650
+    rightPaddle: 50,
+    myScore: "1",
+    otherSideScore: "3",
+  });
 
-  const [leftPaddle, setLeftPaddle] = useState<number>(50);
-  const [myScore, setMySore] = useState<number>(0);
-  const [otherSideScore, setOtherSideSore] = useState<number>(0);
-
+  /**
+   * /////////////////////////////////////////////////////// room 모든사람이아니라, room에 있는 플레이어들의 목록을 받아야함
+   * /////////////////////////////////////////////////////// 소켓 id비교해서 룸안에있는사람만이 바꿀수있음!!!!!!!
+   * /////////////////////////////////////////////////////// 모든조건에 넣어야함
+   * /////////////////////////////////////////////////////// socket emit에만 넣으면 될듯
+   * /////////////////////////////////////////////////////// @param e 이벤트
+   * @returns
+   */
   const onChangeftPaddle = (e: KeyboardEvent) => {
+    if (gameChanged === undefined) return;
     const key = e.key;
     if (key === "w" || key === "s") {
-      if (!(leftPaddle > 0 && leftPaddle < 100)) return;
+      if (!(gameChanged.leftPaddle > 0 && gameChanged.leftPaddle < 100)) return;
       if (key === "w") {
-        setLeftPaddle((curr) => curr - 0.8);
+        // real
+        // socket?.emit("paddle", {
+        //   key: "up",
+        // });
+        // test
+        const value = gameChanged.leftPaddle - 1;
+        setGameChanged({
+          ...gameChanged,
+          leftPaddle: value,
+        });
+        console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
       } else {
-        setLeftPaddle((curr) => curr + 0.8);
+        // real
+        socket?.emit("paddle", {
+          key: "down",
+        });
+        // test
+        // setGameChanged({
+        //   ...gameChanged,
+        //   leftPaddle: gameChanged.leftPaddle + 1,
+        // });
+        console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
       }
     }
   };
 
-  // serverside!!!!!!!!!!!
-  /**
-   * x 2 ~ 94
-   *
-   * y = 0 ~ 97
-   */
-
-  // ball x
-  // const ballX = useRef<number>(50);
-  // const ballY = useRef<number>(50);
-  const ball = useRef<XYType>({
-    x: 50,
-    y: 50,
-  });
-  // ball speed
-  const [ballSpeed, setBallSpeed] = useState<number>(250);
-  // 상대편 플레이어
-  const [rightPaddle, setRightPaddle] = useState<number>(50);
-  // ball movement
-
-  const ballDirection = useRef<XYType>({
-    x: 1,
-    y: 1,
-  });
-
-  const ballMovement = () => {
-    if (
-      ball.current.x <= 2 ||
-      ball.current.x >= 94 ||
-      ball.current.y <= 0 ||
-      ball.current.y >= 97
-    ) {
-      if (ball.current.x <= 2) {
-        // ballDirectionX.current *= -1;
-        ballDirection.current.x *= -1;
-        ball.current.x += 1;
-        // ball.current.x = 50;
-        // ball.current.x = 50;
-      }
-      if (ball.current.x >= 94) {
-        ballDirection.current.x *= -1;
-        ball.current.x -= 1;
-        // ball.current.x = 50;
-        // ball.current.x = 50;
-      }
-      if (ball.current.y <= 0) {
-        ballDirection.current.y *= -1;
-        ball.current.y += 1;
-      }
-      if (ball.current.y >= 97) {
-        ballDirection.current.y *= -1;
-        ball.current.y -= 1;
-      }
-    }
-    // setBallDirection((curr) => curr * -1);
-    ball.current.x += ballDirection.current.x * 0.075;
-    ball.current.y += ballDirection.current.y * 0.05;
-  };
-
-  //   console.log(ball.current.x);
-  //   console.log(ball.current.y);
-
-  useEffect(() => {
+  useEffect((): (() => void) => {
+    // socket?.on("connection");
+    console.log(
+      `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
+    );
     window.addEventListener("keydown", onChangeftPaddle);
-  }, []);
+    socket?.on("playGame", async (res: GameElement) => {
+      setGameChanged(res);
+      ///////////////////////////////////////////////////////// setState!!!로 리렌더하면서 애니메이션
+    });
+    console.log(window);
+    return () => {
+      console.log(`mount off play game ${router.query.id} room!`);
+      socket?.off("playGame");
+      // socket?.leave(router.query.id);
+    };
+  }, [router.query.id]);
+  ///////////////////////////////////////////////////////// deps 는 state들 바뀔때마다?하지않아도될듯
+  ///////////////////////////////////////////////////////// set는 변하지않아도되므로!
 
-  const [rerender, setRerender] = useState(0);
-
-  useEffect(() => {
-    setInterval(() => {
-      ballMovement();
-      setRerender((curr) => curr + 1);
-    }, 5);
-  }, []);
-
-  /**
-   *  언마운트가 아닌, 게임이 끝난후에 소켓 제거하자!!!!!!!!!!
-   */
-  //   // 게임완료후에 소켓제거
-  //   useEffect(() => {
-  //     return () => {
-  //       // 언마운트시 소켓 제거
-  //       disconnet();
-  //     };
-  //   }, []);
-  // setInterval(() => {
-  //   // ballMovement();
-  //   console.log("ha");
-  // }, 1500);
-  // setRerender((curr) => curr + 1);
-  if (!socket) return <Loading />;
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!data || !socket) return <Loading />;
   return (
-    <div>
-      <div className="score">
-        <div className="score">{myScore}</div>
-        <div className="score">{otherSideScore}</div>
+    <Layout>
+      <Title title="Game" />
+      {data.two_factor_activated && !data.two_factor_valid && (
+        <TwoFactorModal />
+      )}
+      <div className="grid-div">
+        <GameList accessToken={accessToken} />
+        {/* <div className="play-game" ref={windowSize}> */}
+        <div className="play-game">
+          <div className="score">
+            <div className="score">{gameChanged?.myScore}</div>
+            <div className="score">{gameChanged?.otherSideScore}</div>
+          </div>
+          <div className="ball"></div>
+          <div className="paddle left"></div>
+          <div className="paddle right"></div>
+        </div>
+        <style jsx global>{`
+          .grid-div {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+          }
+
+          *,
+          *::after,
+          *::before {
+            box-sizing: border-box;
+          }
+
+          :root {
+            --hue: 200;
+            --saturation: 0%;
+            --foreground-color: hsl(var(--hue), var(--saturation), 75%);
+            --background-color: hsl(var(--hue), var(--saturation), 20%);
+          }
+
+          .play-game {
+            //   padding: 10px;
+            margin: 15px;
+            background-color: var(--background-color);
+            overflow: hidden;
+            width: 1500px;
+            height: 750px;
+          }
+
+          .paddle {
+            position: relative;
+            background-color: var(--foreground-color);
+            width: 10px;
+            top: calc(var(--position) * 1vh);
+            height: 100px;
+            trasform: traslate(-50%);
+          }
+
+          .left {
+            // --position: ${gameChanged?.leftPaddle}px;
+            top: ${gameChanged && gameChanged.leftPaddle - 105}px;
+          }
+
+          .right {
+            // --position: ${gameChanged?.rightPaddle}px;
+            top: ${gameChanged && gameChanged.rightPaddle - 105}px;
+            left: ${1500 - 10}px;
+          }
+
+          .score {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 7vh;
+            color: var(--foregroud-color);
+          }
+
+          .score > * {
+            flex-grow: 1;
+            flex-basis: 0;
+          }
+
+          .ball {
+            // --x: ${gameChanged && gameChanged.ballX - 80}px;
+            // --y: ${gameChanged && gameChanged.ballY - 80}px;
+
+            position: relative;
+            background-color: var(--foreground-color);
+            // left: calc(var(--x) * 1vw);
+            // top: calc(var(--y) * 1vh);
+            left: ${gameChanged && gameChanged.ballX}px;
+            top: ${gameChanged && gameChanged.ballY - 80}px;
+            trasform: traslate(-50%, -50%);
+            border-radius: 50%;
+            width: ${gameChanged && gameChanged.ballSize / 2}px;
+            height: ${gameChanged && gameChanged.ballSize / 2}px;
+          }
+        `}</style>
       </div>
-      <div className="ball"></div>
-      <div className="paddle left"></div>
-      <div className="paddle right"></div>
-      <style jsx global>{`
-        *,
-        *::after,
-        *::before {
-          box-sizing: border-box;
-        }
-
-        :root {
-          --hue: 200;
-          --saturation: 0%;
-          --foreground-color: hsl(var(--hue), var(--saturation), 75%);
-          --background-color: hsl(var(--hue), var(--saturation), 20%);
-        }
-
-        body {
-          padding: 10px;
-          background-color: var(--background-color);
-        }
-
-        .paddle {
-          position: absolute;
-          background-color: var(--foreground-color);
-          width: 1vh;
-          top: calc(var(--position) * 1vh);
-          height: 10vh;
-          trasform: traslate(-50%);
-        }
-
-        .left {
-          --position: ${leftPaddle};
-          left: 1vw;
-        }
-
-        .right {
-          --position: ${rightPaddle};
-          right: 1vw;
-        }
-
-        .score {
-          display: flex;
-          justify-content: center;
-          font-weight: bold;
-          font-size: 7vh;
-          color: var(--foregroud-color);
-        }
-
-        .score > * {
-          flex-grow: 1;
-          flex-basis: 0;
-        }
-
-        .ball {
-          --x: ${ball.current.x};
-          --y: ${ball.current.y};
-
-          position: absolute;
-          background-color: var(--foreground-color);
-          left: calc(var(--x) * 1vw);
-          top: calc(var(--y) * 1vh);
-          trasform: traslate(-50%, -50%);
-          border-radius: 50%;
-          width: 2.5vh;
-          height: 2.5vh;
-        }
-      `}</style>
-    </div>
+    </Layout>
   );
-};
+}
 
-export default PlayGame;
-
-export function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
-  const { accessToken, refreshToken } = cookie;
+  const { accessToken } = cookie;
   if (!accessToken) {
     return {
       redirect: {
@@ -221,10 +229,10 @@ export function getServerSideProps(context: any) {
       },
     };
   }
-  tokenManager(cookie);
+  // tokenManager(cookie);
   return {
     props: {
       accessToken,
     },
   };
-}
+};

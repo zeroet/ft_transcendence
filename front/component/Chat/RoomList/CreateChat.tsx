@@ -5,38 +5,43 @@ interface Props {
   onClose: () => void;
 }
 const CreateChat: FC<Props> = ({ onClose }) => {
-  // let [showModal, setShowModal] = useState<boolean>(true);
-  //   useEffect(() => {
-  //     const width = window.outerWidth / 2;
-  //     const heigth = window.outerHeight / 2;
-  //   }, []);
   const [RoomName, setName] = useState<string>();
   const [RoomPw, setPw] = useState<string>();
-  //alert("create room button");
 
   const Name = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value.trim());
   };
+
   const Pw = (e: React.ChangeEvent<HTMLInputElement>) =>
     setPw(e.target.value.trim());
 
   const createRoom = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      axios
-        .post("api/roomName", { Name: RoomName, Password: RoomPw })
+      console.log(RoomName);
+      console.log(RoomPw);
+      if (RoomPw && RoomPw.length < 4 && RoomPw.length > 1) {
+        setPw("");
+        return;
+      }
+      await axios
+        .post("/api/chatroom", { chatroomName: RoomName, password: RoomPw })
         .then(() => {
           setName("");
           setPw("");
         })
         .catch((error) => {
           console.dir(error);
+          alert("We have already same room name");
+        })
+        .finally(() => {
+          onClose();
         });
     },
     [RoomName, RoomPw]
   );
 
-  const cancelRoom = () => {
+  const cancelRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
     onClose();
   };
 
@@ -49,13 +54,20 @@ const CreateChat: FC<Props> = ({ onClose }) => {
         <div className="submitform">
           <label>name</label>
           <div>
-            <input onChange={Name} type="text" />
+            <input
+              onChange={Name}
+              autoComplete="username"
+              value={RoomName}
+              type="text"
+            />
           </div>
           <label>password</label>
           <div>
             <input
               onChange={Pw}
+              value={RoomPw}
               type="password"
+              autoComplete="current-password"
               placeholder="for private room (more than 4 caracters)"
             />
           </div>

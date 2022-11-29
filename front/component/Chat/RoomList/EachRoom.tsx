@@ -1,18 +1,17 @@
 import Link from "next/link";
 import React from "react";
 
-
 interface EachRoomTye {
   title: string;
-  id: string;
+  chatroomId: string;
 }
 
-const EachRoom = ({ title, id }: EachRoomTye) => {
+const EachRoom = ({ title, chatroomId }: EachRoomTye) => {
   return (
     <div>
-      <Link href={`/ChatRoom/${id}`} legacyBehavior>
+      <Link href={`/ChatRoom/${chatroomId}`} legacyBehavior>
         <a>
-          Room ${id}: ${title}
+          Room ${chatroomId}: ${title}
         </a>
       </Link>
       <style jsx>{`

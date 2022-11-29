@@ -2,43 +2,80 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IChatContent } from '../interfaces/IChatContent';
+import { IChatMember } from '../interfaces/IChatMemeber';
+import { IDm } from '../interfaces/IDm';
 import { IUser } from '../interfaces/IUser';
+import { ChatContent } from './chatContent.entity';
+import { ChatMember } from './chatMember.entitiy';
+import { Dm } from './dm.entity';
 
 @Entity({ name: 'users' })
 export class User implements IUser {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', name: 'user_id' })
   id: number;
 
-  @Column({ unique: true, nullable: false, length: 30 })
+  @Column({
+    type: 'varchar',
+    name: 'intra_id',
+    unique: true,
+    nullable: false,
+    length: 30,
+  })
   intra_id: string;
 
-  @Column({ unique: true, nullable: false, length: 30 })
+  @Column({
+    type: 'varchar',
+    name: 'email',
+    unique: true,
+    nullable: false,
+    length: 30,
+  })
   email: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', name: 'image_url', nullable: true })
   image_url: string;
 
-  @Column({ nullable: false, length: 30 })
+  @Column({
+    type: 'varchar',
+    name: 'username',
+    unique: true,
+    nullable: false,
+    length: 30,
+  })
   username: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   created_at: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
   modified_at: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', name: 'hashed_refresh_token', nullable: true })
   hashed_refresh_token: string;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', name: 'two_factor_activated', default: false })
   two_factor_activated: boolean;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', name: 'two_factor_secret', nullable: true })
   two_factor_secret: string;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', name: 'two_factor_valid', default: false })
   two_factor_valid: boolean;
+
+  @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.User)
+  ChatMember: IChatMember[];
+
+  @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.User)
+  ChatContent: IChatContent[];
+
+  @OneToMany((type) => Dm, (Dm) => Dm.Sender)
+  DmSender: IDm[];
+
+  @OneToMany((type) => Dm, (Dm) => Dm.Receiver)
+  DmReceiver: IDm[];
 }

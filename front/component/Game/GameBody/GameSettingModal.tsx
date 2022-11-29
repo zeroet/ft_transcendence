@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
 
 // 오너가 아니면, 일반 체크만 하는 페이지도 만들어야한다
-
 
 const GameSettingModal = ({
   accessToken,
@@ -14,7 +13,7 @@ const GameSettingModal = ({
   closeSettingModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   const router = useRouter();
-  const [socket, disconnet] = useSocket(accessToken, "game");
+  const [socket] = useSocket(accessToken, "game");
   const [speed, setSpeed] = useState<string>("50");
   const [ballSize, setBallSize] = useState<string>("50");
   const [roomName, setRoomName] = useState<string>("");
@@ -28,18 +27,23 @@ const GameSettingModal = ({
         alert("Room name please");
         return;
       }
-      setRoomName("");
-      setSpeed("50");
-      setBallSize("50");
-
-      console.log("=========================ball speed", speed);
-      console.log("=========================ball size", ballSize);
-      console.log("=========================ball size", roomName);
-
-      // socket 에 emit!!으로 스피트, 볼사이즈 넘겨준다.
 
       // 그리고 게임시작
-      router.push("/Game/1");
+      socket?.emit("game_setting", {
+        roomName,
+        speed,
+        ballSize,
+      });
+
+      // setSpeed("50");
+      // setBallSize("50");
+      // setRoomName("");
+      //테스트용 원래는 useEffect에서 해야함
+      // 확인! 셋팅
+      console.log(
+        `game room name : ${roomName}, ball size : ${ballSize}, ball speed : ${speed}`
+      );
+      router.push(`/Game/test!!!`);
     },
     [speed, ballSize, roomName]
   );
@@ -63,15 +67,28 @@ const GameSettingModal = ({
 
   const onChangeRoomName = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setRoomName(e.target.value);
-      console.log(roomName.trim());
+      setRoomName(e.target.value.trim());
+      console.log(roomName);
     },
     [roomName]
   );
 
-  //   if (socket && socket.id) {
-  //     console.log(`game speed and ball setting modal ${socket.id}`);
-  //   }
+  useEffect((): (() => void) => {
+    console.log("game setting owner modal", socket?.id);
+
+    // 완료된 소켓! 받은후에 이동
+    socket?.on("ready", (roonNameFromSocket) => {
+      if (roonNameFromSocket === "ok") {
+        router.push(`/Game/${roonNameFromSocket}`);
+      }
+    });
+    return () => {
+      console.log("off socket in game setting modal");
+      socket?.off("ready");
+      socket?.off("game_setting");
+    };
+  }, []);
+
   if (!socket) return <Loading />;
   return (
     <div className="box">

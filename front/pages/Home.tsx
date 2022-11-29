@@ -42,7 +42,7 @@ export default function Home() {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
-  const { accessToken, refreshToken } = cookie;
+  const { accessToken } = cookie;
   if (!accessToken) {
     return {
       redirect: {
@@ -51,6 +51,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  tokenManager(cookie);
+  // tokenManager(cookie);
   return { props: {} };
 };

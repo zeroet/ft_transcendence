@@ -1,0 +1,28 @@
+@clientUrl = http://localhost:8000
+@serverUrl = http://localhost:8080
+
+# @accessToken = {{login.response.cookie.accessToken}}
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInR3b19mYWN0b3JfYWN0aXZhdGVkIjpmYWxzZSwiaWF0IjoxNjY5NDAwODM5LCJleHAiOjE2Njk0MDQ0Mzl9.TyPeVGC89NdwFkmM-mtMx6636Mkfh3bkJ4gfuzrh2Dc
+
+
+### Get current user info
+Get {{serverUrl}}/users/ HTTP/1.1
+Cookie: accessToken = {{accessToken}}
+
+### Post new username
+Post {{serverUrl}}/setting/username HTTP/1.1
+content-type: application/json
+Cookie: accessToken = {{accessToken}}
+
+# body
+{
+    "username":"hohdss"
+}
+
+
+
+### Get all chatrooms
+Get {{serverUrl}}/chatroom/ HTTP/1.1
+Cookie: accessToken = {{accessToken}}
+
+

@@ -46,7 +46,7 @@ const ChangeAvatarModal = ({
             }
           };
         } else {
-          alert("File should be pgn, or jpg");
+          alert("File should be pgn, jpg or");
         }
       }
     },
@@ -73,8 +73,10 @@ const ChangeAvatarModal = ({
           alert("Size of file is too big, please less than 10kb");
           console.log(e);
         }
+      } else {
+        alert("no file uploaded. Plz upload a file");
       }
-      modal(e);
+      // modal(e);
     },
     [avatar]
   );
@@ -95,13 +97,13 @@ const ChangeAvatarModal = ({
           />
         )}
         <div className="upload-file">
-          <img height={27} src={"/images/search.png"} />
           <label className="label" htmlFor="avatar">
             UPLOAD FILE
           </label>
+          <img height={27} src={"/images/fileIcon.png"} />
           <input onChange={getNewAvatar} type="file" id="avatar" />
         </div>
-
+        <h1>(less than 10kb && png, jpg, jpeg file only)</h1>
         <div className="buttonDiv">
           <button onClick={setNewAvatar} type="submit" className="ok">
             Submit
@@ -121,6 +123,15 @@ const ChangeAvatarModal = ({
           width: 100%;
           margin-top: 3px;
           color: black;
+          cursor: pointer;
+        }
+        img {
+          margin-right: 12px;
+          cursor: pointer;
+        }
+        h1 {
+          font-size: 14px;
+          color: red;
         }
 
         .upload-file {
@@ -129,10 +140,9 @@ const ChangeAvatarModal = ({
 
         .upload-file {
           margin-top: 30px;
-          margin-bottom: 30px;
           border: 2px solid black;
           width: 250px;
-          display: flex;
+          // display: flex;
         }
 
         input {
@@ -146,17 +156,14 @@ const ChangeAvatarModal = ({
           left: 33%;
 
           width: 500px;
-          // height: 300px;
 
           background-color: white;
           border: 1px inset black;
-          // box-shadow: 10px 10px;
           text-transform: uppercase;
         }
         .title {
           background-color: black;
           color: white;
-          // height: 100%;
         }
 
         .createForm {

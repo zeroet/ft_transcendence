@@ -55,7 +55,7 @@ export class AuthService implements IAuthService {
     // console.log('getAccessToken() two_factor_activated:', two_factor_activated);
     const access = this.jwtService.sign(
       {
-        sub: id,
+        id: id,
         two_factor_activated: two_factor_activated,
       },
       {
@@ -69,7 +69,7 @@ export class AuthService implements IAuthService {
   getRefreshToken(id: number) {
     const refresh = this.jwtService.sign(
       {
-        sub: id,
+        id: id,
       },
       {
         secret: process.env.JWT_REFRESH_SECRET,

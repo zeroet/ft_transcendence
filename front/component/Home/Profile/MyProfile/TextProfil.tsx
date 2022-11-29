@@ -5,10 +5,14 @@ import axios from "axios";
 
 const TextProfil = () => {
   const { data: user, error } = useSWR<UserInfo>("/api/users");
-
+  const userNameFontSize = { size: 50 };
   /*
    1. useSWR with new API for loss, victory, winRate
   */
+
+  if (user && user.username.length >= 20) {
+    userNameFontSize.size = 25;
+  }
 
   const loss = 1432;
   const victory = 44432;
@@ -35,7 +39,7 @@ const TextProfil = () => {
           font-family: "Fragment Mono", monospace;
           font-style: normal;
           font-weight: bold;
-          font-size: 50px;
+          font-size: ${userNameFontSize.size}px;
           line-height: 20px;
           /* or 40% */
           text-transform: uppercase;

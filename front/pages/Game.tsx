@@ -10,16 +10,18 @@ import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
+import { useEffect } from "react";
 
 export default function Game({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
-  const [socket, disconnet] = useSocket(accessToken, "game");
+  const [socket] = useSocket(accessToken, "game");
 
-  // if (socket) {
-  //   socket.on("connect", () => {
-  //     console.log("game", socket.id);
-  //   });
-  // }
+  useEffect((): (() => void) => {
+    socket?.on("connect", () => {
+      console.log("game", socket.id);
+    });
+    return () => socket?.off("connect");
+  });
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socket) return <Loading />;
   return (
@@ -44,7 +46,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
-  const { accessToken, refreshToken } = cookie;
+  const { accessToken } = cookie;
   if (!accessToken) {
     return {
       redirect: {
@@ -53,7 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  tokenManager(cookie);
+  // tokenManager(cookie);
   return {
     props: {
       accessToken,
