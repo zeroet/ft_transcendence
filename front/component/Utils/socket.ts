@@ -10,11 +10,11 @@ const useSocket = (
 ): [Socket | undefined, () => void] => {
   const disconnect = useCallback(() => {
     if (socket[socketType]) {
-      console.log(
-        socket[socketType].id,
-        socketType,
-        "===================disconnet socket=============="
-      );
+      // console.log(
+      //   socket[socketType].id,
+      //   socketType,
+      //   "===================disconnet socket=============="
+      // );
       socket[socketType].disconnect();
       delete socket[socketType];
     }
@@ -37,13 +37,13 @@ const useSocket = (
     });
   }
   // console.log(`backURL for ${socketType}`);
-  console.log(
-    `=================create new socket========================== ${socketType}`
-  );
+  // console.log(
+  //   `=================create new socket========================== ${socketType}`
+  // );
   // } else {
   // console.log("use socket in socket.ts");
   // }
-  console.log(socket);
+  // console.log(socket);
 
   return [socket[socketType], disconnect];
 };
