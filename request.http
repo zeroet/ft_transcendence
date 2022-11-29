@@ -30,5 +30,5 @@ Get {{serverUrl}}/chatroom/2/ HTTP/1.1
 Cookie: accessToken = {{accessToken}}
 
 ### Get all memebers from a chatroom
-Get {{serverUrl}}/chatroom/1/members/ HTTP/1.1
+Get {{serverUrl}}/chatroom/2/members/ HTTP/1.1
 Cookie: accessToken = {{accessToken}}

@@ -15,6 +15,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
 import { dataCollectionPhase } from 'typeorm-model-generator/dist/src/Engine';
@@ -22,10 +23,12 @@ import { GameService } from './game.service';
 import { RoomName } from './interfaces/room';
 import { RoomService } from './room.service';
 
+@UseGuards(JwtWsGuard)
 @WebSocketGateway({ cors: '*' })
 export class GameEvents {
   constructor(
     @Inject('USER_SERVICE') private readonly userService: UserService,
+    @Inject('AUTH_SERVICE') private authService: IAuthService,
   ) {}
 
   @WebSocketServer()
@@ -34,7 +37,12 @@ export class GameEvents {
   room: RoomService = new RoomService();
   game: GameService = new GameService();
 
-  handleConnection(client: Socket) {
+  async handleConnection(client: Socket) {
+    const payload = await this.authService.verify(
+      client.handshake.headers.accesstoken,
+    );
+    const user = await this.userService.getUserById(payload.id);
+    !user && client.disconnect();
     console.log('Lobby', client.id);
   }
 
