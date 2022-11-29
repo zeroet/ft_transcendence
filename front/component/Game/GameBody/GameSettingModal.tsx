@@ -77,15 +77,15 @@ const GameSettingModal = ({
     console.log("game setting owner modal", socket?.id);
 
     // 완료된 소켓! 받은후에 이동
-    socket?.on("ready", (roonNameFromSocket) => {
+    socket?.on("game", (roonNameFromSocket) => {
       if (roonNameFromSocket === "ok") {
         router.push(`/Game/${roonNameFromSocket}`);
       }
     });
     return () => {
       console.log("off socket in game setting modal");
-      socket?.off("ready");
-      socket?.off("createRoom");
+      socket?.off("game");
+      // socket?.off("createRoom");
     };
   }, []);
 

@@ -1,7 +1,8 @@
 export class RoomName{
     name: string;
+    speed : string;
+    ballSize : string;
 }
-
 
 export class Room {
     Player = []

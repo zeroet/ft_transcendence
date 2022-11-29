@@ -65,7 +65,7 @@ export class GameEvents {
   ) {
     if (this.room.isOwner(client)) this.room.createRoom(data[1].name);
     else console.log('Im not owner');
-    this.server.to(client.data.roomName).emit('game', 'INTHEGAME');
+    this.server.to(client.data.roomName).emit('game', data[1].name);
   }
 
   @SubscribeMessage('message')

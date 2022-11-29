@@ -18,28 +18,24 @@ const GameReadyModal = ({
       e.stopPropagation();
       e.preventDefault();
 
-      socket?.emit("game_setting", {
-        roomName: "",
-        speed: " ",
-        ballSize: "",
-      });
+      socket?.emit("createRoom", {});
 
       //테스트용 원래는 useEffect에서 해야함
       console.log("game ready modal click ok");
-      router.push(`/Game/test!!!`);
+      // router.push(`/Game/test!!!`);
     },
     []
   );
 
   useEffect((): (() => void) => {
     console.log("in game ready modal", socket?.id);
-    socket?.on("ready", (roonNameFromSocket) => {
+    socket?.on("game", (roonNameFromSocket) => {
       router.push(`/Game/${roonNameFromSocket}`);
     });
     return () => {
       console.log("off socket in game ready modal");
-      socket?.off("ready");
-      socket?.off("game_setting");
+      socket?.off("game");
+      // socket?.off("game_setting");
     };
   }, []);
   if (!socket) return <Loading />;
