@@ -19,8 +19,8 @@ export class UserService implements IUserService {
       // const user = await this.userRepository.findOneBy({ id: id });
       const user = await this.userRepository.findOne({ where: { id } });
       // console.log('getUserById() user:', user);
-      this.logger.debug('getUserById() user:');
-      console.log(user);
+      // this.logger.debug('getUserById() user:');
+      // console.log(user);
       // console.log('getuserbyid:', user);
       if (!user) throw new NotFoundException(`User by #id ${id} not found`);
       return user;

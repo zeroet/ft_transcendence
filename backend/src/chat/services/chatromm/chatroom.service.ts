@@ -33,17 +33,17 @@ export class ChatroomService implements IChatroomService {
     const { chatroomName } = createChatroomDto;
     const chatroom = this.chatroomRepository
       .createQueryBuilder('chatroom')
-      .where('chatroom.chatroom_name=chatroom_name', { chatroomName })
+      .where('chatroom.chatroom_name = chatroom_name', { chatroomName })
       .getOne();
     if (!chatroom)
       throw new NotFoundException(
         `Chatroom of name: ${chatroomName} not found`,
       );
-    const Newchatroom = this.chatroomRepository.create({
+    const newChatroom = this.chatroomRepository.create({
       ownerId: userId,
       ...createChatroomDto,
     });
-    const createdChatroom = await this.chatroomRepository.save(Newchatroom);
+    const createdChatroom = await this.chatroomRepository.save(newChatroom);
 
     const { chatroomId } = createdChatroom;
     const chatroomMemebr = this.chatMemebrRepository.create({
@@ -52,8 +52,8 @@ export class ChatroomService implements IChatroomService {
     });
     await this.chatMemebrRepository.save(chatroomMemebr);
     this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
-    console.log(chatroom);
-    return chatroom;
+    console.log(newChatroom);
+    return newChatroom;
 
     // const chatroomContent = this.chatContentRepository.create({
     //   chatroomId,

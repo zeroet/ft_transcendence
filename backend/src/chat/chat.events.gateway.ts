@@ -17,7 +17,7 @@ import { Chatroom } from 'src/typeorm';
 import { IUserService } from 'src/users/services/user/user.interface';
 import { Repository } from 'typeorm';
 
-@UseFilters(new BaseWsExceptionFilter())
+// @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(JwtWsGuard)
 @WebSocketGateway({ path: '/chat', cors: '*' })
 export class ChatEventsGateway
