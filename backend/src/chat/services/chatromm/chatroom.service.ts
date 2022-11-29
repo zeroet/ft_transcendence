@@ -66,7 +66,7 @@ export class ChatroomService implements IChatroomService {
     // return this.chatroomRepository.save(chatroom);
   }
   async getOneChatroom(chatroomId: number) {
-    console.log('getOneChatroom() typeof chatroomId:', typeof chatroomId);
+    // console.log('getOneChatroom() typeof chatroomId:', typeof chatroomId);
     const chatroom = await this.chatroomRepository.findOneBy({
       chatroomId: chatroomId,
     });

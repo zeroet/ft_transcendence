@@ -1,6 +1,7 @@
-import { Inject, Logger, UseGuards } from '@nestjs/common';
+import { Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+  BaseWsExceptionFilter,
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
@@ -16,6 +17,7 @@ import { Chatroom } from 'src/typeorm';
 import { IUserService } from 'src/users/services/user/user.interface';
 import { Repository } from 'typeorm';
 
+@UseFilters(new BaseWsExceptionFilter())
 @UseGuards(JwtWsGuard)
 @WebSocketGateway({ path: '/chat', cors: '*' })
 export class ChatEventsGateway

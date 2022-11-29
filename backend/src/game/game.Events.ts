@@ -1,10 +1,4 @@
-import {
-  Body,
-  ExecutionContext,
-  Inject,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -13,16 +7,14 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
-import { AuthService } from 'src/auth/services/auth/auth.service';
-import { JwtAccessStrategy } from 'src/auth/strategies/jwt.access.strategy';
+import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
 
 @WebSocketGateway({ cors: '*' })
 export class GameEvents {
   constructor(
     @Inject('USER_SERVICE') private readonly userService: UserService,
-    private readonly authService: JwtAccessStrategy,
+    @Inject('AUTH_SERVICE') private authService: IAuthService,
   ) {}
 
   @WebSocketServer()
@@ -30,10 +22,11 @@ export class GameEvents {
 
   // @UseGuards(JwtAccessAuthGuard)
   async handleConnection(client: Socket) {
-    // console.log('handleconnection', client.handshake);
-    const user = await this.authService.validate(
+    const payload = await this.authService.verify(
       client.handshake.headers.accesstoken,
     );
+    const user = await this.userService.getUserById(payload.id);
+    !user && client.disconnect();
     console.log('websocket', user);
     console.log(`CLient Conneted: ${client.id}`);
   }
