@@ -1,16 +1,14 @@
 import React, { useCallback, useState } from "react";
 import useSWR from "swr";
-import Error from "../errorAndLoading/Error";
 import Loading from "../errorAndLoading/Loading";
 import SearchBarModal from "./SearcheBarModal/SearchBarModal";
+import { UserInfo } from "../../interfaceType";
+import axios from "axios";
 
 const SearchBar = () => {
   const [inputValue, setInputValue] = useState<string | undefined>("");
 
-  /**
-   * dummy data
-   */
-  const { data, error, isValidating } = useSWR("https://dummyjson.com/users");
+  const { data, error } = useSWR("/api/users/all");
 
   const onChangeInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement> | undefined) => {
@@ -23,12 +21,11 @@ const SearchBar = () => {
     (e: React.MouseEvent<HTMLImageElement>) => {
       e.stopPropagation();
       e.preventDefault();
-      // setInputValue("");
     },
     [inputValue]
   );
 
-  if (error) return <Error />;
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
     <div className="searchBar">
@@ -50,16 +47,16 @@ const SearchBar = () => {
       </div>
       <div>
         <div className="user-list">
-          {data.users &&
-            inputValue !== "" &&
-            data.users.map((user: any) => {
-              if (user.firstName.includes(inputValue)) {
+          {data &&
+            inputValue &&
+            data.map((user: UserInfo) => {
+              if (user.username.includes(inputValue)) {
                 return (
-                  <div key={user.id}>
+                  <div key={user.intra_id}>
                     <SearchBarModal
                       setInputValue={setInputValue}
-                      image={user.image}
-                      name={user.firstName}
+                      image={user.image_url}
+                      name={user.username}
                     />
                   </div>
                 );

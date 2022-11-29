@@ -1,42 +1,62 @@
+import axios from "axios";
 import Link from "next/link";
-import { useState } from "react";
-import useSWR from "swr";
-import Error from "../../errorAndLoading/Error";
+import { useEffect } from "react";
+import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
 import fetcher from "../../Utils/fetcher";
-import EachRoom from "./EachRoom";
+import useSocket from "../../Utils/socket";
+import { IChatroom } from "../../../interfaceType";
+// import EachRoom from "./delete apres";
 
-export default function ChatRoom() {
-  // const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
+export default function ChatRoom({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR(`/api/chatroom`, fetcher);
+  const [socket] = useSocket(accessToken, "chat");
+  // if (data) {
+  //   console.log(data);
+  // }
 
-  if (data) {
-    console.log(data);
-  }
-  if (error) return <Error />;
+  useEffect(() => {
+    socket?.on("newRoomList", (data: string) => {
+      console.log(data);
+      mutate("/api/chatroom");
+    });
+    return () => {
+      socket?.off("newRoomList");
+    };
+  }, []);
+  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
-
   return (
     <div>
       <div className="list">
         <ul>
-          {data &&
-            data.map((post: any) => {
-              return (
-                <li key={post.chatroomId}>
-                  <EachRoom
-                    title={post.chatroomName}
-                    chatroomId={post.chatroomId}
+          {data.map((room: IChatroom) => {
+            return (
+              <Link href={`/ChatRoom/${room.chatroomId}`} key={room.chatroomId}>
+                <div className="room-li">
+                  <li>{room.chatroomName}</li>
+                  <img
+                    src={
+                      room.password
+                        ? "/images/private_room.png"
+                        : "/images/public_room.png"
+                    }
+                    width="40px"
                   />
-                </li>
-              );
-            })}
+                </div>
+              </Link>
+            );
+          })}
         </ul>
       </div>
       <style jsx>{`
         .list {
           height: 300px;
           margin-top: 55px;
+        }
+        .room-li {
+          display: flex;
+          justify-content: space-between;
         }
       `}</style>
     </div>

@@ -10,22 +10,22 @@ import Loading from "../errorAndLoading/Loading";
 // 중복으로 사용됨. 물론 중복으로 사용안해도됨
 
 export default function Participant() {
-  const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
+  // const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
 
-  if (data) {
-    console.log(data);
-  }
-  if (error) return <Error />;
-  if (!data) return <Loading />;
+  // if (data) {
+  //   console.log(data);
+  // }
+  // if (error) return <Error />;
+  // if (!data) return <Loading />;
 
   return (
     <div className={styles.box}>
       <h1>Participant</h1>
       <hr />
       {
-        <ul key={data.posts.id}>
-          {data.posts && data.posts.map((post: any) => <li>{post.id}</li>)}
-        </ul>
+        // <ul key={data.posts.id}>
+        //   {data.posts && data.posts.map((post: any) => <li>{post.id}</li>)}
+        // </ul>
       }
       <style jsx>{`
         h1 {
