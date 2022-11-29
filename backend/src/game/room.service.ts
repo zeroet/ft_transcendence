@@ -16,6 +16,7 @@ export class RoomService{
             if (socket === user) return false;
         this.Players.push(user);
         this.size += 1;
+        console.log(user.data.user);
         return true;
     }
 

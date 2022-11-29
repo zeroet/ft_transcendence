@@ -43,7 +43,9 @@ export class GameEvents {
     );
     const user = await this.userService.getUserById(payload.id);
     !user && client.disconnect();
-    console.log('Lobby', client.id);
+    client.data.user = user;
+    console.log('Lobby', client.data.user.username);
+
   }
 
   handleDisConnection(clinet: Socket) {
