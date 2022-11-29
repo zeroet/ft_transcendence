@@ -1,13 +1,11 @@
-import React, { useState, useEffect, FC, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
-interface Props {
-  onClose: () => void;
-}
-const CreateChat: FC<Props> = ({ onClose }) => {
+const CreateChat = ({ onClose }: { onClose: () => void }) => {
   const [RoomName, setName] = useState<string>();
   const [RoomPw, setPw] = useState<string>();
-
+  const router = useRouter();
   const Name = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value.trim());
   };
@@ -26,9 +24,15 @@ const CreateChat: FC<Props> = ({ onClose }) => {
       }
       await axios
         .post("/api/chatroom", { chatroomName: RoomName, password: RoomPw })
-        .then(() => {
+        .then(async (res) => {
           setName("");
           setPw("");
+          console.log(res);
+          return await res.data.chatroomId;
+        })
+        .then((chatroomId) => {
+          console.log(`/ChatRoom/${chatroomId}`);
+          router.push(`/ChatRoom/${chatroomId}`);
         })
         .catch((error) => {
           console.dir(error);
