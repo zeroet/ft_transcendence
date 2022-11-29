@@ -4,7 +4,6 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { IUserService } from 'src/users/services/user/user.interface';
@@ -12,10 +11,7 @@ import { IUserService } from 'src/users/services/user/user.interface';
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   private logger: Logger = new Logger(JwtAccessStrategy.name);
-  constructor(
-    @Inject('USER_SERVICE') private userService: IUserService,
-    private jwtService: JwtService,
-  ) {
+  constructor(@Inject('USER_SERVICE') private userService: IUserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request) => {
@@ -27,13 +23,10 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   }
 
   async validate(payload: any) {
-    this.logger.log(
+    this.logger.debug(
       `user_id: ${payload.id}, two_factor_activated: ${payload.two_factor_activated}`,
     );
-    // if (payload === undefined)
-    //   console.log('jwt.access.strategy payload:', payload);
     // if (payload !== undefined) {
-    // console.log('jwt.access.strategy validate() payload:', payload.id);
     const user = await this.userService.getUserById(payload.id);
     if (!user) {
       console.log('jwt.access.strategy user not found');

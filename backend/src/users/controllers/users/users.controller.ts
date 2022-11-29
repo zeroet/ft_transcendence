@@ -61,7 +61,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get one user by id / id로 특정 사용자 정보요청' })
   @Get(':id')
   async getUserById(@Param('id', ParseIntPipe) id: number) {
-    console.log('getUserById()', id);
+    // console.log('getUserById()', id);
     const user = await this.userService.getUserById(id);
     if (!user) throw new UnauthorizedException('user not found');
     return user;

@@ -95,4 +95,10 @@ export class AuthService implements IAuthService {
     const hash = await this.hashData(refreshToken);
     return hash;
   }
+
+  async verify(accessToken: any) {
+    return await this.jwtService.verify(accessToken, {
+      secret: process.env.JWT_ACCESS_SECRET,
+    });
+  }
 }
