@@ -65,8 +65,13 @@ export class ChatroomService implements IChatroomService {
     //   .innerJoinAndSelect();
     // return this.chatroomRepository.save(chatroom);
   }
-  getOneChatroom() {
-    throw new Error('Method not implemented.');
+  async getOneChatroom(chatroomId: number) {
+    const chatroom = await this.chatroomRepository.findOneBy({
+      chatroomId: chatroomId,
+    });
+    if (!chatroom)
+      throw new NotFoundException(`Chatroom of id:${chatroomId} not found`);
+    return chatroom;
   }
   updateChatroom() {
     throw new Error('Method not implemented.');

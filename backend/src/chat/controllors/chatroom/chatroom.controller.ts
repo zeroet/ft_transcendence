@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
@@ -37,7 +46,9 @@ export class ChatroomController {
 
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':chatroomId')
-  getOneChatroom() {}
+  getOneChatroom(@Param(ParseIntPipe) chatroomId: number) {
+    return this.chatroomService.getOneChatroom(chatroomId);
+  }
 
   @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
   @Post(':chatroomId/update')
