@@ -1,4 +1,5 @@
 import { Inject, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
   ConnectedSocket,
   MessageBody,
@@ -10,7 +11,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtAccessStrategy } from 'src/auth/strategies/jwt.access.strategy';
+import { Chatroom } from 'src/typeorm';
 import { UserService } from 'src/users/services/user/user.service';
+import { Repository } from 'typeorm';
 
 @WebSocketGateway({ path: '/chat', cors: '*' })
 export class ChatEventsGateway
@@ -19,6 +22,8 @@ export class ChatEventsGateway
   protected readonly logger = new Logger(ChatEventsGateway.name);
   constructor(
     @Inject('USER_SERVICE') private userService: UserService,
+    @InjectRepository(Chatroom)
+    private chatroomRepository: Repository<Chatroom>,
     private readonly jwtAccessStrategy: JwtAccessStrategy,
   ) {}
 
@@ -39,6 +44,12 @@ export class ChatEventsGateway
     @ConnectedSocket() socket: Socket,
   ) {
     this.server.emit('dm', socket.id, dmMessage);
+  }
+
+  @SubscribeMessage('chatroom')
+  handleChatroom() {
+    const chatrooms = this.chatroomRepository.find();
+    this.server.emit('chatroom', chatrooms);
   }
 
   @SubscribeMessage('test')
