@@ -10,7 +10,6 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import useSocket from "../../component/Utils/socket";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import ChatRoomBody from "../../component/ChatRoom/ChatRoomBody";
 import PWModal from "../../component/ChatRoom/PWModal";
 

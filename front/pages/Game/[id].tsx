@@ -102,14 +102,14 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
     window.addEventListener("keydown", onChangeftPaddle);
-    socket?.on("playGame", async (res: GameElement) => {
-      setGameChanged(res);
-      ///////////////////////////////////////////////////////// setState!!!로 리렌더하면서 애니메이션
-    });
-    console.log(window);
+    // socket?.on("playGame", async (res: GameElement) => {
+    //   setGameChanged(res);
+    /////////////////////////////////////////////////////// setState!!!로 리렌더하면서 애니메이션
+    // });
+    // console.log(window);
     return () => {
       console.log(`mount off play game ${router.query.id} room!`);
-      socket?.off("playGame");
+      // socket?.off("playGame");
       // socket?.leave(router.query.id);
     };
   }, [router.query.id]);
