@@ -7,31 +7,17 @@ import fetcher from "../../Utils/fetcher";
 import EachRoom from "./EachRoom";
 
 export default function ChatRoom() {
-  // const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
-  // const { data, error } = useSWR(`/api/chatroom`, fetcher);
+  const { data, error } = useSWR(`/api/chatroom`, fetcher);
 
-  // if (data) {
-  //   console.log(data);
-  // }
-  // if (error) return <Error />;
-  // if (!data) return <Loading />;
-
+  if (data) {
+    console.log(data);
+  }
+  if (error) return <Error />;
+  if (!data) return <Loading />;
   return (
     <div>
       <div className="list">
-        {/* <ul>
-          {data &&
-            data.map((post: any) => {
-              return (
-                <li key={post.chatroomId}>
-                  <EachRoom
-                    title={post.chatroomName}
-                    chatroomId={post.chatroomId}
-                  />
-                </li>
-              );
-            })}
-        </ul> */}
+        <ul>{}</ul>
       </div>
       <style jsx>{`
         .list {
