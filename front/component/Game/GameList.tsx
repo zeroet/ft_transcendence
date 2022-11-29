@@ -41,14 +41,14 @@ export default function GameList({ accessToken }: { accessToken: string }) {
       <h1>Game List</h1>
       <hr />
       <ul>
-        {gameList &&
+        {/* {gameList &&
           gameList.map((res) => {
             return (
               <li key={res.id}>
                 <Link href={`/Game/${res.gameName}`}>{res.gameName}</Link>
               </li>
             );
-          })}
+          })} */}
       </ul>
     </div>
   );

@@ -16,7 +16,7 @@ export class RoomService{
             if (socket === user) return false;
         this.Players.push(user);
         this.size += 1;
-        console.log(user.data.user);
+        console.log(user.id);
         return true;
     }
 
@@ -28,6 +28,7 @@ export class RoomService{
 
     readyQueue() {
         const owner = this.Players[0];
+        console.log('is fulllllldfllllll')
         owner.emit('createRoom', {isOwner: true});
     }
     

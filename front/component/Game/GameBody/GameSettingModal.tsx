@@ -29,8 +29,8 @@ const GameSettingModal = ({
       }
 
       // 그리고 게임시작
-      socket?.emit("game_setting", {
-        roomName,
+      socket?.emit("createRoom", {
+        name: roomName,
         speed,
         ballSize,
       });
@@ -43,7 +43,7 @@ const GameSettingModal = ({
       console.log(
         `game room name : ${roomName}, ball size : ${ballSize}, ball speed : ${speed}`
       );
-      router.push(`/Game/test!!!`);
+      // router.push(`/Game/test!!!`);
     },
     [speed, ballSize, roomName]
   );
@@ -85,7 +85,7 @@ const GameSettingModal = ({
     return () => {
       console.log("off socket in game setting modal");
       socket?.off("ready");
-      socket?.off("game_setting");
+      socket?.off("createRoom");
     };
   }, []);
 
