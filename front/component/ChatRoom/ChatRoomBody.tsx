@@ -10,7 +10,6 @@ export default function ChatRoomBody({
 }) {
   const { data, error } = useSWR(`/api/chatroom/${chatroomId}`);
 
-  console.log(typeof chatroomId);
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (

@@ -1,12 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useState } from "react";
 
 interface TypeModal {
-  onChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClickOk: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  setShowPWModal: React.Dispatch<React.SetStateAction<boolean>>;
   password: string;
 }
 
-export default function PWModal() {
+export default function PWModal({ setShowPWModal, password }: TypeModal) {
+  const [pw, setPw] = useState<string>("");
+
+  const onChangePassword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPw(e.target.value);
+      console.log(password);
+    },
+    [pw]
+  );
+
+  const onClickOk = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (pw === password) {
+        setShowPWModal(false);
+      }
+      setPw("");
+    },
+    [pw]
+  );
+
   return (
     <div>
       {
@@ -18,15 +39,8 @@ export default function PWModal() {
             <form>
               <div className="submitform">
                 <label>VERIFICATION PASSWORD </label>
-                <input
-                  type="text"
-                  // onChange={onChangePassword}
-                  // value={password}
-                />
-                <button
-                  // onClick={onClickOk}
-                  className="ok"
-                >
+                <input type="text" onChange={onChangePassword} value={pw} />
+                <button onClick={onClickOk} className="ok">
                   ok
                 </button>
               </div>
