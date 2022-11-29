@@ -28,7 +28,9 @@ export class RoomService{
 
     readyQueue() {
         const owner = this.Players[0];
-        owner.emit('createRoom', {isOwner: true});
+        const player = this.Players[1];
+        owner.emit('createRoom', { isOwner: true });
+        player.emit('createRoom', { isOwner: false });
     }
     
     isOwner(client: Socket)
