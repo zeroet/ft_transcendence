@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { IChatroomService } from './chatroom.interface';
 
 @Injectable()
@@ -16,6 +17,8 @@ export class ChatroomService implements IChatroomService {
     private chatContentRepository: Repository<ChatContent>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private dataSource: DataSource,
+    private chatEventsGateway: ChatEventsGateway,
   ) {}
   async getAllChatrooms() {
     return await this.chatroomRepository.find();
@@ -23,10 +26,14 @@ export class ChatroomService implements IChatroomService {
   async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
     // console.log('password:', createChatroomDto.password);
     // const user = await this.userRepository.findOneByOrFail({ id: userId });
+
+    // const queryRunner = this.dataSource.createQueryRunner();
+    // queryRunner.connect();
+
     const { chatroomName } = createChatroomDto;
     const chatroom = this.chatroomRepository
       .createQueryBuilder('chatroom')
-      .where('chatroom.chatroomName=chatroomName', { chatroomName })
+      .where('chatroom.chatroom_name=chatroom_name', { chatroomName })
       .getOne();
     if (!chatroom)
       throw new NotFoundException(
@@ -44,6 +51,7 @@ export class ChatroomService implements IChatroomService {
     //   chatroomId: createdChatroom.chatroomId,
     // });
     // await this.chatMemebrRepository.save(chatroomMemebr);
+    this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
     return chatroom;
 
     // const chatroomContent = this.chatContentRepository.create({
