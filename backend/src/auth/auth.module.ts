@@ -31,5 +31,6 @@ import { JwtTwoFactorStrategy } from './strategies/jwt.two-factor.strategy';
     JwtRefreshStrategy,
     JwtTwoFactorStrategy,
   ],
+  exports: [{ provide: 'AUTH_SERVICE', useClass: AuthService }],
 })
 export class AuthModule {}
