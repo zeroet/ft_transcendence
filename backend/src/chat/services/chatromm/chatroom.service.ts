@@ -29,7 +29,7 @@ export class ChatroomService implements IChatroomService {
 
     // const queryRunner = this.dataSource.createQueryRunner();
     // queryRunner.connect();
-
+    console.log(createChatroomDto.chatroomName);
     const { chatroomName } = createChatroomDto;
     const chatroom = this.chatroomRepository
       .createQueryBuilder('chatroom')
@@ -52,6 +52,7 @@ export class ChatroomService implements IChatroomService {
     });
     await this.chatMemebrRepository.save(chatroomMemebr);
     this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
+    console.log(chatroom);
     return chatroom;
 
     // const chatroomContent = this.chatContentRepository.create({
@@ -77,34 +78,35 @@ export class ChatroomService implements IChatroomService {
   updateChatroom() {
     throw new Error('Method not implemented.');
   }
-  getMessages() {
+  getContents() {
     throw new Error('Method not implemented.');
   }
-  postMessages() {
+  postContents() {
     throw new Error('Method not implemented.');
   }
   getAllMembers(chatroomId: number) {
-    return this.userRepository
-      .createQueryBuilder('users')
+    return this.chatMemebrRepository
+      .createQueryBuilder('chat_memebr')
       .innerJoin(
-        'users.chatroom',
+        'chat_member.Chatroom',
         'chatroom',
-        'chatroom.chatroomId=chatroomId',
+        'chatroom.chatroom_id=chatroom_id',
         { chatroomId },
       )
+      .innerJoinAndSelect('chat_member.User', 'user')
+      .select()
       .getMany();
   }
   async postMembers(userId: number, chatroomId: number) {
-    // const chatroom = await this.chatroomRepository.findOneByOrFail({chatroomId})
-    const chatroom = this.chatroomRepository
+    const chatroom = await this.chatroomRepository
       .createQueryBuilder('chatroom')
-      .where('chatroom.chatroomId=chatroomId', { chatroomId })
+      .where('chatroom.chatroom_id=:chatroom_id', { chatroomId })
       .getOne();
     if (!chatroom)
       throw new NotFoundException(`Chatroom of id: ${chatroomId} not found`);
-    const user = this.userRepository
+    const user = await this.userRepository
       .createQueryBuilder('users')
-      .where('users.id=userId', { userId })
+      .where('users.user_id=:user_id', { userId })
       .getOne();
     if (!user) throw new NotFoundException(`User not found`);
     const chatroomMember = this.chatMemebrRepository.create({

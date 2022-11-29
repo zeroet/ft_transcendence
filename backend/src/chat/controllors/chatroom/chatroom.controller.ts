@@ -8,8 +8,15 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
+import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { IChatroomService } from 'src/chat/services/chatromm/chatroom.interface';
 import { IUser } from 'src/typeorm/interfaces/IUser';
@@ -44,11 +51,15 @@ export class ChatroomController {
       'Get all contents for a chatroom / 특정 대화방의 모든 대화내용 가져오기',
   })
   @Get(':chatroomId/contents')
-  getMessages() {}
+  getContents() {
+    return this.chatroomService.getContents();
+  }
 
   @ApiOperation({ summary: 'Post contents / 특정 대화방에 대화내용 입력하기' })
   @Post(':chatroomId/contents')
-  postMessages() {}
+  postContents() {
+    this.chatroomService.postContents();
+  }
 
   @ApiOperation({
     summary:
@@ -72,6 +83,11 @@ export class ChatroomController {
     return this.chatroomService.getAllChatrooms();
   }
 
+  @ApiResponse({
+    status: 201,
+    description: 'created chatroom info',
+    type: ChatroomDto,
+  })
   @ApiBody({
     required: true,
     type: CreateChatroomDto,

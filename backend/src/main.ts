@@ -4,11 +4,15 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { UnauthorizedExceptionFilter } from './utils/unauthorized.exception.filter';
+import { HttpExceptionFilter } from './utils/http.exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const PORT = process.env.SERVER_PORT || 3000;
-  app.useGlobalFilters(new UnauthorizedExceptionFilter());
+  app.useGlobalFilters(
+    new UnauthorizedExceptionFilter(),
+    new HttpExceptionFilter(),
+  );
   app.use(cookieParser());
   app.enableCors({
     origin: process.env.CLINET_URL,
