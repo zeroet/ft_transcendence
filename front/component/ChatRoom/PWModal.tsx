@@ -1,14 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
-
-//setShowPWModal={setShowPWModal} password={roomData.password}
+import React, { useCallback, useState } from "react";
 
 interface TypeModal {
-  onChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClickOk: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  setShowPWModal: React.Dispatch<React.SetStateAction<boolean>>;
   password: string;
 }
 
-export default function PWModal({ setShowPWModal, password }: any) {
+export default function PWModal({ setShowPWModal, password }: TypeModal) {
   const [pw, setPw] = useState<string>("");
 
   const onChangePassword = useCallback(

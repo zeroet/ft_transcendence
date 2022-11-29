@@ -27,6 +27,10 @@ export default function Chat({
   const [socket] = useSocket(accessToken, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
+  /**
+   * 패스워드 모달! 라우팅으로 룸 데이터가 바뀌는순간, 리랜더를 발생시켜
+   * setShowPWModal을 true로 리셋
+   */
   useEffect(() => {
     if (roomData) {
       console.log(`i am in room ${roomData.chatroomName}`);
