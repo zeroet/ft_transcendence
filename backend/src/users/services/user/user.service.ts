@@ -18,5 +18,9 @@ export class UserService implements IUserService {
     if (!user) throw new NotFoundException(`User by #id ${id} not found`);
     return user;
   }
+
+  async getAllUsers() {
+    return await this.userRepository.find();
+  }
   updateUserById(id: number) {}
 }
