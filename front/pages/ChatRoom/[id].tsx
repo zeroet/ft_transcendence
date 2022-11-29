@@ -27,30 +27,42 @@ export default function Chat({
   const [socket] = useSocket(accessToken, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
+  useEffect(() => {
+    if (roomData) {
+      console.log(`i am in room ${roomData.chatroomName}`);
+    }
+    return () => {
+      if (roomData) {
+        console.log(`1 am out room ${roomData.chatroomName}`);
+      }
+      setShowPWModal(true);
+    };
+  }, [roomData]);
+
   if (userError || roomError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData || !roomData || !socket) return <Loading />;
   return (
-    <div>
-      <Layout>
-        <Title title="ChatRoom" />
-        {userData.two_factor_activated && !userData.two_factor_valid && (
-          <TwoFactorModal />
-        )}
-        {/* {roomData && roomData.password && showPWModal && <PWModal />} */}
-        <div className="component-style">
-          <RoomList accessToken={accessToken} />
-          <ChatRoomBody chatroomId={id} />
-          <Participant />
-        </div>
-      </Layout>
+    <Layout>
+      <Title title="ChatRoom" />
+      {userData.two_factor_activated && !userData.two_factor_valid && (
+        <TwoFactorModal />
+      )}
+      {roomData && roomData.password && showPWModal && (
+        <PWModal setShowPWModal={setShowPWModal} password={roomData.password} />
+      )}
+      <div className="component-style">
+        <RoomList accessToken={accessToken} />
+        <ChatRoomBody chatroomId={id} />
+        <Participant />
+      </div>
       <style jsx>{`
         .component-style {
           display: grid;
           grid-template-columns: 2fr 4fr 2fr;
         }
       `}</style>
-    </div>
+    </Layout>
   );
 }
 

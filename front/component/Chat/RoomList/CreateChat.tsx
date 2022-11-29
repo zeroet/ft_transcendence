@@ -3,8 +3,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 const CreateChat = ({ onClose }: { onClose: () => void }) => {
-  const [RoomName, setName] = useState<string>();
-  const [RoomPw, setPw] = useState<string>();
+  const [RoomName, setName] = useState<string>("");
+  const [RoomPw, setPw] = useState<string>("");
   const router = useRouter();
   const Name = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value.trim());
@@ -16,8 +16,6 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
   const createRoom = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      console.log(RoomName);
-      console.log(RoomPw);
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 1) {
         setPw("");
         return;
@@ -27,12 +25,11 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
         .then(async (res) => {
           setName("");
           setPw("");
-          console.log(res);
           return await res.data.chatroomId;
         })
         .then((chatroomId) => {
-          console.log(`/ChatRoom/${chatroomId}`);
           router.push(`/ChatRoom/${chatroomId}`);
+          console.log(`we move to /ChatRoom/${chatroomId}`);
         })
         .catch((error) => {
           console.dir(error);
@@ -54,7 +51,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
       <div className="title">
         <h2>Create Chat Room</h2>
       </div>
-      <form>
+      <form method="post">
         <div className="submitform">
           <label>name</label>
           <div>
