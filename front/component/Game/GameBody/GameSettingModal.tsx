@@ -29,8 +29,8 @@ const GameSettingModal = ({
       }
 
       // 그리고 게임시작
-      socket?.emit("createRoom", {
-        name: roomName,
+      socket?.emit("startGame", {
+        roomName,
         speed,
         ballSize,
       });
@@ -77,12 +77,12 @@ const GameSettingModal = ({
     console.log("game setting owner modal", socket?.id);
 
     // 완료된 소켓! 받은후에 이동
-    socket?.on("game", (roomNameFromSocket: string) => {
+    socket?.on("enterGame", (roomNameFromSocket: string) => {
       router.push(`/Game/${roomNameFromSocket}`);
     });
     return () => {
       console.log("off socket in game setting modal");
-      socket?.off("game");
+      socket?.off("enterGame");
       // socket?.off("createRoom");
     };
   }, []);
