@@ -23,7 +23,7 @@ import { GameService } from './game.service';
 import { RoomName } from './interfaces/room';
 import { RoomService } from './room.service';
 
-// @UseGuards(JwtWsGuard)
+@UseGuards(JwtWsGuard)
 @WebSocketGateway({ cors: '*' })
 export class GameEvents {
   constructor(
@@ -38,13 +38,13 @@ export class GameEvents {
   game: GameService = new GameService();
 
   async handleConnection(client: Socket) {
-    // const payload = await this.authService.verify(
-    //   client.handshake.headers.accesstoken,
-    // );
-    // const user = await this.userService.getUserById(payload.id);
-    // !user && client.disconnect();
-    // client.data.user = user;
-    // console.log('Lobby', client.data.user.username);
+    const payload = await this.authService.verify(
+      client.handshake.headers.accesstoken,
+    );
+    const user = await this.userService.getUserById(payload.id);
+    !user && client.disconnect();
+    client.data.user = user;
+    console.log('Lobby', client.data.user.username);
 
   }
 
@@ -63,9 +63,10 @@ export class GameEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: RoomName,
   ) {
-    if (this.room.isOwner(client)) this.room.createRoom(data[1].name);
-    else console.log('Im not owner');
-    this.server.to(client.data.roomName).emit('game', data[1].name);
+    console.log(data.name);
+    if (this.room.isOwner(client)) this.room.createRoom(data.name);
+      if (this.room.isPlayer(client, data.ready))
+        this.server.to(client.data.roomName).emit('game', data.name);
   }
 
   @SubscribeMessage('message')

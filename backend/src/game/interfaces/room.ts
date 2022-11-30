@@ -2,6 +2,7 @@ export class RoomName{
     name: string;
     speed : string;
     ballSize : string;
+    ready: boolean;
 }
 
 export class Room {

@@ -16,7 +16,7 @@ export class RoomService{
             if (socket === user) return false;
         this.Players.push(user);
         this.size += 1;
-        console.log(user.id);
+        console.log(user.username);
         return true;
     }
 
@@ -36,6 +36,13 @@ export class RoomService{
     isOwner(client: Socket)
     {
         if(this.Players[0].id === client.id)
+            return true;
+        return false;
+    }
+
+    isPlayer(client: Socket, ready: boolean)
+    {
+        if (this.Players[1].id === client.id && ready === true)
             return true;
         return false;
     }
