@@ -78,9 +78,7 @@ const GameSettingModal = ({
 
     // 완료된 소켓! 받은후에 이동
     socket?.on("game", (roonNameFromSocket) => {
-      if (roonNameFromSocket === "ok") {
-        router.push(`/Game/${roonNameFromSocket}`);
-      }
+      router.push(`/Game/${roonNameFromSocket}`);
     });
     return () => {
       console.log("off socket in game setting modal");
