@@ -69,13 +69,14 @@ export class GameEvents {
         game.Players[0].join(data.roomName);
         game.Players[1].join(data.roomName);
         this.rooms.set(data.roomName, game);
-        // 큐 초기화
+        this.queueNormal.Players.shift();
+        this.queueNormal.Players.shift();
         this.liveGame(data.roomName, game);
     }
   }
 
-  liveGame(name:string, game: Game) {  
-    this.server.to(name).emit('enterGame', name);
+  async liveGame(name:string, game: Game) {  
+    await this.server.to(name).emit('enterGame', name);
   }
     
 }
