@@ -5,6 +5,7 @@ import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
 import ChatBox from "./ChatRoomBody/ChatBox";
 import ChatList from "./ChatRoomBody/ChatList";
+import ChatroomSettingModal from "./ChatroomSettingModal";
 
 export default function ChatRoomBody({
   chatroomId,
