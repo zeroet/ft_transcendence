@@ -28,21 +28,32 @@ export default function PWModal({ setShowPWModal, password }: TypeModal) {
     [pw]
   );
 
+  const cancel = () => {
+    setShowPWModal(false);
+  };
+
   return (
     <div>
       {
-        <div className="modal-background">
+        <div>
           <div className="box">
             <div className="title">
-              <h2>Password Chat room</h2>
+              <h2>Private Chat room</h2>
             </div>
             <form>
               <div className="submitform">
-                <label>VERIFICATION PASSWORD </label>
-                <input type="text" onChange={onChangePassword} value={pw} />
-                <button onClick={onClickOk} className="ok">
-                  ok
-                </button>
+                <div className="labelDiv">
+                  <label>VERIFICATION PASSWORD </label>
+                  <input type="text" onChange={onChangePassword} value={pw} />
+                </div>
+                <div className="buttonDiv">
+                  <button onClick={onClickOk} className="ok">
+                    ok
+                  </button>
+                  <button onClick={cancel} className="cancel">
+                    cancel
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -50,38 +61,41 @@ export default function PWModal({ setShowPWModal, password }: TypeModal) {
       }
       <style jsx>
         {`
-            .ok {
-              font-family: "Fragment Mono", monospace;
-              font-size: 20px;
-              color: white;
-              background-color: black;
-              padding: 10px 20px;
-              border: 1px solid black;
-              cursor: pointer;
-              margin-bottom: 10px;
-            }
-           .modal-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.8);
+          .labelDiv {
+            // background-color: yellow;
+            padding-top: 30px;
+            padding-left: 50px;
+            // text-align: center;
           }
-          .box{
+          .buttonDiv {
+            // background-color: red;
+            text-align: center;
+            padding-top: 10px;
+          }
+          .ok {
+            font-family: "Fragment Mono", monospace;
+            font-size: 20px;
+            color: white;
+            background-color: black;
+            padding: 10px 20px;
+            border: 1px solid black;
+            cursor: pointer;
+            margin-bottom: 10px;
+          }
+          .box {
             position: fixed;
             top: 30%;
             left: 33%;
-  
+
             width: 500px;
-            height: 300px;
-  
+            height: 250px;
+
             background-color: white;
             border: 1px inset black;
             box-shadow: 10px 10px;
             text-transform: uppercase;
           }
-          .title{
+          .title {
             padding-left: 10px;
             background-color: black;
             color: white;
@@ -100,10 +114,16 @@ export default function PWModal({ setShowPWModal, password }: TypeModal) {
           }
           .submitform {
             // background-color: yellow;
-            padding-left: 50px;
-            padding-top: 20px;
-        
-  
+            // padding-left: 50px;
+            // padding-top: 20px;
+          }
+          .cancel {
+            font-family: "Fragment Mono", monospace;
+            font-size: 20px;
+            padding: 10px 20px;
+            border: 1px solid black;
+            cursor: pointer;
+          }
         `}
       </style>
     </div>

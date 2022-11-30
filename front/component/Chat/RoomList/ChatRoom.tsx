@@ -34,15 +34,15 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
             return (
               <Link href={`/ChatRoom/${room.chatroomId}`} key={room.chatroomId}>
                 <div className="room-li">
-                  <li>{room.chatroomName}</li>
                   <img
                     src={
                       room.password
-                        ? "/images/private_room.png"
-                        : "/images/public_room.png"
+                        ? "/images/private.png"
+                        : "/images/public.png"
                     }
-                    width="40px"
+                    width="20px"
                   />
+                  <li className="roomname">{room.chatroomName}</li>
                 </div>
               </Link>
             );
@@ -53,10 +53,15 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
         .list {
           height: 300px;
           margin-top: 55px;
+          margin-left: -30px;
         }
         .room-li {
+          list-style: none;
           display: flex;
-          justify-content: space-between;
+          margin-bottom: 7px;
+        }
+        .roomname {
+          margin-left: 10px;
         }
       `}</style>
     </div>
