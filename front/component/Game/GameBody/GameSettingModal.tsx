@@ -81,14 +81,9 @@ const GameSettingModal = ({
     console.log("game setting owner modal", socket?.id);
 
     // 완료된 소켓! 받은후에 이동
-<<<<<<< HEAD
-    socket?.on("enterGame", (roomNameFromSocket: string) => {
-      router.push(`/Game/${roomNameFromSocket}`);
-=======
     socket?.on("enterGame", (roomName: string) => {
       console.log(roomName, " is room name from server event: enterGame");
       router.push(`/Game/${roomName}`);
->>>>>>> 9250e09ed786d82292490d34eb19c33adab7e49d
     });
     return () => {
       console.log("off socket in game setting modal");
