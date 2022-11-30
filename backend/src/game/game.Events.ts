@@ -43,7 +43,9 @@ export class GameEvents {
     );
     const user = await this.userService.getUserById(payload.id);
     !user && client.disconnect();
-    console.log('Lobby', client.id);
+    client.data.user = user;
+    console.log('Lobby', client.data.user.username);
+
   }
 
   handleDisConnection(clinet: Socket) {
@@ -61,10 +63,12 @@ export class GameEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: RoomName,
   ) {
-    if (this.room.isOwner(client)) this.room.createRoom(data[1].name);
-    else console.log('Im not owner');
-    this.server.to(client.data.roomName).emit('game', 'INTHEGAME');
-  }
+    console.log(data.name);
+    if (this.room.isOwner(client)) 
+      this.room.createRoom(data.name)
+    else if(this.room.isPlayer(client, data.name, data.ready))
+        console.log('ROOOOOOOOOOOM', this.room.rooms.has(data.name));
+    }
 
   @SubscribeMessage('message')
   handleEvent(@MessageBody() data: string, @ConnectedSocket() clinet: Socket) {

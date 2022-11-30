@@ -26,6 +26,8 @@ export default function Chat({
   const [socket] = useSocket(accessToken, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
+  // console.log(userData);
+  // console.log(roomData);
   /**
    * 패스워드 모달! 라우팅으로 룸 데이터가 바뀌는순간, 리랜더를 발생시켜
    * setShowPWModal을 true로 리셋
@@ -51,14 +53,15 @@ export default function Chat({
       {userData.two_factor_activated && !userData.two_factor_valid && (
         <TwoFactorModal />
       )}
-      {roomData && roomData.password && showPWModal && (
-        <div className="pwmodal-background">
+      {roomData &&
+        roomData.password &&
+        showPWModal &&
+        roomData.ownerId !== userData.id && (
           <PWModal
             setShowPWModal={setShowPWModal}
             password={roomData.password}
           />
-        </div>
-      )}
+        )}
       <div className="component-style">
         <RoomList accessToken={accessToken} />
         <ChatRoomBody chatroomId={id} />
