@@ -66,7 +66,9 @@ export class ChatroomController {
       'Get all members from a chatroom / 특정 대화방의 모든 참여자목록 가져오기',
   })
   @Get(':chatroomId/members')
-  getAllMembers(@Body() chatroomId: number) {}
+  getAllMembers(@Param() { chatroomId }) {
+    return this.chatroomService.getAllMembers(chatroomId);
+  }
 
   @ApiOperation({
     summary:
