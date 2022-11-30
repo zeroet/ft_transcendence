@@ -13,7 +13,6 @@ const EachDmRoom = ({ title, id }: EachDmRoomType) => {
           DM ${id} : ${title}
         </a>
       </Link>
-
       <style jsx>{`
         a {
           text-decoration: none;

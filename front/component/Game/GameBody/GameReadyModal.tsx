@@ -30,6 +30,8 @@ const GameReadyModal = ({
   useEffect((): (() => void) => {
     console.log("in game ready modal", socket?.id);
     socket?.on("game", (roonNameFromSocket) => {
+      console.log(roonNameFromSocket);
+      console.log("is room name! from socket");
       router.push(`/Game/${roonNameFromSocket}`);
     });
     return () => {
