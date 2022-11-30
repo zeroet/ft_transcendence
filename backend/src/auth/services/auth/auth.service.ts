@@ -127,21 +127,21 @@ export class AuthService implements IAuthService {
     let userDetails = {
       intra_id: name,
       email: name,
-      image_url: name,
+      image_url: process.env.DUMMY_URL,
       username: name,
     };
-    // let user = this.validateDummy(userDetails);
-    while (await this.validateDummy(userDetails)) {
+    let user = await this.validateDummy(userDetails);
+    while (user) {
       name += 1;
       console.log('name', name);
-      console.log('name+=1', name + 1);
+      // console.log('name+=1', name + 1);
       userDetails = {
         intra_id: name,
         email: name,
-        image_url: name,
+        image_url: process.env.DUMMY_URL,
         username: name,
       };
-      // user = this.validateDummy(userDetails);
+      user = await this.validateDummy(userDetails);
     }
     console.log('userdetails af if:', userDetails);
     return this.createDummy(userDetails);
