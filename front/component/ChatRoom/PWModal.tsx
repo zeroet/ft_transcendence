@@ -47,7 +47,7 @@ export default function PWModal({ setShowPWModal, password }: TypeModal) {
             <form>
               <div className="submitform">
                 <div className="labelDiv">
-                  <label>VERIFICATION PASSWORD </label>
+                  <label>VERIFICATION PASSWORD</label>
                   <input type="text" onChange={onChangePassword} value={pw} />
                 </div>
                 <div className="buttonDiv">

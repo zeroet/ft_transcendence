@@ -59,10 +59,12 @@ export default function Chat({
         roomData.password &&
         showPWModal &&
         roomData.ownerId !== userData.id && (
-          <PWModal
-            setShowPWModal={setShowPWModal}
-            password={roomData.password}
-          />
+          <div className="pwmodal-background">
+            <PWModal
+              setShowPWModal={setShowPWModal}
+              password={roomData.password}
+            />
+          </div>
         )}
       <div className="component-style">
         <RoomList accessToken={accessToken} />
