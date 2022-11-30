@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
 interface TypeModal {
@@ -7,6 +8,7 @@ interface TypeModal {
 
 export default function PWModal({ setShowPWModal, password }: TypeModal) {
   const [pw, setPw] = useState<string>("");
+  const router = useRouter();
 
   const onChangePassword = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,8 +30,10 @@ export default function PWModal({ setShowPWModal, password }: TypeModal) {
     [pw]
   );
 
-  const cancel = () => {
-    setShowPWModal(false);
+  const cancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.back();
   };
 
   return (
