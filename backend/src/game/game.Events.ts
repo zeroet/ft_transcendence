@@ -53,10 +53,9 @@ export class GameEvents {
   }
 
   createRoom(player1: Socket, palyer2: Socket) {
-    let info: GameDTO;
 
     console.log(player1, palyer2);
-    player1.emit('createRoom', info);
+    player1.emit('createRoom', { isOwner: true });
     palyer2.emit('createRoom');
     console.log('is okkkkkkkkkkkkkk');
   }
@@ -66,12 +65,16 @@ export class GameEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
-      let game: Game = new Game(data.Players[0], data.Players[1]);
+      if (client.id === this.queueNormal.Players[0].id) {
+      let game: Game = new Game(this.queueNormal.Players[0], this.queueNormal.Players[1]);
+      game.game.Players[0].join(data.roomName);
+      game.game.Players[1].join(data.roomName);
       this.rooms.set(data.roomName, game);
       console.log('ok');
       this.queueNormal.Players.shift();
       this.queueNormal.Players.shift();
       this.queueNormal.clear();
     }
+  }
     
 }
