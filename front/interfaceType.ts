@@ -63,3 +63,11 @@ export interface IDm {
   createdAt: Date;
   modifiedAt: Date;
 }
+
+export interface GameDTO{
+  Players: Array<any>;
+  roomName: string;
+  ownerId: string;
+  speed: string;
+  ballSize: string;
+}
