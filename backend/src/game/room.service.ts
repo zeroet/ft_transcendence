@@ -35,14 +35,15 @@ export class RoomService{
     
     isOwner(client: Socket)
     {
-        if(this.Players[0].id === client.id)
+        if(this.rooms.get(client.data.roomName).Player[0] === client.id)
             return true;
         return false;
     }
 
-    isPlayer(client: Socket, ready: boolean)
+    isPlayer(client:Socket, name:string, ready: boolean)
     {
-        if (this.Players[1].id === client.id && ready === true)
+        console.log(`client ${client.id}, name ${name}, ready${ready}`)
+        if(this.rooms.get(name).Player[1] === client.id && ready === true) 
             return true;
         return false;
     }
@@ -52,14 +53,13 @@ export class RoomService{
         this.Players[0].data.roomName = roomName;
         this.Players[1].join(roomName);
         this.Players[1].data.roomName = roomName;
-
-
         
-        // const room = new Room(this.Players[0], this.Players[1]);
-        // this.rooms.set(roomId, room);
-        // this.Players.shift();
-        // this.Players.shift();
-        // this.size = 0;
+
+        const room = new Room(this.Players[0].id, this.Players[1].id);
+        this.rooms.set(roomName, room);
+        this.Players.shift();
+        this.Players.shift();
+        this.size = 0;
 
         // const newRoom = this.rooms.get(roomId)
         // console.log(newRoom.Player[0].id);
