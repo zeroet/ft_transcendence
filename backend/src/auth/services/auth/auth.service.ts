@@ -119,6 +119,7 @@ export class AuthService implements IAuthService {
     return await this.userRepository.save(user);
   }
   async createDummyUser() {
+    console.log('createDummyUser()');
     let name = 'dummy';
     // const intra_id = name;
     // const email = name;
@@ -146,4 +147,6 @@ export class AuthService implements IAuthService {
     console.log('userdetails af if:', userDetails);
     return this.createDummy(userDetails);
   }
+
+  async deleteDummyUser() {}
 }
