@@ -148,5 +148,14 @@ export class AuthService implements IAuthService {
     return this.createDummy(userDetails);
   }
 
-  async deleteDummyUser() {}
+  async deleteDummyUser(user) {
+    let count = user.intra_id.indexOf('dummy');
+    console.log('deleteDummyUser:', count);
+    if (count === 0) {
+      console.log('dummy:', user.intra_id);
+      await this.userRepository.delete(user.id);
+      return true;
+    }
+    return false;
+  }
 }

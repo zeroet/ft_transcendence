@@ -91,6 +91,7 @@ export class ChatroomService implements IChatroomService {
     if (!chatroom)
       throw new NotFoundException(`Chatroom of id:${chatroomId} not found`);
     console.log('current chatroom info:', chatroom);
+
     return chatroom;
   }
   updateChatroom() {

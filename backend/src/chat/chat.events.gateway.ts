@@ -50,10 +50,10 @@ export class ChatEventsGateway
     this.server.emit('dm', socket.id, dmMessage);
   }
 
-  @SubscribeMessage('chatroom')
-  handleChatroom() {
-    const chatrooms = this.chatroomRepository.find();
-    this.server.emit('chatroom', chatrooms);
+  @SubscribeMessage('join')
+  joinRoom(@MessageBody() name, @ConnectedSocket() socket: Socket) {
+    // const chatrooms = this.chatroomRepository.find();
+    this.server.emit('join');
   }
 
   @SubscribeMessage('test')
