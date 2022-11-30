@@ -53,11 +53,10 @@ export class GameEvents {
   }
 
   createRoom(player1: Socket, palyer2: Socket) {
-    let game = new Game(player1, palyer2);
-    
-    console.log(player1, palyer2);
+    let info: GameDTO;
 
-    player1.emit('createRoom', game.game);
+    console.log(player1, palyer2);
+    player1.emit('createRoom', info);
     palyer2.emit('createRoom');
     console.log('is okkkkkkkkkkkkkk');
   }
