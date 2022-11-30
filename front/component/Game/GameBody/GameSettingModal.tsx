@@ -78,6 +78,7 @@ const GameSettingModal = ({
 
     // 완료된 소켓! 받은후에 이동
     socket?.on("enterGame", (roomName: string) => {
+      console.log(roomName, " is room name from server event: enterGame");
       router.push(`/Game/${roomName}`);
     });
     return () => {
@@ -85,7 +86,7 @@ const GameSettingModal = ({
       socket?.off("enterGame");
       // socket?.off("createRoom");
     };
-  }, []);
+  }, [socket?.id]);
 
   if (!socket) return <Loading />;
   return (
