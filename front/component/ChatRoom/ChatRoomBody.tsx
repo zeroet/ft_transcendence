@@ -73,6 +73,9 @@ export default function ChatRoomBody({
       />
       <style jsx>
         {`
+          img {
+            padding-left: 10px;
+          }
           .roomname-header {
             display: flex;
             justify-content: space-between;

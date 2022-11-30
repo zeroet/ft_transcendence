@@ -69,7 +69,7 @@ export default function TwoFactorModal() {
             </div>
             <form method="post">
               <div className="submitform">
-                <label>VERIFICATION PASSWORD </label>
+                <label>VERIFICATION PASSWORD</label>
                 <input
                   type="text"
                   onChange={onChangePassword}
