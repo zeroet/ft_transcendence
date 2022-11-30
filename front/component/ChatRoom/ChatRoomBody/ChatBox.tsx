@@ -11,26 +11,10 @@ const ChatBox = ({
   onClickSubmit,
   inputText,
 }: TypeProps) => {
-  //   const [inputText, setInputText] = useState<string>("");
-
-  //   const onChangeInputText = useCallback(
-  //     (e: React.ChangeEvent<HTMLInputElement>) => {
-  //       setInputText(e.target.value);
-  //     },
-  //     [inputText]
-  //   );
-
-  //   const onClickSubmit = useCallback(
-  //     (e: React.MouseEvent<HTMLButtonElement>) => {
-  //       e.preventDefault();
-  //       e.stopPropagation();
-  //       // api통해서 업데이트 및 mutate수정
-  //     },
-  //     [inputText]
-  //   );
   return (
     <form className="chat-box">
       <input
+        autoFocus
         onChange={onChangeInputText}
         value={inputText}
         type="text"

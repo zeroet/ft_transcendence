@@ -9,32 +9,6 @@ const ChatList = () => {
         <p>hello!!!!!!</p>
         <p>hello!!!!!!</p>
         <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
       </ul>
       <style jsx>{`
         .c-body {
@@ -42,7 +16,7 @@ const ChatList = () => {
           margin-left: 10px;
           margin-right: 10px;
           // background-color: tomato;
-          text-align: center;
+          //   text-align: center;
         }
       `}</style>
     </div>
