@@ -50,6 +50,14 @@ export default function GameList({ accessToken }: { accessToken: string }) {
             );
           })}
       </ul>
+      <style jsx>{`
+        h1 {
+          font-family: "Fragment Mono", monospace;
+          font-size: 25px;
+          font-weight: bold;
+          margin-left: 10px;
+        }
+      `}</style>
     </div>
   );
 }
