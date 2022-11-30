@@ -2,7 +2,6 @@ import cookies from "next-cookies";
 import GameList from "../../component/Game/GameList";
 import Layout from "../../component/Layout";
 import Title from "../../component/Title";
-import tokenManager from "../../component/Utils/tokenManager";
 import Loading from "../../component/errorAndLoading/Loading";
 import useSocket from "../../component/Utils/socket";
 import TwoFactorModal from "../../component/Home/TwoFactorModal";

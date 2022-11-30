@@ -2,6 +2,8 @@ import axios from "axios";
 import useSWR from "swr";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
+import ChatBox from "./ChatRoomBody/ChatBox";
+import ChatList from "./ChatRoomBody/ChatList";
 
 export default function ChatRoomBody({
   chatroomId,
@@ -26,9 +28,8 @@ export default function ChatRoomBody({
         />
       </div>
       <hr />
-      <div className="c-body">
-        <h1>여기에 채팅구현하면 됨</h1>
-      </div>
+      <ChatList />
+      <ChatBox />
       <style jsx>
         {`
           .roomname-img {
@@ -41,18 +42,6 @@ export default function ChatRoomBody({
             font-weight: bold;
             text-transform: uppercase;
             margin-left: 10px;
-          }
-          .c-body {
-            height: 90%;
-            margin-left: 10px;
-            margin-right: 10px;
-            // background-color: tomato;
-            text-align: center;
-          }
-          .c-body h1 {
-            // background-color: blue;
-            padding: 46% 0;
-            margin: 0;
           }
         `}
       </style>
