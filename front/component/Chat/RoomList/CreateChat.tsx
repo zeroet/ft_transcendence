@@ -64,6 +64,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
               autoComplete="username"
               value={RoomName}
               type="text"
+              autoFocus
             />
           </div>
           <label>password</label>
