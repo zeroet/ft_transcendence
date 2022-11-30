@@ -53,14 +53,15 @@ export default function Chat({
       {userData.two_factor_activated && !userData.two_factor_valid && (
         <TwoFactorModal />
       )}
-      {roomData && roomData.password && showPWModal && (
-        <div className="pwmodal-background">
+      {roomData &&
+        roomData.password &&
+        showPWModal &&
+        roomData.ownerId !== userData.id && (
           <PWModal
             setShowPWModal={setShowPWModal}
             password={roomData.password}
           />
-        </div>
-      )}
+        )}
       <div className="component-style">
         <RoomList accessToken={accessToken} />
         <ChatRoomBody chatroomId={id} />
