@@ -72,6 +72,15 @@ export default function Enter({ path }: { path: string }) {
     return () => clearInterval(timer);
   }, []);
 
+  const test = async () => {
+    await axios
+      .post("/api/auth/test")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div>
       <Head>
@@ -94,6 +103,9 @@ export default function Enter({ path }: { path: string }) {
             <img src="/images/Group.png" alt="enterImg" className="enterImg" />
           </Link>
         )}
+        {/* 테스트용 */}
+        <button onClick={test}>+</button>
+        {/* 테스트용 */}
         <style jsx>{`
           div {
             width: 100%;
