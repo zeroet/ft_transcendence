@@ -1,12 +1,7 @@
 import {
-  Body,
-  ExecutionContext,
-  HttpException,
   Inject,
-  Request,
   UseGuards,
 } from '@nestjs/common';
-import { IoAdapter } from '@nestjs/platform-socket.io';
 import {
   ConnectedSocket,
   MessageBody,
@@ -18,12 +13,11 @@ import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
-import { dataCollectionPhase } from 'typeorm-model-generator/dist/src/Engine';
 import { GameService } from './game.service';
-import { RoomName } from './interfaces/room';
-import { RoomService } from './room.service';
+import { Game, GameDTO } from './interfaces/room';
+import { QueueService } from './queue.service';
 
-@UseGuards(JwtWsGuard)
+// @UseGuards(JwtWsGuard)
 @WebSocketGateway({ cors: '*' })
 export class GameEvents {
   constructor(
@@ -34,18 +28,18 @@ export class GameEvents {
   @WebSocketServer()
   server: Server;
 
-  room: RoomService = new RoomService();
+  queueNormal: QueueService = new QueueService();
   game: GameService = new GameService();
+  rooms: Map<string, Game> = new Map();
 
   async handleConnection(client: Socket) {
-    const payload = await this.authService.verify(
-      client.handshake.headers.accesstoken,
-    );
-    const user = await this.userService.getUserById(payload.id);
-    !user && client.disconnect();
-    client.data.user = user;
-    console.log('Lobby', client.data.user.username);
-
+    // const payload = await this.authService.verify(
+    //   client.handshake.headers.accesstoken,
+    // );
+    // const user = await this.userService.getUserById(payload.id);
+    // !user && client.disconnect();
+    // client.data.user = user;
+    console.log('Lobby', client.id);
   }
 
   handleDisConnection(clinet: Socket) {
@@ -54,24 +48,31 @@ export class GameEvents {
 
   @SubscribeMessage('Queue')
   readyGame(@ConnectedSocket() client: any) {
-    if (!this.room.addUser(client)) return;
-    if (this.room.isFull()) this.room.readyQueue();
+    if (!this.queueNormal.addUser(client)) return;
+    if (this.queueNormal.isFull()) this.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
   }
 
-  @SubscribeMessage('createRoom')
-  createBrotliCompress(
+  createRoom(player1: Socket, palyer2: Socket) {
+    let game = new Game(player1, palyer2);
+    
+    console.log(player1, palyer2);
+
+    player1.emit('createRoom', game.game);
+    palyer2.emit('createRoom');
+    console.log('is okkkkkkkkkkkkkk');
+  }
+
+  @SubscribeMessage('startGame')
+  startGame(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: RoomName,
+    @MessageBody() data: any,
   ) {
-    console.log(data.name);
-    if (this.room.isOwner(client)) 
-      this.room.createRoom(data.name)
-    else if(this.room.isPlayer(client, data.name, data.ready))
-        console.log('ROOOOOOOOOOOM', this.room.rooms.has(data.name));
+      let game: Game = new Game(data.Players[0], data.Players[1]);
+      this.rooms.set(data.roomName, game);
+      console.log('ok');
+      this.queueNormal.Players.shift();
+      this.queueNormal.Players.shift();
+      this.queueNormal.clear();
     }
-
-  @SubscribeMessage('message')
-  handleEvent(@MessageBody() data: string, @ConnectedSocket() clinet: Socket) {
-    this.server.emit('message', clinet.id, data);
-  }
+    
 }
