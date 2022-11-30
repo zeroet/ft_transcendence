@@ -72,6 +72,7 @@ export default function Enter({ path }: { path: string }) {
     return () => clearInterval(timer);
   }, []);
 
+  /** test용 */
   const test = async () => {
     await axios
       .post("/api/auth/test")
@@ -80,6 +81,7 @@ export default function Enter({ path }: { path: string }) {
       })
       .catch((err) => console.log(err));
   };
+  /** test용 */
 
   return (
     <div>
