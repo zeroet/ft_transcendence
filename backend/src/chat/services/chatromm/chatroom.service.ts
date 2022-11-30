@@ -29,7 +29,7 @@ export class ChatroomService implements IChatroomService {
   }
   async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
     // console.log('password:', createChatroomDto.password);
-    // const user = await this.userRepository.findOneByOrFail({ id: userId });
+    const user = await this.userRepository.findOneByOrFail({ id: userId });
 
     // const queryRunner = this.dataSource.createQueryRunner();
     // queryRunner.connect();
@@ -51,6 +51,8 @@ export class ChatroomService implements IChatroomService {
     const chatroomMemebr = this.chatMemebrRepository.create({
       userId: userId,
       chatroomId: createdChatroom.chatroomId,
+      Chatroom: newChatroom,
+      User: user,
     });
     await this.chatMemebrRepository.save(chatroomMemebr);
     this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
@@ -101,17 +103,31 @@ export class ChatroomService implements IChatroomService {
     throw new Error('Method not implemented.');
   }
   getAllMembers(chatroomId: number) {
-    return this.chatMemebrRepository
-      .createQueryBuilder('chat_memebr')
-      .innerJoin(
-        'chat_member.Chatroom',
-        'chatroom',
-        'chatroom.chatroom_id=chatroom_id',
-        { chatroomId },
-      )
-      .innerJoinAndSelect('chat_member.User', 'user')
-      .select()
-      .getMany();
+    console.log('test', typeof chatroomId, chatroomId);
+    return (
+      this.chatMemebrRepository
+        .createQueryBuilder('chat_member')
+        // .select('chat_member.userId')
+        .innerJoin(
+          'chat_member.Chatroom',
+          'chatroom',
+          'chatroom.chatroom_id = :chatroomId',
+          { chatroomId },
+        )
+        // .select('user.username')
+        .innerJoinAndSelect('chat_member.User', 'user')
+        // .select('user.username')
+        .getMany()
+    );
+    // return this.userRepository
+    //   .createQueryBuilder('users')
+    //   .innerJoin(
+    //     'users.Chatroom',
+    //     'chatroom',
+    //     'chatroom.chatroom_name=:chatroomName',
+    //     { chatroomName },
+    //   )
+    //   .getMany();
   }
   async postMembers(userId: number, chatroomId: number) {
     const chatroom = await this.chatroomRepository
