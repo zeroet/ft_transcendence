@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Inject,
+  Post,
   Redirect,
   Res,
   UseGuards,
@@ -35,6 +36,25 @@ export class AuthController {
       throw res.redirect(301, 'http://localhost:8080/auth/signup');
     }
     // console.log('auth/login() set cookies');
+    const refreshToken = this.authService.getRefreshToken(user.id);
+    res.cookie(
+      Cookies.ACCESS_TOKEN,
+      this.authService.getAccessToken(user.id, user.two_factor_activated),
+      this.authService.accessTokenCookieOptions,
+    );
+    res.cookie(
+      Cookies.REFRESH_TOKEN,
+      refreshToken,
+      this.authService.refreshTokenCookieOptions,
+    );
+    this.authService.setRefreshToken(user.id, refreshToken);
+  }
+
+  @Redirect('http://localhost:8000/Home', 301)
+  @Get('test')
+  test(@Res({ passthrough: true }) res) {
+    const user = this.authService.createDummyUser();
+
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,

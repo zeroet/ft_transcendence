@@ -36,7 +36,8 @@ export class ChatroomController {
   })
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':chatroomId')
-  async getOneChatroom(@Param() { chatroomId }) {
+  async getOneChatroom(@User() user, @Param() { chatroomId }) {
+    console.log('user.id', user.id);
     // console.log('getOneChatroom():', chatroomId);
     // console.log('getOneChatroom():', typeof chatroomId);
     return await this.chatroomService.getOneChatroom(chatroomId);

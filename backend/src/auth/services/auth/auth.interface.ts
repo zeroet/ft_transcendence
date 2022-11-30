@@ -10,4 +10,5 @@ export interface IAuthService {
   getRefreshToken(id: number);
   setRefreshToken(id: number, refreshToken: string);
   verify(accessToken: any);
+  createDummyUser();
 }

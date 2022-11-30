@@ -85,7 +85,7 @@ export class ChatroomService implements IChatroomService {
       where: {
         chatroomId: chatroomId,
       },
-      // relations: ['ChatMember'],
+      relations: ['ChatMember'],
     });
     // const chatroom = await this.findById(chatroomId);
     if (!chatroom)

@@ -2,7 +2,7 @@
 @serverUrl = http://localhost:8080
 
 # @accessToken = {{login.response.cookie.accessToken}}
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHdvX2ZhY3Rvcl9hY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE2Njk3Njc3NjUsImV4cCI6MTY2OTc3MTM2NX0.XuMgb76I_YKhlRm9TfiYuDnTLuNgi7BYVs_ztHa6V1c
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInR3b19mYWN0b3JfYWN0aXZhdGVkIjpmYWxzZSwiaWF0IjoxNjY5NzcyMzAxLCJleHAiOjE2Njk3NzU5MDF9.8SGwTgSRF6cImtT7k6HDFjC6VhKABctlxHXJrVIx6eo
 
 
 ### Get current user info
