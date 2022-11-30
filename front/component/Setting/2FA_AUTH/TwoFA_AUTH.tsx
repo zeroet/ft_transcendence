@@ -107,6 +107,7 @@ const TwoFA_AUTH = ({
                 placeholder="Code please (6 numbers)"
                 type="text"
                 value={codeFromQRCode}
+                autoFocus
               />
             </div>
           )}

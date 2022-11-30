@@ -15,12 +15,17 @@ import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
 
+interface TypeChatId {
+  id: string;
+  link: string;
+}
+
 export default function Chat({
   accessToken,
   id,
 }: {
   accessToken: string;
-  id: any;
+  id: TypeChatId;
 }) {
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
@@ -59,10 +64,12 @@ export default function Chat({
         roomData.password &&
         showPWModal &&
         roomData.ownerId !== userData.id && (
-          <PWModal
-            setShowPWModal={setShowPWModal}
-            password={roomData.password}
-          />
+          <div className="pwmodal-background">
+            <PWModal
+              setShowPWModal={setShowPWModal}
+              password={roomData.password}
+            />
+          </div>
         )}
       <div className="component-style">
         <RoomList accessToken={accessToken} />

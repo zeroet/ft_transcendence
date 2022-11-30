@@ -67,6 +67,7 @@ const ChangeNameModal = ({
               onChange={getNewNickName}
               type="text"
               placeholder="new nickname should be less then 30 characters"
+              autoFocus
             />
           </div>
         </div>

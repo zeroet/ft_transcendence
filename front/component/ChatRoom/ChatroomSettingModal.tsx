@@ -16,7 +16,7 @@ export default function ChatroomSettingModal({
       <style jsx>{`
         .box {
           font-family: "Fragment Mono", monospace;
-          position: fixed;
+          position: absolute;
           top: 18%;
           left: 57.8%;
 
