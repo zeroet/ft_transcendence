@@ -1,5 +1,5 @@
 
-export interface GameDTO{
+export class gameInfo{
     Players: Array<any>[];
     roomName: string;
     ownerId: string;
@@ -8,11 +8,11 @@ export interface GameDTO{
 }
 
 export class Game{
-    game: GameDTO;
+    info: gameInfo;
 
     constructor(user1, user2) {
-        this.game.Players.push(user1);
-        this.game.ownerId = user1;
-        this.game.Players.push(user2);
+        this.info.Players.push(user1);
+        this.info.ownerId = user1;
+        this.info.Players.push(user2);
     }
 }
