@@ -15,12 +15,17 @@ import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
 
+interface TypeChatId {
+  id: string;
+  link: string;
+}
+
 export default function Chat({
   accessToken,
   id,
 }: {
   accessToken: string;
-  id: any;
+  id: TypeChatId;
 }) {
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
