@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 
-const ChatBox = () => {
+interface TypeProps {
+  onChangeInputText: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClickSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  inputText: string;
+}
+
+const ChatBox = ({
+  onChangeInputText,
+  onClickSubmit,
+  inputText,
+}: TypeProps) => {
   return (
     <form className="chat-box">
-      <input type="text" placeholder="ex) casse-toi" />
+      <input
+        autoFocus
+        onChange={onChangeInputText}
+        value={inputText}
+        type="text"
+        placeholder="TYPE HERE"
+      />
       <div className="button-div">
-        <button type="submit">
-          <img src="/images/allow.jpeg" width="25px" height="25px" />
+        <button onClick={onClickSubmit} type="submit">
+          <img src="/images/allow.jpeg" width="50px" height="50px" />
         </button>
       </div>
       <style jsx>{`
@@ -20,7 +36,7 @@ const ChatBox = () => {
         }
         .chat-box {
           display: flex;
-          flex-direction: column;
+          //   flex-direction: column;
           //   background-color: green;
           margin-left: 10px;
           margin-right: 10px;
@@ -30,6 +46,7 @@ const ChatBox = () => {
         input {
           //   background-color: yellow;
           height: 60%;
+          width: 90%;
           //   //   margin-left: 10px;
           //   //   margin-right: 10px;
           //   width: 100%;
