@@ -25,9 +25,10 @@ export default function ChatRoomBody({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-
+      if (inputText === "") return;
       console.log(inputText);
       // api통해서 업데이트 및 mutate수정
+      // optimistic ui
       setInputText("");
     },
     [inputText]
