@@ -18,7 +18,9 @@ const GameReadyModal = ({
       e.stopPropagation();
       e.preventDefault();
 
-      socket?.emit("createRoom", {});
+      socket?.emit("createRoom", {
+        ready: true,
+      });
 
       //테스트용 원래는 useEffect에서 해야함
       console.log("game ready modal click ok");
@@ -29,10 +31,10 @@ const GameReadyModal = ({
 
   useEffect((): (() => void) => {
     console.log("in game ready modal", socket?.id);
-    socket?.on("game", (roonNameFromSocket) => {
-      console.log(roonNameFromSocket);
+    socket?.on("game", (roomNameFromSocket: string) => {
+      console.log(roomNameFromSocket);
       console.log("is room name! from socket");
-      router.push(`/Game/${roonNameFromSocket}`);
+      router.push(`/Game/${roomNameFromSocket}`);
     });
     return () => {
       console.log("off socket in game ready modal");
