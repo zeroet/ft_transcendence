@@ -125,7 +125,6 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
       )}
       <div className="grid-div">
         <GameList accessToken={accessToken} />
-        {/* <div className="play-game" ref={windowSize}> */}
         <div className="play-game">
           <div className="score">
             <div className="score">{gameChanged?.myScore}</div>
