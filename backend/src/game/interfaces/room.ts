@@ -1,6 +1,6 @@
 
-export class GameDTO{
-    Players: Array<any> = [];
+export class gameInfo{
+    Players: Array<any>[];
     roomName: string;
     ownerId: string;
     speed: string;
@@ -8,11 +8,11 @@ export class GameDTO{
 }
 
 export class Game{
-    game: GameDTO = new GameDTO();
+    info: gameInfo;
 
     constructor(user1, user2) {
-        this.game.Players.push(user1);
-        this.game.ownerId = user1;
-        this.game.Players.push(user2);
+        this.info.Players.push(user1);
+        this.info.ownerId = user1;
+        this.info.Players.push(user2);
     }
 }

@@ -14,7 +14,7 @@ import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
 import { GameService } from './game.service';
-import { Game, GameDTO } from './interfaces/room';
+import { Game, gameInfo } from './interfaces/room';
 import { QueueService } from './queue.service';
 
 // @UseGuards(JwtWsGuard)
@@ -53,11 +53,10 @@ export class GameEvents {
   }
 
   createRoom(player1: Socket, palyer2: Socket) {
-    let info: GameDTO;
 
     console.log(player1, palyer2);
-    player1.emit('createRoom', info);
-    palyer2.emit('createRoom');
+    player1.emit('createRoom', { isOwner: true });
+    palyer2.emit('createRoom', { isOwner: false });
     console.log('is okkkkkkkkkkkkkk');
   }
 
@@ -66,12 +65,18 @@ export class GameEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
-      let game: Game = new Game(data.Players[0], data.Players[1]);
+      if (client.id === this.queueNormal.Players[0].id) {
+      let game: Game = new Game(this.queueNormal.Players[0], this.queueNormal.Players[1]);
+      game.info.Players[0].join(data.roomName);
+      game.info.Players[1].join(data.roomName);
       this.rooms.set(data.roomName, game);
-      console.log('ok');
-      this.queueNormal.Players.shift();
-      this.queueNormal.Players.shift();
-      this.queueNormal.clear();
+      // 큐 초기화
+      this.liveGame(data.roomName, game);
     }
+  }
+
+  async liveGame(name:string, game: Game) {
+    this.server.to('name').emit('Game Starttttttttttttttt');
+  }
     
 }
