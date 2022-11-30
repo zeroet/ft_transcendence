@@ -76,7 +76,7 @@ export class GameEvents {
   }
 
   async liveGame(name:string, game: Game) {
-    this.server.to('name').emit('Game Starttttttttttttttt');
+    this.server.to('name').emit('enterGame', name);
   }
     
 }

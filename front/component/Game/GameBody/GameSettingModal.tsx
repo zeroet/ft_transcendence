@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
-
+import { GameDTO } from "../../../interfaceType";
 // 오너가 아니면, 일반 체크만 하는 페이지도 만들어야한다
 
 const GameSettingModal = ({
@@ -29,8 +29,8 @@ const GameSettingModal = ({
       }
 
       // 그리고 게임시작
-      socket?.emit("createRoom", {
-        name: roomName,
+      socket?.emit("starGame", {
+        roomName,
         speed,
         ballSize,
       });
@@ -77,12 +77,12 @@ const GameSettingModal = ({
     console.log("game setting owner modal", socket?.id);
 
     // 완료된 소켓! 받은후에 이동
-    socket?.on("game", (roomNameFromSocket: string) => {
-      router.push(`/Game/${roomNameFromSocket}`);
+    socket?.on("enterGame", (roomName: string) => {
+      router.push(`/Game/${roomName}`);
     });
     return () => {
       console.log("off socket in game setting modal");
-      socket?.off("game");
+      socket?.off("enterGame");
       // socket?.off("createRoom");
     };
   }, []);
