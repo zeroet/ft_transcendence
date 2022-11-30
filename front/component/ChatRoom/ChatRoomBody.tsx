@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import useSWR from "swr";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
@@ -13,6 +13,27 @@ export default function ChatRoomBody({
   chatroomId: string | string[] | undefined;
 }) {
   const { data, error } = useSWR(`/api/chatroom/${chatroomId}`);
+  const [inputText, setInputText] = useState<string>("");
+
+  const onChangeInputText = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputText(e.target.value);
+    },
+    [inputText]
+  );
+
+  const onClickSubmit = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (inputText === "") return;
+      console.log(inputText);
+      // api통해서 업데이트 및 mutate수정
+      // optimistic ui
+      setInputText("");
+    },
+    [inputText]
+  );
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
@@ -45,7 +66,11 @@ export default function ChatRoomBody({
       </div>
       <hr />
       <ChatList />
-      <ChatBox />
+      <ChatBox
+        onChangeInputText={onChangeInputText}
+        onClickSubmit={onClickSubmit}
+        inputText={inputText}
+      />
       <style jsx>
         {`
           .roomname-header {

@@ -101,4 +101,52 @@ export class AuthService implements IAuthService {
       secret: process.env.JWT_ACCESS_SECRET,
     });
   }
+
+  async validateDummy(userDetails: UserDetails) {
+    const { intra_id } = userDetails;
+    console.log('dummy intra id:', intra_id);
+    const user = await this.userRepository.findOneBy({ intra_id });
+    console.log('dummyuser:', user);
+    if (user) return true;
+    else {
+      console.log('return false');
+      return false;
+    }
+  }
+
+  async createDummy(userDetails: UserDetails) {
+    const user = this.userRepository.create(userDetails);
+    return await this.userRepository.save(user);
+  }
+  async createDummyUser() {
+    console.log('createDummyUser()');
+    let name = 'dummy';
+    // const intra_id = name;
+    // const email = name;
+    // const image_url = null;
+    // const username = name;
+    let userDetails = {
+      intra_id: name,
+      email: name,
+      image_url: process.env.DUMMY_URL,
+      username: name,
+    };
+    let user = await this.validateDummy(userDetails);
+    while (user) {
+      name += 1;
+      console.log('name', name);
+      // console.log('name+=1', name + 1);
+      userDetails = {
+        intra_id: name,
+        email: name,
+        image_url: process.env.DUMMY_URL,
+        username: name,
+      };
+      user = await this.validateDummy(userDetails);
+    }
+    console.log('userdetails af if:', userDetails);
+    return this.createDummy(userDetails);
+  }
+
+  async deleteDummyUser() {}
 }

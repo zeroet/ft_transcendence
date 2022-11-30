@@ -36,7 +36,8 @@ export class ChatroomController {
   })
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':chatroomId')
-  async getOneChatroom(@Param() { chatroomId }) {
+  async getOneChatroom(@User() user, @Param() { chatroomId }) {
+    console.log('user.id', user.id);
     // console.log('getOneChatroom():', chatroomId);
     // console.log('getOneChatroom():', typeof chatroomId);
     return await this.chatroomService.getOneChatroom(chatroomId);
@@ -66,7 +67,9 @@ export class ChatroomController {
       'Get all members from a chatroom / 특정 대화방의 모든 참여자목록 가져오기',
   })
   @Get(':chatroomId/members')
-  getAllMembers(@Body() chatroomId: number) {}
+  getAllMembers(@Param() { chatroomId }) {
+    return this.chatroomService.getAllMembers(chatroomId);
+  }
 
   @ApiOperation({
     summary:
