@@ -18,7 +18,7 @@ import {
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
-import { IChatroomService } from 'src/chat/services/chatromm/chatroom.interface';
+import { IChatroomService } from 'src/chat/services/chatroom/chatroom.interface';
 import { IUser } from 'src/typeorm/interfaces/IUser';
 import { User } from 'src/utils/decorators/user.decorator';
 

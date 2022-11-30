@@ -6,7 +6,7 @@ import { ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { ChatroomController } from './controllors/chatroom/chatroom.controller';
 import { DmController } from './controllors/dm/dm.controller';
-import { ChatroomService } from './services/chatromm/chatroom.service';
+import { ChatroomService } from './services/chatroom/chatroom.service';
 import { DmService } from './services/dm/dm.service';
 
 @Module({
