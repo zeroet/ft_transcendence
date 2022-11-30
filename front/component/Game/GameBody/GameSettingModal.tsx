@@ -29,11 +29,7 @@ const GameSettingModal = ({
       }
 
       // 그리고 게임시작
-<<<<<<< HEAD
       socket?.emit("startGame", {
-=======
-      socket?.emit("starGame", {
->>>>>>> 9250e09ed786d82292490d34eb19c33adab7e49d
         roomName,
         speed,
         ballSize,
