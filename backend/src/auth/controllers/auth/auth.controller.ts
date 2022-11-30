@@ -130,5 +130,11 @@ export class AuthController {
       this.authService.defaultCookieOptions,
     );
     await this.twoFactorSerivce.setTwoFactorValid(user.id, false);
+    if (await this.authService.deleteDummyUser(user)) {
+      res.clearCookie(
+        Cookies.REFRESH_TOKEN,
+        this.authService.defaultCookieOptions,
+      );
+    }
   }
 }
