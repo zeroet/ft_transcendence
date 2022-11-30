@@ -23,5 +23,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     //     })
     //   }
     console.log(status, err);
+    return response.status(400).json({ statusCode: 400 });
   }
 }
