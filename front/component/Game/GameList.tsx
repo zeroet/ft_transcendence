@@ -4,22 +4,6 @@ import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
 
-// dummy file!
-let gameList = [
-  // {
-  //   id: 1,
-  //   gameName: "hyungyoo vs seyun",
-  // },
-  // {
-  //   id: 2,
-  //   gameName: "hello! cjung-mo's room!",
-  // },
-  // {
-  //   id: 3,
-  //   gameName: "eyoo vs keulee",
-  // },
-];
-
 export default function GameList({ accessToken }: { accessToken: string }) {
   const [socket] = useSocket(accessToken, "game");
   // 소켓을 이용하여, socket.on으로 게임리스트를 받는다.
@@ -41,14 +25,14 @@ export default function GameList({ accessToken }: { accessToken: string }) {
       <h1>Game List</h1>
       <hr />
       <ul>
-        {gameList &&
+        {/* {gameList &&
           gameList.map((res) => {
             return (
               <li key={res.id}>
                 <Link href={`/Game/${res.gameName}`}>{res.gameName}</Link>
               </li>
             );
-          })}
+          })} */}
       </ul>
     </div>
   );
