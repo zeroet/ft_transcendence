@@ -43,6 +43,8 @@ const GameSettingModal = ({
       console.log(
         `game room name : ${roomName}, ball size : ${ballSize}, ball speed : ${speed}`
       );
+      
+      setRoomName("");
       // router.push(`/Game/test!!!`);
     },
     [speed, ballSize, roomName]
