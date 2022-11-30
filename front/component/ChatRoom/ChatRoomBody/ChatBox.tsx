@@ -12,7 +12,7 @@ const ChatBox = ({
   inputText,
 }: TypeProps) => {
   return (
-    <form className="chat-box">
+    <form className="chat-box" method="post">
       <input
         autoFocus
         onChange={onChangeInputText}
