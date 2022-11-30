@@ -32,7 +32,13 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
         <ul>
           {data.map((room: IChatroom) => {
             return (
-              <Link href={`/ChatRoom/${room.chatroomId}`} key={room.chatroomId}>
+              <Link
+                href={{
+                  pathname: `/Chat`,
+                  query: { id: room.chatroomId, link: "chat" },
+                }}
+                key={room.chatroomId}
+              >
                 <div className="room-li">
                   <img
                     src={
