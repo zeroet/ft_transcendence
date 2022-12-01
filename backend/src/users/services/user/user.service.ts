@@ -22,7 +22,7 @@ export class UserService implements IUserService {
       // this.logger.debug('getUserById() user:');
       // console.log(user);
       // console.log('getuserbyid:', user);
-      if (!user) throw new NotFoundException(`User by #id ${id} not found`);
+      // if (!user) throw new NotFoundException(`User by #id ${id} not found`);
       return user;
     }
   }
