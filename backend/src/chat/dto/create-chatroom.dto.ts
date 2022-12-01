@@ -8,14 +8,16 @@ export class CreateChatroomDto extends PickType(Chatroom, [
   'password',
 ]) {
   @ApiProperty({
-    type: 'string',
+    type: String,
+    example: 'wanna chat with me ?',
     description: 'chatroom name',
   })
   @IsString()
   chatroomName: string;
 
   @ApiProperty({
-    type: 'string',
+    type: String,
+    example: 'come talk to me',
     description: 'password',
   })
   @IsString()

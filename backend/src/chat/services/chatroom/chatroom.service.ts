@@ -26,12 +26,12 @@ export class ChatroomService implements IChatroomService {
     private chatEventsGateway: ChatEventsGateway,
   ) {}
 
-  async findById(chatroomId: number) {
-    return await this.chatroomRepository.findOneBy({ chatroomId: chatroomId });
+  async findChatroomById(chatroomId: number) {
+    return await this.chatroomRepository.findOneBy({ chatroomId });
   }
 
   async getChatroomsInfo(chatrooms: IChatroom[]) {
-    const chatroomsInfo = await Promise.all(
+    return await Promise.all(
       (
         await chatrooms
       ).map((chatroom: any) => {
@@ -41,15 +41,16 @@ export class ChatroomService implements IChatroomService {
         return result;
       }),
     );
-    return chatroomsInfo;
   }
 
   async getAllChatrooms() {
     const chatrooms = await this.chatroomRepository.find();
     return await this.getChatroomsInfo(chatrooms);
   }
+
   async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
     // console.log('password:', createChatroomDto.password);
+    // console.log('typeof userId:', userId, typeof userId);
     const user = await this.userRepository.findOneByOrFail({ id: userId });
 
     // const queryRunner = this.dataSource.createQueryRunner();
@@ -95,7 +96,6 @@ export class ChatroomService implements IChatroomService {
   }
   async getOneChatroom(chatroomId: number) {
     // console.log('getOneChatroom() typeof chatroomId:', typeof chatroomId);
-
     // const chatroom = await this.chatroomRepository
     //   .createQueryBuilder('chatroom')
     //   .leftJoinAndSelect(
@@ -104,18 +104,20 @@ export class ChatroomService implements IChatroomService {
     //     'chat_member.chatroom_id=chatroom_id',
     //     { chatroomId },
     //   );
-    const chatroom = await this.chatroomRepository.findOne({
-      where: {
-        chatroomId: chatroomId,
-      },
-      relations: ['ChatMember'],
-    });
-    // const chatroom = await this.findById(chatroomId);
-    if (!chatroom)
+    const chatroom = await this.findChatroomById(chatroomId);
+    // const chatroom = await this.chatroomRepository.findOne({
+    //   where: {
+    //     chatroomId: chatroomId,
+    //   },
+    //   relations: ['ChatMember'],
+    // });
+    if (!chatroom) {
+      console.log(`Chatroom of id: ${chatroomId} not found,`, chatroom);
       throw new NotFoundException(`Chatroom of id:${chatroomId} not found`);
+    }
     console.log('current chatroom info:', chatroom);
-
-    return chatroom;
+    const result = await this.getChatroomsInfo([chatroom]);
+    return result[0];
   }
   updateChatroom() {
     throw new Error('Method not implemented.');

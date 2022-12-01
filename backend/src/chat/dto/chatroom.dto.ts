@@ -7,7 +7,7 @@ export class ChatroomDto extends OmitType(Chatroom, [
   'modifiedAt',
 ]) {
   @ApiProperty({
-    type: 'boolean',
+    type: Boolean,
     description: 'private or public',
   })
   isPrivate: boolean;
