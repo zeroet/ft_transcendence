@@ -1,5 +1,6 @@
 import axios from "axios";
-import { useCallback, useState } from "react";
+import React, { useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
@@ -14,6 +15,7 @@ export default function ChatRoomBody({
 }) {
   const { data, error } = useSWR(`/api/chatroom/${chatroomId}`);
   const [inputText, setInputText] = useState<string>("");
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const onChangeInputText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +40,6 @@ export default function ChatRoomBody({
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
 
-  const [showModal, setShowModal] = useState<boolean>(false);
   const modal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -47,11 +48,15 @@ export default function ChatRoomBody({
     setShowModal((curr) => !curr);
   };
 
+  // const closeModal = () => {
+  //   setShowModal(false);
+  // };
+
   return (
     <div className={styles.box}>
       {showModal && (
-        <div className="modal-background">
-          <ChatroomSettingModal modal={modal} />
+        <div>
+          <ChatroomSettingModal />
         </div>
       )}
       <div className="roomname-header">
@@ -73,6 +78,9 @@ export default function ChatRoomBody({
       />
       <style jsx>
         {`
+          .ModalWrapper {
+            background-color: red;
+          }
           img {
             padding-left: 10px;
           }
