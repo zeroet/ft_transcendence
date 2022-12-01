@@ -51,7 +51,8 @@ export class Chatroom implements IChatroom {
     name: 'password',
     default: null,
     nullable: true,
-    length: 30,
+    select: false,
+    length: 100,
   })
   password: string;
 
