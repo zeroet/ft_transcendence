@@ -1,10 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
+import { IChatroom } from 'src/typeorm/interfaces/IChatroom';
 import { DataSource, Repository } from 'typeorm';
 import { IChatroomService } from './chatroom.interface';
+import * as bcrypt from 'bcrypt';
+import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 
 @Injectable()
 export class ChatroomService implements IChatroomService {
@@ -21,33 +28,98 @@ export class ChatroomService implements IChatroomService {
     private chatEventsGateway: ChatEventsGateway,
   ) {}
 
-  async findById(chatroomId: number) {
-    return await this.chatroomRepository.findOneBy({ chatroomId: chatroomId });
+  async findChatroomByIdOrFail(chatroomId: number) {
+    // return await this.chatroomRepository.findOneBy({ chatroomId });
+    const chatroom = await this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .addSelect('chatroom.password')
+      .where('chatroom.chatroom_id=:chatroomId', { chatroomId })
+      .getOne();
+    if (!chatroom) {
+      console.log(`findChatroomByIdOrFail of id: ${chatroomId} not found,`);
+      throw new NotFoundException(`Chatroom of id:${chatroomId} not found`);
+    }
+    return chatroom;
   }
-  async getAllChatrooms() {
-    return await this.chatroomRepository.find();
+
+  async findChatroomByNameOrFail(chatroomName: string) {
+    const chatroom = await this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .addSelect('chatroom.password')
+      .where('chatroom.chatroom_name=:chatroomName', { chatroomName })
+      .getOne();
+    if (!chatroom) {
+      console.log(
+        `findChatroomByNameOrFail of id: '${chatroomName}' not found,`,
+      );
+      throw new NotFoundException(`Chatroom of id:${chatroomName} not found`);
+    }
+    return chatroom;
   }
-  async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
+
+  async findChatroomByName(chatroomName: string) {
+    return await this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .addSelect('chatroom.password')
+      .where('chatroom.chatroom_name=:chatroomName', { chatroomName })
+      .getOne();
+  }
+
+  async getChatroomsInfo(chatrooms: IChatroom[]) {
+    return await Promise.all(
+      (
+        await chatrooms
+      ).map((chatroom: any) => {
+        if (chatroom.password !== null) chatroom.isPrivate = true;
+        else chatroom.isPrivate = false;
+        const { password, createdAt, modifiedAt, ...result } = chatroom;
+        return result;
+      }),
+    );
+  }
+
+  hashData(data: string) {
+    return bcrypt.hash(data, 11);
+  }
+
+  async getAllChatrooms(): Promise<ChatroomDto[]> {
+    const chatrooms = await this.chatroomRepository.find();
+    return await this.getChatroomsInfo(chatrooms);
+  }
+
+  async createChatroom(
+    userId: number,
+    createChatroomDto: CreateChatroomDto,
+  ): Promise<ChatroomDto> {
     // console.log('password:', createChatroomDto.password);
+    // console.log('typeof userId:', userId, typeof userId);
     const user = await this.userRepository.findOneByOrFail({ id: userId });
 
     // const queryRunner = this.dataSource.createQueryRunner();
     // queryRunner.connect();
-    const { chatroomName } = createChatroomDto;
-    const chatroom = this.chatroomRepository
+    const { chatroomName, password } = createChatroomDto;
+    const chatroom = await this.chatroomRepository
       .createQueryBuilder('chatroom')
-      .where('chatroom.chatroom_name = chatroom_name', { chatroomName })
+      .addSelect('chatroom.password')
+      .where('chatroom.chatroom_name = :chatroomName', { chatroomName })
       .getOne();
-    if (!chatroom)
-      throw new NotFoundException(
-        `Chatroom of name: ${chatroomName} not found`,
+    if (chatroom)
+      // console.log(`Chatroom of name: ${chatroomName} already exists`);
+      throw new BadRequestException(
+        `Chatroom of name: '${chatroomName}' already exists`,
       );
+
+    const hashedPassword =
+      password !== null
+        ? await this.hashData(createChatroomDto.password)
+        : null;
+    // console.log('hashedPassword:', hashedPassword);
     const newChatroom = this.chatroomRepository.create({
       ownerId: userId,
-      ...createChatroomDto,
+      chatroomName,
+      password: hashedPassword,
     });
     const createdChatroom = await this.chatroomRepository.save(newChatroom);
-
     const chatroomMemebr = this.chatMemebrRepository.create({
       userId: userId,
       chatroomId: createdChatroom.chatroomId,
@@ -57,7 +129,8 @@ export class ChatroomService implements IChatroomService {
     await this.chatMemebrRepository.save(chatroomMemebr);
     this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
     console.log(newChatroom);
-    return newChatroom;
+    const result = await this.getChatroomsInfo([newChatroom]);
+    return result[0];
 
     // const chatroomContent = this.chatContentRepository.create({
     //   chatroomId,
@@ -70,9 +143,8 @@ export class ChatroomService implements IChatroomService {
     //   .innerJoinAndSelect();
     // return this.chatroomRepository.save(chatroom);
   }
-  async getOneChatroom(chatroomId: number) {
+  async getOneChatroom(chatroomId: number): Promise<ChatroomDto> {
     // console.log('getOneChatroom() typeof chatroomId:', typeof chatroomId);
-
     // const chatroom = await this.chatroomRepository
     //   .createQueryBuilder('chatroom')
     //   .leftJoinAndSelect(
@@ -81,27 +153,16 @@ export class ChatroomService implements IChatroomService {
     //     'chat_member.chatroom_id=chatroom_id',
     //     { chatroomId },
     //   );
-    const chatroom = await this.chatroomRepository.findOne({
-      where: {
-        chatroomId: chatroomId,
-      },
-      relations: ['ChatMember'],
-    });
-    // const chatroom = await this.findById(chatroomId);
-    if (!chatroom)
-      throw new NotFoundException(`Chatroom of id:${chatroomId} not found`);
+    // const chatroom = await this.chatroomRepository.findOne({
+    //   where: {
+    //     chatroomId: chatroomId,
+    //   },
+    //   relations: ['ChatMember'],
+    // });
+    const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     console.log('current chatroom info:', chatroom);
-
-    return chatroom;
-  }
-  updateChatroom() {
-    throw new Error('Method not implemented.');
-  }
-  getContents() {
-    throw new Error('Method not implemented.');
-  }
-  postContents() {
-    throw new Error('Method not implemented.');
+    const result = await this.getChatroomsInfo([chatroom]);
+    return result[0];
   }
   getAllMembers(chatroomId: number) {
     console.log('test', typeof chatroomId, chatroomId);
@@ -147,5 +208,14 @@ export class ChatroomService implements IChatroomService {
       chatroomId,
     });
     await this.chatMemebrRepository.save(chatroomMember);
+  }
+  // updateChatroom() {
+  //   throw new Error('Method not implemented.');
+  // }
+  getContents() {
+    throw new Error('Method not implemented.');
+  }
+  postContents() {
+    throw new Error('Method not implemented.');
   }
 }

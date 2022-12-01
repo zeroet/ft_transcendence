@@ -14,7 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const err = exception.getResponse() as
       | string
-      | { error: string; statusCode: 400; message: string[] };
+      | { error: string; message: string[] };
     //   if (typeof err !== 'string' && err.error === 'Bad Requeset') {
     //     return response.status(status).json({
     //         success: false,
@@ -22,7 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     //     })
     //   }
-    console.log(status, err);
-    return response.status(400).json({ statusCode: 400 });
+    console.log('HttpException', status, err);
+    return response.status(status).json({ statusCode: status, err });
   }
 }

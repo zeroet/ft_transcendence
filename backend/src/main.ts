@@ -5,11 +5,13 @@ import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { UnauthorizedExceptionFilter } from './utils/unauthorized.exception.filter';
 import { HttpExceptionFilter } from './utils/http.exception.filter';
+import { AllExceptionFilter } from './utils/all.exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const PORT = process.env.SERVER_PORT || 3000;
   app.useGlobalFilters(
+    new AllExceptionFilter(),
     new UnauthorizedExceptionFilter(),
     new HttpExceptionFilter(),
   );

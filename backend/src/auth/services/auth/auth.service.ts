@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
@@ -97,9 +97,14 @@ export class AuthService implements IAuthService {
   }
 
   async verify(accessToken: any) {
-    return await this.jwtService.verify(accessToken, {
-      secret: process.env.JWT_ACCESS_SECRET,
-    });
+    try {
+      const decoded = await this.jwtService.verify(accessToken, {
+        secret: process.env.JWT_ACCESS_SECRET,
+      });
+      return decoded;
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
   }
 
   async validateDummy(userDetails: UserDetails) {

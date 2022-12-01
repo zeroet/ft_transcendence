@@ -68,8 +68,10 @@ export class ChatEventsGateway
     // console.log(socket.handshake.headers.accesstoken);
     // this.logger.debug('Chat events handleConnection(): ', payload.id);
     const user = await this.userService.getUserById(payload.id);
-    !user && socket.disconnect();
-
+    if (!user) {
+      socket.disconnect();
+      return;
+    }
     this.logger.debug(`User id:${user.id} has been connected`);
     this.logger.debug(`Chat socket id:${socket.id} connected`);
   }

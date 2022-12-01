@@ -1,7 +1,5 @@
-import Image from "next/image";
 import { UserInfo } from "../../../../interfaceType";
 import useSWR from "swr";
-import Error from "../../../errorAndLoading/Error";
 import Loading from "../../../errorAndLoading/Loading";
 import fetcher from "../../../Utils/fetcher";
 import axios from "axios";
