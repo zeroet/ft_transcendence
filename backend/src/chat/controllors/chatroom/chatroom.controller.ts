@@ -14,6 +14,7 @@ import {
   ApiParam,
   ApiResponse,
   ApiTags,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
@@ -80,6 +81,11 @@ export class ChatroomController {
     this.chatroomService.postMembers(user.id, chatroomId);
   }
 
+  @ApiOkResponse({
+    type: ChatroomDto,
+    isArray: true,
+    description: 'every chatroom info',
+  })
   @ApiOperation({ summary: 'Get all chatrooms / 모든 대화방 가져오기' })
   @Get()
   getAllChatrooms() {

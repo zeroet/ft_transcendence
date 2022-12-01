@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
+import { IChatroom } from 'src/typeorm/interfaces/IChatroom';
 import { DataSource, Repository } from 'typeorm';
 import { IChatroomService } from './chatroom.interface';
 
@@ -24,8 +29,24 @@ export class ChatroomService implements IChatroomService {
   async findById(chatroomId: number) {
     return await this.chatroomRepository.findOneBy({ chatroomId: chatroomId });
   }
+
+  async getChatroomsInfo(chatrooms: IChatroom[]) {
+    const chatroomsInfo = await Promise.all(
+      (
+        await chatrooms
+      ).map((chatroom: any) => {
+        if (chatroom.password !== null) chatroom.isPrivate = true;
+        else chatroom.isPrivate = false;
+        const { password, createdAt, modifiedAt, ...result } = chatroom;
+        return result;
+      }),
+    );
+    return chatroomsInfo;
+  }
+
   async getAllChatrooms() {
-    return await this.chatroomRepository.find();
+    const chatrooms = await this.chatroomRepository.find();
+    return await this.getChatroomsInfo(chatrooms);
   }
   async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
     // console.log('password:', createChatroomDto.password);
@@ -34,13 +55,14 @@ export class ChatroomService implements IChatroomService {
     // const queryRunner = this.dataSource.createQueryRunner();
     // queryRunner.connect();
     const { chatroomName } = createChatroomDto;
-    const chatroom = this.chatroomRepository
+    const chatroom = await this.chatroomRepository
       .createQueryBuilder('chatroom')
-      .where('chatroom.chatroom_name = chatroom_name', { chatroomName })
+      .where('chatroom.chatroom_name = :chatroomName', { chatroomName })
       .getOne();
-    if (!chatroom)
-      throw new NotFoundException(
-        `Chatroom of name: ${chatroomName} not found`,
+    if (chatroom)
+      // console.log(`Chatroom of name: ${chatroomName} already exists`);
+      throw new BadRequestException(
+        `Chatroom of name: ${chatroomName} already exists`,
       );
     const newChatroom = this.chatroomRepository.create({
       ownerId: userId,
@@ -57,7 +79,8 @@ export class ChatroomService implements IChatroomService {
     await this.chatMemebrRepository.save(chatroomMemebr);
     this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
     console.log(newChatroom);
-    return newChatroom;
+    const result = await this.getChatroomsInfo([newChatroom]);
+    return result[0];
 
     // const chatroomContent = this.chatContentRepository.create({
     //   chatroomId,
