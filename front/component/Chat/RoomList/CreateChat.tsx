@@ -20,6 +20,10 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
         setPw("");
         return;
       }
+      if (RoomName.length <= 0) {
+        alert("Room name must have more than 1 caracter");
+        return;
+      }
       await axios
         .post("/api/chatroom", { chatroomName: RoomName, password: RoomPw })
         .then(async (res) => {
