@@ -4,6 +4,7 @@ import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
 import GameReadyModal from "./GameBody/GameReadyModal";
 import GameSettingModal from "./GameBody/GameSettingModal";
+import { GameDTO } from "../../interfaceType";
 
 export default function GameBody({ accessToken }: { accessToken: string }) {
   const [settingModal, setSettingModal] = useState(false);
@@ -41,11 +42,10 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
   // owner.emit('createRoom', {isOwner: true});
   useEffect(() => {
     socket?.on("createRoom", (obj: { isOwner: boolean }) => {
-      const { isOwner } = obj;
-      console.log(isOwner);
-      if (isOwner) {
+      console.log(obj.isOwner);
+      if (obj.isOwner) {
         setOwnerOrPlayer("owner");
-      } else if (!isOwner) {
+      } else {
         setOwnerOrPlayer("player");
       }
     });

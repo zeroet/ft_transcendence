@@ -1,15 +1,17 @@
-export class RoomName{
-    name: string;
-    speed : string;
-    ballSize : string;
-    ready: boolean;
-}
 
-export class Room {
-    Player = []
+export class Game{
 
-    constructor(user1, user2){
-        this.Player.push(user1);
-        this.Player.push(user2);
+    Players: Array<any>;
+    roomName: string;
+    ownerId: string;
+    speed: string;
+    ballSize: string;
+    
+    constructor(Players:Array<any>, roomName:string, ownerId:string, speed:string, ballSize:string) {
+        this.Players = Players;
+        this.roomName = roomName;
+        this.ownerId = ownerId;
+        this.speed = speed;
+        this.ballSize = ballSize;
     }
 }
