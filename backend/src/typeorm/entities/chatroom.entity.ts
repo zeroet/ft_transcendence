@@ -57,14 +57,12 @@ export class Chatroom implements IChatroom {
   password: string;
 
   @ApiProperty({
-    type: 'string',
     description: 'created time',
   })
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   readonly createdAt: Date;
 
   @ApiProperty({
-    type: 'string',
     description: 'modified time',
   })
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })

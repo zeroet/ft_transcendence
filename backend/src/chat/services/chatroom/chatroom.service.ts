@@ -11,6 +11,7 @@ import { IChatroom } from 'src/typeorm/interfaces/IChatroom';
 import { DataSource, Repository } from 'typeorm';
 import { IChatroomService } from './chatroom.interface';
 import * as bcrypt from 'bcrypt';
+import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 
 @Injectable()
 export class ChatroomService implements IChatroomService {
@@ -81,12 +82,15 @@ export class ChatroomService implements IChatroomService {
     return bcrypt.hash(data, 11);
   }
 
-  async getAllChatrooms() {
+  async getAllChatrooms(): Promise<ChatroomDto[]> {
     const chatrooms = await this.chatroomRepository.find();
     return await this.getChatroomsInfo(chatrooms);
   }
 
-  async createChatroom(userId: number, createChatroomDto: CreateChatroomDto) {
+  async createChatroom(
+    userId: number,
+    createChatroomDto: CreateChatroomDto,
+  ): Promise<ChatroomDto> {
     // console.log('password:', createChatroomDto.password);
     // console.log('typeof userId:', userId, typeof userId);
     const user = await this.userRepository.findOneByOrFail({ id: userId });
@@ -139,7 +143,7 @@ export class ChatroomService implements IChatroomService {
     //   .innerJoinAndSelect();
     // return this.chatroomRepository.save(chatroom);
   }
-  async getOneChatroom(chatroomId: number) {
+  async getOneChatroom(chatroomId: number): Promise<ChatroomDto> {
     // console.log('getOneChatroom() typeof chatroomId:', typeof chatroomId);
     // const chatroom = await this.chatroomRepository
     //   .createQueryBuilder('chatroom')
@@ -159,15 +163,6 @@ export class ChatroomService implements IChatroomService {
     console.log('current chatroom info:', chatroom);
     const result = await this.getChatroomsInfo([chatroom]);
     return result[0];
-  }
-  updateChatroom() {
-    throw new Error('Method not implemented.');
-  }
-  getContents() {
-    throw new Error('Method not implemented.');
-  }
-  postContents() {
-    throw new Error('Method not implemented.');
   }
   getAllMembers(chatroomId: number) {
     console.log('test', typeof chatroomId, chatroomId);
@@ -213,5 +208,14 @@ export class ChatroomService implements IChatroomService {
       chatroomId,
     });
     await this.chatMemebrRepository.save(chatroomMember);
+  }
+  // updateChatroom() {
+  //   throw new Error('Method not implemented.');
+  // }
+  getContents() {
+    throw new Error('Method not implemented.');
+  }
+  postContents() {
+    throw new Error('Method not implemented.');
   }
 }

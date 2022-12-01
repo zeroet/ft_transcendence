@@ -14,11 +14,11 @@ export class UserService implements IUserService {
     return await this.userRepository.findOneBy({ id: id });
   }
   async getUserById(id: number) {
-    this.logger.debug(`getUserById() id: ${id}`);
+    // this.logger.debug(`getUserById() id: ${id}`);
     if (id !== undefined) {
       // const user = await this.userRepository.findOneBy({ id: id });
       const user = await this.userRepository.findOne({ where: { id } });
-      console.log('getUserById() user:', user);
+      // console.log('getUserById() user:', user);
       // this.logger.debug('getUserById() user:');
       // console.log(user);
       // console.log('getuserbyid:', user);
