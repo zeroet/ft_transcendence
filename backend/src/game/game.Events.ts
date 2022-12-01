@@ -39,7 +39,7 @@ export class GameEvents {
     //   return;
     // }
     // client.data.user = user;
-    console.log('Lobby', client.data.user.username);
+    console.log('Lobby', client.id);
   }
 
   handleDisConnection(clinet: Socket) {
