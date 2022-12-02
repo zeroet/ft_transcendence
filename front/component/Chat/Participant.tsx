@@ -14,17 +14,18 @@ import EachParticipant from "./Participant/EachParticipant";
 export default function Participant({ id }: { id: TypeChatId }) {
   console.log("type chat id == ", id);
   const isId = Object.keys(id).length !== 0;
+  // link가 chat일때!
   const { data: roomMembersData, error: roomMembersError } = useSWR(
-    isId ? `/api/chatroom/${id.id}/members` : null,
-    isId ? fetcher : null
+    isId && id.link === "chat" ? `/api/chatroom/${id.id}/members` : null,
+    isId && id.link === "chat" ? fetcher : null
   );
 
-  if (roomMembersData) {
+  if (isId && id.link === "chat" && roomMembersData) {
     console.log(roomMembersData);
   }
   if (roomMembersError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (isId && !roomMembersData) return <Loading />;
+  if (isId && id.link === "chat" && !roomMembersData) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Participant</h1>

@@ -3,7 +3,7 @@ const EachParticipant = ({
   userId,
 }: {
   username: string;
-  userId: string;
+  userId: number;
 }) => {
   console.log(
     "Each participant에서 userId는 유저정보를 불러오거나 API를 사용할때! 위함"
