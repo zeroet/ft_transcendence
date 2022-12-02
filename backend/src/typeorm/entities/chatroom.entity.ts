@@ -59,13 +59,13 @@ export class Chatroom implements IChatroom {
   @ApiProperty({
     description: 'created time',
   })
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at', select: false })
   readonly createdAt: Date;
 
   @ApiProperty({
     description: 'modified time',
   })
-  @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
+  @UpdateDateColumn({ type: 'timestamp', name: 'modified_at', select: false })
   readonly modifiedAt: Date;
 
   @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.Chatroom)

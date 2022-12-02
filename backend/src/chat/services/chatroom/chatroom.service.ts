@@ -70,7 +70,7 @@ export class ChatroomService implements IChatroomService {
       chatrooms.map((chatroom: any) => {
         if (chatroom.password !== null) chatroom.isPrivate = true;
         else chatroom.isPrivate = false;
-        const { password, createdAt, modifiedAt, ...result } = chatroom;
+        const { password, ...result } = chatroom;
         return result;
       }),
     );
@@ -167,23 +167,22 @@ export class ChatroomService implements IChatroomService {
     console.log(result[0]);
     return result[0];
   }
-  getAllMembers(chatroomId: number) {
+  async getAllMembers(chatroomId: number) {
     console.log('test', typeof chatroomId, chatroomId);
-    return (
-      this.chatMemebrRepository
-        .createQueryBuilder('chat_member')
-        // .select('chat_member.userId')
-        .innerJoin(
-          'chat_member.Chatroom',
-          'chatroom',
-          'chatroom.chatroom_id = :chatroomId',
-          { chatroomId },
-        )
-        // .select('user.username')
-        .innerJoinAndSelect('chat_member.User', 'user')
-        // .select('user.username')
-        .getMany()
-    );
+    const queryResult = await this.chatMemebrRepository
+      .createQueryBuilder('chat_member')
+      .innerJoin(
+        'chat_member.Chatroom',
+        'chatroom',
+        'chatroom.chatroom_id = :chatroomId',
+        { chatroomId },
+      )
+      .innerJoinAndSelect('chat_member.User', 'user')
+      .select(['chat_member', 'user.username'])
+      .getMany();
+    // const { } = queryResult;
+    console.log('members:', queryResult);
+    return queryResult;
     // return this.userRepository
     //   .createQueryBuilder('users')
     //   .innerJoin(

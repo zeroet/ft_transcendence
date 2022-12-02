@@ -42,25 +42,35 @@ export class ChatMember implements IChatMember {
   @ApiProperty({
     description: 'muted time',
   })
-  @Column({ type: 'timestamp', name: 'muted_date', nullable: true })
-  mutedDate: Date;
+  @Column({
+    type: 'timestamp',
+    name: 'muted_date',
+    nullable: true,
+    default: null,
+  })
+  mutedDate: Date | null;
 
   @ApiProperty({
     description: 'ban time',
   })
-  @Column({ type: 'timestamp', name: 'ban_date', nullable: true })
-  banDate: Date;
+  @Column({
+    type: 'timestamp',
+    name: 'ban_date',
+    nullable: true,
+    default: null,
+  })
+  banDate: Date | null;
 
   @ApiProperty({
     description: 'created time',
   })
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at', select: false })
   readonly createdAt: Date;
 
   @ApiProperty({
     description: 'created time',
   })
-  @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
+  @UpdateDateColumn({ type: 'timestamp', name: 'modified_at', select: false })
   readonly modifiedAt: Date;
 
   @ManyToOne((type) => Chatroom, (Chatroom) => Chatroom.ChatMember)

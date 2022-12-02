@@ -17,6 +17,7 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
+import { ChatMemberDto } from 'src/chat/dto/chat.member.dto';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { IChatroomService } from 'src/chat/services/chatroom/chatroom.interface';
@@ -87,6 +88,10 @@ export class ChatroomController {
   // @Post(':chatroomId/update')
   // updateChatroom() {}
 
+  @ApiResponse({
+    type: ChatMemberDto,
+    description: 'Member list of a chatroom',
+  })
   @ApiParam({
     name: 'chatroomId',
     example: 1,
