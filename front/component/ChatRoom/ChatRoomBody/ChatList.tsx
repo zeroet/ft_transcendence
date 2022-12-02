@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import useSWR from "swr";
 import Loading from "../../errorAndLoading/Loading";
 
@@ -58,9 +58,18 @@ const dummyChatting = [
     username: "eyoo",
     content: "what??",
   },
+  {
+    id: 11,
+    username: "hyung jun yoo",
+    content: "bye!",
+  },
 ];
 
-const ChatList = () => {
+const ChatList = ({
+  chatroomId,
+}: {
+  chatroomId: string | string[] | undefined;
+}) => {
   const { data: userData, error: userError } = useSWR("/api/users");
   /**
    * chat room에 있는 대화내용들은 props로 chatRoomBody로 부터 받아와야한다.
@@ -68,17 +77,22 @@ const ChatList = () => {
    * mutate는 쳇박스에,
    * data는 chatList에 전달한다.
    */
-  console.log(userData);
+  const scrollRef = useRef<any>(null);
+
+  useEffect(() => {
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [chatroomId]);
   if (userError) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData) return <Loading />;
   return (
-    <div className="c-body">
+    <div className="c-body" ref={scrollRef}>
       <ul>
         {dummyChatting &&
           dummyChatting.map((chat: any, id) => {
+            const css = userData.username === chat.username ? "my" : "other";
             return (
-              <div key={chat.id} className={`div-box`}>
-                <div className="content-box">
+              <div key={chat.id} className={`${css}-div-box`}>
+                <div className={`${css}-content-box`}>
                   <p className="username">{chat.username}</p>
                   <p className="content">{chat.content}</p>
                 </div>
@@ -90,18 +104,31 @@ const ChatList = () => {
       ul {
         padding-left: 0px;
       }
-      .div-box {
+      .my-div-box {
         margin: 0px;
         display: flex;
         justify-content: flex-end;
       }     
-      .content-box {
+
+      .other-div-box {
+        margin: 0px;
+        display: flex;
+      } 
+
+      .my-content-box {
         margin: 10px;
         height: 60px;
         display: inline-block;
-        // background: #f9d4d4;
         background: #A8DADD;
       }
+
+      .other-content-box {
+        margin: 10px;
+        height: 60px;
+        display: inline-block;
+        background: #f9d4d4;
+      }
+
       .c-body {
         height: 80%;
         margin-left: 10px;

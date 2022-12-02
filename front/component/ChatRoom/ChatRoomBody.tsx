@@ -70,7 +70,7 @@ export default function ChatRoomBody({
         <img src="/images/config.png" className="config" onClick={modal} />
       </div>
       <hr />
-      <ChatList />
+      <ChatList chatroomId={chatroomId} />
       <ChatBox
         onChangeInputText={onChangeInputText}
         onClickSubmit={onClickSubmit}
