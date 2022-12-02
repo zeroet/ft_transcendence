@@ -32,15 +32,15 @@ export default function Participant({
   const { data: roomMembersData, error: roomMembersError } = useSWR<
     IChatMember[]
   >(
-    isId && id.link === "chat" ? `/api/chatroom/${id.id}/members` : null,
-    isId && id.link === "chat" ? fetcher : null
+    isId && id.link === "chatroom" ? `/api/${id.link}/${id.id}/members` : null,
+    isId && id.link === "chatroom" ? fetcher : null
   );
 
   useEffect(() => {
     socket?.on("newMemberList", (res: String) => {
       console.log(res, "is res from newMemberList socket in participant");
-      if (isId && id.link === "chat") {
-        mutate(`/api/chatroom/${id.id}/members`);
+      if (isId && id.link === "chatroom") {
+        mutate(`/api/${id.link}/${id.id}/members`);
       }
     });
     return () => {
@@ -82,7 +82,7 @@ export default function Participant({
       </ul>
       {/* <ul>
         {isId &&
-          id.link === "dm" &&
+          id.chatroom === "dm" &&
           /.../
         } 
       </ul> */}

@@ -9,20 +9,17 @@ import ChatList from "./ChatRoomBody/ChatList";
 import ChatroomSettingModal from "./ChatroomSettingModal";
 import { IChatContent } from "../../interfaceType";
 import useSocket from "../Utils/socket";
+import { TypeChatId } from "../../interfaceType";
 
-export default function ChatRoomBody({
-  chatroomId,
-}: {
-  chatroomId: string | string[] | undefined;
-}) {
+export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   const [socket] = useSocket(null, "chat");
-  const { data, error } = useSWR(`/api/chatroom/${chatroomId}`);
+  const { data, error } = useSWR(`/api/${id.link}/${id.id}`);
   const [inputText, setInputText] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const el = useRef<HTMLInputElement>(null);
   const { data: chatContentsData, error: chatContentsError } = useSWR<
     IChatContent[]
-  >(`/api/chatroom/${chatroomId}/contents`);
+  >(`/api/${id.link}/${id.id}/contents`);
   const handleCloseModal = (e: any) => {
     if (showModal && (!el.current || !el.current.contains(e.target))) {
       // console.log("close modal");
@@ -53,12 +50,12 @@ export default function ChatRoomBody({
       // api통해서 업데이트 및 mutate수정
       // optimistic ui
       await axios
-        .post(`/api/chatroom/${chatroomId}/contents`, {
+        .post(`/api/${id.link}/${id.id}/contents`, {
           content: inputText,
         })
         .then((res) => {
           console.log(res);
-          mutate(`/api/chatroom/${chatroomId}/contents`);
+          mutate(`/api/${id.link}/${id.id}/contents`);
         })
         .catch((err) => console.log(err));
       setInputText("");
@@ -68,7 +65,7 @@ export default function ChatRoomBody({
 
   useEffect(() => {
     socket?.on("newContent", () => {
-      mutate(`/api/chatroom/${chatroomId}/contents`);
+      mutate(`/api/${id.link}/${id.id}/contents`);
     });
     return () => {
       socket?.off("newContent");
@@ -101,7 +98,7 @@ export default function ChatRoomBody({
         <img src="/images/config.png" className="config" onClick={modal} />
       </div>
       <hr />
-      <ChatList chatroomId={chatroomId} chatContentsData={chatContentsData} />
+      <ChatList id={id} chatContentsData={chatContentsData} />
       <ChatBox
         onChangeInputText={onChangeInputText}
         onClickSubmit={onClickSubmit}

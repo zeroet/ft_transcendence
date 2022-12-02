@@ -27,7 +27,7 @@ export default function Chat({
   const { data: userData, error: userError } = useSWR("/api/users");
   // chat useSWR
   const { data: roomData, error: roomError } = useSWR(
-    isId ? `/api/chatroom/${id.id}` : null,
+    isId ? `/api/${id.link}/${id.id}` : null,
     isId ? fetcher : null
   );
   // chat useSWR
@@ -43,9 +43,9 @@ export default function Chat({
     if (roomData && userData) {
       console.log(`i am in room ${roomData.chatroomName}`);
       axios
-        .post(`/api/chatroom/${id.id}/members`)
+        .post(`/api/${id.link}/${id.id}/members`)
         .then(() => {
-          mutate(`/api/chatroom/${id.id}/members`);
+          mutate(`/api/${id.link}/${id.id}/members`);
         })
         .catch((err) => console.log(err));
     }
@@ -53,9 +53,9 @@ export default function Chat({
       if (roomData) {
         console.log(`1 am out room ${roomData.chatroomName}`);
         axios
-          .delete(`/api/chatroom/${id.id}/members`)
+          .delete(`/api/${id.link}/${id.id}/members`)
           .then(() => {
-            mutate(`/api/chatroom/${id.id}/members`);
+            mutate(`/api/${id.link}/${id.id}/members`);
           })
           .catch((err) => console.log(err));
       }
@@ -92,7 +92,7 @@ export default function Chat({
         {/* 채팅 바디부분 */}
         {!isId && <ChatBody />}
         {/* 채팅룸 */}
-        {isId && id.link === "chat" && <ChatRoomBody chatroomId={id.id} />}
+        {isId && id.link === "chatroom" && <ChatRoomBody id={id} />}
         {/* DM */}
         {/* {isId && id.link === "dm" && <ChatRoomBody chatroomId={id.id} />} */}
         {/* ///////////////////////////////////////// */}
@@ -100,7 +100,7 @@ export default function Chat({
         {/* ///////////////////////////////////////// */}
         {/* 참가자 부분 */}
         {!isId && <Participant id={id} ownerId={null} />}
-        {isId && id.link === "chat" && roomData && (
+        {isId && id.link === "chatroom" && roomData && (
           <Participant id={id} ownerId={roomData.ownerId} />
         )}
         {/* {isId && id.link === "dm" && (
