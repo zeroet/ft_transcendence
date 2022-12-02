@@ -36,7 +36,7 @@ export default function Participant({
 
   useEffect(() => {
     socket?.on("newMemberList", (res: String) => {
-      console.log(res);
+      console.log(res, "is res from newMemberList socket in participant");
       if (isId && id.link === "chat") {
         mutate(`/api/chatroom/${id.id}/members`);
       }

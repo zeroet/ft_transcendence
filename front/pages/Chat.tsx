@@ -54,12 +54,12 @@ export default function Chat({
     return () => {
       if (roomData) {
         console.log(`1 am out room ${roomData.chatroomName}`);
-        // axios
-        //   .delete(`/api/chatroom/${id.id}/members`)
-        //   .then(() => {
-        //     mutate(`/api/chatroom/${id.id}/members`);
-        //   })
-        //   .catch((err) => console.log(err));
+        axios
+          .delete(`/api/chatroom/${id.id}/members`)
+          .then(() => {
+            mutate(`/api/chatroom/${id.id}/members`);
+          })
+          .catch((err) => console.log(err));
       }
       setShowPWModal(true);
     };
