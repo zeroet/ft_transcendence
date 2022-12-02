@@ -276,8 +276,8 @@ export class ChatroomService implements IChatroomService {
       Chatroom: chatroom,
     });
     await this.chatContentRepository.save(newContent);
+    this.chatEventsGateway.server.emit('newContent', 'new content');
     return newContent;
-    // this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
     // return await this.chatMemebrRepository.save(chatroomMember);
   }
 }
