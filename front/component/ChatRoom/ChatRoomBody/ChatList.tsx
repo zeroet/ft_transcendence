@@ -82,6 +82,7 @@ const ChatList = ({
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [chatroomId]);
+  
   if (userError) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData) return <Loading />;
   return (
