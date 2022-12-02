@@ -57,6 +57,9 @@ export interface IChatContent {
   content: string;
   createdAt: Date;
   modifiedAt: Date;
+  User: {
+    username: string;
+  };
 }
 
 export interface IDm {

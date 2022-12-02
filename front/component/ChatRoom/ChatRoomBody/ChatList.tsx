@@ -2,99 +2,34 @@ import axios from "axios";
 import React, { useEffect, useRef } from "react";
 import useSWR from "swr";
 import Loading from "../../errorAndLoading/Loading";
-
-/**
- * chat css 확인용
- */
-
-const dummyChatting = [
-  {
-    id: 1,
-    username: "Jung Moo Cheon",
-    content: "hello!!!!!!!!!",
-  },
-  {
-    id: 2,
-    username: "Hyung Jun Yoo",
-    content: "what?",
-  },
-  {
-    id: 3,
-    username: "Keungeun Lee",
-    content: "what??",
-  },
-  {
-    id: 4,
-    username: "Seok Chan Yun",
-    content: "what!!!!!!!!!!?",
-  },
-  {
-    id: 5,
-    username: "Hyung Jun Yoo",
-    content: "what?????????????????????????",
-  },
-  {
-    id: 6,
-    username: "Eunmi Yoo",
-    content: "what??",
-  },
-  {
-    id: 7,
-    username: "Eunmi Yoo",
-    content: "what??",
-  },
-  {
-    id: 8,
-    username: "Jung Moo Cheon",
-    content: "what??",
-  },
-  {
-    id: 9,
-    username: "Keungeun Lee",
-    content: "what??",
-  },
-  {
-    id: 10,
-    username: "Eunmi Yoo",
-    content: "what??",
-  },
-  {
-    id: 11,
-    username: "Seok Chan Yun",
-    content: "bye!",
-  },
-];
+import { IChatContent } from "../../../interfaceType";
 
 const ChatList = ({
   chatroomId,
+  chatContentsData,
 }: {
   chatroomId: string | string[] | undefined;
+  chatContentsData: IChatContent[];
 }) => {
   const { data: userData, error: userError } = useSWR("/api/users");
-  /**
-   * chat room에 있는 대화내용들은 props로 chatRoomBody로 부터 받아와야한다.
-   * 그렇지않으면 optimistic ui를 구현하기어려움.
-   * mutate는 쳇박스에,
-   * data는 chatList에 전달한다.
-   */
   const scrollRef = useRef<any>(null);
-
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [chatroomId]);
+  }, [chatroomId, chatContentsData]);
 
   if (userError) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData) return <Loading />;
   return (
     <div className="c-body" ref={scrollRef}>
       <ul>
-        {dummyChatting &&
-          dummyChatting.map((chat: any) => {
-            const css = userData.username === chat.username ? "my" : "other";
+        {chatContentsData &&
+          chatContentsData.map((chat: any) => {
+            const css =
+              userData.username === chat.User.username ? "my" : "other";
             return (
               <div key={chat.id} className={`${css}-div-box`}>
                 <div className={`${css}-content-box`}>
-                  <p className="username">{chat.username}</p>
+                  <p className="username">{chat.User.username}</p>
                   <p className="content">{chat.content}</p>
                 </div>
               </div>
