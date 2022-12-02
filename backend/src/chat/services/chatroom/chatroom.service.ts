@@ -183,11 +183,11 @@ export class ChatroomService implements IChatroomService {
   async verifyChatroomPassword(chatroomId: number, password: string) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const hashedPassword = await this.hashData(password);
-    console.log('password:', password);
-    console.log('hashedPassword:', hashedPassword);
-    console.log('chatroom.password:', chatroom.password);
+    // console.log('password:', password)
+    // console.log('hashedPassword:', hashedPassword);
+    // console.log('chatroom.password:', chatroom.password);
     const isMatch = await bcrypt.compare(password, chatroom.password);
-    console.log('isMatch:', isMatch);
+    // console.log('isMatch:', isMatch);
     if (!isMatch) return false;
     return true;
   }
@@ -248,6 +248,7 @@ export class ChatroomService implements IChatroomService {
       Chatroom: chatroom,
       User: user,
     });
+    this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
     return await this.chatMemebrRepository.save(chatroomMember);
   }
 
@@ -256,7 +257,7 @@ export class ChatroomService implements IChatroomService {
     // const user = await this.findUserByIdOrFail(userId);
     const chatroomMember = await this.chatMemebrRepository
       .createQueryBuilder('chat_member')
-      .where('chat_member.chatroom_id=:chatrommId', { chatroomId })
+      .where('chat_member.chatroom_id=:chatroomId', { chatroomId })
       .andWhere('chat_member.user_id=:userId', { userId })
       .getOne();
     if (!chatroomMember)
