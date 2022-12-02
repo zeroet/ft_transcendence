@@ -10,57 +10,57 @@ import Loading from "../../errorAndLoading/Loading";
 const dummyChatting = [
   {
     id: 1,
-    username: "cjung-mo",
+    username: "Jung Moo Cheon",
     content: "hello!!!!!!!!!",
   },
   {
     id: 2,
-    username: "hyung jun yoo",
+    username: "Hyung Jun Yoo",
     content: "what?",
   },
   {
     id: 3,
-    username: "keulee",
+    username: "Keungeun Lee",
     content: "what??",
   },
   {
     id: 4,
-    username: "seyun",
+    username: "Seok Chan Yun",
     content: "what!!!!!!!!!!?",
   },
   {
     id: 5,
-    username: "hyung jun yoo",
+    username: "Hyung Jun Yoo",
     content: "what?????????????????????????",
   },
   {
     id: 6,
-    username: "eyoo",
+    username: "Eunmi Yoo",
     content: "what??",
   },
   {
     id: 7,
-    username: "eyoo",
+    username: "Eunmi Yoo",
     content: "what??",
   },
   {
     id: 8,
-    username: "eyoo",
+    username: "Jung Moo Cheon",
     content: "what??",
   },
   {
     id: 9,
-    username: "eyoo",
+    username: "Keungeun Lee",
     content: "what??",
   },
   {
     id: 10,
-    username: "eyoo",
+    username: "Eunmi Yoo",
     content: "what??",
   },
   {
     id: 11,
-    username: "hyung jun yoo",
+    username: "Seok Chan Yun",
     content: "bye!",
   },
 ];
@@ -82,6 +82,7 @@ const ChatList = ({
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [chatroomId]);
+
   if (userError) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData) return <Loading />;
   return (

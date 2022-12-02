@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -17,6 +18,7 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
+import { ChatMemberDto } from 'src/chat/dto/chat.member.dto';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { IChatroomService } from 'src/chat/services/chatroom/chatroom.interface';
@@ -83,10 +85,38 @@ export class ChatroomController {
     return await this.chatroomService.getOneChatroom(chatroomId);
   }
 
+  @ApiResponse({
+    type: Boolean,
+    description: 'password validation',
+  })
+  @ApiParam({
+    name: 'chatroomId',
+    example: 1,
+  })
+  @ApiBody({
+    type: String,
+    description: 'password that a user entered',
+  })
+  @ApiOperation({ summary: 'verify chatroom password / 대화방 비밀번호 확인' })
+  @Post(':chatroomId/password')
+  async verifyChatroomPassword(
+    @Param('chatroomId') chatroomId: number,
+    @Body('password') password: string,
+  ) {
+    return await this.chatroomService.verifyChatroomPassword(
+      chatroomId,
+      password,
+    );
+  }
+
   // @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
   // @Post(':chatroomId/update')
   // updateChatroom() {}
 
+  @ApiResponse({
+    type: ChatMemberDto,
+    description: 'Member list of a chatroom',
+  })
   @ApiParam({
     name: 'chatroomId',
     example: 1,
@@ -100,6 +130,10 @@ export class ChatroomController {
     return this.chatroomService.getAllMembers(chatroomId);
   }
 
+  // @ApiResponse({
+  //   type: ChatMemberDto,
+  //   description: 'Member list of a chatroom',
+  // })
   @ApiParam({
     name: 'chatroomId',
     example: 1,
@@ -110,7 +144,23 @@ export class ChatroomController {
   })
   @Post(':chatroomId/members')
   postMembers(@User() user: IUser, @Param('chatroomId') chatroomId: number) {
-    this.chatroomService.postMembers(user.id, chatroomId);
+    return this.chatroomService.postMembers(user.id, chatroomId);
+  }
+
+  @ApiResponse({
+    type: ChatMemberDto,
+    description: 'Member list of a chatroom',
+  })
+  @ApiParam({
+    name: 'chatroomId',
+    example: 1,
+  })
+  @ApiOperation({
+    summary: 'Delete members to a chatroom / 특정 대화방에 참여자 삭제하기',
+  })
+  @Delete(':chatroomId/members')
+  deleteMembers(@User() user: IUser, @Param('chatroomId') chatroomId: number) {
+    return this.chatroomService.deleteMembers(user.id, chatroomId);
   }
 
   @ApiOperation({

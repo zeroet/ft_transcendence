@@ -44,13 +44,17 @@ export default function ChatRoomBody({
       e.preventDefault();
       e.stopPropagation();
       if (inputText === "") return;
-      console.log(inputText);
+      console.log(inputText, "in chating room body");
       // api통해서 업데이트 및 mutate수정
       // optimistic ui
       setInputText("");
     },
     [inputText]
   );
+
+  useEffect(() => {
+    return () => {};
+  }, [data]);
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;

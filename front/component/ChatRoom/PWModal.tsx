@@ -1,33 +1,52 @@
+import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
 interface TypeModal {
   setShowPWModal: React.Dispatch<React.SetStateAction<boolean>>;
   password: string;
+  roomId: string;
 }
 
-export default function PWModal({ setShowPWModal, password }: TypeModal) {
+export default function PWModal({
+  setShowPWModal,
+  password,
+  roomId,
+}: TypeModal) {
   const [pw, setPw] = useState<string>("");
   const router = useRouter();
 
   const onChangePassword = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setPw(e.target.value);
-      console.log(password);
     },
     [pw]
   );
 
   const onClickOk = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      if (pw === password) {
+      const result = await axios
+        .post(`/api/chatroom/${roomId}/password`, {
+          password: pw,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err));
+      ////////////////////////////////////////////////////////////
+      console.log(
+        pw,
+        "is pw",
+        result,
+        " is result for matching password in chatroom modal"
+      );
+      ////////////////////////////////////////////////////////////
+      if (result === true) {
         setShowPWModal(false);
       }
       setPw("");
     },
-    [pw]
+    [pw, roomId]
   );
 
   const cancel = (e: React.MouseEvent<HTMLButtonElement>) => {

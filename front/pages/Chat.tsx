@@ -6,7 +6,7 @@ import Title from "../component/Title";
 import cookies from "next-cookies";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import useSocket from "../component/Utils/socket";
@@ -14,11 +14,7 @@ import { useEffect, useState } from "react";
 import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
-
-interface TypeChatId {
-  id: string;
-  link: string;
-}
+import { TypeChatId } from "../interfaceType";
 
 export default function Chat({
   accessToken,
@@ -29,26 +25,45 @@ export default function Chat({
 }) {
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
-  // roomData를 가지고, 오너가 볼수있는 모달을 추가하고, 비밀번호 추가하고
+  // chat useSWR
   const { data: roomData, error: roomError } = useSWR(
     isId ? `/api/chatroom/${id.id}` : null,
     isId ? fetcher : null
   );
+  // chat useSWR
+  // const { data: roomData, error: roomError } = useSWR(
+  //   isId ? `/api/chatroom/${id.id}` : null,
+  //   isId ? fetcher : null
+  // );
+  
   const [socket] = useSocket(accessToken, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
-  console.log(id);
+
   // 룸 데이터 이동 확인용, 모달용
   useEffect(() => {
     if (roomData) {
       console.log(`i am in room ${roomData.chatroomName}`);
+      if (roomData.ownerId === userData.id) return;
+      axios
+        .post(`/api/chatroom/${id.id}/members`)
+        .then(() => {
+          mutate(`/api/chatroom/${id.id}/members`);
+        })
+        .catch((err) => console.log(err));
     }
     return () => {
       if (roomData) {
         console.log(`1 am out room ${roomData.chatroomName}`);
+        axios
+          .delete(`/api/chatroom/${id.id}/members`)
+          .then(() => {
+            mutate(`/api/chatroom/${id.id}/members`);
+          })
+          .catch((err) => console.log(err));
       }
       setShowPWModal(true);
     };
-  }, [roomData, isId]);
+  }, [roomData, id?.id]);
 
   if (userError || (id.id && roomError))
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
@@ -61,23 +76,43 @@ export default function Chat({
       )}
       {isId &&
         roomData &&
-        roomData.password &&
+        roomData.isPrivate &&
         showPWModal &&
         roomData.ownerId !== userData.id && (
           <div className="pwmodal-background">
             <PWModal
               setShowPWModal={setShowPWModal}
               password={roomData.password}
+              roomId={roomData.chatroomId}
             />
           </div>
         )}
       <div className="component-style">
+        {/* ///////////////////////////////////////// */}
+        {/* 리스트 부분 */}
         <RoomList accessToken={accessToken} />
-        {/* 일반 화면 */}
+        {/* <dmList /> */}
+        {/* ///////////////////////////////////////// */}
+
+        {/* ///////////////////////////////////////// */}
+        {/* 채팅 바디부분 */}
         {!isId && <ChatBody />}
         {/* 채팅룸 */}
         {isId && id.link === "chat" && <ChatRoomBody chatroomId={id.id} />}
-        <Participant />
+        {/* DM */}
+        {/* {isId && id.link === "dm" && <ChatRoomBody chatroomId={id.id} />} */}
+        {/* ///////////////////////////////////////// */}
+
+        {/* ///////////////////////////////////////// */}
+        {/* 참가자 부분 */}
+        {!isId && <Participant id={id} ownerId={null} />}
+        {isId && id.link === "chat" && (
+          <Participant id={id} ownerId={roomData.ownerId} />
+        )}
+        {/* {isId && id.link === "dm" && (
+          <Participant id={id} ownerId={roomData.ownerId} />
+        )} */}
+        {/* ///////////////////////////////////////// */}
       </div>
       <style jsx>{`
         .pwmodal-background {
