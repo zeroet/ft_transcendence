@@ -11,7 +11,13 @@ import EachParticipant from "./Participant/EachParticipant";
 // participant은 게임, 프로필, 채팅등에서 유저목록이 들어가는 모든곳에
 // 중복으로 사용됨. 물론 중복으로 사용안해도됨
 
-export default function Participant({ id }: { id: TypeChatId }) {
+export default function Participant({
+  id,
+  ownerId,
+}: {
+  id: TypeChatId;
+  ownerId: number;
+}) {
   console.log("type chat id == ", id);
   const isId = Object.keys(id).length !== 0;
   // link가 chat일때!
@@ -35,15 +41,30 @@ export default function Participant({ id }: { id: TypeChatId }) {
           roomMembersData.map((member: IChatMember) => {
             return (
               <li key={member.userId}>
-                <EachParticipant
-                  username={member.User.username}
-                  userId={member.userId}
-                />
+                <div className="participant">
+                  <EachParticipant
+                    username={member.User.username}
+                    userId={member.userId}
+                  />
+                  {ownerId === member.userId && (
+                    <img
+                      src="/images/crown.png"
+                      width={"20px"}
+                      height={"20px"}
+                    />
+                  )}
+                </div>
               </li>
             );
           })}
       </ul>
       <style jsx>{`
+        .participant {
+          display: flex;
+        }
+        img {
+          margin-left: 10px;
+        }
         h1 {
           font-family: "Fragment Mono", monospace;
           font-size: 25px;
