@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
@@ -18,7 +19,6 @@ export default function PWModal({
   const onChangePassword = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setPw(e.target.value);
-      console.log(password);
     },
     [pw]
   );
@@ -27,16 +27,28 @@ export default function PWModal({
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      // 비번확인 api보내기
-      if (pw === password) {
+      const result = await axios
+        .post(`/api/chatroom/${roomId}/password`, {
+          password: pw,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err));
+      ////////////////////////////////////////////////////////////
+      console.log(
+        pw,
+        "is pw",
+        result,
+        " is result for matching password in chatroom modal"
+      );
+      ////////////////////////////////////////////////////////////
+      if (result === true) {
         setShowPWModal(false);
       }
       setPw("");
     },
-    [pw]
+    [pw, roomId]
   );
 
-  console.log(typeof roomId);
   const cancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
