@@ -16,6 +16,7 @@ import { UserService } from 'src/users/services/user/user.service';
 import { GameService } from './game.service';
 import { Game } from './interfaces/room';
 import { QueueService } from './queue.service';
+import { Logger } from '@nestjs/common';
 
 // @UseGuards(JwtWsGuard)
 @WebSocketGateway({ cors: '*' })
@@ -24,6 +25,8 @@ export class GameEvents {
     @Inject('USER_SERVICE') private readonly userService: UserService,
     @Inject('AUTH_SERVICE') private authService: IAuthService,
   ) {}
+ 
+  private logger = new Logger('Gateway');
 
   @WebSocketServer()
   server: Server;
@@ -31,6 +34,7 @@ export class GameEvents {
   queueNormal: QueueService = new QueueService();
   game: GameService = new GameService();
   rooms: Map<string, Game> = new Map();
+  roomList: string[];
 
   async handleConnection(client: Socket) {
     // const payload = await this.authService.verify(
@@ -39,11 +43,23 @@ export class GameEvents {
     // const user = await this.userService.getUserById(payload.id);
     // !user && client.disconnect();
     // client.data.user = user;
-    console.log('Lobby', client.id);
+    this.logger.log('Lobby', client.id);
   }
 
-  handleDisConnection(clinet: Socket) {
-    console.log(`Client Disconnected: ${clinet.id}`);
+  async handleDisConnection(client: Socket) {
+    
+    // Queue case 
+    if (this.queueNormal.Players.indexOf(client) != -1)
+      return this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
+    
+    // InGame case
+    for (const room of this.rooms.values())
+      if (room.Players.indexOf(client) != -1)
+        // game end 
+        return room.Players.splice(room.Players.indexOf(client), 1)
+    
+    // Watcher case
+    this.logger.log('disconnection', client.id);
   }
 
   @SubscribeMessage('Queue')
@@ -54,7 +70,7 @@ export class GameEvents {
 
   createRoom(player1: Socket, palyer2: Socket) {
 
-    console.log(player1, palyer2);
+    console.log(player1.id, palyer2.id);
     player1.emit('createRoom', { isOwner: true });
     palyer2.emit('createRoom', { isOwner: false });
   }
@@ -79,4 +95,14 @@ export class GameEvents {
     await this.server.to(name).emit('enterGame', name);
   }
     
+  @SubscribeMessage('room-list')
+  handleRoomList() {
+    try {
+      for (const name of this.rooms.keys())
+      this.roomList.push(name);
+    return this.roomList;
+    }
+    catch{}
+  }
+
 }
