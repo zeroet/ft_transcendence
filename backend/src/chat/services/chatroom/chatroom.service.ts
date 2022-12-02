@@ -261,15 +261,15 @@ export class ChatroomService implements IChatroomService {
   async postContents(userId: number, chatroomId: number, content: string) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
-    const thisChatContent = await this.chatContentRepository
-      .createQueryBuilder('chat_content')
-      .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
-      .andWhere('chat_content.user_id=:userId', { userId })
-      .getOne();
-    if (!thisChatContent) {
-      console.log('User already exists in the chatroom', thisChatContent);
-      throw new BadRequestException('User already exists in the chatroom');
-    }
+    // const thisChatContent = await this.chatContentRepository
+    //   .createQueryBuilder('chat_content')
+    //   .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
+    //   .andWhere('chat_content.user_id=:userId', { userId })
+    //   .getOne();
+    // if (!thisChatContent) {
+    //   console.log('User already exists in the chatroom', thisChatContent);
+    //   throw new BadRequestException('User already exists in the chatroom');
+    // }
     const newContent = this.chatContentRepository.create({
       userId,
       chatroomId,
