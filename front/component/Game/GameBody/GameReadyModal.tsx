@@ -34,7 +34,14 @@ const GameReadyModal = ({
     socket?.on("enterGame", (roomName: string) => {
       console.log(roomName);
       console.log("is room name! from socket");
-      router.push(`/Game/${roomName}`);
+      // query로 게임이름
+      // 내가 오너인지, 내가 플레이어인지 가지고들어간다.
+      router.push({
+        pathname: `/Game/${roomName}`,
+        query: {
+          myRole: "player",
+        },
+      });
     });
     return () => {
       console.log("off socket in game ready modal");
