@@ -136,7 +136,7 @@ export class ChatroomService implements IChatroomService {
     const createdChatroom = await this.chatroomRepository.save(newChatroom);
     const chatroomMemebr = this.chatMemebrRepository.create({
       userId: userId,
-      id: createdChatroom.id,
+      chatroomId: createdChatroom.id,
       Chatroom: newChatroom,
       User: user,
     });
@@ -219,7 +219,7 @@ export class ChatroomService implements IChatroomService {
 
     const chatroomMember = this.chatMemebrRepository.create({
       userId,
-      id: chatroomId,
+      chatroomId,
       Chatroom: chatroom,
       User: user,
     });
