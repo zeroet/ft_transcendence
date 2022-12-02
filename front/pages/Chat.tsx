@@ -6,7 +6,7 @@ import Title from "../component/Title";
 import cookies from "next-cookies";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import useSocket from "../component/Utils/socket";
@@ -37,14 +37,27 @@ export default function Chat({
   useEffect(() => {
     if (roomData) {
       console.log(`i am in room ${roomData.chatroomName}`);
+      if (roomData.ownerId === userData.id) return;
+      axios
+        .post(`/api/chatroom/${id.id}/members`)
+        .then(() => {
+          mutate(`/api/chatroom/${id.id}/members`);
+        })
+        .catch((err) => console.log(err));
     }
     return () => {
       if (roomData) {
         console.log(`1 am out room ${roomData.chatroomName}`);
+        axios
+          .delete(`/api/chatroom/${id.id}/members`)
+          .then(() => {
+            mutate(`/api/chatroom/${id.id}/members`);
+          })
+          .catch((err) => console.log(err));
       }
       setShowPWModal(true);
     };
-  }, [roomData, isId]);
+  }, [roomData, id?.id]);
 
   if (userError || (id.id && roomError))
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
