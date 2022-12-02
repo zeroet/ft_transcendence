@@ -6,38 +6,77 @@ import { TypeChatId, IChatMember } from "../../interfaceType";
 import axios from "axios";
 import EachParticipant from "./Participant/EachParticipant";
 
-// participant는 따로 모달을 만듬
-// useRouter로 어디있는지에 한에서 나오는 버튼의 수를 조절함
-// participant은 게임, 프로필, 채팅등에서 유저목록이 들어가는 모든곳에
-// 중복으로 사용됨. 물론 중복으로 사용안해도됨
-
-export default function Participant({ id }: { id: TypeChatId }) {
+/**
+ *
+ * id로 들어온값은 id / link가 있다.
+ * id는 dm / chat의  id
+ * link는  dm / chat을 구분하는 구분자
+ *
+ * api요청시에, link에 따라 다르게 요청을 보내야하기때문
+ * useSWR을 따로만들어서 커스터마이징하도... 될듯
+ *
+ */
+export default function Participant({
+  id,
+  ownerId,
+}: {
+  id: TypeChatId;
+  ownerId: number;
+}) {
   console.log("type chat id == ", id);
   const isId = Object.keys(id).length !== 0;
+  // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
   const { data: roomMembersData, error: roomMembersError } = useSWR(
-    isId ? `/api/chatroom/${id.id}/members` : null,
-    isId ? fetcher : null
+    isId && id.link === "chat" ? `/api/chatroom/${id.id}/members` : null,
+    isId && id.link === "chat" ? fetcher : null
   );
 
-  if (roomMembersData) {
+  if (isId && id.link === "chat" && roomMembersData) {
     console.log(roomMembersData);
   }
   if (roomMembersError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (isId && !roomMembersData) return <Loading />;
+  if (isId && id.link === "chat" && !roomMembersData) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Participant</h1>
       <hr />
-      {isId &&
-        roomMembersData.map((member: IChatMember) => {
-          return (
-            <div key={member.userId}>
-              <EachParticipant username={member.User.username} />
-            </div>
-          );
-        })}
+      <ul>
+        {isId &&
+          id.link === "chat" &&
+          roomMembersData.map((member: IChatMember) => {
+            return (
+              <li key={member.userId}>
+                <div className="participant">
+                  <EachParticipant
+                    username={member.User.username}
+                    userId={member.userId}
+                  />
+                  {ownerId === member.userId && (
+                    <img
+                      src="/images/crown.png"
+                      width={"20px"}
+                      height={"20px"}
+                    />
+                  )}
+                </div>
+              </li>
+            );
+          })}
+      </ul>
+      {/* <ul>
+        {isId &&
+          id.link === "dm" &&
+          /.../
+        } 
+      </ul> */}
       <style jsx>{`
+        .participant {
+          display: flex;
+        }
+        img {
+          margin-left: 10px;
+        }
         h1 {
           font-family: "Fragment Mono", monospace;
           font-size: 25px;

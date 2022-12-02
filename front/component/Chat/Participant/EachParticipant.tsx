@@ -1,12 +1,17 @@
-const EachParticipant = ({ username }: { username: string }) => {
+const EachParticipant = ({
+  username,
+  userId,
+}: {
+  username: string;
+  userId: number;
+}) => {
+  console.log(
+    "Each participant에서 userId는 유저정보를 불러오거나 API를 사용할때! 위함"
+  );
   return (
     <div>
-      <div className="user-name">{username}</div>
-      <style jsx>{`
-        .user-name {
-          margin-left: 10px;
-        }
-      `}</style>
+      <div>{username}</div>
+      <style jsx>{``}</style>
     </div>
   );
 };

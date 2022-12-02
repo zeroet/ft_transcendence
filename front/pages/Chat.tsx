@@ -73,7 +73,7 @@ export default function Chat({
         {!isId && <ChatBody />}
         {/* 채팅룸 */}
         {isId && id.link === "chat" && <ChatRoomBody chatroomId={id.id} />}
-        <Participant id={id} />
+        <Participant id={id} ownerId={roomData.ownerId} />
       </div>
       <style jsx>{`
         .pwmodal-background {
