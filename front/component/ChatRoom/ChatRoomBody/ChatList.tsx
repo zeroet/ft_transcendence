@@ -1,24 +1,169 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useRef } from "react";
+import useSWR from "swr";
+import Loading from "../../errorAndLoading/Loading";
 
-const ChatList = () => {
+/**
+ * chat css 확인용
+ */
+
+const dummyChatting = [
+  {
+    id: 1,
+    username: "cjung-mo",
+    content: "hello!!!!!!!!!",
+  },
+  {
+    id: 2,
+    username: "hyung jun yoo",
+    content: "what?",
+  },
+  {
+    id: 3,
+    username: "keulee",
+    content: "what??",
+  },
+  {
+    id: 4,
+    username: "seyun",
+    content: "what!!!!!!!!!!?",
+  },
+  {
+    id: 5,
+    username: "hyung jun yoo",
+    content: "what?????????????????????????",
+  },
+  {
+    id: 6,
+    username: "eyoo",
+    content: "what??",
+  },
+  {
+    id: 7,
+    username: "eyoo",
+    content: "what??",
+  },
+  {
+    id: 8,
+    username: "eyoo",
+    content: "what??",
+  },
+  {
+    id: 9,
+    username: "eyoo",
+    content: "what??",
+  },
+  {
+    id: 10,
+    username: "eyoo",
+    content: "what??",
+  },
+  {
+    id: 11,
+    username: "hyung jun yoo",
+    content: "bye!",
+  },
+];
+
+const ChatList = ({
+  chatroomId,
+}: {
+  chatroomId: string | string[] | undefined;
+}) => {
+  const { data: userData, error: userError } = useSWR("/api/users");
+  /**
+   * chat room에 있는 대화내용들은 props로 chatRoomBody로 부터 받아와야한다.
+   * 그렇지않으면 optimistic ui를 구현하기어려움.
+   * mutate는 쳇박스에,
+   * data는 chatList에 전달한다.
+   */
+  const scrollRef = useRef<any>(null);
+
+  useEffect(() => {
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [chatroomId]);
+  if (userError) axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!userData) return <Loading />;
   return (
-    <div className="c-body">
+    <div className="c-body" ref={scrollRef}>
       <ul>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
-        <p>hello!!!!!!</p>
+        {dummyChatting &&
+          dummyChatting.map((chat: any, id) => {
+            const css = userData.username === chat.username ? "my" : "other";
+            return (
+              <div key={chat.id} className={`${css}-div-box`}>
+                <div className={`${css}-content-box`}>
+                  <p className="username">{chat.username}</p>
+                  <p className="content">{chat.content}</p>
+                </div>
+              </div>
+            );
+          })}
       </ul>
       <style jsx>{`
-        .c-body {
-          height: 80%;
-          margin-left: 10px;
-          margin-right: 10px;
-          // background-color: tomato;
-          //   text-align: center;
-        }
-      `}</style>
+      ul {
+        padding-left: 0px;
+      }
+      .my-div-box {
+        margin: 0px;
+        display: flex;
+        justify-content: flex-end;
+      }     
+
+      .other-div-box {
+        margin: 0px;
+        display: flex;
+      } 
+
+      .my-content-box {
+        margin: 10px;
+        height: 60px;
+        display: inline-block;
+        background: #A8DADD;
+      }
+
+      .other-content-box {
+        margin: 10px;
+        height: 60px;
+        display: inline-block;
+        background: #f9d4d4;
+      }
+
+      .c-body {
+        height: 80%;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      p {
+        margin: 5px;
+        pedding: 0px;
+      }
+      .username {
+        margin-top 
+        font-family: "Doppio One";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 20px;
+        /* identical to box height, or 118% */
+        
+        text-transform: uppercase;
+          
+        color: #000000;
+      }
+      .content {
+        font-family: "Doppio One";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 21px;
+        line-height: 20px;
+        /* identical to box height, or 95% */
+        margin-left: 11px;
+        text-transform: uppercase;
+        
+        color: #000000;
+      }
+        `}</style>
     </div>
   );
 };

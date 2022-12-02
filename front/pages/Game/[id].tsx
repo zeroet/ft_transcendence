@@ -8,7 +8,7 @@ import TwoFactorModal from "../../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 interface GameElement {
@@ -21,19 +21,23 @@ interface GameElement {
   otherSideScore: string;
 }
 
-export default function Gaming({ accessToken }: { accessToken: string }) {
-  // https://www.kindacode.com/article/react-get-the-position-x-y-of-an-element/
-  // https://www.daleseo.com/css-position/
-  // https://linguinecode.com/post/how-to-use-react-useref-with-typescript
-  // //////////////////////////////////////////////////////// ref 원도우 사이즈 알기위함
-  // ref를 이용해서 윈도우 사이즈를 얻어, right paddle오른쪽값주고, 공도 relative로 사이즈를 주자
-  const windowSize = useRef();
+// const ballLeftMax: 0;
+// const ballRightMax: 1375;
+// const PaddleTopMax: 0;
+// const paddleBottomMax: 650;
 
+export default function Gaming({
+  accessToken,
+  myRole,
+}: {
+  accessToken: string;
+  myRole: string;
+}) {
   const { data, error } = useSWR("/api/users");
   const [socket] = useSocket(accessToken, "game");
+  // 방 이름 확인용. useEffect써서 리랜더링용
   const router = useRouter();
 
-  console.log(windowSize);
   // 마운트 파트
   // 게임
   //   const [gameChanged, setGameChanged] = useState<GameElement | undefined>(undefined);
@@ -69,15 +73,8 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
     if (key === "w" || key === "s") {
       if (!(gameChanged.leftPaddle > 0 && gameChanged.leftPaddle < 100)) return;
       if (key === "w") {
-        // real
-        // socket?.emit("paddle", {
-        //   key: "up",
-        // });
-        // test
-        const value = gameChanged.leftPaddle - 1;
-        setGameChanged({
-          ...gameChanged,
-          leftPaddle: value,
+        socket?.emit("paddle", {
+          key: "up",
         });
         console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
       } else {
@@ -85,31 +82,18 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
         socket?.emit("paddle", {
           key: "down",
         });
-        // test
-        // setGameChanged({
-        //   ...gameChanged,
-        //   leftPaddle: gameChanged.leftPaddle + 1,
-        // });
         console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
       }
     }
   };
 
   useEffect((): (() => void) => {
-    // socket?.on("connection");
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
     window.addEventListener("keydown", onChangeftPaddle);
-    // socket?.on("playGame", async (res: GameElement) => {
-    //   setGameChanged(res);
-    /////////////////////////////////////////////////////// setState!!!로 리렌더하면서 애니메이션
-    // });
-    // console.log(window);
     return () => {
       console.log(`mount off play game ${router.query.id} room!`);
-      // socket?.off("playGame");
-      // socket?.leave(router.query.id);
     };
   }, [router.query.id]);
   ///////////////////////////////////////////////////////// deps 는 state들 바뀔때마다?하지않아도될듯
@@ -219,7 +203,8 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken } = cookie;
-  if (!accessToken) {
+  const { myRole } = context.query;
+  if (!accessToken || !myRole) {
     return {
       redirect: {
         destination: "/",
@@ -231,6 +216,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       accessToken,
+      myRole,
     },
   };
 };

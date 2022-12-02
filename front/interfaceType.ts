@@ -32,7 +32,7 @@ export interface IChatroom {
   chatroomId: number;
   ownerId: number;
   chatroomName: string;
-  password: string;
+  isPrivate: boolean;
   createdAt: Date;
   modifiedAt: Date;
 }
@@ -64,7 +64,7 @@ export interface IDm {
   modifiedAt: Date;
 }
 
-export interface GameDTO{
+export interface GameDTO {
   Players: Array<any>;
   roomName: string;
   ownerId: string;

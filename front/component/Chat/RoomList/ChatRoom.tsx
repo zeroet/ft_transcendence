@@ -42,7 +42,7 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
                 <div className="room-li">
                   <img
                     src={
-                      room.password
+                      room.isPrivate
                         ? "/images/private.png"
                         : "/images/public.png"
                     }
