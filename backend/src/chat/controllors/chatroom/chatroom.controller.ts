@@ -75,14 +75,11 @@ export class ChatroomController {
   })
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':chatroomId')
-  async getOneChatroom(
-    @User() user: IUser,
-    @Param('chatroomId') chatroomId: number,
-  ) {
+  async getOneChatroom(@User() user: IUser, @Param('id') id: number) {
     console.log('user.id', user.id);
     // console.log('getOneChatroom():', chatroomId);
     // console.log('getOneChatroom():', typeof chatroomId);
-    return await this.chatroomService.getOneChatroom(chatroomId);
+    return await this.chatroomService.getOneChatroom(id);
   }
 
   @ApiResponse({
@@ -100,13 +97,10 @@ export class ChatroomController {
   @ApiOperation({ summary: 'verify chatroom password / 대화방 비밀번호 확인' })
   @Post(':chatroomId/password')
   async verifyChatroomPassword(
-    @Param('chatroomId') chatroomId: number,
+    @Param('id') id: number,
     @Body('password') password: string,
   ) {
-    return await this.chatroomService.verifyChatroomPassword(
-      chatroomId,
-      password,
-    );
+    return await this.chatroomService.verifyChatroomPassword(id, password);
   }
 
   // @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
@@ -126,8 +120,8 @@ export class ChatroomController {
       'Get all members from a chatroom / 특정 대화방의 모든 참여자목록 가져오기',
   })
   @Get(':chatroomId/members')
-  async getAllMembers(@Param('chatroomId') chatroomId: number) {
-    return this.chatroomService.getAllMembers(chatroomId);
+  async getAllMembers(@Param('id') id: number) {
+    return this.chatroomService.getAllMembers(id);
   }
 
   // @ApiResponse({
@@ -143,8 +137,8 @@ export class ChatroomController {
       'Post members to a chatroom / 특정 대화방에 새로운 참여자 추가하기',
   })
   @Post(':chatroomId/members')
-  postMembers(@User() user: IUser, @Param('chatroomId') chatroomId: number) {
-    return this.chatroomService.postMembers(user.id, chatroomId);
+  postMembers(@User() user: IUser, @Param('id') id: number) {
+    return this.chatroomService.postMembers(user.id, id);
   }
 
   @ApiResponse({
@@ -159,8 +153,8 @@ export class ChatroomController {
     summary: 'Delete members to a chatroom / 특정 대화방에 참여자 삭제하기',
   })
   @Delete(':chatroomId/members')
-  deleteMembers(@User() user: IUser, @Param('chatroomId') chatroomId: number) {
-    return this.chatroomService.deleteMembers(user.id, chatroomId);
+  deleteMembers(@User() user: IUser, @Param('id') id: number) {
+    return this.chatroomService.deleteMembers(user.id, id);
   }
 
   @ApiOperation({
