@@ -18,6 +18,7 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
+import { ChatContentDto } from 'src/chat/dto/chat.content.dto';
 import { ChatMemberDto } from 'src/chat/dto/chat.member.dto';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
@@ -162,6 +163,11 @@ export class ChatroomController {
     return this.chatroomService.deleteMembers(user.id, id);
   }
 
+  @ApiResponse({
+    type: ChatContentDto,
+    isArray: true,
+    description: 'Contents of a chatroom',
+  })
   @ApiParam({
     name: 'id',
     example: 1,
