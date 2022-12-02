@@ -67,7 +67,7 @@ export default function ChatRoomBody({
         <div className="roomname-img">
           <h1>{data.chatroomName}</h1>
           <img
-            src={data.password ? "/images/private.png" : "/images/public.png"}
+            src={data.isPrivate ? "/images/private.png" : "/images/public.png"}
             width="20px"
           />
         </div>
