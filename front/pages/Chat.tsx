@@ -42,7 +42,6 @@ export default function Chat({
   useEffect(() => {
     if (roomData && userData) {
       console.log(`i am in room ${roomData.chatroomName}`);
-      if (roomData.ownerId === userData.id) return;
       axios
         .post(`/api/chatroom/${id.id}/members`)
         .then(() => {

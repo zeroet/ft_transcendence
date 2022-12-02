@@ -29,7 +29,9 @@ export default function Participant({
   const isId = Object.keys(id).length !== 0;
   const [socket] = useSocket(null, "chat");
   // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
-  const { data: roomMembersData, error: roomMembersError } = useSWR(
+  const { data: roomMembersData, error: roomMembersError } = useSWR<
+    IChatMember[]
+  >(
     isId && id.link === "chat" ? `/api/chatroom/${id.id}/members` : null,
     isId && id.link === "chat" ? fetcher : null
   );
@@ -44,10 +46,11 @@ export default function Participant({
     return () => {
       socket?.off("newMemberList");
     };
-  }, [socket, roomMembersData]);
-  // if (isId && roomMembersData) {
-  //   // console.log(roomMembersData);
-  // }
+  }, [socket, roomMembersData, id.id]);
+
+  if (isId && roomMembersData) {
+    console.log(roomMembersData);
+  }
   if (roomMembersError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if ((isId && !roomMembersData) || !socket) return <Loading />;
@@ -57,7 +60,7 @@ export default function Participant({
       <hr />
       <ul>
         {isId &&
-          roomMembersData.map((member: IChatMember) => {
+          roomMembersData?.map((member: IChatMember) => {
             return (
               <li key={member.userId}>
                 <div className="participant">

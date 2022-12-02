@@ -89,7 +89,7 @@ const ChatList = ({
     <div className="c-body" ref={scrollRef}>
       <ul>
         {dummyChatting &&
-          dummyChatting.map((chat: any, id) => {
+          dummyChatting.map((chat: any) => {
             const css = userData.username === chat.username ? "my" : "other";
             return (
               <div key={chat.id} className={`${css}-div-box`}>
