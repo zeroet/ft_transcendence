@@ -40,7 +40,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
             pathname: `/Chat`,
             query: { id: chatroomId, link: "chatroom" },
           });
-          console.log(`we move to /${id.link}/${chatroomId}`);
+          console.log(`we move to /chatroom/${chatroomId}`);
         })
         .catch((error) => {
           console.dir(error);
