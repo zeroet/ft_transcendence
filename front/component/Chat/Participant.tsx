@@ -23,7 +23,7 @@ export default function Participant({
   id: TypeChatId;
   ownerId: number | null;
 }) {
-  console.log("type chat id == ", id);
+  // console.log("type chat id == ", id);
   const isId = Object.keys(id).length !== 0;
   // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
   const { data: roomMembersData, error: roomMembersError } = useSWR(
@@ -31,9 +31,9 @@ export default function Participant({
     isId && id.link === "chat" ? fetcher : null
   );
 
-  if (isId && roomMembersData) {
-    console.log(roomMembersData);
-  }
+  // if (isId && roomMembersData) {
+  //   // console.log(roomMembersData);
+  // }
   if (roomMembersError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (isId && !roomMembersData) return <Loading />;

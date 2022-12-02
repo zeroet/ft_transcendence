@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
-import { TypeChatId, IChatroom } from "../interfaceType";
+import { TypeChatId } from "../interfaceType";
 
 export default function Chat({
   accessToken,
@@ -32,7 +32,7 @@ export default function Chat({
   );
   const [socket] = useSocket(accessToken, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
-  console.log(id);
+
   // 룸 데이터 이동 확인용, 모달용
   useEffect(() => {
     if (roomData) {
@@ -69,14 +69,31 @@ export default function Chat({
           </div>
         )}
       <div className="component-style">
+        {/* ///////////////////////////////////////// */}
+        {/* 리스트 부분 */}
         <RoomList accessToken={accessToken} />
-        {/* 일반 화면 */}
+        {/* <dmList /> */}
+        {/* ///////////////////////////////////////// */}
+
+        {/* ///////////////////////////////////////// */}
+        {/* 채팅 바디부분 */}
         {!isId && <ChatBody />}
         {/* 채팅룸 */}
         {isId && id.link === "chat" && <ChatRoomBody chatroomId={id.id} />}
         {/* DM */}
         {/* {isId && id.link === "dm" && <ChatRoomBody chatroomId={id.id} />} */}
-        <Participant id={id} ownerId={roomData ? roomData.ownerId : null} />
+        {/* ///////////////////////////////////////// */}
+
+        {/* ///////////////////////////////////////// */}
+        {/* 참가자 부분 */}
+        {!isId && <Participant id={id} ownerId={null} />}
+        {isId && id.link === "chat" && (
+          <Participant id={id} ownerId={roomData.ownerId} />
+        )}
+        {/* {isId && id.link === "dm" && (
+          <Participant id={id} ownerId={roomData.ownerId} />
+        )} */}
+        {/* ///////////////////////////////////////// */}
       </div>
       <style jsx>{`
         .pwmodal-background {
