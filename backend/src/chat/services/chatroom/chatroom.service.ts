@@ -186,7 +186,9 @@ export class ChatroomService implements IChatroomService {
     console.log('password:', password);
     console.log('hashedPassword:', hashedPassword);
     console.log('chatroom.password:', chatroom.password);
-    if (chatroom.password !== hashedPassword) return false;
+    const isMatch = await bcrypt.compare(password, chatroom.password);
+    console.log('isMatch:', isMatch);
+    if (!isMatch) return false;
     return true;
   }
 
@@ -230,6 +232,16 @@ export class ChatroomService implements IChatroomService {
     //   .where('users.user_id=:userId', { userId })
     //   .getOne();
     // if (!user) throw new NotFoundException(`User not found`);
+    const thisChatMember = await this.chatMemebrRepository
+      .createQueryBuilder('chat_member')
+      .where('chat_member.chatroom_id=:chatroomId', { chatroomId })
+      .andWhere('chat_member.user_id=:userId', { userId })
+      .getOne();
+    if (thisChatMember) {
+      console.log('User already exists in the chatroom', thisChatMember);
+      throw new BadRequestException('User already exists in the chatroom');
+    }
+
     const chatroomMember = this.chatMemebrRepository.create({
       userId,
       chatroomId,
