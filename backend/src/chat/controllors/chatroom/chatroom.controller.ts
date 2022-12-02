@@ -84,6 +84,30 @@ export class ChatroomController {
     return await this.chatroomService.getOneChatroom(chatroomId);
   }
 
+  @ApiResponse({
+    type: Boolean,
+    description: 'password validation',
+  })
+  @ApiParam({
+    name: 'chatroomId',
+    example: 1,
+  })
+  @ApiBody({
+    type: String,
+    description: 'password that a user entered',
+  })
+  @ApiOperation({ summary: 'verify chatroom password / 대화방 비밀번호 확인' })
+  @Post(':chatroomId/password')
+  async verifyChatroomPassword(
+    @Param('chatroomId') chatroomId: number,
+    @Body('password') password: string,
+  ) {
+    return await this.chatroomService.verifyChatroomPassword(
+      chatroomId,
+      password,
+    );
+  }
+
   // @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
   // @Post(':chatroomId/update')
   // updateChatroom() {}

@@ -167,6 +167,17 @@ export class ChatroomService implements IChatroomService {
     console.log(result[0]);
     return result[0];
   }
+
+  async verifyChatroomPassword(chatroomId: number, password: string) {
+    const chatroom = await this.findChatroomByIdOrFail(chatroomId);
+    const hashedPassword = await this.hashData(password);
+    console.log('password:', password);
+    console.log('hashedPassword:', hashedPassword);
+    console.log('chatroom.password:', chatroom.password);
+    if (chatroom.password !== hashedPassword) return false;
+    return true;
+  }
+
   async getAllMembers(chatroomId: number) {
     console.log('test', typeof chatroomId, chatroomId);
     const queryResult = await this.chatMemebrRepository
