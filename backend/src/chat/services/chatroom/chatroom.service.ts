@@ -265,6 +265,7 @@ export class ChatroomService implements IChatroomService {
         `User of id:${userId} not exists in chatroom of id:${chatroomId}`,
       );
     this.chatMemebrRepository.remove(chatroomMember);
+    this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
   }
 
   // updateChatroom() {

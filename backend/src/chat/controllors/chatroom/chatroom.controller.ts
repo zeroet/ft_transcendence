@@ -95,6 +95,7 @@ export class ChatroomController {
   })
   @ApiBody({
     type: String,
+    examples: { key: 'value' },
     description: 'password that a user entered',
   })
   @ApiOperation({ summary: 'verify chatroom password / 대화방 비밀번호 확인' })
