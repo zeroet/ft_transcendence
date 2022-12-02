@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateChat = ({ onClose }: { onClose: () => void }) => {
   const [RoomName, setName] = useState<string>("");
@@ -20,8 +22,9 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
         setPw("");
         return;
       }
-      if (RoomName.length <= 0) {
-        alert("Room name must have more than 1 caracter");
+      if (!RoomName) {
+        toast.success("You should have more than 1 character");
+        console.log("name not enough");
         return;
       }
       await axios
@@ -94,6 +97,18 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
           </button>
         </div>
       </form>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <style jsx>{`
         .box {
           position: fixed;
