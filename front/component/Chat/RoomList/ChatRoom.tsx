@@ -35,7 +35,7 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
               <Link
                 href={{
                   pathname: `/Chat`,
-                  query: { id: room.id, link: "chat" },
+                  query: { id: room.id, link: "chatroom" },
                 }}
                 key={room.id}
               >

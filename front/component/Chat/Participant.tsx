@@ -31,16 +31,13 @@ export default function Participant({
   // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
   const { data: roomMembersData, error: roomMembersError } = useSWR<
     IChatMember[]
-  >(
-    isId && id.link === "chat" ? `/api/chatroom/${id.id}/members` : null,
-    isId && id.link === "chat" ? fetcher : null
-  );
+  >(isId ? `/api/${id.link}/${id.id}/members` : null, isId ? fetcher : null);
 
   useEffect(() => {
     socket?.on("newMemberList", (res: String) => {
       console.log(res, "is res from newMemberList socket in participant");
-      if (isId && id.link === "chat") {
-        mutate(`/api/chatroom/${id.id}/members`);
+      if (isId && id.link === "chatroom") {
+        mutate(`/api/${id.link}/${id.id}/members`);
       }
     });
     return () => {
@@ -82,7 +79,7 @@ export default function Participant({
       </ul>
       {/* <ul>
         {isId &&
-          id.link === "dm" &&
+          id.chatroom === "dm" &&
           /.../
         } 
       </ul> */}

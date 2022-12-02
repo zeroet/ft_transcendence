@@ -3,19 +3,19 @@ import React, { useEffect, useRef } from "react";
 import useSWR from "swr";
 import Loading from "../../errorAndLoading/Loading";
 import { IChatContent } from "../../../interfaceType";
-
+import { TypeChatId } from "../../../interfaceType";
 const ChatList = ({
-  chatroomId,
+  id,
   chatContentsData,
 }: {
-  chatroomId: string | string[] | undefined;
+  id: TypeChatId;
   chatContentsData: IChatContent[];
 }) => {
   const { data: userData, error: userError } = useSWR("/api/users");
   const scrollRef = useRef<any>(null);
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [chatroomId, chatContentsData]);
+  }, [id.id, chatContentsData]);
 
   if (userError) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData) return <Loading />;

@@ -38,9 +38,9 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
           // router.push(`/Chat/${chatroomId}`);
           router.push({
             pathname: `/Chat`,
-            query: { id: chatroomId, link: "chat" },
+            query: { id: chatroomId, link: "chatroom" },
           });
-          console.log(`we move to /ChatRoom/${chatroomId}`);
+          console.log(`we move to /chatroom/${chatroomId}`);
         })
         .catch((error) => {
           console.dir(error);
