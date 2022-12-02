@@ -34,32 +34,32 @@ export class ChatEventsGateway
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('message')
-  handleMessage(
-    @MessageBody() message: string,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    this.server.emit('message', socket.id, message);
-  }
+  // @SubscribeMessage('message')
+  // handleMessage(
+  //   @MessageBody() message: string,
+  //   @ConnectedSocket() socket: Socket,
+  // ) {
+  //   this.server.emit('message', socket.id, message);
+  // }
 
-  @SubscribeMessage('dm')
-  handleDmMessage(
-    @MessageBody() dmMessage: string,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    this.server.emit('dm', socket.id, dmMessage);
-  }
+  // @SubscribeMessage('dm')
+  // handleDmMessage(
+  //   @MessageBody() dmMessage: string,
+  //   @ConnectedSocket() socket: Socket,
+  // ) {
+  //   this.server.emit('dm', socket.id, dmMessage);
+  // }
 
-  @SubscribeMessage('join')
-  joinRoom(@MessageBody() name, @ConnectedSocket() socket: Socket) {
-    // const chatrooms = this.chatroomRepository.find();
-    this.server.emit('join');
-  }
+  // @SubscribeMessage('join')
+  // joinRoom(@MessageBody() name, @ConnectedSocket() socket: Socket) {
+  //   // const chatrooms = this.chatroomRepository.find();
+  //   this.server.emit('join');
+  // }
 
-  @SubscribeMessage('test')
-  test(socket: Socket, data: string) {
-    socket.on('test', () => console.log('test', data));
-  }
+  // @SubscribeMessage('test')
+  // test(socket: Socket, data: string) {
+  //   socket.on('test', () => console.log('test', data));
+  // }
 
   async handleConnection(socket: Socket) {
     const payload = await this.authService.verify(

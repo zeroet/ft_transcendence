@@ -245,10 +245,16 @@ export class ChatroomService implements IChatroomService {
   // updateChatroom() {
   //   throw new Error('Method not implemented.');
   // }
-  getContents() {
-    throw new Error('Method not implemented.');
+  async getContents(chatroomId: number) {
+    const chatroom = await this.findChatroomByIdOrFail(chatroomId);
+    const chatcontent = await this.chatContentRepository
+      .createQueryBuilder('chat_content')
+      .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
+      .getMany();
+    console.log(`chat content of chatroom id: ${chatroom.id}`, chatcontent);
+    return chatcontent;
   }
-  postContents() {
+  postContents(chatroomId: number) {
     throw new Error('Method not implemented.');
   }
 }

@@ -13,6 +13,6 @@ export interface IChatroomService {
   postMembers(userId: number, chatroomId: number);
   deleteMembers(userId: number, chatroomId: number);
   // updateChatroom();
-  getContents();
-  postContents();
+  getContents(chatroomId: number);
+  postContents(chatroomId: number);
 }

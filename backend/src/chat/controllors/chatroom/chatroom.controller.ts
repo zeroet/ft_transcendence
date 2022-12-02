@@ -72,6 +72,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
+    description: 'chatroom id',
   })
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':id')
@@ -89,6 +90,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
+    description: 'chatroom id',
   })
   @ApiBody({
     type: String,
@@ -114,6 +116,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
+    description: 'chatroom id',
   })
   @ApiOperation({
     summary:
@@ -131,6 +134,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
+    description: 'chatroom id',
   })
   @ApiOperation({
     summary:
@@ -148,6 +152,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
+    description: 'chatroom id',
   })
   @ApiOperation({
     summary: 'Delete members to a chatroom / 특정 대화방에 참여자 삭제하기',
@@ -157,18 +162,28 @@ export class ChatroomController {
     return this.chatroomService.deleteMembers(user.id, id);
   }
 
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'chatroom id',
+  })
   @ApiOperation({
     summary:
       'Get all contents for a chatroom / 특정 대화방의 모든 대화내용 가져오기',
   })
   @Get(':id/contents')
-  getContents() {
-    return this.chatroomService.getContents();
+  async getContents(@Param('id') id: number) {
+    return await this.chatroomService.getContents(id);
   }
 
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'chatroom id',
+  })
   @ApiOperation({ summary: 'Post contents / 특정 대화방에 대화내용 입력하기' })
   @Post(':id/contents')
-  postContents() {
-    this.chatroomService.postContents();
+  postContents(@Param('id') id: number) {
+    this.chatroomService.postContents(id);
   }
 }
