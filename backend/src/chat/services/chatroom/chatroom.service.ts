@@ -223,8 +223,9 @@ export class ChatroomService implements IChatroomService {
       Chatroom: chatroom,
       User: user,
     });
+    await this.chatMemebrRepository.save(chatroomMember);
     this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
-    return await this.chatMemebrRepository.save(chatroomMember);
+    return chatroomMember;
   }
 
   async deleteMembers(userId: number, chatroomId: number) {
@@ -254,7 +255,29 @@ export class ChatroomService implements IChatroomService {
     console.log(`chat content of chatroom id: ${chatroom.id}`, chatcontent);
     return chatcontent;
   }
-  postContents(chatroomId: number) {
-    throw new Error('Method not implemented.');
+
+  async postContents(userId: number, chatroomId: number, content: string) {
+    const chatroom = await this.findChatroomByIdOrFail(chatroomId);
+    const user = await this.findUserByIdOrFail(userId);
+    const thisChatContent = await this.chatContentRepository
+      .createQueryBuilder('chat_content')
+      .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
+      .andWhere('chat_content.user_id=:userId', { userId })
+      .getOne();
+    if (thisChatContent) {
+      console.log('User already exists in the chatroom', thisChatContent);
+      throw new BadRequestException('User already exists in the chatroom');
+    }
+    const newContent = this.chatContentRepository.create({
+      userId,
+      chatroomId,
+      content,
+      User: user,
+      Chatroom: chatroom,
+    });
+    await this.chatContentRepository.save(newContent);
+    return newContent;
+    // this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
+    // return await this.chatMemebrRepository.save(chatroomMember);
   }
 }

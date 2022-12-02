@@ -14,5 +14,5 @@ export interface IChatroomService {
   deleteMembers(userId: number, chatroomId: number);
   // updateChatroom();
   getContents(chatroomId: number);
-  postContents(chatroomId: number);
+  postContents(userId: number, chatroomId: number, content: string);
 }

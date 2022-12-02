@@ -176,6 +176,10 @@ export class ChatroomController {
     return await this.chatroomService.getContents(id);
   }
 
+  @ApiBody({
+    type: String,
+    description: 'content that a user entered',
+  })
   @ApiParam({
     name: 'id',
     example: 1,
@@ -183,7 +187,11 @@ export class ChatroomController {
   })
   @ApiOperation({ summary: 'Post contents / 특정 대화방에 대화내용 입력하기' })
   @Post(':id/contents')
-  postContents(@Param('id') id: number) {
-    this.chatroomService.postContents(id);
+  postContents(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body('content') content: string,
+  ) {
+    return this.chatroomService.postContents(user.id, id, content);
   }
 }
