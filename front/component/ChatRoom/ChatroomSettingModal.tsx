@@ -7,11 +7,17 @@
 
 export default function ChatroomSettingModal() {
   return (
-    <div>
+    <div className="chatroom-setting">
+      <div className="box">
+        <h1>Exit the room</h1>
+      </div>
       <div className="box">
         <h1>Exit the room</h1>
       </div>
       <style jsx>{`
+        .chatroom-setting {
+          background-color: gray;
+        }
         .box {
           font-family: "Fragment Mono", monospace;
           position: absolute;

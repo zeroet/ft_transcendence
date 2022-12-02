@@ -17,7 +17,7 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
 
   useEffect(() => {
     socket?.on("newRoomList", (data: string) => {
-      console.log(data, " for new room list in ChatRoom");
+      console.log(data, " for new room list in ChatRoom socket!");
       mutate("/api/chatroom");
     });
     return () => {

@@ -5,7 +5,7 @@ import socketIOClient from "socket.io-client";
 const socket: { [key: string]: Socket } = {};
 
 const useSocket = (
-  accessToken: string,
+  accessToken: string | null,
   socketType: string
 ): [Socket | undefined, () => void] => {
   const disconnect = useCallback(() => {
@@ -20,7 +20,7 @@ const useSocket = (
     }
   }, [socketType]);
 
-  if (!socket[socketType]) {
+  if (!socket[socketType] && accessToken) {
     const path = socketType === "chat" ? "/chat" : "";
     // if (socketType === "game") {
     //   socket[socketType] = socketIOClient("http://localhost:8080", {
