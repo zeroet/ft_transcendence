@@ -35,9 +35,9 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
               <Link
                 href={{
                   pathname: `/Chat`,
-                  query: { id: room.chatroomId, link: "chat" },
+                  query: { id: room.id, link: "chat" },
                 }}
-                key={room.chatroomId}
+                key={room.id}
               >
                 <div className="room-li">
                   <img

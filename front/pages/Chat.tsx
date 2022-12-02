@@ -41,7 +41,7 @@ export default function Chat({
 
   // 룸 데이터 이동 확인용, 모달용
   useEffect(() => {
-    if (roomData) {
+    if (roomData && userData) {
       console.log(`i am in room ${roomData.chatroomName}`);
       if (roomData.ownerId === userData.id) return;
       axios
@@ -64,7 +64,6 @@ export default function Chat({
       setShowPWModal(true);
     };
   }, [roomData, id?.id]);
-
   if (userError || (id.id && roomError))
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData || (id.id && !roomData) || !socket) return <Loading />;
@@ -106,7 +105,7 @@ export default function Chat({
         {/* ///////////////////////////////////////// */}
         {/* 참가자 부분 */}
         {!isId && <Participant id={id} ownerId={null} />}
-        {isId && id.link === "chat" && (
+        {isId && id.link === "chat" && roomData && (
           <Participant id={id} ownerId={roomData.ownerId} />
         )}
         {/* {isId && id.link === "dm" && (
