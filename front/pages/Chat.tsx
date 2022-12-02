@@ -61,7 +61,7 @@ export default function Chat({
       )}
       {isId &&
         roomData &&
-        roomData.password &&
+        roomData.isPrivate &&
         showPWModal &&
         roomData.ownerId !== userData.id && (
           <div className="pwmodal-background">
