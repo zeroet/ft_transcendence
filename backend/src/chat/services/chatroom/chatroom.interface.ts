@@ -9,10 +9,10 @@ export interface IChatroomService {
   ): Promise<ChatroomDto>;
   getOneChatroom(chatroomId: number): Promise<ChatroomDto>;
   verifyChatroomPassword(chatroomId: number, password: string);
+  updateChatroom(userId: number, chatroomId: number);
   getAllMembers(chatroomId: number);
   postMembers(userId: number, chatroomId: number);
   deleteMembers(userId: number, chatroomId: number);
-  // updateChatroom();
   getContents(chatroomId: number);
   postContents(userId: number, chatroomId: number, content: string);
 }

@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
@@ -103,7 +107,7 @@ export class AuthService implements IAuthService {
       });
       return decoded;
     } catch (err) {
-      throw new UnauthorizedException('Invalid User Token');
+      return err;
     }
   }
 

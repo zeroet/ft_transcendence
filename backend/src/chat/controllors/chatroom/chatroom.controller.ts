@@ -78,9 +78,9 @@ export class ChatroomController {
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':id')
   async getOneChatroom(@User() user: IUser, @Param('id') id: number) {
-    console.log('user.id', user.id);
-    console.log('getOneChatroom():', id);
-    console.log('getOneChatroom():', typeof id);
+    // console.log('user.id', user.id);
+    // console.log('getOneChatroom():', id);
+    // console.log('getOneChatroom():', typeof id);
     return await this.chatroomService.getOneChatroom(id);
   }
 
@@ -106,9 +106,16 @@ export class ChatroomController {
     return await this.chatroomService.verifyChatroomPassword(id, password);
   }
 
-  // @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
-  // @Post(':chatroomId/update')
-  // updateChatroom() {}
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'chatroom id',
+  })
+  @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
+  @Post(':id/update')
+  updateChatroom(@User() user: IUser, @Param('id') id: number) {
+    return 'update testing...';
+  }
 
   @ApiResponse({
     type: ChatMemberDto,
@@ -143,7 +150,7 @@ export class ChatroomController {
   })
   @Post(':id/members')
   postMembers(@User() user: IUser, @Param('id') id: number) {
-    return this.chatroomService.postMembers(user.id, id);
+    this.chatroomService.postMembers(user.id, id);
   }
 
   @ApiResponse({
@@ -198,6 +205,6 @@ export class ChatroomController {
     @Param('id') id: number,
     @Body('content') content: string,
   ) {
-    return this.chatroomService.postContents(user.id, id, content);
+    this.chatroomService.postContents(user.id, id, content);
   }
 }
