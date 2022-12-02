@@ -22,6 +22,7 @@ export default function PWModal({ setShowPWModal, password }: TypeModal) {
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
+      // 비번확인 api보내기
       if (pw === password) {
         setShowPWModal(false);
       }
