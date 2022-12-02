@@ -32,7 +32,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
         .then(async (res) => {
           setName("");
           setPw("");
-          return await res.data.chatroomId;
+          return await res.data.id;
         })
         .then((chatroomId) => {
           // router.push(`/Chat/${chatroomId}`);

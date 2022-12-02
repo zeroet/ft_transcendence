@@ -35,7 +35,6 @@ export default function Chat({
   //   isId ? `/api/chatroom/${id.id}` : null,
   //   isId ? fetcher : null
   // );
-
   const [socket] = useSocket(accessToken, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
@@ -64,6 +63,7 @@ export default function Chat({
       setShowPWModal(true);
     };
   }, [roomData, id?.id]);
+
   if (userError || (id.id && roomError))
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData || (id.id && !roomData) || !socket) return <Loading />;
@@ -79,11 +79,7 @@ export default function Chat({
         showPWModal &&
         roomData.ownerId !== userData.id && (
           <div className="pwmodal-background">
-            <PWModal
-              setShowPWModal={setShowPWModal}
-              password={roomData.password}
-              roomId={roomData.chatroomId}
-            />
+            <PWModal setShowPWModal={setShowPWModal} roomId={roomData.id} />
           </div>
         )}
       <div className="component-style">

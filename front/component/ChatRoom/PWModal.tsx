@@ -4,13 +4,11 @@ import React, { useCallback, useState } from "react";
 
 interface TypeModal {
   setShowPWModal: React.Dispatch<React.SetStateAction<boolean>>;
-  password: string;
   roomId: string;
 }
 
 export default function PWModal({
   setShowPWModal,
-  password,
   roomId,
 }: TypeModal) {
   const [pw, setPw] = useState<string>("");
