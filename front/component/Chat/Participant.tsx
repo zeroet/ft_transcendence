@@ -72,6 +72,7 @@ export default function Participant({
       <style jsx>{`
         .participant {
           display: flex;
+          margin-left: -25px;
         }
         img {
           margin-left: 10px;
@@ -81,6 +82,9 @@ export default function Participant({
           font-size: 25px;
           font-weight: bold;
           margin-left: 10px;
+        }
+        li {
+          list-style: none;
         }
       `}</style>
     </div>

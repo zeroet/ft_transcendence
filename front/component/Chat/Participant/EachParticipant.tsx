@@ -10,7 +10,7 @@ const EachParticipant = ({
   );
   return (
     <div>
-      <div>{username}</div>
+      <div className="user"># {username}</div>
       <style jsx>{``}</style>
     </div>
   );
