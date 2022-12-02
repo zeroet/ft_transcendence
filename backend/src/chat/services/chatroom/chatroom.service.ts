@@ -67,9 +67,7 @@ export class ChatroomService implements IChatroomService {
 
   async getChatroomsInfo(chatrooms: IChatroom[]) {
     return await Promise.all(
-      (
-        await chatrooms
-      ).map((chatroom: any) => {
+      chatrooms.map((chatroom: any) => {
         if (chatroom.password !== null) chatroom.isPrivate = true;
         else chatroom.isPrivate = false;
         const { password, createdAt, modifiedAt, ...result } = chatroom;
@@ -83,7 +81,11 @@ export class ChatroomService implements IChatroomService {
   }
 
   async getAllChatrooms(): Promise<ChatroomDto[]> {
-    const chatrooms = await this.chatroomRepository.find();
+    // const chatrooms = await this.chatroomRepository.find();
+    const chatrooms = await this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .addSelect('chatroom.password')
+      .getMany();
     return await this.getChatroomsInfo(chatrooms);
   }
 
@@ -162,6 +164,7 @@ export class ChatroomService implements IChatroomService {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     console.log('current chatroom info:', chatroom);
     const result = await this.getChatroomsInfo([chatroom]);
+    console.log(result[0]);
     return result[0];
   }
   getAllMembers(chatroomId: number) {
