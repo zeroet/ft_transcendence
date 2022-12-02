@@ -29,14 +29,19 @@ export default function Participant({ id }: { id: TypeChatId }) {
     <div className={styles.box}>
       <h1>Participant</h1>
       <hr />
-      {isId &&
-        roomMembersData.map((member: IChatMember) => {
-          return (
-            <div key={member.userId}>
-              <EachParticipant username={member.User.username} />
-            </div>
-          );
-        })}
+      <ul>
+        {isId &&
+          roomMembersData.map((member: IChatMember) => {
+            return (
+              <li key={member.userId}>
+                <EachParticipant
+                  username={member.User.username}
+                  userId={member.userId}
+                />
+              </li>
+            );
+          })}
+      </ul>
       <style jsx>{`
         h1 {
           font-family: "Fragment Mono", monospace;
