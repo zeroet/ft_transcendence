@@ -150,7 +150,7 @@ export class ChatroomController {
   })
   @Post(':id/members')
   postMembers(@User() user: IUser, @Param('id') id: number) {
-    this.chatroomService.postMembers(user.id, id);
+    return this.chatroomService.postMembers(user.id, id);
   }
 
   @ApiResponse({

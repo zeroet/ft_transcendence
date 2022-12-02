@@ -31,10 +31,7 @@ export default function Participant({
   // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
   const { data: roomMembersData, error: roomMembersError } = useSWR<
     IChatMember[]
-  >(
-    isId && id.link === "chatroom" ? `/api/${id.link}/${id.id}/members` : null,
-    isId && id.link === "chatroom" ? fetcher : null
-  );
+  >(isId ? `/api/${id.link}/${id.id}/members` : null, isId ? fetcher : null);
 
   useEffect(() => {
     socket?.on("newMemberList", (res: String) => {

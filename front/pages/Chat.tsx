@@ -25,16 +25,10 @@ export default function Chat({
 }) {
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
-  // chat useSWR
   const { data: roomData, error: roomError } = useSWR(
     isId ? `/api/${id.link}/${id.id}` : null,
     isId ? fetcher : null
   );
-  // chat useSWR
-  // const { data: roomData, error: roomError } = useSWR(
-  //   isId ? `/api/chatroom/${id.id}` : null,
-  //   isId ? fetcher : null
-  // );
   const [socket] = useSocket(accessToken, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
