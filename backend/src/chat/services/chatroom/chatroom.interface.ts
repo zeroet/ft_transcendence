@@ -8,6 +8,7 @@ export interface IChatroomService {
     createChatroomDto: CreateChatroomDto,
   ): Promise<ChatroomDto>;
   getOneChatroom(chatroomId: number): Promise<ChatroomDto>;
+  verifyChatroomPassword(chatroomId: number, password: string);
   getAllMembers(chatroomId: number);
   postMembers(userId: number, chatroomId: number);
   // updateChatroom();
