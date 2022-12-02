@@ -16,6 +16,21 @@ export default function ChatRoomBody({
   const { data, error } = useSWR(`/api/chatroom/${chatroomId}`);
   const [inputText, setInputText] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
+  const el = useRef<HTMLInputElement>(null);
+
+  const handleCloseModal = (e: any) => {
+    if (showModal && (!el.current || !el.current.contains(e.target))) {
+      // console.log("close modal");
+      setShowModal(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleCloseModal);
+    return () => {
+      window.removeEventListener("click", handleCloseModal);
+    };
+  }, [showModal]);
 
   const onChangeInputText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,17 +67,9 @@ export default function ChatRoomBody({
     setShowModal((curr) => !curr);
   };
 
-  // const closeModal = () => {
-  //   setShowModal(false);
-  // };
-
   return (
     <div className={styles.box}>
-      {showModal && (
-        <div>
-          <ChatroomSettingModal />
-        </div>
-      )}
+      {showModal && <ChatroomSettingModal />}
       <div className="roomname-header">
         <div className="roomname-img">
           <h1>{data.chatroomName}</h1>
