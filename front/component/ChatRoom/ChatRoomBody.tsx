@@ -1,23 +1,25 @@
 import axios from "axios";
 import React, { useRef } from "react";
 import { useCallback, useEffect, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
 import ChatBox from "./ChatRoomBody/ChatBox";
 import ChatList from "./ChatRoomBody/ChatList";
 import ChatroomSettingModal from "./ChatroomSettingModal";
+import { IChatContent } from "../../interfaceType";
+import useSocket from "../Utils/socket";
+import { TypeChatId } from "../../interfaceType";
 
-export default function ChatRoomBody({
-  chatroomId,
-}: {
-  chatroomId: string | string[] | undefined;
-}) {
-  const { data, error } = useSWR(`/api/chatroom/${chatroomId}`);
+export default function ChatRoomBody({ id }: { id: TypeChatId }) {
+  const [socket] = useSocket(null, "chat");
+  const { data, error } = useSWR(`/api/${id.link}/${id.id}`);
   const [inputText, setInputText] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const el = useRef<HTMLInputElement>(null);
-
+  const { data: chatContentsData, error: chatContentsError } = useSWR<
+    IChatContent[]
+  >(`/api/${id.link}/${id.id}/contents`);
   const handleCloseModal = (e: any) => {
     if (showModal && (!el.current || !el.current.contains(e.target))) {
       // console.log("close modal");
@@ -40,24 +42,39 @@ export default function ChatRoomBody({
   );
 
   const onClickSubmit = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
       if (inputText === "") return;
       console.log(inputText, "in chating room body");
       // api통해서 업데이트 및 mutate수정
       // optimistic ui
+      await axios
+        .post(`/api/${id.link}/${id.id}/contents`, {
+          content: inputText,
+        })
+        .then((res) => {
+          console.log(res);
+          mutate(`/api/${id.link}/${id.id}/contents`);
+        })
+        .catch((err) => console.log(err));
       setInputText("");
     },
-    [inputText]
+    [inputText, chatContentsData, data]
   );
 
   useEffect(() => {
-    return () => {};
-  }, [data]);
+    socket?.on("newContent", () => {
+      mutate(`/api/${id.link}/${id.id}/contents`);
+    });
+    return () => {
+      socket?.off("newContent");
+    };
+  }, [data, chatContentsData]);
 
-  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!data) return <Loading />;
+  if (error || chatContentsError)
+    axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!data || !chatContentsData) return <Loading />;
 
   const modal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
@@ -74,14 +91,14 @@ export default function ChatRoomBody({
         <div className="roomname-img">
           <h1>{data.chatroomName}</h1>
           <img
-            src={data.password ? "/images/private.png" : "/images/public.png"}
+            src={data.isPrivate ? "/images/private.png" : "/images/public.png"}
             width="20px"
           />
         </div>
         <img src="/images/config.png" className="config" onClick={modal} />
       </div>
       <hr />
-      <ChatList chatroomId={chatroomId} />
+      <ChatList id={id} chatContentsData={chatContentsData} />
       <ChatBox
         onChangeInputText={onChangeInputText}
         onClickSubmit={onClickSubmit}

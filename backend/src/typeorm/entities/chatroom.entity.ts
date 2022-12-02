@@ -20,7 +20,7 @@ export class Chatroom implements IChatroom {
     description: 'chatroom id',
   })
   @PrimaryGeneratedColumn({ type: 'int', name: 'chatroom_id' })
-  chatroomId: number;
+  id: number;
 
   @ApiProperty({
     type: 'number',

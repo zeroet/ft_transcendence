@@ -23,7 +23,7 @@ export class ChatMember implements IChatMember {
     description: 'chatroom member id',
   })
   @PrimaryGeneratedColumn({ type: 'int', name: 'chatroom_member_id' })
-  chatroomMemberId: number;
+  id: number;
 
   @ApiProperty({
     type: 'number',
@@ -74,7 +74,7 @@ export class ChatMember implements IChatMember {
   readonly modifiedAt: Date;
 
   @ManyToOne((type) => Chatroom, (Chatroom) => Chatroom.ChatMember)
-  @JoinColumn({ name: 'chatroom_id', referencedColumnName: 'chatroomId' })
+  @JoinColumn({ name: 'chatroom_id', referencedColumnName: 'id' })
   Chatroom: IChatroom;
 
   @ManyToOne((type) => User, (User) => User.ChatMember)

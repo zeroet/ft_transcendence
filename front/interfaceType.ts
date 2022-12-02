@@ -29,7 +29,7 @@ export interface XYType {
 }
 
 export interface IChatroom {
-  chatroomId: number;
+  id: number;
   ownerId: number;
   chatroomName: string;
   isPrivate: boolean;
@@ -38,6 +38,7 @@ export interface IChatroom {
 }
 
 export interface IChatMember {
+  id: number;
   userId: number;
   chatroomId: number;
   mutedDate: Date;
@@ -50,16 +51,19 @@ export interface IChatMember {
 }
 
 export interface IChatContent {
-  chatContentId: number;
+  id: number;
   chatroomId: number;
   userId: number;
   content: string;
   createdAt: Date;
   modifiedAt: Date;
+  User: {
+    username: string;
+  };
 }
 
 export interface IDm {
-  dmId: number;
+  id: number;
   senderId: number;
   receiverId: number;
   content: string;

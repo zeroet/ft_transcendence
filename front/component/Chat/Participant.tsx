@@ -1,10 +1,12 @@
 import styles from "../../styles/LayoutBox.module.css";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import fetcher from "../Utils/fetcher";
 import Loading from "../errorAndLoading/Loading";
 import { TypeChatId, IChatMember } from "../../interfaceType";
 import axios from "axios";
 import EachParticipant from "./Participant/EachParticipant";
+import useSocket from "../Utils/socket";
+import { useEffect } from "react";
 
 /**
  *
@@ -25,25 +27,37 @@ export default function Participant({
 }) {
   // console.log("type chat id == ", id);
   const isId = Object.keys(id).length !== 0;
+  const [socket] = useSocket(null, "chat");
   // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
-  const { data: roomMembersData, error: roomMembersError } = useSWR(
-    isId && id.link === "chat" ? `/api/chatroom/${id.id}/members` : null,
-    isId && id.link === "chat" ? fetcher : null
-  );
+  const { data: roomMembersData, error: roomMembersError } = useSWR<
+    IChatMember[]
+  >(isId ? `/api/${id.link}/${id.id}/members` : null, isId ? fetcher : null);
 
-  // if (isId && roomMembersData) {
-  //   // console.log(roomMembersData);
-  // }
+  useEffect(() => {
+    socket?.on("newMemberList", (res: String) => {
+      console.log(res, "is res from newMemberList socket in participant");
+      if (isId && id.link === "chatroom") {
+        mutate(`/api/${id.link}/${id.id}/members`);
+      }
+    });
+    return () => {
+      socket?.off("newMemberList");
+    };
+  }, [socket, roomMembersData, id.id]);
+
+  if (isId && roomMembersData) {
+    console.log(roomMembersData);
+  }
   if (roomMembersError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (isId && !roomMembersData) return <Loading />;
+  if ((isId && !roomMembersData) || !socket) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Participant</h1>
       <hr />
       <ul>
         {isId &&
-          roomMembersData.map((member: IChatMember) => {
+          roomMembersData?.map((member: IChatMember) => {
             return (
               <li key={member.userId}>
                 <div className="participant">
@@ -65,7 +79,7 @@ export default function Participant({
       </ul>
       {/* <ul>
         {isId &&
-          id.link === "dm" &&
+          id.chatroom === "dm" &&
           /.../
         }
       </ul> */}

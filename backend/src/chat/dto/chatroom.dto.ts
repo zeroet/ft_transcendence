@@ -11,10 +11,4 @@ export class ChatroomDto extends OmitType(Chatroom, [
     description: 'private or public',
   })
   isPrivate: boolean;
-  // chatroomId: number;
-  // ownerId: number;
-  // chatroomName: string;
-  // password: string;
-  // createdAt: Date;
-  // modifedAt: Date;
 }

@@ -18,7 +18,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
   const createRoom = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      if (RoomPw && RoomPw.length < 4 && RoomPw.length > 1) {
+      if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
         setPw("");
         return;
       }
@@ -35,15 +35,15 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
         .then(async (res) => {
           setName("");
           setPw("");
-          return await res.data.chatroomId;
+          return await res.data.id;
         })
         .then((chatroomId) => {
           // router.push(`/Chat/${chatroomId}`);
           router.push({
             pathname: `/Chat`,
-            query: { id: chatroomId, link: "chat" },
+            query: { id: chatroomId, link: "chatroom" },
           });
-          console.log(`we move to /ChatRoom/${chatroomId}`);
+          console.log(`we move to /chatroom/${chatroomId}`);
         })
         .catch((error) => {
           console.dir(error);

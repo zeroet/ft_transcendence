@@ -14,7 +14,7 @@ import { User } from './user.entity';
 @Entity({ name: 'dm' })
 export class Dm implements IDm {
   @PrimaryGeneratedColumn({ type: 'int', name: 'dm_id' })
-  dmId: number;
+  id: number;
 
   @Column({ type: 'int', name: 'sender_id', nullable: false })
   senderId: number;

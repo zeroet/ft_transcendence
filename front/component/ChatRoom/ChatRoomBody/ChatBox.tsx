@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 
 interface TypeProps {
   onChangeInputText: (e: React.ChangeEvent<HTMLInputElement>) => void;
