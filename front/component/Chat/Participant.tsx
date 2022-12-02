@@ -24,12 +24,12 @@ export default function Participant({ id }: { id: TypeChatId }) {
   }
   if (roomMembersError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (isId && !roomMembersData) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Participant</h1>
       <hr />
       {isId &&
-        roomMembersData &&
         roomMembersData.map((member: IChatMember) => {
           return (
             <div key={member.userId}>
