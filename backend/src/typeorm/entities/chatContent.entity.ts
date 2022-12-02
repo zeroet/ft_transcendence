@@ -16,7 +16,7 @@ import { User } from './user.entity';
 @Entity({ name: 'chat_content' })
 export class ChatContent implements IChatContent {
   @PrimaryGeneratedColumn({ type: 'int', name: 'chat_content_id' })
-  chatContentId: number;
+  id: number;
 
   @Column({ type: 'int', name: 'chatroom_id' })
   chatroomId: number;

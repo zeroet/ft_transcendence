@@ -2,11 +2,10 @@ import { IChatContent } from './IChatContent';
 import { IChatMember } from './IChatMemeber';
 
 export interface IChatroom {
-  chatroomId: number;
+  id: number;
   ownerId: number;
   chatroomName: string;
   password: string;
-  // maxMemberNum: number;
   createdAt: Date;
   modifiedAt: Date;
   ChatMember: IChatMember[];
