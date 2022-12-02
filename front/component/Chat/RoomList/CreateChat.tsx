@@ -16,7 +16,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
   const createRoom = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      if (RoomPw && RoomPw.length < 4 && RoomPw.length > 1) {
+      if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
         setPw("");
         return;
       }
