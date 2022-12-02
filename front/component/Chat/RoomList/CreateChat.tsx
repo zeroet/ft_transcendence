@@ -25,7 +25,10 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
         return;
       }
       await axios
-        .post("/api/chatroom", { chatroomName: RoomName, password: RoomPw })
+        .post("/api/chatroom", {
+          chatroomName: RoomName,
+          password: RoomPw === "" ? null : RoomPw,
+        })
         .then(async (res) => {
           setName("");
           setPw("");
