@@ -182,12 +182,7 @@ export class ChatroomService implements IChatroomService {
 
   async verifyChatroomPassword(chatroomId: number, password: string) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
-    const hashedPassword = await this.hashData(password);
-    // console.log('password:', password)
-    // console.log('hashedPassword:', hashedPassword);
-    // console.log('chatroom.password:', chatroom.password);
     const isMatch = await bcrypt.compare(password, chatroom.password);
-    // console.log('isMatch:', isMatch);
     if (!isMatch) return false;
     return true;
   }
@@ -205,33 +200,13 @@ export class ChatroomService implements IChatroomService {
       .innerJoinAndSelect('chat_member.User', 'user')
       .select(['chat_member', 'user.username', 'user.image_url'])
       .getMany();
-    // const { } = queryResult;
     console.log('members:', queryResult);
     return queryResult;
-    // return this.userRepository
-    //   .createQueryBuilder('users')
-    //   .innerJoin(
-    //     'users.Chatroom',
-    //     'chatroom',
-    //     'chatroom.chatroom_name=:chatroomName',
-    //     { chatroomName },
-    //   )
-    //   .getMany();
   }
+
   async postMembers(userId: number, chatroomId: number) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
-    // const chatroom = await this.chatroomRepository
-    //   .createQueryBuilder('chatroom')
-    //   .where('chatroom.chatroom_id=:chatroomId', { chatroomId })
-    //   .getOne();
-    // if (!chatroom)
-    //   throw new NotFoundException(`Chatroom of id: ${chatroomId} not found`);
     const user = await this.findUserByIdOrFail(userId);
-    // const user = await this.userRepository
-    //   .createQueryBuilder('users')
-    //   .where('users.user_id=:userId', { userId })
-    //   .getOne();
-    // if (!user) throw new NotFoundException(`User not found`);
     const thisChatMember = await this.chatMemebrRepository
       .createQueryBuilder('chat_member')
       .where('chat_member.chatroom_id=:chatroomId', { chatroomId })
@@ -253,8 +228,7 @@ export class ChatroomService implements IChatroomService {
   }
 
   async deleteMembers(userId: number, chatroomId: number) {
-    const chatroom = await this.findChatroomByIdOrFail(chatroomId);
-    // const user = await this.findUserByIdOrFail(userId);
+    await this.findChatroomByIdOrFail(chatroomId);
     const chatroomMember = await this.chatMemebrRepository
       .createQueryBuilder('chat_member')
       .where('chat_member.chatroom_id=:chatroomId', { chatroomId })
