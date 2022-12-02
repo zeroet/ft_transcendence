@@ -264,7 +264,7 @@ export class ChatroomService implements IChatroomService {
       .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
       .andWhere('chat_content.user_id=:userId', { userId })
       .getOne();
-    if (thisChatContent) {
+    if (!thisChatContent) {
       console.log('User already exists in the chatroom', thisChatContent);
       throw new BadRequestException('User already exists in the chatroom');
     }
@@ -276,6 +276,7 @@ export class ChatroomService implements IChatroomService {
       Chatroom: chatroom,
     });
     await this.chatContentRepository.save(newContent);
+    newContent['username'] = user.username;
     this.chatEventsGateway.server.emit('newContent', 'new content');
     return newContent;
     // return await this.chatMemebrRepository.save(chatroomMember);
