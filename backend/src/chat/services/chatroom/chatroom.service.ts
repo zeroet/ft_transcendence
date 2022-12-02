@@ -251,6 +251,8 @@ export class ChatroomService implements IChatroomService {
     const chatcontent = await this.chatContentRepository
       .createQueryBuilder('chat_content')
       .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
+      .innerJoinAndSelect('chat_content.User', 'user')
+      .select(['chat_content', 'user.username'])
       .getMany();
     console.log(`chat content of chatroom id: ${chatroom.id}`, chatcontent);
     return chatcontent;
