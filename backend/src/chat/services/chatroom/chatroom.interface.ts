@@ -1,5 +1,6 @@
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
+import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
 
 export interface IChatroomService {
   getAllChatrooms(): Promise<ChatroomDto[]>;
@@ -9,7 +10,11 @@ export interface IChatroomService {
   ): Promise<ChatroomDto>;
   getOneChatroom(chatroomId: number): Promise<ChatroomDto>;
   verifyChatroomPassword(chatroomId: number, password: string);
-  updateChatroom(userId: number, chatroomId: number);
+  updateChatroom(
+    userId: number,
+    chatroomId: number,
+    updateChatroomDto: UpdateChatroomDto,
+  );
   getAllMembers(chatroomId: number);
   postMembers(userId: number, chatroomId: number);
   deleteMembers(userId: number, chatroomId: number);

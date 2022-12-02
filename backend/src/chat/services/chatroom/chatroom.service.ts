@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
@@ -12,6 +13,7 @@ import { DataSource, Repository } from 'typeorm';
 import { IChatroomService } from './chatroom.interface';
 import * as bcrypt from 'bcrypt';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
+import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
 
 @Injectable()
 export class ChatroomService implements IChatroomService {
@@ -162,7 +164,26 @@ export class ChatroomService implements IChatroomService {
     return true;
   }
 
-  async updateChatroom(userId: number, chatroomId: number) {}
+  async updateChatroom(
+    userId: number,
+    chatroomId: number,
+    updateChatroomDto: UpdateChatroomDto,
+  ) {
+    const chatroom = await this.findChatroomByIdOrFail(chatroomId);
+    const user = await this.findUserByIdOrFail(userId);
+
+    if (chatroom.ownerId !== user.id) {
+      throw new UnauthorizedException(
+        `No permission for User ${user.username}`,
+      );
+    }
+    const updatedChatroom = await this.chatroomRepository.update(chatroomId, {
+      chatroomName: updateChatroomDto.chatroomName,
+      password: updateChatroomDto.password,
+    });
+    console.log('updated chatroom:', updatedChatroom);
+    return updatedChatroom;
+  }
 
   async getAllMembers(chatroomId: number) {
     console.log('test', typeof chatroomId, chatroomId);

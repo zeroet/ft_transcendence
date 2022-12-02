@@ -22,6 +22,7 @@ import { ChatContentDto } from 'src/chat/dto/chat.content.dto';
 import { ChatMemberDto } from 'src/chat/dto/chat.member.dto';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
+import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
 import { IChatroomService } from 'src/chat/services/chatroom/chatroom.interface';
 import { IUser } from 'src/typeorm/interfaces/IUser';
 import { User } from 'src/utils/decorators/user.decorator';
@@ -113,8 +114,12 @@ export class ChatroomController {
   })
   @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
   @Post(':id/update')
-  updateChatroom(@User() user: IUser, @Param('id') id: number) {
-    return 'update testing...';
+  updateChatroom(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body() updateChatroomDto: UpdateChatroomDto,
+  ) {
+    return this.chatroomService.updateChatroom(user.id, id, updateChatroomDto);
   }
 
   @ApiResponse({
@@ -150,7 +155,7 @@ export class ChatroomController {
   })
   @Post(':id/members')
   postMembers(@User() user: IUser, @Param('id') id: number) {
-    this.chatroomService.postMembers(user.id, id);
+    return this.chatroomService.postMembers(user.id, id);
   }
 
   @ApiResponse({
@@ -205,6 +210,6 @@ export class ChatroomController {
     @Param('id') id: number,
     @Body('content') content: string,
   ) {
-    this.chatroomService.postContents(user.id, id, content);
+    return this.chatroomService.postContents(user.id, id, content);
   }
 }
