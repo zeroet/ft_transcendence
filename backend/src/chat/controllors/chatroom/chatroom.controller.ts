@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -129,6 +130,10 @@ export class ChatroomController {
     return this.chatroomService.getAllMembers(chatroomId);
   }
 
+  // @ApiResponse({
+  //   type: ChatMemberDto,
+  //   description: 'Member list of a chatroom',
+  // })
   @ApiParam({
     name: 'chatroomId',
     example: 1,
@@ -139,7 +144,23 @@ export class ChatroomController {
   })
   @Post(':chatroomId/members')
   postMembers(@User() user: IUser, @Param('chatroomId') chatroomId: number) {
-    this.chatroomService.postMembers(user.id, chatroomId);
+    return this.chatroomService.postMembers(user.id, chatroomId);
+  }
+
+  @ApiResponse({
+    type: ChatMemberDto,
+    description: 'Member list of a chatroom',
+  })
+  @ApiParam({
+    name: 'chatroomId',
+    example: 1,
+  })
+  @ApiOperation({
+    summary: 'Delete members to a chatroom / 특정 대화방에 참여자 삭제하기',
+  })
+  @Delete(':chatroomId/members')
+  deleteMembers(@User() user: IUser, @Param('chatroomId') chatroomId: number) {
+    return this.chatroomService.deleteMembers(user.id, chatroomId);
   }
 
   @ApiOperation({

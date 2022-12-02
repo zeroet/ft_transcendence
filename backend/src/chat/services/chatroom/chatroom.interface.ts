@@ -11,6 +11,7 @@ export interface IChatroomService {
   verifyChatroomPassword(chatroomId: number, password: string);
   getAllMembers(chatroomId: number);
   postMembers(userId: number, chatroomId: number);
+  deleteMembers(userId: number, chatroomId: number);
   // updateChatroom();
   getContents();
   postContents();

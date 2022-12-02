@@ -103,7 +103,7 @@ export class AuthService implements IAuthService {
       });
       return decoded;
     } catch (err) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid User Token');
     }
   }
 
