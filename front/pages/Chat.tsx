@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
-import { TypeChatId } from "../interfaceType";
+import { TypeChatId, IChatroom } from "../interfaceType";
 
 export default function Chat({
   accessToken,
@@ -64,6 +64,7 @@ export default function Chat({
             <PWModal
               setShowPWModal={setShowPWModal}
               password={roomData.password}
+              roomId={roomData.chatroomId}
             />
           </div>
         )}
@@ -73,7 +74,9 @@ export default function Chat({
         {!isId && <ChatBody />}
         {/* 채팅룸 */}
         {isId && id.link === "chat" && <ChatRoomBody chatroomId={id.id} />}
-        <Participant id={id} ownerId={roomData.ownerId} />
+        {/* DM */}
+        {/* {isId && id.link === "dm" && <ChatRoomBody chatroomId={id.id} />} */}
+        <Participant id={id} ownerId={roomData ? roomData.ownerId : null} />
       </div>
       <style jsx>{`
         .pwmodal-background {

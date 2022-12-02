@@ -21,7 +21,7 @@ export default function Participant({
   ownerId,
 }: {
   id: TypeChatId;
-  ownerId: number;
+  ownerId: number | null;
 }) {
   console.log("type chat id == ", id);
   const isId = Object.keys(id).length !== 0;
@@ -31,19 +31,18 @@ export default function Participant({
     isId && id.link === "chat" ? fetcher : null
   );
 
-  if (isId && id.link === "chat" && roomMembersData) {
+  if (isId && roomMembersData) {
     console.log(roomMembersData);
   }
   if (roomMembersError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (isId && id.link === "chat" && !roomMembersData) return <Loading />;
+  if (isId && !roomMembersData) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Participant</h1>
       <hr />
       <ul>
         {isId &&
-          id.link === "chat" &&
           roomMembersData.map((member: IChatMember) => {
             return (
               <li key={member.userId}>

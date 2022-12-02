@@ -37,6 +37,12 @@ export default function ChatRoomBody({
     [inputText]
   );
 
+  useEffect(()=> {
+    return () => {
+      
+    }
+  }, [data])
+
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
 

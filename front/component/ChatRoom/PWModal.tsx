@@ -4,9 +4,14 @@ import React, { useCallback, useState } from "react";
 interface TypeModal {
   setShowPWModal: React.Dispatch<React.SetStateAction<boolean>>;
   password: string;
+  roomId: string;
 }
 
-export default function PWModal({ setShowPWModal, password }: TypeModal) {
+export default function PWModal({
+  setShowPWModal,
+  password,
+  roomId,
+}: TypeModal) {
   const [pw, setPw] = useState<string>("");
   const router = useRouter();
 
@@ -19,7 +24,7 @@ export default function PWModal({ setShowPWModal, password }: TypeModal) {
   );
 
   const onClickOk = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
       // 비번확인 api보내기
@@ -31,6 +36,7 @@ export default function PWModal({ setShowPWModal, password }: TypeModal) {
     [pw]
   );
 
+  console.log(typeof roomId);
   const cancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
