@@ -67,7 +67,7 @@ export default function Participant({
         {isId &&
           id.link === "dm" &&
           /.../
-        } 
+        }
       </ul> */}
       <style jsx>{`
         .participant {
