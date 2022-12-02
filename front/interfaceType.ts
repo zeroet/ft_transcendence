@@ -44,6 +44,9 @@ export interface IChatMember {
   banDate: Date;
   createdAt: Date;
   modifiedAt: Date;
+  User: {
+    username: string;
+  };
 }
 
 export interface IChatContent {
@@ -70,4 +73,9 @@ export interface GameDTO {
   ownerId: string;
   speed: string;
   ballSize: string;
+}
+
+export interface TypeChatId {
+  id: string;
+  link: string;
 }

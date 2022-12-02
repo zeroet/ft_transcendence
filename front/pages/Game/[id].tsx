@@ -10,6 +10,7 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Gameover from "../../component/Game/PlayGame/Gameover";
 
 interface GameElement {
   ballX: number;
@@ -17,8 +18,8 @@ interface GameElement {
   ballSize: number;
   leftPaddle: number;
   rightPaddle: number;
-  myScore: string;
-  otherSideScore: string;
+  ownerScore: string;
+  playerScore: string;
 }
 
 // const ballLeftMax: 0;
@@ -39,6 +40,7 @@ export default function Gaming({
 }) {
   const { data, error } = useSWR("/api/users");
   const [socket] = useSocket(accessToken, "game");
+  const [isGameover, setIsGameover] = useState<boolean>(false);
   // otherPlayerName없어서 대체용
   const otherPlayerNameTest = "나중에 이거 지워야함";
   // 방 이름 확인용. useEffect써서 리랜더링용
@@ -60,8 +62,8 @@ export default function Gaming({
     ballSize: 50,
     leftPaddle: 650 / 2, // 0 ~ 650
     rightPaddle: 650 / 2,
-    myScore: "1",
-    otherSideScore: "3",
+    ownerScore: "5",
+    playerScore: "3",
   });
 
   /**
@@ -118,6 +120,7 @@ export default function Gaming({
       {data.two_factor_activated && !data.two_factor_valid && (
         <TwoFactorModal />
       )}
+      {!isGameover && <Gameover />}
       <div className="grid-div">
         <GameList accessToken={accessToken} />
         <div className="play-game">
@@ -130,8 +133,8 @@ export default function Gaming({
             </div>
           </div>
           <div className="score">
-            <div className="score">{gameChanged?.myScore}</div>
-            <div className="score">{gameChanged?.otherSideScore}</div>
+            <div className="score">{gameChanged.ownerScore}</div>
+            <div className="score">{gameChanged.playerScore}</div>
           </div>
           <div className="ball"></div>
           <div className="paddle left"></div>

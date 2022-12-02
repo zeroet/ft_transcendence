@@ -14,11 +14,7 @@ import { useEffect, useState } from "react";
 import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
-
-interface TypeChatId {
-  id: string;
-  link: string;
-}
+import { TypeChatId } from "../interfaceType";
 
 export default function Chat({
   accessToken,
@@ -77,7 +73,7 @@ export default function Chat({
         {!isId && <ChatBody />}
         {/* 채팅룸 */}
         {isId && id.link === "chat" && <ChatRoomBody chatroomId={id.id} />}
-        <Participant />
+        <Participant id={id} />
       </div>
       <style jsx>{`
         .pwmodal-background {
