@@ -25,11 +25,17 @@ export default function Chat({
 }) {
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
-  // roomData를 가지고, 오너가 볼수있는 모달을 추가하고, 비밀번호 추가하고
+  // chat useSWR
   const { data: roomData, error: roomError } = useSWR(
     isId ? `/api/chatroom/${id.id}` : null,
     isId ? fetcher : null
   );
+  // chat useSWR
+  // const { data: roomData, error: roomError } = useSWR(
+  //   isId ? `/api/chatroom/${id.id}` : null,
+  //   isId ? fetcher : null
+  // );
+  
   const [socket] = useSocket(accessToken, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
