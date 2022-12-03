@@ -10,18 +10,22 @@ export default function GameList({ accessToken }: { accessToken: string }) {
   // 리스트는 밑에 출력,
   // 게임이름이 라우팅으로
 
-  const showList = (list: string[]) => {
-    console.log(list);
-  };
   useEffect((): (() => void) => {
-    socket?.emit("room-list", showList);
+    console.log(`socket on ${socket?.id}`);
+    socket?.on("room-list", (res) => {
+      console.log(res, " is result from room list socket");
+      return () => {
+        socket.off("room-list");
+        console.log(`socket off ${socket.id}`);
+      };
+    });
     // socket?.on("gameList", (res) => {
     //   console.log("game list ", socket.id);
     //   const gameList = res;
     //   console.log("game list is", gameList);
     // });
     return () => {};
-  }, [socket]);
+  }, [socket?.id]);
   if (!socket) return <Loading />;
 
   return (
