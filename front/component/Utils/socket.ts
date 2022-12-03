@@ -21,7 +21,7 @@ const useSocket = (
   }, [socketType]);
 
   if (!socket[socketType] && accessToken) {
-    const path = socketType === "chat" ? "/chat" : "";
+    const path = socketType === "chat" ? "/chat" : "/game";
     // if (socketType === "game") {
     //   socket[socketType] = socketIOClient("http://localhost:8080", {
     //     extraHeaders: {

@@ -34,7 +34,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   queueNormal: QueueService = new QueueService();
   // game: GameService = new GameService();
   rooms: Map<string, Game> = new Map();
-  roomList: string[];
+  roomList: ["abc", "dcb", "asdf"];
 
   afterInit() {
     this.logger.log("INIT");
@@ -75,7 +75,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
 
   @SubscribeMessage('Queue')
-  readyGame(@ConnectedSocket() client: any) {
+  readyGame(@ConnectedSocket() client: Socket) {
     if (!this.queueNormal.addUser(client)) return;
     if (this.queueNormal.isFull())
       this.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
@@ -96,11 +96,8 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       try {
         if (client.id === this.queueNormal.Players[0].id) {
         const game = new Game(this.queueNormal.Players, Status.READY, data.roomName, this.queueNormal.Players[0].id, data.speed, data.ballSize)
-        // game.Players[0].join(data.roomName);
-        // game.Players[1].join(data.roomName);
         this.queueNormal.Players.shift().join(data.roomName);
         this.queueNormal.Players.shift().join(data.roomName);
-        this.queueNormal.size = 0;
         this.rooms.set(data.roomName, game);
         this.liveGame(data.roomName, game);
       }
@@ -113,11 +110,11 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
     
   @SubscribeMessage('room-list')
-  handleRoomList() {
+  handleRoomList(@ConnectedSocket() client: Socket, @MessageBody() data:any) {
     try {
-      for (const name of this.rooms.keys())
-      this.roomList.push(name);
-    return this.roomList;
+      // for (const name of this.rooms.keys())
+      //   this.roomList.push(name);
+    data(this.roomList);
     }
     catch{}
   }
