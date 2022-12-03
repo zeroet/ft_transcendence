@@ -5,6 +5,9 @@ import {
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -19,8 +22,8 @@ import { Logger } from '@nestjs/common';
 import { dataCollectionPhase } from 'typeorm-model-generator/dist/src/Engine';
 
 // @UseGuards(JwtWsGuard)
-@WebSocketGateway({ cors: '*' })
-export class GameEvents {
+@WebSocketGateway({ path: '/game', cors: '*' })
+export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   constructor(
     @Inject('USER_SERVICE') private readonly userService: UserService,
     @Inject('AUTH_SERVICE') private authService: IAuthService,
@@ -36,32 +39,38 @@ export class GameEvents {
   rooms: Map<string, Game> = new Map();
   roomList: string[];
 
-  async handleConnection(client: Socket) {
+  afterInit() {
+    this.logger.log("INIT");
+  }
+
+  async handleConnection(@ConnectedSocket() client: Socket) {
     // const payload = await this.authService.verify(
     //   client.handshake.headers.accesstoken,
     // );
     // const user = await this.userService.getUserById(payload.id);
     // !user && client.disconnect();
     // client.data.user = user;
-    this.logger.log('Lobby', client.id);
+    this.logger.log('Lobbby', client.id);
   }
 
-  async handleDisConnection(client: Socket) {
-    
+  async handleDisconnect(@ConnectedSocket() client: Socket) {
     // Queue case 
     if (this.queueNormal.Players.indexOf(client) != -1)
       return this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
     
     // InGame case
     for (const room of this.rooms.values())
-      if (room.Players.indexOf(client) != -1)
+      if (room.Players.indexOf(client) != -1) {
         // game end 
+        client.leave(room.roomName);
         return room.Players.splice(room.Players.indexOf(client), 1)
-    
+      }
     // Watcher case
     for (const room of this.rooms.values())
-      if (room.Watchers.indexOf(client) != -1)
+      if (room.Watchers.indexOf(client) != -1) {
+        client.leave(room.roomName);
         return room.Watchers.splice(room.Watchers.indexOf(client), 1)
+      }
     this.logger.log('disconnection', client.id);
   }
 
