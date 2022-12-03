@@ -31,21 +31,16 @@ const GameReadyModal = ({
 
   useEffect((): (() => void) => {
     console.log("in game ready modal", socket?.id);
-    socket?.on("enterGame", (roomName: string) => {
+    socket?.on("enterGame", (roomName: string, otherPlayerName: string) => {
       console.log(roomName);
       console.log("is room name! from socket");
-      /**
-       * 볼 사이즈,
-       * 볼 속도
-       * 오너이름
-       * 플레이어이름
-       * 나의역활
-       */
+      // query로 게임이름
+      // 내가 오너인지, 내가 플레이어인지 가지고들어간다.
       router.push({
         pathname: `/Game/${roomName}`,
         query: {
-          myRole: "owner",
-          // otherPlayerName,
+          myRole: "player",
+          otherPlayerName,
         },
       });
     });

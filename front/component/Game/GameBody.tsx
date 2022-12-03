@@ -52,35 +52,8 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     return () => {
       socket?.off("createRoom");
     };
-  }, []);
-  // 위의 대체를 위해서 setTimeout 3초
-  // if (settingModal) {
-  //   setTimeout(() => {
-  //     setOwnerOrPlayer("owner");
-  //   }, 3000);
-  // }
+  }, [socket]);
 
-  // useEffect((): (() => void) => {
-  //   if (settingModal) {
-  //     console.log("게임 대기큐!", socket?.id);
-  //     socket?.on("waiting_queue", (res) => {
-  //       // 받았으면, 오너인지 아니면, 플레이어인지 확인
-  //       setOwnerOrPlayer("owner");
-  //       // or
-  //       setOwnerOrPlayer("player");
-  //     });
-  //   }
-  //   return () => {
-  //     socket?.off("waiting_queue");
-  //   };
-  // }, [settingModal]);
-
-  // if (socket) {
-  //   socket.on("connect", () => {
-  //     console.log("game body with connect event", socket.id);
-  //   });
-  //   console.log("game body", socket.id);
-  // }
   if (!socket) return <Loading />;
   return (
     <div className={styles.box}>

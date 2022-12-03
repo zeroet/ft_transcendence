@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateChat = ({ onClose }: { onClose: () => void }) => {
   const [RoomName, setName] = useState<string>("");
@@ -16,24 +18,32 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
   const createRoom = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      if (RoomPw && RoomPw.length < 4 && RoomPw.length > 1) {
+      if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
         setPw("");
         return;
       }
+      if (!RoomName) {
+        toast.success("You should have more than 1 character");
+        console.log("name not enough");
+        return;
+      }
       await axios
-        .post("/api/chatroom", { chatroomName: RoomName, password: RoomPw })
+        .post("/api/chatroom", {
+          chatroomName: RoomName,
+          password: RoomPw === "" ? null : RoomPw,
+        })
         .then(async (res) => {
           setName("");
           setPw("");
-          return await res.data.chatroomId;
+          return await res.data.id;
         })
         .then((chatroomId) => {
           // router.push(`/Chat/${chatroomId}`);
           router.push({
             pathname: `/Chat`,
-            query: { id: chatroomId, link: "chat" },
+            query: { id: chatroomId, link: "chatroom" },
           });
-          console.log(`we move to /ChatRoom/${chatroomId}`);
+          console.log(`we move to /chatroom/${chatroomId}`);
         })
         .catch((error) => {
           console.dir(error);
@@ -87,6 +97,18 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
           </button>
         </div>
       </form>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <style jsx>{`
         .box {
           position: fixed;

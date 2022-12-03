@@ -1,38 +1,104 @@
 import styles from "../../styles/LayoutBox.module.css";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import fetcher from "../Utils/fetcher";
-import Error from "../errorAndLoading/Error";
 import Loading from "../errorAndLoading/Loading";
+import { TypeChatId, IChatMember } from "../../interfaceType";
+import axios from "axios";
+import EachParticipant from "./Participant/EachParticipant";
+import useSocket from "../Utils/socket";
+import { useEffect } from "react";
 
-// participant는 따로 모달을 만듬
-// useRouter로 어디있는지에 한에서 나오는 버튼의 수를 조절함
-// participant은 게임, 프로필, 채팅등에서 유저목록이 들어가는 모든곳에
-// 중복으로 사용됨. 물론 중복으로 사용안해도됨
+/**
+ *
+ * id로 들어온값은 id / link가 있다.
+ * id는 dm / chat의  id
+ * link는  dm / chat을 구분하는 구분자
+ *
+ * api요청시에, link에 따라 다르게 요청을 보내야하기때문
+ * useSWR을 따로만들어서 커스터마이징하도... 될듯
+ *
+ */
+export default function Participant({
+  id,
+  ownerId,
+}: {
+  id: TypeChatId;
+  ownerId: number | null;
+}) {
+  // console.log("type chat id == ", id);
+  const isId = Object.keys(id).length !== 0;
+  const [socket] = useSocket(null, "chat");
+  // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
+  const { data: roomMembersData, error: roomMembersError } = useSWR<
+    IChatMember[]
+  >(isId ? `/api/${id.link}/${id.id}/members` : null, isId ? fetcher : null);
 
-export default function Participant() {
-  // const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
+  useEffect(() => {
+    socket?.on("newMemberList", (res: String) => {
+      console.log(res, "is res from newMemberList socket in participant");
+      if (isId && id.link === "chatroom") {
+        mutate(`/api/${id.link}/${id.id}/members`);
+      }
+    });
+    return () => {
+      socket?.off("newMemberList");
+    };
+  }, [socket, roomMembersData, id.id]);
 
-  // if (data) {
-  //   console.log(data);
-  // }
-  // if (error) return <Error />;
-  // if (!data) return <Loading />;
-
+  if (isId && roomMembersData) {
+    console.log(roomMembersData);
+  }
+  if (roomMembersError)
+    axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if ((isId && !roomMembersData) || !socket) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Participant</h1>
       <hr />
-      {
-        // <ul key={data.posts.id}>
-        //   {data.posts && data.posts.map((post: any) => <li>{post.id}</li>)}
-        // </ul>
-      }
+      <ul>
+        {isId &&
+          roomMembersData?.map((member: IChatMember) => {
+            return (
+              <li key={member.userId}>
+                <div className="participant">
+                  <EachParticipant
+                    username={member.User.username}
+                    userId={member.userId}
+                  />
+                  {ownerId === member.userId && (
+                    <img
+                      src="/images/crown.png"
+                      width={"20px"}
+                      height={"20px"}
+                    />
+                  )}
+                </div>
+              </li>
+            );
+          })}
+      </ul>
+      {/* <ul>
+        {isId &&
+          id.chatroom === "dm" &&
+          /.../
+        }
+      </ul> */}
       <style jsx>{`
+        .participant {
+          display: flex;
+          margin-left: -25px;
+        }
+        img {
+          margin-left: 10px;
+        }
         h1 {
           font-family: "Fragment Mono", monospace;
           font-size: 25px;
           font-weight: bold;
           margin-left: 10px;
+        }
+        li {
+          list-style: none;
         }
       `}</style>
     </div>

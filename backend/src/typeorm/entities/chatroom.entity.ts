@@ -11,15 +11,28 @@ import { IChatMember } from '../interfaces/IChatMemeber';
 import { IChatroom } from '../interfaces/IChatroom';
 import { ChatContent } from './chatContent.entity';
 import { ChatMember } from './chatMember.entitiy';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'chatroom' })
 export class Chatroom implements IChatroom {
+  @ApiProperty({
+    type: 'number',
+    description: 'chatroom id',
+  })
   @PrimaryGeneratedColumn({ type: 'int', name: 'chatroom_id' })
-  chatroomId: number;
+  id: number;
 
+  @ApiProperty({
+    type: 'number',
+    description: 'owner id',
+  })
   @Column({ type: 'int', name: 'owner_id' })
   ownerId: number;
 
+  @ApiProperty({
+    type: 'string',
+    description: 'chatroom name',
+  })
   @Column({
     type: 'varchar',
     name: 'chatroom_name',
@@ -29,22 +42,30 @@ export class Chatroom implements IChatroom {
   })
   chatroomName: string;
 
+  @ApiProperty({
+    type: 'string',
+    description: 'password',
+  })
   @Column({
     type: 'varchar',
     name: 'password',
     default: null,
     nullable: true,
-    length: 30,
+    select: false,
+    length: 100,
   })
   password: string;
 
-  // @Column()
-  // maxMemberNum: number;
-
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  @ApiProperty({
+    description: 'created time',
+  })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at', select: false })
   readonly createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
+  @ApiProperty({
+    description: 'modified time',
+  })
+  @UpdateDateColumn({ type: 'timestamp', name: 'modified_at', select: false })
   readonly modifiedAt: Date;
 
   @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.Chatroom)

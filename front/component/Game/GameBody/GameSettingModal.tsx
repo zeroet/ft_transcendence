@@ -79,20 +79,23 @@ const GameSettingModal = ({
     console.log("game setting owner modal", socket?.id);
 
     // 완료된 소켓! 받은후에 이동
-    socket?.on("enterGame", (roomName: string) => {
+    socket?.on("enterGame", (roomName: string, otherPlayerName: string) => {
       console.log(roomName, " is room name from server event: enterGame");
+      // query로 게임이름
+      // 내가 오너인지, 내가 플레이어인지 가지고들어간다.
       /**
-       * 볼 사이즈,
-       * 볼 속도
-       * 오너이름
+       * 게임이름,
+       * 유저이름
        * 플레이어이름
-       * 나의역활
+       * 볼 속도
+       * 볼 사이즈
+       * 내 역활
        */
       router.push({
         pathname: `/Game/${roomName}`,
         query: {
           myRole: "owner",
-          // otherPlayerName,
+          otherPlayerName,
         },
       });
     });

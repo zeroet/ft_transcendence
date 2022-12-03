@@ -13,9 +13,11 @@ import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserDto } from 'src/users/dto/user.dto';
 import { User } from 'src/utils/decorators/user.decorator';
+import { IUser } from 'src/typeorm/interfaces/IUser';
 
 @ApiTags('USERS')
 @Controller('users')
+@UseGuards(JwtAccessAuthGuard)
 export class UsersController {
   constructor(
     @Inject('USER_SERVICE') private readonly userService: IUserService,
@@ -29,9 +31,9 @@ export class UsersController {
   @ApiOperation({
     summary: 'Get current user / 현재 로그인된 사용자 정보요청',
   })
-  @UseGuards(JwtAccessAuthGuard)
+  // @UseGuards(JwtAccessAuthGuard)
   @Get()
-  async getCurrentUser(@User() user) {
+  async getCurrentUser(@User() user: IUser) {
     // console.log('getCurrentUser()', user);
     const CurrentUser = await this.userService.getCurrentUser(user.id);
     if (!CurrentUser) {
@@ -63,7 +65,9 @@ export class UsersController {
   async getUserById(@Param('id', ParseIntPipe) id: number) {
     // console.log('getUserById()', id);
     const user = await this.userService.getUserById(id);
-    if (!user) throw new UnauthorizedException('user not found');
+    if (!user) {
+      throw new UnauthorizedException('user not found');
+    }
     return user;
   }
 

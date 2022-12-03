@@ -29,34 +29,41 @@ export interface XYType {
 }
 
 export interface IChatroom {
-  chatroomId: number;
+  id: number;
   ownerId: number;
   chatroomName: string;
-  password: string;
+  isPrivate: boolean;
   createdAt: Date;
   modifiedAt: Date;
 }
 
 export interface IChatMember {
+  id: number;
   userId: number;
   chatroomId: number;
   mutedDate: Date;
   banDate: Date;
   createdAt: Date;
   modifiedAt: Date;
+  User: {
+    username: string;
+  };
 }
 
 export interface IChatContent {
-  chatContentId: number;
+  id: number;
   chatroomId: number;
   userId: number;
   content: string;
   createdAt: Date;
   modifiedAt: Date;
+  User: {
+    username: string;
+  };
 }
 
 export interface IDm {
-  dmId: number;
+  id: number;
   senderId: number;
   receiverId: number;
   content: string;
@@ -64,10 +71,15 @@ export interface IDm {
   modifiedAt: Date;
 }
 
-export interface GameDTO{
+export interface GameDTO {
   Players: Array<any>;
   roomName: string;
   ownerId: string;
   speed: string;
   ballSize: string;
+}
+
+export interface TypeChatId {
+  id: string;
+  link: string;
 }

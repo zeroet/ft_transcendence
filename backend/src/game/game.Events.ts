@@ -1,7 +1,4 @@
-import {
-  Inject,
-  UseGuards,
-} from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -48,7 +45,10 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     //   client.handshake.headers.accesstoken,
     // );
     // const user = await this.userService.getUserById(payload.id);
-    // !user && client.disconnect();
+    // if (!user) {
+    //   client.disconnect();
+    //   return;
+    // }
     // client.data.user = user;
     this.logger.log('Lobbby', client.id);
   }
@@ -77,7 +77,8 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   @SubscribeMessage('Queue')
   readyGame(@ConnectedSocket() client: any) {
     if (!this.queueNormal.addUser(client)) return;
-    if (this.queueNormal.isFull()) this.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
+    if (this.queueNormal.isFull())
+      this.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
   }
 
   createRoom(player1: Socket, palyer2: Socket) {
@@ -107,7 +108,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
      catch{}
     }
 
-  async liveGame(name:string, game: Game) {  
+  async liveGame(name: string, game: Game) {
     await this.server.to(name).emit('enterGame', name);
   }
     

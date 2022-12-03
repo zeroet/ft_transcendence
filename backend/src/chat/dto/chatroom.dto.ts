@@ -1,39 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { Chatroom } from 'src/typeorm';
 
-export class ChatroomDto {
+export class ChatroomDto extends OmitType(Chatroom, [
+  'password',
+  'createdAt',
+  'modifiedAt',
+]) {
   @ApiProperty({
-    type: 'number',
-    description: 'chatroom id',
+    type: Boolean,
+    description: 'private or public',
   })
-  chatroomId: number;
-
-  @ApiProperty({
-    type: 'number',
-    description: 'owner id',
-  })
-  ownerId: number;
-
-  @ApiProperty({
-    type: 'string',
-    description: 'chatroom name',
-  })
-  chatroomName: string;
-
-  @ApiProperty({
-    type: 'string',
-    description: 'password',
-  })
-  password: string;
-
-  @ApiProperty({
-    type: 'string',
-    description: 'created time',
-  })
-  createdAt: Date;
-
-  @ApiProperty({
-    type: 'string',
-    description: 'modified time',
-  })
-  modifedAt: Date;
+  isPrivate: boolean;
 }

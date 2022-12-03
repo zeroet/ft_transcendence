@@ -67,7 +67,7 @@ export default function TwoFactorModal() {
             <div className="title">
               <h2>2Fa Auth</h2>
             </div>
-            <form>
+            <form method="post">
               <div className="submitform">
                 <label>VERIFICATION PASSWORD</label>
                 <input

@@ -1,16 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
+import { Chatroom } from 'src/typeorm';
 
-export class CreateChatroomDto {
+export class CreateChatroomDto extends PickType(Chatroom, [
+  'chatroomName',
+  'password',
+]) {
   @ApiProperty({
-    type: 'string',
+    type: String,
+    example: 'wanna chat with me ?',
     description: 'chatroom name',
   })
   @IsString()
   chatroomName: string;
 
   @ApiProperty({
-    type: 'string',
+    type: String,
+    example: 'come talk to me',
     description: 'password',
   })
   @IsString()

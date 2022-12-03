@@ -10,7 +10,17 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-// import Gameover from "../../component/Game/PlayGame/Gameover";
+import Gameover from "../../component/Game/PlayGame/Gameover";
+
+interface GameElement {
+  ballX: number;
+  ballY: number;
+  ballSize: number;
+  leftPaddle: number;
+  rightPaddle: number;
+  ownerScore: string;
+  playerScore: string;
+}
 
 // const ballLeftMax: 0;
 // const ballRightMax: 1375;
@@ -51,6 +61,7 @@ export default function Gaming({
    *
    *
    */
+
   /**
    * /////////////////////////////////////////////////////// room 모든사람이아니라, room에 있는 플레이어들의 목록을 받아야함
    * /////////////////////////////////////////////////////// 소켓 id비교해서 룸안에있는사람만이 바꿀수있음!!!!!!!
@@ -61,7 +72,6 @@ export default function Gaming({
    */
   // 문제: state가 객체로 되어있으면, 포인터가 바뀌는것이 아니기때문에,
   // 전체가 변화하지않음
-  // rightPaddle이면 rightpaddle바꾸기
   const onChangePaddle = useCallback(
     (e: KeyboardEvent) => {
       const key = e.key;
@@ -104,7 +114,7 @@ export default function Gaming({
       {data.two_factor_activated && !data.two_factor_valid && (
         <TwoFactorModal />
       )}
-      {/* {isGameover && <Gameover />} */}
+      {!isGameover && <Gameover />}
       <div className="grid-div">
         <GameList accessToken={accessToken} />
         <div className="play-game">
