@@ -26,7 +26,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     @Inject('AUTH_SERVICE') private authService: IAuthService,
   ) {}
  
-  private logger = new Logger('Gateway');
+  private logger = new Logger('GameGateway');
 
   @WebSocketServer()
   server: Server;
@@ -71,7 +71,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         await client.leave(room.roomName);
         return room.Watchers.splice(room.Watchers.indexOf(client), 1)
       }
-    this.logger.log('disconnection', client.id);
+    this.logger.log('Game disconnection', client.id);
   }
 
   @SubscribeMessage('Queue')
