@@ -34,7 +34,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   queueNormal: QueueService = new QueueService();
   // game: GameService = new GameService();
   rooms: Map<string, Game> = new Map();
-  roomList: ["abc", "dcb", "asdf"];
+  roomList: string[];
 
   afterInit() {
     this.logger.log("INIT");
@@ -110,11 +110,13 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
     
   @SubscribeMessage('room-list')
-  handleRoomList(@ConnectedSocket() client: Socket, @MessageBody() data:any) {
+  handleRoomList() {
     try {
       // for (const name of this.rooms.keys())
       //   this.roomList.push(name);
-    data(this.roomList);
+        // const names = this.roomList;
+      const names = ["abc", "accdd", "addffasd"];
+      this.server.emit('room-list', { names })
     }
     catch{}
   }

@@ -12,6 +12,7 @@ export default function GameList({ accessToken }: { accessToken: string }) {
 
   const showList = (list: string[]) => {
     console.log(list);
+    console.log('room list test')
   };
   useEffect((): (() => void) => {
     socket?.emit("room-list", showList);
