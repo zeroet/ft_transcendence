@@ -13,10 +13,10 @@ import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
-import { GameService } from './game.service';
-import { Game } from './interfaces/room';
+import { Game, Status } from './interfaces/room';
 import { QueueService } from './queue.service';
 import { Logger } from '@nestjs/common';
+import { dataCollectionPhase } from 'typeorm-model-generator/dist/src/Engine';
 
 // @UseGuards(JwtWsGuard)
 @WebSocketGateway({ cors: '*' })
@@ -32,7 +32,7 @@ export class GameEvents {
   server: Server;
 
   queueNormal: QueueService = new QueueService();
-  game: GameService = new GameService();
+  // game: GameService = new GameService();
   rooms: Map<string, Game> = new Map();
   roomList: string[];
 
@@ -59,6 +59,9 @@ export class GameEvents {
         return room.Players.splice(room.Players.indexOf(client), 1)
     
     // Watcher case
+    for (const room of this.rooms.values())
+      if (room.Watchers.indexOf(client) != -1)
+        return room.Watchers.splice(room.Watchers.indexOf(client), 1)
     this.logger.log('disconnection', client.id);
   }
 
@@ -80,16 +83,20 @@ export class GameEvents {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
-      if (client.id === this.queueNormal.Players[0].id) {
-        const game = new Game(this.queueNormal.Players, data.roomName, this.queueNormal.Players[0].id, data.speed, data.ballSize)
-        game.Players[0].join(data.roomName);
-        game.Players[1].join(data.roomName);
+      try {
+        if (client.id === this.queueNormal.Players[0].id) {
+        const game = new Game(this.queueNormal.Players, Status.READY, data.roomName, this.queueNormal.Players[0].id, data.speed, data.ballSize)
+        // game.Players[0].join(data.roomName);
+        // game.Players[1].join(data.roomName);
+        this.queueNormal.Players.shift().join(data.roomName);
+        this.queueNormal.Players.shift().join(data.roomName);
+        this.queueNormal.size = 0;
         this.rooms.set(data.roomName, game);
-        this.queueNormal.Players.shift();
-        this.queueNormal.Players.shift();
         this.liveGame(data.roomName, game);
+      }
+     }
+     catch{}
     }
-  }
 
   async liveGame(name:string, game: Game) {  
     await this.server.to(name).emit('enterGame', name);
@@ -105,4 +112,19 @@ export class GameEvents {
     catch{}
   }
 
+  @SubscribeMessage('watchGame')
+  watchGame(
+    @ConnectedSocket() watcher: Socket, 
+    @MessageBody() data:any) {
+      if (!data.roomName)
+        return ;
+      for (const room of this.rooms.values())
+         if (room.roomName === data.roomName) {
+           watcher.join(data.roomName);
+           room.Watchers.push(watcher);
+           this.server.to(data.roomName).emit('watcher', data.roomName);
+      }
+  }
 }
+
+
