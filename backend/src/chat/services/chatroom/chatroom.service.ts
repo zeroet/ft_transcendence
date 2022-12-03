@@ -14,6 +14,7 @@ import { IChatroomService } from './chatroom.interface';
 import * as bcrypt from 'bcrypt';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
+import { UpdateMemberDto } from 'src/chat/dto/update-member.dto';
 
 @Injectable()
 export class ChatroomService implements IChatroomService {
@@ -164,7 +165,7 @@ export class ChatroomService implements IChatroomService {
     return true;
   }
 
-  async updateChatroom(
+  async updateChatroomInfo(
     userId: number,
     chatroomId: number,
     updateChatroomDto: UpdateChatroomDto,
@@ -186,7 +187,7 @@ export class ChatroomService implements IChatroomService {
   }
 
   async getAllMembers(chatroomId: number) {
-    console.log('test', typeof chatroomId, chatroomId);
+    // console.log('test', typeof chatroomId, chatroomId);
     const queryResult = await this.chatMemebrRepository
       .createQueryBuilder('chat_member')
       .innerJoin(
@@ -198,7 +199,7 @@ export class ChatroomService implements IChatroomService {
       .innerJoinAndSelect('chat_member.User', 'user')
       .select(['chat_member', 'user.username', 'user.image_url'])
       .getMany();
-    console.log('members:', queryResult);
+    // console.log('members:', queryResult);
     return queryResult;
   }
 
@@ -224,6 +225,27 @@ export class ChatroomService implements IChatroomService {
     await this.chatMemebrRepository.save(chatroomMember);
     this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
     // return chatroomMember;
+  }
+
+  async updateMemberInfo(
+    userId: number,
+    chatroomId: number,
+    updateMemberDto: UpdateMemberDto,
+  ) {
+    const chatroom = await this.findChatroomByIdOrFail(chatroomId);
+    const user = await this.findUserByIdOrFail(userId);
+    if (user.id === chatroom.ownerId) {
+      // owner
+      // mute
+      // ban
+      // block
+      // set ad admin
+    } else {
+      // participant
+    }
+    const updatedMember = await this.chatMemebrRepository.update(userId, {});
+    console.log('updated member:', updatedMember);
+    return updatedMember;
   }
 
   async deleteMembers(userId: number, chatroomId: number) {
@@ -256,6 +278,21 @@ export class ChatroomService implements IChatroomService {
   async postContents(userId: number, chatroomId: number, content: string) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
+    const chatMember = await this.chatMemebrRepository
+      .createQueryBuilder('chat_member')
+      .where('chat_member.user_id=:userId', { userId })
+      .getOne();
+
+    if (!chatMember) {
+      throw new BadRequestException(
+        `User of id:${userId} is not a member of chatroom of id:${chatroomId}`,
+      );
+    }
+
+    if (chatMember.mutedDate !== null) {
+      return;
+    }
+
     const newContent = this.chatContentRepository.create({
       userId,
       chatroomId,
