@@ -43,7 +43,7 @@ const GameSettingModal = ({
       console.log(
         `game room name : ${roomName}, ball size : ${ballSize}, ball speed : ${speed}`
       );
-      
+
       setRoomName("");
       // router.push(`/Game/test!!!`);
     },
@@ -81,7 +81,20 @@ const GameSettingModal = ({
     // 완료된 소켓! 받은후에 이동
     socket?.on("enterGame", (roomName: string) => {
       console.log(roomName, " is room name from server event: enterGame");
-      router.push(`/Game/${roomName}`);
+      /**
+       * 볼 사이즈,
+       * 볼 속도
+       * 오너이름
+       * 플레이어이름
+       * 나의역활
+       */
+      router.push({
+        pathname: `/Game/${roomName}`,
+        query: {
+          myRole: "owner",
+          // otherPlayerName,
+        },
+      });
     });
     return () => {
       console.log("off socket in game setting modal");
