@@ -96,6 +96,14 @@ export default function Gaming({
   );
 
   useEffect((): (() => void) => {
+    /**
+     * myRole : player | owner
+     * 
+     * if myRole: watcher {
+     *  socket.emit('watchGame', 'roomName')
+     * }
+     * socket.on ('live_game', data)
+     */
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
