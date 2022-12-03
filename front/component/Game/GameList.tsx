@@ -10,7 +10,11 @@ export default function GameList({ accessToken }: { accessToken: string }) {
   // 리스트는 밑에 출력,
   // 게임이름이 라우팅으로
 
+  const showList = (list: string[]) => {
+    console.log(list);
+  };
   useEffect((): (() => void) => {
+    socket?.emit("room-list", showList);
     // socket?.on("gameList", (res) => {
     //   console.log("game list ", socket.id);
     //   const gameList = res;

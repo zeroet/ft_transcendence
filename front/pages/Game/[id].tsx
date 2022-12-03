@@ -39,7 +39,7 @@ export default function Gaming({
   otherPlayerName: string;
 }) {
   const { data, error } = useSWR("/api/users");
-  const [socket] = useSocket(accessToken, "game");
+  const [socket, disconnect] = useSocket(accessToken, "game");
   const [isGameover, setIsGameover] = useState<boolean>(false);
   // otherPlayerName없어서 대체용
   const otherPlayerNameTest = "나중에 이거 지워야함";
@@ -103,6 +103,7 @@ export default function Gaming({
     return () => {
       // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
+      disconnect();
     };
   }, [router.query.id]);
 
