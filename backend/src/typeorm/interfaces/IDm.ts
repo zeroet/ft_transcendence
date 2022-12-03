@@ -1,7 +1,7 @@
 import { IUser } from './IUser';
 
 export interface IDm {
-  dmId: number;
+  id: number;
   senderId: number;
   receiverId: number;
   content: string;

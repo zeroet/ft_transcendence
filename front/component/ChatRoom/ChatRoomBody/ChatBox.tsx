@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 
 interface TypeProps {
   onChangeInputText: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -12,7 +12,7 @@ const ChatBox = ({
   inputText,
 }: TypeProps) => {
   return (
-    <form className="chat-box">
+    <form className="chat-box" method="post">
       <input
         autoFocus
         onChange={onChangeInputText}

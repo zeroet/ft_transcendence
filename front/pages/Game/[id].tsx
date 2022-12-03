@@ -8,8 +8,9 @@ import TwoFactorModal from "../../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Gameover from "../../component/Game/PlayGame/Gameover";
 
 interface GameElement {
   ballX: number;
@@ -17,26 +18,41 @@ interface GameElement {
   ballSize: number;
   leftPaddle: number;
   rightPaddle: number;
-  myScore: string;
-  otherSideScore: string;
+  ownerScore: string;
+  playerScore: string;
 }
 
-export default function Gaming({ accessToken }: { accessToken: string }) {
-  // https://www.kindacode.com/article/react-get-the-position-x-y-of-an-element/
-  // https://www.daleseo.com/css-position/
-  // https://linguinecode.com/post/how-to-use-react-useref-with-typescript
-  // //////////////////////////////////////////////////////// ref 원도우 사이즈 알기위함
-  // ref를 이용해서 윈도우 사이즈를 얻어, right paddle오른쪽값주고, 공도 relative로 사이즈를 주자
-  const windowSize = useRef();
+// const ballLeftMax: 0;
+// const ballRightMax: 1375;
+// const ballTopMax : 0;
+// const ballBottomMax : 725
+// const PaddleTopMax: 0;
+// const paddleBottomMax: 650;
 
+export default function Gaming({
+  accessToken,
+  myRole,
+  otherPlayerName,
+}: {
+  accessToken: string;
+  myRole: string;
+  otherPlayerName: string;
+}) {
   const { data, error } = useSWR("/api/users");
   const [socket] = useSocket(accessToken, "game");
+  const [isGameover, setIsGameover] = useState<boolean>(false);
+  // otherPlayerName없어서 대체용
+  const otherPlayerNameTest = "나중에 이거 지워야함";
+  // 방 이름 확인용. useEffect써서 리랜더링용
   const router = useRouter();
-
-  console.log(windowSize);
   // 마운트 파트
-  // 게임
-  //   const [gameChanged, setGameChanged] = useState<GameElement | undefined>(undefined);
+  const [ballX, setBallX] = useState<number>(1375 / 2);
+  const [ballY, setBallY] = useState<number>(725 / 2);
+  const [ballSize, setBallSize] = useState<number>(50);
+  const [leftPaddle, setLeftPaddle] = useState<number>(650 / 2);
+  const [rightPaddle, setRightPaddle] = useState<number>(650 / 2);
+  const [ownerScore, setOwnerScore] = useState<number>(0);
+  const [playerScore, setPlayerScore] = useState<number>(0);
   /**
    * ///////////////////////////////////////////////////////모든 위치 : 볼, 패들 을 중간값으로 주어야한다.
    */
@@ -45,15 +61,6 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
    *
    *
    */
-  const [gameChanged, setGameChanged] = useState<GameElement | undefined>({
-    ballX: 1475, // 0 ~ 1375
-    ballY: 730, // 0 ~ 730
-    ballSize: 50,
-    leftPaddle: 650, // 0 ~ 650
-    rightPaddle: 50,
-    myScore: "1",
-    otherSideScore: "3",
-  });
 
   /**
    * /////////////////////////////////////////////////////// room 모든사람이아니라, room에 있는 플레이어들의 목록을 받아야함
@@ -63,57 +70,41 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
    * /////////////////////////////////////////////////////// @param e 이벤트
    * @returns
    */
-  const onChangeftPaddle = (e: KeyboardEvent) => {
-    if (gameChanged === undefined) return;
-    const key = e.key;
-    if (key === "w" || key === "s") {
-      if (!(gameChanged.leftPaddle > 0 && gameChanged.leftPaddle < 100)) return;
-      if (key === "w") {
-        // real
-        // socket?.emit("paddle", {
-        //   key: "up",
-        // });
-        // test
-        const value = gameChanged.leftPaddle - 1;
-        setGameChanged({
-          ...gameChanged,
-          leftPaddle: value,
-        });
-        console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
-      } else {
-        // real
-        socket?.emit("paddle", {
-          key: "down",
-        });
-        // test
-        // setGameChanged({
-        //   ...gameChanged,
-        //   leftPaddle: gameChanged.leftPaddle + 1,
-        // });
-        console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
+  // 문제: state가 객체로 되어있으면, 포인터가 바뀌는것이 아니기때문에,
+  // 전체가 변화하지않음
+  const onChangePaddle = useCallback(
+    (e: KeyboardEvent) => {
+      const key = e.key;
+      if (key === "w" || key === "s") {
+        if (!(leftPaddle >= 0 && leftPaddle <= 650)) return;
+        if (key === "w") {
+          socket?.emit("paddle", {
+            myRole,
+            key: "up",
+          });
+          console.log(`left paddle 위치 :  ${leftPaddle}`);
+        } else {
+          socket?.emit("paddle", {
+            myRole,
+            key: "down",
+          });
+          console.log(`left paddle 위치 :  ${leftPaddle}`);
+        }
       }
-    }
-  };
+    },
+    [leftPaddle, rightPaddle]
+  );
 
   useEffect((): (() => void) => {
-    // socket?.on("connection");
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
-    window.addEventListener("keydown", onChangeftPaddle);
-    // socket?.on("playGame", async (res: GameElement) => {
-    //   setGameChanged(res);
-    /////////////////////////////////////////////////////// setState!!!로 리렌더하면서 애니메이션
-    // });
-    // console.log(window);
+    window.addEventListener("keydown", onChangePaddle);
     return () => {
+      // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
-      // socket?.off("playGame");
-      // socket?.leave(router.query.id);
     };
   }, [router.query.id]);
-  ///////////////////////////////////////////////////////// deps 는 state들 바뀔때마다?하지않아도될듯
-  ///////////////////////////////////////////////////////// set는 변하지않아도되므로!
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socket) return <Loading />;
@@ -123,12 +114,21 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
       {data.two_factor_activated && !data.two_factor_valid && (
         <TwoFactorModal />
       )}
+      {!isGameover && <Gameover />}
       <div className="grid-div">
         <GameList accessToken={accessToken} />
         <div className="play-game">
+          <div className="players-name">
+            <div className="players-name">
+              {myRole === "owner" ? data.username : otherPlayerNameTest}
+            </div>
+            <div className="players-name">
+              {myRole === "player" ? data.username : otherPlayerNameTest}
+            </div>
+          </div>
           <div className="score">
-            <div className="score">{gameChanged?.myScore}</div>
-            <div className="score">{gameChanged?.otherSideScore}</div>
+            <div className="score">{ownerScore}</div>
+            <div className="score">{playerScore}</div>
           </div>
           <div className="ball"></div>
           <div className="paddle left"></div>
@@ -172,13 +172,13 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
           }
 
           .left {
-            // --position: ${gameChanged?.leftPaddle}px;
-            top: ${gameChanged && gameChanged.leftPaddle - 105}px;
+            // --position: ${leftPaddle}px;
+            top: ${leftPaddle - 160}px;
           }
 
           .right {
-            // --position: ${gameChanged?.rightPaddle}px;
-            top: ${gameChanged && gameChanged.rightPaddle - 105}px;
+            // --position: ${rightPaddle}px;
+            top: ${rightPaddle - 160}px;
             left: ${1500 - 10}px;
           }
 
@@ -190,25 +190,33 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
             color: var(--foregroud-color);
           }
 
+          .players-name {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 5vh;
+            color: gray;
+          }
+
           .score > * {
             flex-grow: 1;
             flex-basis: 0;
           }
 
-          .ball {
-            // --x: ${gameChanged && gameChanged.ballX - 80}px;
-            // --y: ${gameChanged && gameChanged.ballY - 80}px;
+          .players-name > * {
+            flex-grow: 1;
+            flex-basis: 0;
+          }
 
+          .ball {
             position: relative;
             background-color: var(--foreground-color);
-            // left: calc(var(--x) * 1vw);
-            // top: calc(var(--y) * 1vh);
-            left: ${gameChanged && gameChanged.ballX}px;
-            top: ${gameChanged && gameChanged.ballY - 80}px;
+            left: ${ballX}px;
+            top: ${ballY - 135}px;
             trasform: traslate(-50%, -50%);
             border-radius: 50%;
-            width: ${gameChanged && gameChanged.ballSize / 2}px;
-            height: ${gameChanged && gameChanged.ballSize / 2}px;
+            width: ${ballSize / 2}px;
+            height: ${ballSize / 2}px;
           }
         `}</style>
       </div>
@@ -219,7 +227,8 @@ export default function Gaming({ accessToken }: { accessToken: string }) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken } = cookie;
-  if (!accessToken) {
+  const { myRole } = context.query;
+  if (!accessToken || !myRole) {
     return {
       redirect: {
         destination: "/",
@@ -231,6 +240,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       accessToken,
+      myRole,
     },
   };
 };

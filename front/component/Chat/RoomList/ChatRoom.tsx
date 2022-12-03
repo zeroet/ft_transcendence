@@ -17,7 +17,7 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
 
   useEffect(() => {
     socket?.on("newRoomList", (data: string) => {
-      console.log(data);
+      console.log(data, " for new room list in ChatRoom socket!");
       mutate("/api/chatroom");
     });
     return () => {
@@ -35,14 +35,14 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
               <Link
                 href={{
                   pathname: `/Chat`,
-                  query: { id: room.chatroomId, link: "chat" },
+                  query: { id: room.id, link: "chatroom" },
                 }}
-                key={room.chatroomId}
+                key={room.id}
               >
                 <div className="room-li">
                   <img
                     src={
-                      room.password
+                      room.isPrivate
                         ? "/images/private.png"
                         : "/images/public.png"
                     }

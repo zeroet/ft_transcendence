@@ -34,43 +34,45 @@ export class ChatEventsGateway
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('message')
-  handleMessage(
-    @MessageBody() message: string,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    this.server.emit('message', socket.id, message);
-  }
+  // @SubscribeMessage('message')
+  // handleMessage(
+  //   @MessageBody() message: string,
+  //   @ConnectedSocket() socket: Socket,
+  // ) {
+  //   this.server.emit('message', socket.id, message);
+  // }
 
-  @SubscribeMessage('dm')
-  handleDmMessage(
-    @MessageBody() dmMessage: string,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    this.server.emit('dm', socket.id, dmMessage);
-  }
+  // @SubscribeMessage('dm')
+  // handleDmMessage(
+  //   @MessageBody() dmMessage: string,
+  //   @ConnectedSocket() socket: Socket,
+  // ) {
+  //   this.server.emit('dm', socket.id, dmMessage);
+  // }
 
-  @SubscribeMessage('join')
-  joinRoom(@MessageBody() name, @ConnectedSocket() socket: Socket) {
-    // const chatrooms = this.chatroomRepository.find();
-    this.server.emit('join');
-  }
+  // @SubscribeMessage('join')
+  // joinRoom(@MessageBody() name, @ConnectedSocket() socket: Socket) {
+  //   // const chatrooms = this.chatroomRepository.find();
+  //   this.server.emit('join');
+  // }
 
-  @SubscribeMessage('test')
-  test(socket: Socket, data: string) {
-    socket.on('test', () => console.log('test', data));
-  }
+  // @SubscribeMessage('test')
+  // test(socket: Socket, data: string) {
+  //   socket.on('test', () => console.log('test', data));
+  // }
 
   async handleConnection(socket: Socket) {
-    const payload = await this.authService.verify(
-      socket.handshake.headers.accesstoken,
-    );
+    // const payload = await this.authService.verify(
+    //   socket.handshake.headers.accesstoken,
+    // );
     // console.log(socket.handshake.headers.accesstoken);
     // this.logger.debug('Chat events handleConnection(): ', payload.id);
-    const user = await this.userService.getUserById(payload.id);
-    !user && socket.disconnect();
-
-    this.logger.debug(`User id:${user.id} has been connected`);
+    // const user = await this.userService.getUserById(payload.id);
+    // if (!user) {
+    //   socket.disconnect();
+    //   return;
+    // }
+    // this.logger.debug(`User id:${user.id} has been connected`);
     this.logger.debug(`Chat socket id:${socket.id} connected`);
   }
 
