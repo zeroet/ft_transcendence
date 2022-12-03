@@ -112,10 +112,9 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   @SubscribeMessage('room-list')
   handleRoomList() {
     try {
-      // for (const name of this.rooms.keys())
-      //   this.roomList.push(name);
-        // const names = this.roomList;
-      const names = ["abc", "accdd", "addffasd"];
+      for (const name of this.rooms.keys())
+        this.roomList.push(name);
+      const names = this.roomList;
       this.server.emit('room-list', { names })
     }
     catch{}
@@ -131,7 +130,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
          if (room.roomName === data.roomName) {
            watcher.join(data.roomName);
            room.Watchers.push(watcher);
-           this.server.to(data.roomName).emit('watcher', data.roomName);
+           this.server.to(data.roomName).emit('enterGame', data.roomName);
       }
   }
 }
