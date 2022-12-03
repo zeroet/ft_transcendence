@@ -56,19 +56,19 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   async handleDisconnect(@ConnectedSocket() client: Socket) {
     // Queue case 
     if (this.queueNormal.Players.indexOf(client) != -1)
-      return this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
+      return await this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
     
     // InGame case
     for (const room of this.rooms.values())
       if (room.Players.indexOf(client) != -1) {
         // game end 
-        client.leave(room.roomName);
+        await client.leave(room.roomName);
         return room.Players.splice(room.Players.indexOf(client), 1)
       }
     // Watcher case
     for (const room of this.rooms.values())
       if (room.Watchers.indexOf(client) != -1) {
-        client.leave(room.roomName);
+        await client.leave(room.roomName);
         return room.Watchers.splice(room.Watchers.indexOf(client), 1)
       }
     this.logger.log('disconnection', client.id);
