@@ -44,22 +44,22 @@ export class ChatMember implements IChatMember {
   })
   @Column({
     type: 'timestamp',
-    name: 'muted_date',
+    name: 'muted_at',
     nullable: true,
     default: null,
   })
-  mutedDate: Date | null;
+  mutedAt: Date | null;
 
   @ApiProperty({
-    description: 'ban time',
+    description: 'blocked time',
   })
   @Column({
     type: 'timestamp',
-    name: 'ban_date',
+    name: 'blocked_at',
     nullable: true,
     default: null,
   })
-  banDate: Date | null;
+  blockedAt: Date | null;
 
   @ApiProperty({
     description: 'created time',
