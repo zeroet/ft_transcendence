@@ -43,12 +43,17 @@ export class ChatroomService implements IChatroomService {
     return user;
   }
 
-  async findMemberByIdOrFail(userId: number, chatroomId?: number) {
+  async findMemberById(userId: number, chatroomId: number) {
     const member = await this.chatMemebrRepository
       .createQueryBuilder('chat_member')
       .where('chat_member.chatroom_id = :chatroomId', { chatroomId })
       .andWhere('chat_member.user_id = :userId', { userId })
       .getOne();
+    return member;
+  }
+
+  async findMemberByIdOrFail(userId: number, chatroomId: number) {
+    const member = await this.findMemberById(userId, chatroomId);
     if (!member) {
       throw new NotFoundException(
         `User of id:${userId} doesn't exist in the chatroom of id:${chatroomId}`,
@@ -57,17 +62,7 @@ export class ChatroomService implements IChatroomService {
     return member;
   }
 
-  async findMemberById(userId: number, chatroomId?: number) {
-    const member = await this.chatMemebrRepository
-      .createQueryBuilder('chat_member')
-      .where('chat_member.chatroom_id = :chatroomId', { chatroomId })
-      .andWhere('chat_member.user_id = :userId', { userId })
-      .getOne();
-    return member;
-  }
-
   async findChatroomByIdOrFail(chatroomId: number) {
-    // return await this.chatroomRepository.findOneBy({ chatroomId });
     const chatroom = await this.chatroomRepository
       .createQueryBuilder('chatroom')
       .addSelect('chatroom.password')
@@ -80,12 +75,16 @@ export class ChatroomService implements IChatroomService {
     return chatroom;
   }
 
-  async findChatroomByNameOrFail(chatroomName: string) {
-    const chatroom = await this.chatroomRepository
+  async findChatroomByName(chatroomName: string) {
+    return await this.chatroomRepository
       .createQueryBuilder('chatroom')
       .addSelect('chatroom.password')
       .where('chatroom.chatroom_name=:chatroomName', { chatroomName })
       .getOne();
+  }
+
+  async findChatroomByNameOrFail(chatroomName: string) {
+    const chatroom = await this.findChatroomByName(chatroomName);
     if (!chatroom) {
       console.log(
         `findChatroomByNameOrFail of id: '${chatroomName}' not found,`,
@@ -93,14 +92,6 @@ export class ChatroomService implements IChatroomService {
       throw new NotFoundException(`Chatroom of id:${chatroomName} not found`);
     }
     return chatroom;
-  }
-
-  async findChatroomByName(chatroomName: string) {
-    return await this.chatroomRepository
-      .createQueryBuilder('chatroom')
-      .addSelect('chatroom.password')
-      .where('chatroom.chatroom_name=:chatroomName', { chatroomName })
-      .getOne();
   }
 
   async getChatroomsInfo(chatrooms: IChatroom[]) {
@@ -196,7 +187,7 @@ export class ChatroomService implements IChatroomService {
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
     // const user = await this.findUserByIdOrFail(userId);
 
-    if (chatroom.ownerId !== member.id) {
+    if (chatroom.ownerId !== member.userId) {
       throw new UnauthorizedException(
         `No permission for User ${member.User.username}`,
       );
@@ -289,7 +280,7 @@ export class ChatroomService implements IChatroomService {
     // }
     let updatedMember = null;
     // owner
-    if (member.id === chatroom.ownerId) {
+    if (member.userId === chatroom.ownerId) {
       // mute
       if (updateMemberDto.mute === true) {
         updatedMember = await this.chatMemebrRepository.update(
@@ -350,7 +341,7 @@ export class ChatroomService implements IChatroomService {
     //   );
     // }
     // owner
-    if (member.id !== chatroom.ownerId) {
+    if (member.userId !== chatroom.ownerId) {
       throw new BadRequestException(
         `User of id:${userId} is not an owner of chatroom of id:${chatroomId}`,
       );

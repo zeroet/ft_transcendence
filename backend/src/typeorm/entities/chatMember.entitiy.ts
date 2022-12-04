@@ -19,21 +19,21 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity({ name: 'chat_member' })
 export class ChatMember implements IChatMember {
   @ApiProperty({
-    type: 'number',
+    type: Number,
     description: 'chatroom member id',
   })
   @PrimaryGeneratedColumn({ type: 'int', name: 'chatroom_member_id' })
   id: number;
 
   @ApiProperty({
-    type: 'number',
+    type: Number,
     description: 'user id',
   })
   @Column({ type: 'int', name: 'user_id' })
   userId: number;
 
   @ApiProperty({
-    type: 'number',
+    type: Number,
     description: 'chatroom id',
   })
   @Column({ type: 'int', name: 'chatroom_id' })

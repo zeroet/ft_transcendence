@@ -3,28 +3,28 @@ import { ChatMember } from 'src/typeorm';
 export class UpdateMemberDto extends PickType(ChatMember, []) {
   @ApiProperty({
     required: true,
-    type: 'number',
+    type: Number,
     description: 'Target user id',
   })
   targetUserId: number;
 
   @ApiProperty({
     required: false,
-    type: 'boolean',
+    type: Boolean,
     description: 'Block or not',
   })
   block?: boolean;
 
   @ApiProperty({
     required: false,
-    type: 'boolean',
+    type: Boolean,
     description: 'Mute or not',
   })
   mute?: boolean;
 
   @ApiProperty({
     required: false,
-    type: 'boolean',
+    type: Boolean,
     description: 'Kick or not',
   })
   kick?: boolean;
