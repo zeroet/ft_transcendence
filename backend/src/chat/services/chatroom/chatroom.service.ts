@@ -212,7 +212,7 @@ export class ChatroomService implements IChatroomService {
       .innerJoinAndSelect('chat_member.User', 'user')
       .select(['chat_member', 'user.username', 'user.image_url'])
       .getMany();
-    members = members.filter((member: any) => member.blockedAt === null);
+    members = members.filter((member: any) => member.bannedAt === null);
     // console.log('members:', members);
     return members;
   }
@@ -226,13 +226,13 @@ export class ChatroomService implements IChatroomService {
     //   .where('chat_member.chatroom_id=:chatroomId', { chatroomId })
     //   .andWhere('chat_member.user_id=:userId', { userId })
     //   .getOne();
-    if (member && member.blockedAt !== null) {
+    if (member && member.bannedAt !== null) {
       console.log(
-        `User is blokced from the chatroom of id${chatroomId}`,
+        `User is banned from the chatroom of id${chatroomId}`,
         member,
       );
       throw new UnauthorizedException(
-        `User is blokced from the chatroom of id:${chatroomId}`,
+        `User is banned from the chatroom of id:${chatroomId}`,
       );
     } else if (member) {
       console.log(
@@ -302,7 +302,7 @@ export class ChatroomService implements IChatroomService {
         updatedMember = await this.chatMemebrRepository.update(
           updateMemberDto.targetUserId,
           {
-            blockedAt: new Date(),
+            bannedAt: new Date(),
           },
         );
       }

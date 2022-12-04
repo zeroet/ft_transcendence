@@ -20,27 +20,27 @@ import { ApiProperty } from '@nestjs/swagger';
 export class ChatMember implements IChatMember {
   @ApiProperty({
     type: Number,
-    description: 'chatroom member id',
+    description: 'Chatroom member id',
   })
   @PrimaryGeneratedColumn({ type: 'int', name: 'chatroom_member_id' })
   id: number;
 
   @ApiProperty({
     type: Number,
-    description: 'user id',
+    description: 'User id',
   })
   @Column({ type: 'int', name: 'user_id' })
   userId: number;
 
   @ApiProperty({
     type: Number,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @Column({ type: 'int', name: 'chatroom_id' })
   chatroomId: number;
 
   @ApiProperty({
-    description: 'muted time',
+    description: 'Muted time',
   })
   @Column({
     type: 'timestamp',
@@ -51,24 +51,24 @@ export class ChatMember implements IChatMember {
   mutedAt: Date | null;
 
   @ApiProperty({
-    description: 'blocked time',
+    description: 'Banned time',
   })
   @Column({
     type: 'timestamp',
-    name: 'blocked_at',
+    name: 'banned_at',
     nullable: true,
     default: null,
   })
-  blockedAt: Date | null;
+  bannedAt: Date | null;
 
   @ApiProperty({
-    description: 'created time',
+    description: 'Created time',
   })
   @CreateDateColumn({ type: 'timestamp', name: 'created_at', select: false })
   readonly createdAt: Date;
 
   @ApiProperty({
-    description: 'created time',
+    description: 'Created time',
   })
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at', select: false })
   readonly modifiedAt: Date;

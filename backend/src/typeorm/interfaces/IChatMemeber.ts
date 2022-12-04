@@ -6,7 +6,7 @@ export interface IChatMember {
   userId: number;
   chatroomId: number;
   mutedAt: Date;
-  blockedAt: Date;
+  bannedAt: Date;
   createdAt: Date;
   modifiedAt: Date;
   Chatroom: IChatroom;
