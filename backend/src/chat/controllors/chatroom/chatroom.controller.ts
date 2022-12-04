@@ -76,7 +76,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':id')
@@ -94,7 +94,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiBody({
     type: String,
@@ -112,7 +112,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
   @Post(':id/update')
@@ -128,6 +128,27 @@ export class ChatroomController {
     );
   }
 
+  @ApiBody({
+    type: Number,
+    description: 'Target user id',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary: 'Change admin of a chatroom / 특정 대화방의 관리자 변경하기',
+  })
+  @Patch(':id/admin')
+  async changeAdmin(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body('targetUserId') targetUserId: number,
+  ) {
+    return this.chatroomService.changeAdmin(user.id, id, targetUserId);
+  }
+
   @ApiResponse({
     type: ChatMemberDto,
     description: 'Member list of a chatroom',
@@ -135,7 +156,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({
     summary:
@@ -153,7 +174,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({
     summary:
@@ -170,7 +191,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({
     summary:
@@ -196,7 +217,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({
     summary: 'Delete members to a chatroom / 특정 대화방에 참여자 삭제하기',
@@ -214,7 +235,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({
     summary:
@@ -235,7 +256,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({ summary: 'Post contents / 특정 대화방에 대화내용 입력하기' })
   @Post(':id/contents')

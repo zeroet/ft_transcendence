@@ -330,7 +330,7 @@ export class ChatroomService implements IChatroomService {
     return updatedMember;
   }
 
-  async changeOwner(userId: number, chatroomId: number, targetUserId: number) {
+  async changeAdmin(userId: number, chatroomId: number, targetUserId: number) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
     const targetUser = await this.findMemberByIdOrFail(
