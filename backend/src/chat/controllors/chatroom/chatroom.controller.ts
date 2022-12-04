@@ -242,8 +242,8 @@ export class ChatroomController {
       'Get all contents for a chatroom / 특정 대화방의 모든 대화내용 가져오기',
   })
   @Get(':id/contents')
-  async getContents(@Param('id') id: number) {
-    return await this.chatroomService.getContents(id);
+  async getContents(@User() user: IUser, @Param('id') id: number) {
+    return await this.chatroomService.getContents(user.id, id);
   }
 
   @ApiResponse({

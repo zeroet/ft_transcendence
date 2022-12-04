@@ -18,6 +18,13 @@ export class UpdateMemberDto extends PickType(ChatMember, []) {
   @ApiProperty({
     required: false,
     type: Boolean,
+    description: 'Ban or not',
+  })
+  ban?: boolean;
+
+  @ApiProperty({
+    required: false,
+    type: Boolean,
     description: 'Mute or not',
   })
   mute?: boolean;

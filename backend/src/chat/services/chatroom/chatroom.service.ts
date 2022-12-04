@@ -297,8 +297,8 @@ export class ChatroomService implements IChatroomService {
           chatroomId,
         );
       }
-      // block
-      else if (updateMemberDto.block === true) {
+      // ban
+      else if (updateMemberDto.ban === true) {
         updatedMember = await this.chatMemebrRepository.update(
           updateMemberDto.targetUserId,
           {
@@ -306,16 +306,15 @@ export class ChatroomService implements IChatroomService {
           },
         );
       }
-      // set ad admin
-      // else if (updateMemberDto.admin === true) {
-      //   await this.chatroomRepository.update(userId, {
-      //     ownerId: updateMemberDto.targetUserId,
-      //   });
-      // } else {
-      //   throw new BadRequestException(
-      //     `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
-      //   );
-      // }
+      // block
+      if (updateMemberDto.block === true) {
+        // updatedMember = await this.chatMemebrRepository.update(
+        //   updateMemberDto.targetUserId,
+        //   {
+        //     bannedAt: new Date(),
+        //   },
+        // );
+      }
     }
     console.log('updated member:', updatedMember);
     return updatedMember;
@@ -370,15 +369,23 @@ export class ChatroomService implements IChatroomService {
     this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
   }
 
-  async getContents(chatroomId: number) {
+  async getContents(userId: number, chatroomId: number) {
     // const chatroom = await this.findChatroomByIdOrFail(chatroomId);
-    const contents = await this.chatContentRepository
+    const user = await this.findUserByIdOrFail(userId);
+    let contents = await this.chatContentRepository
       .createQueryBuilder('chat_content')
       .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
       .innerJoinAndSelect('chat_content.User', 'user')
-      .select(['chat_content', 'user.username'])
+      // .where('user.block_user_id=:blockUserId', { blockUserId: null })
+      .select(['chat_content', 'user.username', 'user.blockUserId'])
       .getMany();
-    // console.log(`chat content of chatroom id: ${chatroom.id}`, chatContent);
+    if (contents) {
+      console.log('contents', contents);
+    }
+    contents = contents.filter(
+      (content: any) => content.User.blockUserId === null,
+    );
+    console.log(`chat content of chatroom id: ${chatroomId}`, contents);
     return contents;
   }
 

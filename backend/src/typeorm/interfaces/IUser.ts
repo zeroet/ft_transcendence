@@ -3,6 +3,7 @@ import { IChatMember } from './IChatMemeber';
 
 export interface IUser {
   id: number;
+  blockUserId: number;
   intra_id: string;
   email: string;
   image_url: string;

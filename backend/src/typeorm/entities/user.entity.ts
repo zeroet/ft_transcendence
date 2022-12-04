@@ -13,12 +13,30 @@ import { IUser } from '../interfaces/IUser';
 import { ChatContent } from './chatContent.entity';
 import { ChatMember } from './chatMember.entitiy';
 import { Dm } from './dm.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'users' })
 export class User implements IUser {
+  @ApiProperty({
+    required: true,
+    example: 1,
+    description: 'User id',
+  })
   @PrimaryGeneratedColumn({ type: 'int', name: 'user_id' })
   id: number;
 
+  @ApiProperty({
+    type: Number,
+    description: 'Block user id',
+  })
+  @Column({ type: 'int', name: 'block_user_id', nullable: true, default: null })
+  blockUserId: number;
+
+  @ApiProperty({
+    required: true,
+    example: 'cjung-mo',
+    description: 'Intra_id',
+  })
   @Column({
     type: 'varchar',
     name: 'intra_id',
@@ -28,6 +46,11 @@ export class User implements IUser {
   })
   intra_id: string;
 
+  @ApiProperty({
+    required: true,
+    example: 'cjung-mo@student.42.fr',
+    description: 'User email',
+  })
   @Column({
     type: 'varchar',
     name: 'email',
@@ -37,9 +60,20 @@ export class User implements IUser {
   })
   email: string;
 
+  @ApiProperty({
+    required: true,
+    example:
+      'https://cdn.intra.42.fr/users/a74759faaa286d38f1362d6638daf1c0/cjung-mo.jpg',
+    description: 'User image_url',
+  })
   @Column({ type: 'text', name: 'image_url', nullable: true })
   image_url: string;
 
+  @ApiProperty({
+    required: true,
+    example: 'jungmoo cheon',
+    description: 'Username',
+  })
   @Column({
     type: 'varchar',
     name: 'username',
@@ -58,12 +92,27 @@ export class User implements IUser {
   @Column({ type: 'varchar', name: 'hashed_refresh_token', nullable: true })
   hashed_refresh_token: string;
 
+  @ApiProperty({
+    required: false,
+    example: 'false',
+    description: 'two_factor_activated',
+  })
   @Column({ type: 'boolean', name: 'two_factor_activated', default: false })
   two_factor_activated: boolean;
 
+  @ApiProperty({
+    required: false,
+    example: 'NUGQEHCBAAERQBQ6',
+    description: 'two_factor_secret',
+  })
   @Column({ type: 'varchar', name: 'two_factor_secret', nullable: true })
   two_factor_secret: string;
 
+  @ApiProperty({
+    required: false,
+    example: 'false',
+    description: 'two_factor_valid',
+  })
   @Column({ type: 'boolean', name: 'two_factor_valid', default: false })
   two_factor_valid: boolean;
 

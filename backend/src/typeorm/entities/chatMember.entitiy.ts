@@ -68,7 +68,7 @@ export class ChatMember implements IChatMember {
   readonly createdAt: Date;
 
   @ApiProperty({
-    description: 'Created time',
+    description: 'Modified time',
   })
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at', select: false })
   readonly modifiedAt: Date;
