@@ -164,6 +164,9 @@ export class ChatroomController {
     return await this.chatroomService.postMembers(user.id, id);
   }
 
+  @ApiBody({
+    type: UpdateMemberDto,
+  })
   @ApiParam({
     name: 'id',
     example: 1,
