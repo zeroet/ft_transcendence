@@ -94,7 +94,9 @@ export default function Chat({
 
         {/* ///////////////////////////////////////// */}
         {/* 참가자 부분 */}
-        {!isId && <Participant id={id} ownerId={null} />}
+        {!isId && (
+          <Participant id={id} ownerId={null} accessToken={accessToken} />
+        )}
         {isId && id.link === "chatroom" && roomData && (
           <Participant
             id={id}
