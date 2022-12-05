@@ -15,6 +15,7 @@ import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
 import { TypeChatId } from "../interfaceType";
+import Header from "../component/Header/Header";
 
 export default function Chat({ id }: { id: TypeChatId }) {
   const isId = Object.keys(id).length !== 0;
@@ -56,6 +57,7 @@ export default function Chat({ id }: { id: TypeChatId }) {
   if (!userData || (id.id && !roomData)) return <Loading />;
   return (
     <Layout>
+      <Header id={id} />
       <Title title="ChatRoom" />
       {userData.two_factor_activated && !userData.two_factor_valid && (
         <TwoFactorModal />
