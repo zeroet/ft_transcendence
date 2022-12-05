@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
@@ -14,6 +15,7 @@ import { DmService } from './services/dm/dm.service';
     TypeOrmModule.forFeature([User, Block, Chatroom, ChatMember, ChatContent]),
     UsersModule,
     AuthModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [DmController, ChatroomController],
   providers: [

@@ -15,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
 import { UpdateMemberDto } from 'src/chat/dto/update-member.dto';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 @Injectable()
 export class ChatroomService implements IChatroomService {
@@ -29,6 +30,7 @@ export class ChatroomService implements IChatroomService {
     private userRepository: Repository<User>,
     @InjectRepository(Block)
     private blockRepository: Repository<Block>,
+    private readonly schedulerRegistry: SchedulerRegistry,
     private dataSource: DataSource,
     private chatEventsGateway: ChatEventsGateway,
   ) {}
@@ -109,6 +111,33 @@ export class ChatroomService implements IChatroomService {
 
   hashData(data: string) {
     return bcrypt.hash(data, 11);
+  }
+
+  addNewTimeout(
+    timeoutName: string,
+    targetUserId: number,
+    chatroomId: number,
+    milliseconds: number,
+  ) {
+    const callback = async () => {
+      console.log(`Timeout ${timeoutName} executing after ${milliseconds}`);
+      const targetUser = await this.findMemberById(targetUserId, chatroomId);
+      targetUser.mutedAt = null;
+      await this.chatMemebrRepository.save(targetUser);
+      this.schedulerRegistry.deleteTimeout(timeoutName);
+    };
+    const timeout = setTimeout(callback, milliseconds);
+    this.schedulerRegistry.addTimeout(timeoutName, timeout);
+  }
+
+  deleteTimeout(timeoutName: string) {
+    this.schedulerRegistry.deleteTimeout(timeoutName);
+  }
+
+  getTimeouts() {
+    const timeouts = this.schedulerRegistry.getTimeouts();
+    timeouts.forEach((key) => console.log(`Timout name: ${key}`));
+    return timeouts;
   }
 
   async getAllChatrooms(): Promise<ChatroomDto[]> {
@@ -223,11 +252,6 @@ export class ChatroomService implements IChatroomService {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
     const member = await this.findMemberById(userId, chatroomId);
-    // const member = await this.chatMemebrRepository
-    //   .createQueryBuilder('chat_member')
-    //   .where('chat_member.chatroom_id=:chatroomId', { chatroomId })
-    //   .andWhere('chat_member.user_id=:userId', { userId })
-    //   .getOne();
     if (member && member.bannedAt !== null) {
       console.log(
         `User is banned from the chatroom of id${chatroomId}`,
@@ -281,7 +305,8 @@ export class ChatroomService implements IChatroomService {
       updatedMember = await this.chatMemebrRepository.update(
         updateMemberDto.targetUserId,
         {
-          bannedAt: new Date(),
+          // bannedAt: this.addNewTimeout(`${targetUser.id}_banned`, 1000),
+          // bannedAt: new Date(),
         },
       );
     }
@@ -326,15 +351,6 @@ export class ChatroomService implements IChatroomService {
   async deleteMembers(userId: number, chatroomId: number) {
     await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
-    // const member = await this.chatMemebrRepository
-    //   .createQueryBuilder('chat_member')
-    //   .where('chat_member.chatroom_id=:chatroomId', { chatroomId })
-    //   .andWhere('chat_member.user_id=:userId', { userId })
-    //   .getOne();
-    // if (!member)
-    //   throw new BadRequestException(
-    //     `User of id:${userId} not exists in chatroom of id:${chatroomId}`,
-    //   );
     this.chatMemebrRepository.remove(member);
     this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
   }
@@ -378,21 +394,10 @@ export class ChatroomService implements IChatroomService {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
-    // const member = await this.chatMemebrRepository
-    //   .createQueryBuilder('chat_member')
-    //   .where('chat_member.user_id=:userId', { userId })
-    //   .getOne();
-
-    // if (!member) {
-    //   throw new BadRequestException(
-    //     `User of id:${userId} is not a member of chatroom of id:${chatroomId}`,
-    //   );
-    // }
 
     if (member.mutedAt !== null) {
       return;
     }
-
     const newContent = this.chatContentRepository.create({
       userId,
       chatroomId,
