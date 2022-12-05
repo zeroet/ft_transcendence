@@ -1,14 +1,13 @@
-// 방 관리자일때와 아닐때를 나눠야함.
-// 우선 일반적인 경우 -> exit the room 만 기본설정으로
-
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
+import ChangeNameAndPW from "./ChatroomSettingModal/ChangeNameAndPW";
 
-export default function ChatroomSettingModal() {
+export default function ChatroomSettingModal({ roomId }: { roomId: string }) {
   const [socket] = useSocket(null, "chat");
   const router = useRouter();
+  const [showChangeModal, setShowChangeModal] = useState<Boolean>(false);
 
   const onClickExitRoom = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -19,16 +18,22 @@ export default function ChatroomSettingModal() {
      * socket.emit('방폭파')
      * })
      */
+    console.log("방 폭파!");
   }, []);
 
-  const onClickChangePW = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    /**
-     * 방 바꾸는 모달 보여주고,
-     * 그 모달안에서 axios로 방 이름, 패스워드 변경
-     */
-  }, []);
+  const onClickChangePWAndName = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      /**
+       * 방 바꾸는 모달 보여주고,
+       * 그 모달안에서 axios로 방 이름, 패스워드 변경
+       */
+      console.log("셋팅 화면 출력");
+      setShowChangeModal(true);
+    },
+    []
+  );
 
   useEffect(() => {
     socket?.on("방 폭파", () => {
@@ -43,11 +48,17 @@ export default function ChatroomSettingModal() {
   if (!socket) return <Loading />;
   return (
     <div>
+      {showChangeModal && (
+        <ChangeNameAndPW
+          setShowChangeModal={setShowChangeModal}
+          roomId={roomId}
+        />
+      )}
       <div className="box">
         <div className="div-button" onClick={onClickExitRoom}>
           <h1>Exit the room</h1>
         </div>
-        <div className="div-button" onClick={onClickChangePW}>
+        <div className="div-button" onClick={onClickChangePWAndName}>
           <h1>Change Password</h1>
         </div>
       </div>
@@ -58,7 +69,7 @@ export default function ChatroomSettingModal() {
         .box {
           font-family: "Fragment Mono", monospace;
           position: absolute;
-          top: 130px;
+          top: 160px;
           right: 300px;
 
           width: 240px;

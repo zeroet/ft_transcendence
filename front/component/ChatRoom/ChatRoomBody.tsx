@@ -94,7 +94,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
     <div className={styles.box}>
       {showModal && (
         <div ref={refModal} className="ChatroomSettingModal">
-          <ChatroomSettingModal />
+          <ChatroomSettingModal roomId={id.id} />
         </div>
       )}
       <div className="roomname-header">
