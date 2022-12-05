@@ -15,15 +15,21 @@ import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
 import { TypeChatId } from "../interfaceType";
+import Header from "../component/Header/Header";
 
-export default function Chat({ id }: { id: TypeChatId }) {
+export default function Chat({
+  id,
+  accessToken,
+}: {
+  id: TypeChatId;
+  accessToken: string;
+}) {
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
   const { data: roomData, error: roomError } = useSWR(
     isId ? `/api/${id.link}/${id.id}` : null,
     isId ? fetcher : null
   );
-  const [socket] = useSocket(null, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
   // 룸 데이터 이동 확인용, 모달용
@@ -56,6 +62,7 @@ export default function Chat({ id }: { id: TypeChatId }) {
   if (!userData || (id.id && !roomData)) return <Loading />;
   return (
     <Layout>
+      <Header id={id} />
       <Title title="ChatRoom" />
       {userData.two_factor_activated && !userData.two_factor_valid && (
         <TwoFactorModal />
@@ -87,9 +94,15 @@ export default function Chat({ id }: { id: TypeChatId }) {
 
         {/* ///////////////////////////////////////// */}
         {/* 참가자 부분 */}
-        {!isId && <Participant id={id} ownerId={null} />}
+        {!isId && (
+          <Participant id={id} ownerId={null} accessToken={accessToken} />
+        )}
         {isId && id.link === "chatroom" && roomData && (
-          <Participant id={id} ownerId={roomData.ownerId} />
+          <Participant
+            id={id}
+            ownerId={roomData.ownerId}
+            accessToken={accessToken}
+          />
         )}
         {/* {isId && id.link === "dm" && (
           <Participant id={id} ownerId={roomData.ownerId} />
@@ -128,5 +141,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   // tokenManager(cookie);
-  return { props: { id } };
+  return { props: { id, accessToken } };
 };
