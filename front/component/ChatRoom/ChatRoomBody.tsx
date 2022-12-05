@@ -16,23 +16,26 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   const { data, error } = useSWR(`/api/${id.link}/${id.id}`);
   const [inputText, setInputText] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
-  const el = useRef<HTMLInputElement>(null);
+  const refModal = useRef<any>(null);
   const { data: chatContentsData, error: chatContentsError } = useSWR<
     IChatContent[]
   >(`/api/${id.link}/${id.id}/contents`);
-  const handleCloseModal = (e: any) => {
-    if (showModal && (!el.current || !el.current.contains(e.target))) {
-      // console.log("close modal");
-      setShowModal(false);
-    }
-  };
+
+  const handleCloseModal = useCallback(
+    (e: any) => {
+      if (!refModal?.current?.contains(e.target)) {
+        setShowModal(false);
+      }
+    },
+    [showModal, refModal]
+  );
 
   useEffect(() => {
     window.addEventListener("click", handleCloseModal);
     return () => {
       window.removeEventListener("click", handleCloseModal);
     };
-  }, [showModal]);
+  }, []);
 
   const onChangeInputText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,12 +84,16 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   ) => {
     e.stopPropagation();
     e.preventDefault();
-    setShowModal((curr) => !curr);
+    setShowModal(true);
   };
 
   return (
     <div className={styles.box}>
-      {showModal && <ChatroomSettingModal />}
+      {showModal && (
+        <div ref={refModal}>
+          <ChatroomSettingModal />
+        </div>
+      )}
       <div className="roomname-header">
         <div className="roomname-img">
           <h1>{data.chatroomName}</h1>
