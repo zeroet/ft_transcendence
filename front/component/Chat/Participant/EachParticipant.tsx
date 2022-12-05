@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 import useSWR from "swr";
+import ParticipantSettingModal from "./ParticipantSettingModal";
 
 const EachParticipant = ({
   username,
@@ -31,9 +32,10 @@ const EachParticipant = ({
   );
   return (
     <div className="user">
-      {showModal && <h1>modal</h1>}
-      {showModal && isOwner && <h1>modal with owner</h1>}
       <div onClick={onClickEachParticipant}># {username}</div>
+      {showModal && (
+        <ParticipantSettingModal isOwner={isOwner} userId={userId} />
+      )}
       <style jsx>{`
         .user {
           cursor: pointer;
