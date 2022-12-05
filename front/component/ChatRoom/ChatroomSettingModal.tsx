@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
+import { mutate } from "swr";
 import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
 import ChangeNameAndPW from "./ChatroomSettingModal/ChangeNameAndPW";
@@ -39,6 +40,9 @@ export default function ChatroomSettingModal({ roomId }: { roomId: string }) {
     socket?.on("방 폭파", () => {
       //  방에서 쫓겨나도록
       router.push("/chat");
+    });
+    socket?.on("방이름변경", () => {
+      mutate(`/api/chatroom/${roomId}`);
     });
     return () => {
       socket?.off("방 폭파");
