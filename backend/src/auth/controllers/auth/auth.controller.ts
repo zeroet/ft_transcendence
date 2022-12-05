@@ -51,7 +51,7 @@ export class AuthController {
   }
 
   @Redirect('http://localhost:8000/Home', 301)
-  @Post('test')
+  @Post('dummy')
   async test(@Res({ passthrough: true }) res) {
     const user = await this.authService.createDummyUser();
     console.log('test:', user);

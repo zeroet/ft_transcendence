@@ -31,11 +31,17 @@ export class Dm implements IDm {
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
   readonly modifiedAt: Date;
 
-  @ManyToOne((type) => User, (User) => User.DmSender)
+  @ManyToOne((type) => User, (User) => User.DmSender, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'sender', referencedColumnName: 'id' })
   Sender: IUser;
 
-  @ManyToOne((type) => User, (User) => User.DmReceiver)
+  @ManyToOne((type) => User, (User) => User.DmReceiver, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'receiver', referencedColumnName: 'id' })
   Receiver: IUser;
 }

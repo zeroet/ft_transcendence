@@ -6,6 +6,7 @@ import {
   Inject,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -23,6 +24,7 @@ import { ChatMemberDto } from 'src/chat/dto/chat.member.dto';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
+import { UpdateMemberDto } from 'src/chat/dto/update-member.dto';
 import { IChatroomService } from 'src/chat/services/chatroom/chatroom.interface';
 import { IUser } from 'src/typeorm/interfaces/IUser';
 import { User } from 'src/utils/decorators/user.decorator';
@@ -74,7 +76,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':id')
@@ -87,18 +89,18 @@ export class ChatroomController {
 
   @ApiResponse({
     type: Boolean,
-    description: 'password validation',
+    description: 'Password validation',
   })
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiBody({
     type: String,
     description: 'password that a user entered',
   })
-  @ApiOperation({ summary: 'verify chatroom password / 대화방 비밀번호 확인' })
+  @ApiOperation({ summary: 'Verify chatroom password / 대화방 비밀번호 확인' })
   @Post(':id/password')
   async verifyChatroomPassword(
     @Param('id') id: number,
@@ -110,16 +112,57 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
+  })
+  @ApiOperation({ summary: 'Delete a chatroom / 특정 대화방 삭제하기' })
+  @Delete(':id')
+  async deleteChatroom(@User() user: IUser, @Param('id') id: number) {
+    return 'delete chatroom test...';
+  }
+
+  @ApiBody({
+    type: UpdateChatroomDto,
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
   })
   @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
-  @Post(':id/update')
+  @Patch(':id/update')
   updateChatroom(
     @User() user: IUser,
     @Param('id') id: number,
     @Body() updateChatroomDto: UpdateChatroomDto,
   ) {
-    return this.chatroomService.updateChatroom(user.id, id, updateChatroomDto);
+    console.log('chatroomId:', id);
+    console.log('updateChatroomDto:', updateChatroomDto);
+    return this.chatroomService.updateChatroomInfo(
+      user.id,
+      id,
+      updateChatroomDto,
+    );
+  }
+
+  @ApiBody({
+    type: Number,
+    description: 'Target user id',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary: 'Change admin of a chatroom / 특정 대화방의 관리자 변경하기',
+  })
+  @Patch(':id/admin')
+  async changeAdmin(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body('targetUserId') targetUserId: number,
+  ) {
+    return this.chatroomService.changeAdmin(user.id, id, targetUserId);
   }
 
   @ApiResponse({
@@ -129,7 +172,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({
     summary:
@@ -147,15 +190,42 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({
     summary:
       'Post members to a chatroom / 특정 대화방에 새로운 참여자 추가하기',
   })
   @Post(':id/members')
-  postMembers(@User() user: IUser, @Param('id') id: number) {
-    return this.chatroomService.postMembers(user.id, id);
+  async postMembers(@User() user: IUser, @Param('id') id: number) {
+    return await this.chatroomService.postMembers(user.id, id);
+  }
+
+  @ApiBody({
+    type: UpdateMemberDto,
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary:
+      'Update members of a chatroom / 특정 대화방의 참여자 정보 수정하기',
+  })
+  @Patch(':id/members/update')
+  async updateMembersInfo(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body() updateMemberDto: UpdateMemberDto,
+  ) {
+    console.log('updateMemberDto:', updateMemberDto);
+    console.log('chatroomId:', id);
+    return await this.chatroomService.updateMemberInfo(
+      user.id,
+      id,
+      updateMemberDto,
+    );
   }
 
   @ApiResponse({
@@ -165,7 +235,7 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({
     summary: 'Delete members to a chatroom / 특정 대화방에 참여자 삭제하기',
@@ -183,17 +253,20 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({
     summary:
       'Get all contents for a chatroom / 특정 대화방의 모든 대화내용 가져오기',
   })
   @Get(':id/contents')
-  async getContents(@Param('id') id: number) {
-    return await this.chatroomService.getContents(id);
+  async getContents(@User() user: IUser, @Param('id') id: number) {
+    return await this.chatroomService.getContents(user.id, id);
   }
 
+  @ApiResponse({
+    type: ChatMemberDto,
+  })
   @ApiBody({
     type: String,
     description: 'content that a user entered',
@@ -201,15 +274,15 @@ export class ChatroomController {
   @ApiParam({
     name: 'id',
     example: 1,
-    description: 'chatroom id',
+    description: 'Chatroom id',
   })
   @ApiOperation({ summary: 'Post contents / 특정 대화방에 대화내용 입력하기' })
   @Post(':id/contents')
-  postContents(
+  async postContents(
     @User() user: IUser,
     @Param('id') id: number,
     @Body('content') content: string,
   ) {
-    return this.chatroomService.postContents(user.id, id, content);
+    return await this.chatroomService.postContents(user.id, id, content);
   }
 }

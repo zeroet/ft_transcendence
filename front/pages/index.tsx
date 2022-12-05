@@ -75,7 +75,7 @@ export default function Enter({ path }: { path: string }) {
   /** test용 */
   const test = async () => {
     await axios
-      .post("/api/auth/test")
+      .post("/api/auth/dummy")
       .then((res) => {
         console.log(res);
       })

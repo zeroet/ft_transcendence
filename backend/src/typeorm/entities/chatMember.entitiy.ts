@@ -19,65 +19,71 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity({ name: 'chat_member' })
 export class ChatMember implements IChatMember {
   @ApiProperty({
-    type: 'number',
-    description: 'chatroom member id',
+    type: Number,
+    description: 'Chatroom member id',
   })
   @PrimaryGeneratedColumn({ type: 'int', name: 'chatroom_member_id' })
   id: number;
 
   @ApiProperty({
-    type: 'number',
-    description: 'user id',
+    type: Number,
+    description: 'User id',
   })
   @Column({ type: 'int', name: 'user_id' })
   userId: number;
 
   @ApiProperty({
-    type: 'number',
-    description: 'chatroom id',
+    type: Number,
+    description: 'Chatroom id',
   })
   @Column({ type: 'int', name: 'chatroom_id' })
   chatroomId: number;
 
   @ApiProperty({
-    description: 'muted time',
+    description: 'Muted time',
   })
   @Column({
     type: 'timestamp',
-    name: 'muted_date',
+    name: 'muted_at',
     nullable: true,
     default: null,
   })
-  mutedDate: Date | null;
+  mutedAt: Date | null;
 
   @ApiProperty({
-    description: 'ban time',
+    description: 'Banned time',
   })
   @Column({
     type: 'timestamp',
-    name: 'ban_date',
+    name: 'banned_at',
     nullable: true,
     default: null,
   })
-  banDate: Date | null;
+  bannedAt: Date | null;
 
   @ApiProperty({
-    description: 'created time',
+    description: 'Created time',
   })
   @CreateDateColumn({ type: 'timestamp', name: 'created_at', select: false })
   readonly createdAt: Date;
 
   @ApiProperty({
-    description: 'created time',
+    description: 'Modified time',
   })
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at', select: false })
   readonly modifiedAt: Date;
 
-  @ManyToOne((type) => Chatroom, (Chatroom) => Chatroom.ChatMember)
+  @ManyToOne((type) => Chatroom, (Chatroom) => Chatroom.ChatMember, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'chatroom_id', referencedColumnName: 'id' })
   Chatroom: IChatroom;
 
-  @ManyToOne((type) => User, (User) => User.ChatMember)
+  @ManyToOne((type) => User, (User) => User.ChatMember, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'user', referencedColumnName: 'id' })
   User: IUser;
 }
