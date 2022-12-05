@@ -6,15 +6,12 @@ import cookies from "next-cookies";
 import useSWR from "swr";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
-import { useRouter } from "next/router";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import useSocket from "../component/Utils/socket";
-import { useEffect } from "react";
 
 export default function Home({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
-  const router = useRouter();
   const [socketGame] = useSocket(accessToken, "game");
   const [socketChat] = useSocket(accessToken, "chat");
 
@@ -37,8 +34,8 @@ export default function Home({ accessToken }: { accessToken: string }) {
         }}
       >
         {/* {data.two_factor_activated && <TwoFactorModal />} */}
-        <Profile />
-        <FriendStatus />
+        <Profile id="-1" />
+        <FriendStatus id="-1" />
       </div>
     </Layout>
   );

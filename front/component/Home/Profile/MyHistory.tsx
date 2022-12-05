@@ -7,7 +7,10 @@ import EachHistory from "./EachHistory";
 //   point: string,
 // }
 
-const MyHistory = () => {
+const MyHistory = ({ id }: { id: string }) => {
+  /**
+   * id == -1이면 본인 정보 내보내기
+   */
   // EachHistoty -> 5개만 얻어와서 map으로 출력
   return (
     <div>

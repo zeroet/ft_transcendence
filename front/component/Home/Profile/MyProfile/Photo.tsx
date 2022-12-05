@@ -1,11 +1,12 @@
 import { UserInfo } from "../../../../interfaceType";
 import useSWR from "swr";
 import Loading from "../../../errorAndLoading/Loading";
-import fetcher from "../../../Utils/fetcher";
 import axios from "axios";
 
-const Photo = () => {
-  const { data: user, error } = useSWR<UserInfo>("/api/users", fetcher);
+const Photo = ({ id }: { id: string }) => {
+  const { data: user, error } = useSWR<UserInfo>(
+    id === "-1" ? "/api/users" : `/api/users/${id}`
+  );
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!user) return <Loading />;

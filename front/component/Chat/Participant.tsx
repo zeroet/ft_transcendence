@@ -32,6 +32,7 @@ export default function Participant({
   const { data: roomMembersData, error: roomMembersError } = useSWR<
     IChatMember[]
   >(isId ? `/api/${id.link}/${id.id}/members` : null, isId ? fetcher : null);
+  const { data: myData, error: myError } = useSWR("/api/users");
 
   useEffect(() => {
     socket?.on("newMemberList", (res: String) => {
@@ -43,14 +44,14 @@ export default function Participant({
     return () => {
       socket?.off("newMemberList");
     };
-  }, [socket, roomMembersData, id.id]);
+  }, [socket, roomMembersData, id.id, myData]);
 
   if (isId && roomMembersData) {
     console.log(roomMembersData);
   }
-  if (roomMembersError)
+  if (roomMembersError || myError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if ((isId && !roomMembersData) || !socket) return <Loading />;
+  if ((isId && !roomMembersData) || !socket || !myData) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Participant</h1>
@@ -64,6 +65,7 @@ export default function Participant({
                   <EachParticipant
                     username={member.User.username}
                     userId={member.userId}
+                    isOwner={ownerId === myData.id}
                   />
                   {ownerId === member.userId && (
                     <img

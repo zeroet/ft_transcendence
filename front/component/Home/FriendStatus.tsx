@@ -1,6 +1,9 @@
 import styles from "../../styles/LayoutBox.module.css";
 
-export default function FriendStatus() {
+export default function FriendStatus({ id }: { id: string }) {
+  /**
+   * id === -1이면 내정보
+   */
   return (
     <div className={styles.box}>
       <h1>Friend Status</h1>
