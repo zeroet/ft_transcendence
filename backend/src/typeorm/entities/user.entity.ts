@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -114,8 +115,9 @@ export class User implements IUser {
   @Column({ type: 'boolean', name: 'two_factor_valid', default: false })
   two_factor_valid: boolean;
 
-  // @OneToMany((type) => Block, (Block) => Block.User)
-  // Block: IBlock[];
+  @OneToMany((type) => Block, (Block) => Block.User)
+  // @JoinColumn({ name: 'block', referencedColumnName: 'id' })
+  Block: IBlock[];
 
   @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.User)
   ChatMember: IChatMember[];

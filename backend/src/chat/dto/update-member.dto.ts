@@ -8,12 +8,12 @@ export class UpdateMemberDto extends PickType(ChatMember, []) {
   })
   targetUserId: number;
 
-  @ApiProperty({
-    required: false,
-    type: Boolean,
-    description: 'Block or not',
-  })
-  block?: boolean;
+  //   @ApiProperty({
+  //     required: false,
+  //     type: Boolean,
+  //     description: 'Block or not',
+  //   })
+  //   block?: boolean;
 
   @ApiProperty({
     required: false,
@@ -25,16 +25,16 @@ export class UpdateMemberDto extends PickType(ChatMember, []) {
   @ApiProperty({
     required: false,
     type: Boolean,
-    description: 'Mute or not',
+    description: 'Kick or not',
   })
-  mute?: boolean;
+  kick?: boolean;
 
   @ApiProperty({
     required: false,
     type: Boolean,
-    description: 'Kick or not',
+    description: 'Mute or not',
   })
-  kick?: boolean;
+  mute?: boolean;
 
   //   @ApiProperty({
   //     required: false,

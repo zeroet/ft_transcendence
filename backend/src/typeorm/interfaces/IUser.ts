@@ -14,7 +14,7 @@ export interface IUser {
   two_factor_activated: boolean;
   two_factor_secret: string;
   two_factor_valid: boolean;
-  // Block: IBlock[];
+  Block: IBlock[];
   ChatMember: IChatMember[];
   ChatContent: IChatContent[];
 }

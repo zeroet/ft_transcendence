@@ -1,18 +1,26 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
+  Post,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { IUserService } from 'src/users/services/user/user.interface';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserDto } from 'src/users/dto/user.dto';
 import { User } from 'src/utils/decorators/user.decorator';
 import { IUser } from 'src/typeorm/interfaces/IUser';
@@ -73,20 +81,35 @@ export class UsersController {
     return user;
   }
 
-  @ApiBody({
-    type: Number,
-    description: 'Target user id',
+  @ApiParam({
+    name: 'Block user id',
+    example: 12,
   })
-  @ApiOperation({ summary: 'Block a user / 특정 사용자 차단하기' })
-  @Patch('block')
+  @ApiOperation({ summary: 'Block a user by id / id로 특정 사용자 차단하기' })
+  @Post('block/:blockUserId')
   async blockUser(
     @User() user: IUser,
-    @Body('targetUserId') targetUserId: number,
+    @Param('blockUserId') blockUserId: number,
   ) {
-    console.log('targetUserId:', targetUserId);
-    return await this.userService.blockUser(user.id, targetUserId);
+    console.log('blockUserId:', blockUserId);
+    return await this.userService.blockUser(user.id, blockUserId);
   }
 
+  @ApiParam({
+    name: 'Unblock user id',
+    example: 12,
+  })
+  @ApiOperation({
+    summary: 'unBlock a user by id / id로 특정 사용자 차단 해제하기',
+  })
+  @Delete('block/:unBlockUserId')
+  async unBlockUser(
+    @User() user: IUser,
+    @Param('unBlockUserId') unBlockUserId: number,
+  ) {
+    console.log('unBlockUserId:', unBlockUserId);
+    return await this.userService.unBlockUser(user.id, unBlockUserId);
+  }
   // @Patch(':id')
   // updateUserById(@Param('id', ParseIntPipe) id: number) {
   //   this.userService.updateUserById(id);

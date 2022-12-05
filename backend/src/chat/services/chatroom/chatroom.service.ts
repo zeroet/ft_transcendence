@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
-import { ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
+import { Block, ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
 import { IChatroom } from 'src/typeorm/interfaces/IChatroom';
 import { DataSource, Repository } from 'typeorm';
 import { IChatroomService } from './chatroom.interface';
@@ -27,6 +27,8 @@ export class ChatroomService implements IChatroomService {
     private chatContentRepository: Repository<ChatContent>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Block)
+    private blockRepository: Repository<Block>,
     private dataSource: DataSource,
     private chatEventsGateway: ChatEventsGateway,
   ) {}
@@ -274,12 +276,12 @@ export class ChatroomService implements IChatroomService {
       );
     }
     // if (member.userId === chatroom.ownerId) {
-    // mute
-    if (updateMemberDto.mute === true) {
+    // ban
+    if (updateMemberDto.ban === true) {
       updatedMember = await this.chatMemebrRepository.update(
         updateMemberDto.targetUserId,
         {
-          mutedAt: new Date(),
+          bannedAt: new Date(),
         },
       );
     }
@@ -287,12 +289,12 @@ export class ChatroomService implements IChatroomService {
     else if (updateMemberDto.kick === true) {
       return await this.deleteMembers(updateMemberDto.targetUserId, chatroomId);
     }
-    // ban
-    else if (updateMemberDto.ban === true) {
+    // mute
+    else if (updateMemberDto.mute === true) {
       updatedMember = await this.chatMemebrRepository.update(
         updateMemberDto.targetUserId,
         {
-          bannedAt: new Date(),
+          mutedAt: new Date(),
         },
       );
     }
@@ -340,20 +342,35 @@ export class ChatroomService implements IChatroomService {
   async getContents(userId: number, chatroomId: number) {
     // const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
+    console.log('my user id:', user.id);
+    const Blockeduser = await this.blockRepository
+      .createQueryBuilder('block')
+      .where('block.user_id=:userId', { userId })
+      .select('block.blocked_user_id')
+      .getMany();
+    console.log('Blocked user:', Blockeduser, Blockeduser.length);
     let contents = await this.chatContentRepository
       .createQueryBuilder('chat_content')
       .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
       .innerJoinAndSelect('chat_content.User', 'user')
       // .where('user.block_user_id=:blockUserId', { blockUserId: null })
+      // .leftJoinAndSelect(Block, 'block', 'user.user_id=block.user_id')
+      // .where('user.id=:userId', { userId })
       .select(['chat_content', 'user.username'])
       .getMany();
     if (contents) {
-      console.log('contents', contents);
+      // console.log('contents', contents);
     }
-    // contents = contents.filter(
-    //   (content: any) => content.User.blockUserId === null,
-    // );
-    console.log(`chat content of chatroom id: ${chatroomId}`, contents);
+    if (Blockeduser.length > 0) {
+      contents = contents.filter((content: any) =>
+        Blockeduser.forEach((user) => {
+          console.log('content.userId:', content.userId);
+          console.log('user.blockedUserId:', user.blockedUserId);
+          content.userId === user.blockedUserId;
+        }),
+      );
+    }
+    // console.log(`chat content of chatroom id: ${chatroomId}`, contents);
     return contents;
   }
 

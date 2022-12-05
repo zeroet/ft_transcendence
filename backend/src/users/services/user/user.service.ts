@@ -16,6 +16,7 @@ export class UserService implements IUserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Block) private blockRepository: Repository<Block>,
   ) {}
+
   async getCurrentUser(id: number): Promise<User> {
     return await this.userRepository.findOneBy({ id: id });
   }
@@ -23,7 +24,11 @@ export class UserService implements IUserService {
     // this.logger.debug(`getUserById() id: ${id}`);
     if (id !== undefined) {
       // const user = await this.userRepository.findOneBy({ id: id });
-      const user = await this.userRepository.findOne({ where: { id } });
+      // const user = await this.userRepository.findOne({ where: { id } });
+      const user = await this.userRepository
+        .createQueryBuilder('users')
+        .where('users.id=:id', { id })
+        .getOne();
       // console.log('getUserById() user:', user);
       // this.logger.debug('getUserById() user:');
       // console.log(user);
@@ -38,27 +43,54 @@ export class UserService implements IUserService {
     if (users) return users;
   }
 
-  async blockUser(userId: number, targetUserId: number) {
+  async blockUser(userId: number, blockUserId: number) {
     const user = await this.userRepository
       .createQueryBuilder('users')
       .where('users.user_id=:userId', { userId })
       .getOne();
-    const targetUser = await this.userRepository
+    const blockUser = await this.userRepository
       .createQueryBuilder('users')
-      .where('users.user_id=:targetUserId', { targetUserId })
+      .where('users.user_id=:blockUserId', { blockUserId })
       .getOne();
-    if (!targetUser) {
+    if (!blockUser) {
       throw new BadRequestException(
-        `Target user of id:${targetUserId} doesn't exist`,
+        `Block user of id:${blockUserId} doesn't exist`,
       );
     }
     const createdBlock = this.blockRepository.create({
       userId,
-      blockedUserId: targetUserId,
+      blockedUserId: blockUserId,
       User: user,
-      BlockedUser: targetUser,
+      BlockedUser: blockUser,
+    });
+    const updateUserInfo = this.userRepository.update(userId, {
+      Block: [createdBlock],
     });
     return await this.blockRepository.save(createdBlock);
+  }
+
+  async unBlockUser(userId: number, unBlockUserId: number) {
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.user_id=:userId', { userId })
+      .getOne();
+    const unBlockUser = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.user_id=:unBlockUserId', { unBlockUserId })
+      .getOne();
+    if (!unBlockUser) {
+      throw new BadRequestException(
+        `UnBlock user of id:${unBlockUserId} doesn't exist`,
+      );
+    }
+    const removedBlock = this.blockRepository
+      .createQueryBuilder('block')
+      .delete()
+      .from(Block)
+      .where('user_id=:userId', { userId })
+      .andWhere('blocked_user_id=:unBlockUserId', { unBlockUserId })
+      .execute();
+    return removedBlock;
   }
 
   // updateUserById(id: number) {}

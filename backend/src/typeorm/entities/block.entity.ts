@@ -54,6 +54,6 @@ export class Block implements IBlock {
   User: IUser;
 
   @ManyToOne((type) => User)
-  @JoinColumn({ name: 'user', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'blocked_user', referencedColumnName: 'id' })
   BlockedUser: IUser;
 }
