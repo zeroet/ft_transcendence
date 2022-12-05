@@ -16,20 +16,14 @@ import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
 import { TypeChatId } from "../interfaceType";
 
-export default function Chat({
-  accessToken,
-  id,
-}: {
-  accessToken: string;
-  id: TypeChatId;
-}) {
+export default function Chat({ id }: { id: TypeChatId }) {
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
   const { data: roomData, error: roomError } = useSWR(
     isId ? `/api/${id.link}/${id.id}` : null,
     isId ? fetcher : null
   );
-  const [socket] = useSocket(accessToken, "chat");
+  const [socket] = useSocket(null, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
   // 룸 데이터 이동 확인용, 모달용
@@ -78,7 +72,7 @@ export default function Chat({
       <div className="component-style">
         {/* ///////////////////////////////////////// */}
         {/* 리스트 부분 */}
-        <RoomList accessToken={accessToken} />
+        <RoomList />
         {/* <dmList /> */}
         {/* ///////////////////////////////////////// */}
 
@@ -134,5 +128,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   // tokenManager(cookie);
-  return { props: { accessToken, id } };
+  return { props: { id } };
 };

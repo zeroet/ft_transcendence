@@ -8,9 +8,9 @@ import useSocket from "../../Utils/socket";
 import { IChatroom } from "../../../interfaceType";
 // import EachRoom from "./delete apres";
 
-export default function ChatRoom({ accessToken }: { accessToken: string }) {
+export default function ChatRoom() {
   const { data, error } = useSWR(`/api/chatroom`, fetcher);
-  const [socket] = useSocket(accessToken, "chat");
+  const [socket] = useSocket(null, "chat");
   // if (data) {
   //   console.log(data);
   // }
@@ -23,7 +23,7 @@ export default function ChatRoom({ accessToken }: { accessToken: string }) {
     return () => {
       socket?.off("newRoomList");
     };
-  }, []);
+  }, [data]);
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (

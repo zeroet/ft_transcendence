@@ -1,21 +1,83 @@
-// 방 관리자일때와 아닐때를 나눠야함.
-// 우선 일반적인 경우 -> exit the room 만 기본설정으로
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useState } from "react";
+import { mutate } from "swr";
+import Loading from "../errorAndLoading/Loading";
+import useSocket from "../Utils/socket";
+import ChangeNameAndPW from "./ChatroomSettingModal/ChangeNameAndPW";
 
-export default function ChatroomSettingModal() {
+export default function ChatroomSettingModal({ roomId }: { roomId: string }) {
+  const [socket] = useSocket(null, "chat");
+  const router = useRouter();
+  const [showChangeModal, setShowChangeModal] = useState<Boolean>(false);
+
+  const onClickExitRoom = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    /**
+     * 방 폭파
+     * axois.get/post('/api/폭파').then(()=> {
+     * socket.emit('방폭파')
+     * })
+     */
+    console.log("방 폭파!");
+  }, []);
+
+  const onClickChangePWAndName = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      /**
+       * 방 바꾸는 모달 보여주고,
+       * 그 모달안에서 axios로 방 이름, 패스워드 변경
+       */
+      console.log("셋팅 화면 출력");
+      setShowChangeModal(true);
+    },
+    []
+  );
+
+  useEffect(() => {
+    socket?.on("방 폭파", () => {
+      //  방에서 쫓겨나도록
+      router.push("/chat");
+    });
+    socket?.on("방이름변경", () => {
+      mutate(`/api/chatroom/${roomId}`);
+    });
+    return () => {
+      socket?.off("방 폭파");
+    };
+  }, []);
+
+  if (!socket) return <Loading />;
   return (
     <div>
+      {showChangeModal && (
+        <ChangeNameAndPW
+          setShowChangeModal={setShowChangeModal}
+          roomId={roomId}
+        />
+      )}
       <div className="box">
-        <h1>Exit the room</h1>
+        <div className="div-button" onClick={onClickExitRoom}>
+          <h1>Exit the room</h1>
+        </div>
+        <div className="div-button" onClick={onClickChangePWAndName}>
+          <h1>Change Password</h1>
+        </div>
       </div>
       <style jsx>{`
+        .div-button {
+          border: 1px solid black;
+        }
         .box {
           font-family: "Fragment Mono", monospace;
           position: absolute;
-          top: 18%;
-          left: 57.8%;
+          top: 160px;
+          right: 300px;
 
-          width: 200px;
-          height: 47px;
+          width: 240px;
+          height: auto;
 
           background-color: white;
           border: 1px inset black;

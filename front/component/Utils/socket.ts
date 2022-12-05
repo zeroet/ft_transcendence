@@ -10,18 +10,18 @@ const useSocket = (
 ): [Socket | undefined, () => void] => {
   const disconnect = useCallback(() => {
     if (socket[socketType]) {
-      // console.log(
-      //   socket[socketType].id,
-      //   socketType,
-      //   "===================disconnet socket=============="
-      // );
+      console.log(
+        socket[socketType].id,
+        socketType,
+        "===================disconnet socket=============="
+      );
       socket[socketType].disconnect();
       delete socket[socketType];
     }
   }, [socketType]);
 
   if (!socket[socketType] && accessToken) {
-    const path = socketType === "chat" ? "/chat" : "";
+    const path = socketType === "chat" ? "/chat" : "/game";
     // if (socketType === "game") {
     //   socket[socketType] = socketIOClient("http://localhost:8080", {
     //     extraHeaders: {

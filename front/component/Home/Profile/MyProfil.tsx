@@ -1,11 +1,11 @@
 import Photo from "./MyProfile/Photo";
 import TextProfil from "./MyProfile/TextProfil";
 
-const MyProfil = () => {
+const MyProfil = ({ id }: { id: string }) => {
   return (
     <div>
-      <Photo />
-      <TextProfil />
+      <Photo id={id} />
+      <TextProfil id={id} />
       <style jsx>{`
         div {
           display: grid;

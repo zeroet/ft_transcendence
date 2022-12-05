@@ -3,8 +3,10 @@ import Loading from "../../../errorAndLoading/Loading";
 import { UserInfo } from "../../../../interfaceType";
 import axios from "axios";
 
-const TextProfil = () => {
-  const { data: user, error } = useSWR<UserInfo>("/api/users");
+const TextProfil = ({ id }: { id: string }) => {
+  const { data: user, error } = useSWR<UserInfo>(
+    id === "-1" ? "/api/users" : `/api/users/${id}`
+  );
   const userNameFontSize = { size: 50 };
   /*
    1. useSWR with new API for loss, victory, winRate

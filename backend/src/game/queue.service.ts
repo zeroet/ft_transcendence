@@ -6,11 +6,13 @@ export class QueueService {
     Players: Array<any> = [];
 
     addUser(player) {
-        console.log(`size!!! ${this.size}, player!!!${player.id}`);
         for(const socket of this.Players)
             if (socket === player) return false;
-        this.Players.push(player);
+        // while (this.Players.length < 2) {
+            this.Players.push(player);
+        // }
         this.size += 1;
+        console.log(`size!!! ${this.size}, player!!!${player.id}`);
         return true;
     }
 

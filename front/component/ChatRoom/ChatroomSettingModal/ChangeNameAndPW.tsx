@@ -1,86 +1,77 @@
 import React, { useState, useCallback } from "react";
 import axios from "axios";
-import { useRouter } from "next/router";
-// import { toast, ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
+import useSWR from "swr";
+import Loading from "../../errorAndLoading/Loading";
 
-const CreateChat = ({ onClose }: { onClose: () => void }) => {
+const ChangeNameAndPW = ({
+  setShowChangeModal,
+  roomId,
+}: {
+  setShowChangeModal: React.Dispatch<React.SetStateAction<Boolean>>;
+  roomId: string;
+}) => {
   const [RoomName, setName] = useState<string>("");
   const [RoomPw, setPw] = useState<string>("");
-  const router = useRouter();
-  const Name = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { data: roomData, error: roomError } = useSWR(
+    `/api/chatroom/${roomId}`
+  );
+  const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value.trim());
   };
 
-  const Pw = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const onChangePw = (e: React.ChangeEvent<HTMLInputElement>) =>
     setPw(e.target.value.trim());
 
   const createRoom = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
+        alert("new Room PW more than 4");
         setPw("");
         return;
       }
-      if (!RoomName) {
-        // toast.success("You should have more than 1 character");
-        console.log("name not enough");
-        return;
-      }
+
+      // axios에러
       await axios
-        .post("/api/chatroom", {
-          chatroomName: RoomName,
+        .post(`/api/chatroom/${roomId}/update`, {
+          chatroomName: RoomName === "" ? roomData.chatroomName : RoomName,
           password: RoomPw === "" ? null : RoomPw,
         })
-        .then(async (res) => {
-          setName("");
-          setPw("");
-          return await res.data.id;
-        })
-        .then((chatroomId) => {
-          // router.push(`/Chat/${chatroomId}`);
-          router.push({
-            pathname: `/Chat`,
-            query: { id: chatroomId, link: "chatroom" },
-          });
-          console.log(`we move to /chatroom/${chatroomId}`);
-        })
-        .catch((error) => {
-          console.dir(error);
-          alert("We have already same room name");
-        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
         .finally(() => {
-          onClose();
+          setShowChangeModal(false);
         });
     },
-    [RoomName, RoomPw]
+    [RoomName, RoomPw, roomData]
   );
 
   const cancelRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
-    onClose();
+    setShowChangeModal(false);
   };
 
+  if (!roomData) return <Loading />;
   return (
     <div className="box">
       <div className="title">
-        <h2>Create Chat Room</h2>
+        <h2>Change Chat Room</h2>
       </div>
       <form method="post">
         <div className="submitform">
-          <label>name</label>
+          <label>new room name</label>
           <div>
             <input
-              onChange={Name}
+              onChange={onChangeName}
               autoComplete="username"
               value={RoomName}
               type="text"
               autoFocus
             />
           </div>
-          <label>password</label>
+          <label>new password</label>
           <div>
             <input
-              onChange={Pw}
+              onChange={onChangePw}
               value={RoomPw}
               type="password"
               autoComplete="current-password"
@@ -111,6 +102,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
       /> */}
       <style jsx>{`
         .box {
+          z-index: 1;
           position: fixed;
           top: 30%;
           left: 33%;
@@ -177,4 +169,4 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
-export default CreateChat;
+export default ChangeNameAndPW;

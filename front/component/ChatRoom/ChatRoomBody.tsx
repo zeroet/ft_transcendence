@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useRef } from "react";
+import React, { use, useRef } from "react";
 import { useCallback, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import styles from "../../styles/LayoutBox.module.css";
@@ -13,32 +13,38 @@ import { TypeChatId } from "../../interfaceType";
 
 export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   const [socket] = useSocket(null, "chat");
-  const { data, error } = useSWR(`/api/${id.link}/${id.id}`);
+  const { data: roomData, error: roomError } = useSWR(
+    `/api/${id.link}/${id.id}`
+  );
+  const { data: userData, error: userError } = useSWR("/api/users");
   const [inputText, setInputText] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
-  const el = useRef<HTMLInputElement>(null);
+  const refModal = useRef<any>(null);
   const { data: chatContentsData, error: chatContentsError } = useSWR<
     IChatContent[]
   >(`/api/${id.link}/${id.id}/contents`);
-  const handleCloseModal = (e: any) => {
-    if (showModal && (!el.current || !el.current.contains(e.target))) {
-      // console.log("close modal");
-      setShowModal(false);
-    }
-  };
+
+  const handleCloseModal = useCallback(
+    (e: any) => {
+      if (!refModal?.current?.contains(e.target)) {
+        setShowModal(false);
+      }
+    },
+    [showModal, refModal]
+  );
 
   useEffect(() => {
     window.addEventListener("click", handleCloseModal);
     return () => {
       window.removeEventListener("click", handleCloseModal);
     };
-  }, [showModal]);
+  }, []);
 
   const onChangeInputText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputText(e.target.value);
     },
-    [inputText]
+    [inputText, userData]
   );
 
   const onClickSubmit = useCallback(
@@ -60,7 +66,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
         .catch((err) => console.log(err));
       setInputText("");
     },
-    [inputText, chatContentsData, data]
+    [inputText, chatContentsData, roomData, userData]
   );
 
   useEffect(() => {
@@ -70,32 +76,44 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
     return () => {
       socket?.off("newContent");
     };
-  }, [data, chatContentsData]);
+  }, [roomData, chatContentsData, userData]);
 
-  if (error || chatContentsError)
-    axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!data || !chatContentsData) return <Loading />;
-
-  const modal = (
+  const onClickShowSettingModal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
     e.stopPropagation();
     e.preventDefault();
-    setShowModal((curr) => !curr);
+    setShowModal(true);
   };
 
+  console.log(roomData.ownerId === userData.id);
+  if (roomError || chatContentsError || userError)
+    axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!roomData || !userData || !chatContentsData) return <Loading />;
   return (
     <div className={styles.box}>
-      {showModal && <ChatroomSettingModal />}
+      {showModal && (
+        <div ref={refModal} className="ChatroomSettingModal">
+          <ChatroomSettingModal roomId={id.id} />
+        </div>
+      )}
       <div className="roomname-header">
         <div className="roomname-img">
-          <h1>{data.chatroomName}</h1>
+          <h1>{roomData.chatroomName}</h1>
           <img
-            src={data.isPrivate ? "/images/private.png" : "/images/public.png"}
+            src={
+              roomData.isPrivate ? "/images/private.png" : "/images/public.png"
+            }
             width="20px"
           />
         </div>
-        <img src="/images/config.png" className="config" onClick={modal} />
+        {id.link === "chatroom" && roomData.ownerId === userData.id && (
+          <img
+            src="/images/config.png"
+            className="config"
+            onClick={onClickShowSettingModal}
+          />
+        )}
       </div>
       <hr />
       <ChatList id={id} chatContentsData={chatContentsData} />
@@ -106,6 +124,9 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       />
       <style jsx>
         {`
+          .ChatroomSettingModal {
+            display: relative;
+          }
           .ModalWrapper {
             background-color: red;
           }
