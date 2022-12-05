@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/typeorm';
+import { Block, User } from 'src/typeorm';
 import { ProfileController } from './controllers/profile/profile.controller';
 import { UsersController } from './controllers/users/users.controller';
 import { ProfileService } from './services/profile/profile.service';
@@ -10,7 +10,7 @@ import { UserService } from './services/user/user.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Block]),
     JwtModule.register({}),
     PassportModule,
   ],

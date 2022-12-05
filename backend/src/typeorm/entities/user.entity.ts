@@ -14,6 +14,8 @@ import { ChatContent } from './chatContent.entity';
 import { ChatMember } from './chatMember.entitiy';
 import { Dm } from './dm.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Block } from './block.entity';
+import { IBlock } from '../interfaces/IBlock';
 
 @Entity({ name: 'users' })
 export class User implements IUser {
@@ -24,13 +26,6 @@ export class User implements IUser {
   })
   @PrimaryGeneratedColumn({ type: 'int', name: 'user_id' })
   id: number;
-
-  @ApiProperty({
-    type: Number,
-    description: 'Block user id',
-  })
-  @Column({ type: 'int', name: 'block_user_id', nullable: true, default: null })
-  blockUserId: number;
 
   @ApiProperty({
     required: true,
@@ -83,6 +78,9 @@ export class User implements IUser {
   })
   username: string;
 
+  @ApiProperty({
+    description: 'Created time',
+  })
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   created_at: Date;
 
@@ -115,6 +113,9 @@ export class User implements IUser {
   })
   @Column({ type: 'boolean', name: 'two_factor_valid', default: false })
   two_factor_valid: boolean;
+
+  // @OneToMany((type) => Block, (Block) => Block.User)
+  // Block: IBlock[];
 
   @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.User)
   ChatMember: IChatMember[];

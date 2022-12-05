@@ -1,16 +1,18 @@
 import {
+  Body,
   Controller,
   Get,
   Inject,
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { IUserService } from 'src/users/services/user/user.interface';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserDto } from 'src/users/dto/user.dto';
 import { User } from 'src/utils/decorators/user.decorator';
 import { IUser } from 'src/typeorm/interfaces/IUser';
@@ -69,6 +71,20 @@ export class UsersController {
       throw new UnauthorizedException('user not found');
     }
     return user;
+  }
+
+  @ApiBody({
+    type: Number,
+    description: 'Target user id',
+  })
+  @ApiOperation({ summary: 'Block a user / 특정 사용자 차단하기' })
+  @Patch('block')
+  async blockUser(
+    @User() user: IUser,
+    @Body('targetUserId') targetUserId: number,
+  ) {
+    console.log('targetUserId:', targetUserId);
+    return await this.userService.blockUser(user.id, targetUserId);
   }
 
   // @Patch(':id')

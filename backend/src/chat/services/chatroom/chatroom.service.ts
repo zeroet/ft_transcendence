@@ -266,56 +266,37 @@ export class ChatroomService implements IChatroomService {
       updateMemberDto.targetUserId,
       chatroomId,
     );
-    // const targetUser = await this.chatMemebrRepository
-    //   .createQueryBuilder('chat_member')
-    //   .where('chat_member.chatroom_id = :chatroomId', { chatroomId })
-    //   .andWhere('chat_member.user_id = :targetUserId', {
-    //     targetUserId: updateMemberDto.targetUserId,
-    //   })
-    //   .getOne();
-    // if (!targetUser) {
-    //   throw new BadRequestException(
-    //     `User of id:${updateMemberDto.targetUserId} doesn't exist in the chatroom of id:${chatroomId}`,
-    //   );
-    // }
     let updatedMember = null;
-    // owner
-    if (member.userId === chatroom.ownerId) {
-      // mute
-      if (updateMemberDto.mute === true) {
-        updatedMember = await this.chatMemebrRepository.update(
-          updateMemberDto.targetUserId,
-          {
-            mutedAt: new Date(),
-          },
-        );
-      }
-      // kick
-      else if (updateMemberDto.kick === true) {
-        return await this.deleteMembers(
-          updateMemberDto.targetUserId,
-          chatroomId,
-        );
-      }
-      // ban
-      else if (updateMemberDto.ban === true) {
-        updatedMember = await this.chatMemebrRepository.update(
-          updateMemberDto.targetUserId,
-          {
-            bannedAt: new Date(),
-          },
-        );
-      }
-      // block
-      if (updateMemberDto.block === true) {
-        // updatedMember = await this.chatMemebrRepository.update(
-        //   updateMemberDto.targetUserId,
-        //   {
-        //     bannedAt: new Date(),
-        //   },
-        // );
-      }
+    // owner verification
+    if (member.userId !== chatroom.ownerId) {
+      throw new UnauthorizedException(
+        `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
+      );
     }
+    // if (member.userId === chatroom.ownerId) {
+    // mute
+    if (updateMemberDto.mute === true) {
+      updatedMember = await this.chatMemebrRepository.update(
+        updateMemberDto.targetUserId,
+        {
+          mutedAt: new Date(),
+        },
+      );
+    }
+    // kick
+    else if (updateMemberDto.kick === true) {
+      return await this.deleteMembers(updateMemberDto.targetUserId, chatroomId);
+    }
+    // ban
+    else if (updateMemberDto.ban === true) {
+      updatedMember = await this.chatMemebrRepository.update(
+        updateMemberDto.targetUserId,
+        {
+          bannedAt: new Date(),
+        },
+      );
+    }
+    // }
     console.log('updated member:', updatedMember);
     return updatedMember;
   }
@@ -327,22 +308,9 @@ export class ChatroomService implements IChatroomService {
       targetUserId,
       chatroomId,
     );
-    // const targetUser = await this.chatMemebrRepository
-    //   .createQueryBuilder('chat_member')
-    //   .where('chat_member.chatroom_id = :chatroomId', { chatroomId })
-    //   .andWhere('chat_member.user_id = :targetUserId', {
-    //     targetUserId,
-    //   })
-    //   .getOne();
-    // if (!targetUser) {
-    //   throw new BadRequestException(
-    //     `User of id:${targetUserId} doesn't exist in the chatroom of id:${chatroomId}`,
-    //   );
-    // }
-    // owner
     if (member.userId !== chatroom.ownerId) {
-      throw new BadRequestException(
-        `User of id:${userId} is not an owner of chatroom of id:${chatroomId}`,
+      throw new UnauthorizedException(
+        `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
     // set ad admin
@@ -382,9 +350,9 @@ export class ChatroomService implements IChatroomService {
     if (contents) {
       console.log('contents', contents);
     }
-    contents = contents.filter(
-      (content: any) => content.User.blockUserId === null,
-    );
+    // contents = contents.filter(
+    //   (content: any) => content.User.blockUserId === null,
+    // );
     console.log(`chat content of chatroom id: ${chatroomId}`, contents);
     return contents;
   }

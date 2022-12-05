@@ -1,9 +1,9 @@
+import { IBlock } from './IBlock';
 import { IChatContent } from './IChatContent';
 import { IChatMember } from './IChatMemeber';
 
 export interface IUser {
   id: number;
-  blockUserId: number;
   intra_id: string;
   email: string;
   image_url: string;
@@ -14,6 +14,7 @@ export interface IUser {
   two_factor_activated: boolean;
   two_factor_secret: string;
   two_factor_valid: boolean;
+  // Block: IBlock[];
   ChatMember: IChatMember[];
   ChatContent: IChatContent[];
 }
