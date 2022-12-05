@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useRef } from "react";
+import React, { use, useRef } from "react";
 import { useCallback, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import styles from "../../styles/LayoutBox.module.css";
@@ -13,7 +13,10 @@ import { TypeChatId } from "../../interfaceType";
 
 export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   const [socket] = useSocket(null, "chat");
-  const { data, error } = useSWR(`/api/${id.link}/${id.id}`);
+  const { data: roomData, error: roomError } = useSWR(
+    `/api/${id.link}/${id.id}`
+  );
+  const { data: userData, error: userError } = useSWR("/api/users");
   const [inputText, setInputText] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const refModal = useRef<any>(null);
@@ -41,7 +44,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputText(e.target.value);
     },
-    [inputText]
+    [inputText, userData]
   );
 
   const onClickSubmit = useCallback(
@@ -63,7 +66,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
         .catch((err) => console.log(err));
       setInputText("");
     },
-    [inputText, chatContentsData, data]
+    [inputText, chatContentsData, roomData, userData]
   );
 
   useEffect(() => {
@@ -73,13 +76,9 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
     return () => {
       socket?.off("newContent");
     };
-  }, [data, chatContentsData]);
+  }, [roomData, chatContentsData, userData]);
 
-  if (error || chatContentsError)
-    axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!data || !chatContentsData) return <Loading />;
-
-  const modal = (
+  const onClickShowSettingModal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
     e.stopPropagation();
@@ -87,22 +86,34 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
     setShowModal(true);
   };
 
+  console.log(roomData.ownerId === userData.id);
+  if (roomError || chatContentsError || userError)
+    axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!roomData || !userData || !chatContentsData) return <Loading />;
   return (
     <div className={styles.box}>
       {showModal && (
-        <div ref={refModal}>
+        <div ref={refModal} className="ChatroomSettingModal">
           <ChatroomSettingModal />
         </div>
       )}
       <div className="roomname-header">
         <div className="roomname-img">
-          <h1>{data.chatroomName}</h1>
+          <h1>{roomData.chatroomName}</h1>
           <img
-            src={data.isPrivate ? "/images/private.png" : "/images/public.png"}
+            src={
+              roomData.isPrivate ? "/images/private.png" : "/images/public.png"
+            }
             width="20px"
           />
         </div>
-        <img src="/images/config.png" className="config" onClick={modal} />
+        {id.link === "chatroom" && roomData.ownerId === userData.id && (
+          <img
+            src="/images/config.png"
+            className="config"
+            onClick={onClickShowSettingModal}
+          />
+        )}
       </div>
       <hr />
       <ChatList id={id} chatContentsData={chatContentsData} />
@@ -113,6 +124,9 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       />
       <style jsx>
         {`
+          .ChatroomSettingModal {
+            display: relative;
+          }
           .ModalWrapper {
             background-color: red;
           }
