@@ -87,6 +87,30 @@ export class ChatroomController {
     return await this.chatroomService.getOneChatroom(id);
   }
 
+  @ApiBody({
+    type: UpdateChatroomDto,
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
+  @Post(':id/update')
+  updateChatroom(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body() updateChatroomDto: UpdateChatroomDto,
+  ) {
+    console.log('chatroomId:', id);
+    console.log('updateChatroomDto:', updateChatroomDto);
+    return this.chatroomService.updateChatroomInfo(
+      user.id,
+      id,
+      updateChatroomDto,
+    );
+  }
+
   @ApiResponse({
     type: Boolean,
     description: 'password validation',
@@ -107,25 +131,6 @@ export class ChatroomController {
     @Body('password') password: string,
   ) {
     return await this.chatroomService.verifyChatroomPassword(id, password);
-  }
-
-  @ApiParam({
-    name: 'id',
-    example: 1,
-    description: 'Chatroom id',
-  })
-  @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
-  @Post(':id/update')
-  updateChatroom(
-    @User() user: IUser,
-    @Param('id') id: number,
-    @Body() updateChatroomDto: UpdateChatroomDto,
-  ) {
-    return this.chatroomService.updateChatroomInfo(
-      user.id,
-      id,
-      updateChatroomDto,
-    );
   }
 
   @ApiBody({
@@ -203,6 +208,8 @@ export class ChatroomController {
     @Param('id') id: number,
     @Body() updateMemberDto: UpdateMemberDto,
   ) {
+    console.log('updateMemberDto:', updateMemberDto);
+    console.log('chatroomId:', id);
     return await this.chatroomService.updateMemberInfo(
       user.id,
       id,

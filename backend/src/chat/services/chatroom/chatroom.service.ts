@@ -214,6 +214,7 @@ export class ChatroomService implements IChatroomService {
     chatroomId: number,
     updateChatroomDto: UpdateChatroomDto,
   ) {
+    const { chatroomName, password } = updateChatroomDto;
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
     // const user = await this.findUserByIdOrFail(userId);
@@ -223,11 +224,24 @@ export class ChatroomService implements IChatroomService {
         `No permission for User ${member.User.username}`,
       );
     }
-    const updatedChatroom = await this.chatroomRepository.update(chatroomId, {
-      chatroomName: updateChatroomDto.chatroomName,
-      password: updateChatroomDto.password,
+    const newChatroom = await this.findChatroomByName(chatroomName);
+    if (newChatroom.chatroomName !== chatroom.chatroomName) {
+      throw new BadRequestException(
+        `Chatroom of name:${chatroomName} already exists`,
+      );
+    }
+    const hashedPassword =
+      password !== null
+        ? await this.hashData(updateChatroomDto.password)
+        : null;
+
+    const updatedChatroom = await this.chatroomRepository.save({
+      ...chatroom,
+      chatroomName,
+      password: hashedPassword,
     });
     console.log('updated chatroom:', updatedChatroom);
+    this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
     return updatedChatroom;
   }
 
