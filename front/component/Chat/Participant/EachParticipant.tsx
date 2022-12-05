@@ -32,13 +32,18 @@ const EachParticipant = ({
   );
   return (
     <div className="user">
-      <div onClick={onClickEachParticipant}># {username}</div>
+      <div onClick={onClickEachParticipant} className="username">
+        # {username}
+      </div>
       {showModal && (
         <ParticipantSettingModal isOwner={isOwner} userId={userId} />
       )}
       <style jsx>{`
         .user {
           cursor: pointer;
+        }
+        .username {
+          font-weight: ${username === myData.username ? "bold" : "normal"};
         }
       `}</style>
     </div>

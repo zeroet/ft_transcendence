@@ -83,6 +83,11 @@ const ParticipantSettingModal = ({
           border: 1px solid black;
           width: 150px;
           text-align: center;
+          transition: width 2s, height 2s, background-color 2s, transform 2s;
+        }
+        .router-div:hover {
+          background-color: gray;
+          color: white;
         }
       `}</style>
     </div>
