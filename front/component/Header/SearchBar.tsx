@@ -7,7 +7,6 @@ import axios from "axios";
 
 const SearchBar = () => {
   const [inputValue, setInputValue] = useState<string | undefined>("");
-
   const { data, error } = useSWR("/api/users/all");
 
   const onChangeInput = useCallback(

@@ -3,21 +3,23 @@ import Layout from "../component/Layout";
 import Profile from "../component/Home/Profile";
 import Title from "../component/Title";
 import cookies from "next-cookies";
-import tokenManager from "../component/Utils/tokenManager";
 import useSWR from "swr";
 import Loading from "../component/errorAndLoading/Loading";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
-import { useRouter } from "next/router";
 import axios from "axios";
 import { GetServerSideProps } from "next";
+import useSocket from "../component/Utils/socket";
 
-export default function Home() {
+export default function Home({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
-  const router = useRouter();
+  const [socketGame] = useSocket(accessToken, "game");
+  const [socketChat] = useSocket(accessToken, "chat");
 
-  // SWR Config에 errorRetry 추가방법 찾기
+  console.log(socketChat?.id, "is socket id of Chat");
+  console.log(socketGame?.id, "is socket id of Game");
+
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!data) return <Loading />;
+  if (!data || !socketChat || !socketGame) return <Loading />;
   return (
     <Layout>
       <Title title="Home" />
@@ -32,8 +34,8 @@ export default function Home() {
         }}
       >
         {/* {data.two_factor_activated && <TwoFactorModal />} */}
-        <Profile />
-        <FriendStatus />
+        <Profile id="-1" />
+        <FriendStatus id="-1" />
       </div>
     </Layout>
   );
@@ -51,5 +53,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   // tokenManager(cookie);
-  return { props: {} };
+  return { props: { accessToken } };
 };

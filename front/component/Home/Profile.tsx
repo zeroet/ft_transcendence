@@ -1,13 +1,11 @@
-import axios from "axios";
-import styles from "../../styles/LayoutBox.module.css";
 import MyHistory from "./Profile/MyHistory";
 import MyProfil from "./Profile/MyProfil";
 
-export default function Profile() {
+export default function Profile({ id }: { id: string }) {
   return (
     <div className="div">
-      <MyProfil />
-      <MyHistory />
+      <MyProfil id={id} />
+      <MyHistory id={id} />
       <style jsx>{`
         div {
           display: grid;

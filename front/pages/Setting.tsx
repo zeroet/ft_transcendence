@@ -12,7 +12,7 @@ import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 
-export default function Setting({ accessToken }: { accessToken: string }) {
+export default function Setting() {
   const { data, error } = useSWR("/api/users");
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
@@ -29,7 +29,7 @@ export default function Setting({ accessToken }: { accessToken: string }) {
           <ChangeName />
           <ChangeAvatar />
           <TwoFactor />
-          <Logout accessToken={accessToken} />
+          <Logout />
         </div>
         <div className="dummy"></div>
         <style jsx>{`
@@ -60,5 +60,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   // tokenManager(cookie);
-  return { props: { accessToken } };
+  return { props: {} };
 };

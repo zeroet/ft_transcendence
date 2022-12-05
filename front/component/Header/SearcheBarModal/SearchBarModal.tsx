@@ -1,4 +1,6 @@
 import React, { useCallback } from "react";
+import useSWR from "swr";
+import Loading from "../../errorAndLoading/Loading";
 
 const SearchBarModal = ({
   setInputValue,
@@ -9,6 +11,7 @@ const SearchBarModal = ({
   image: string;
   name: string;
 }) => {
+  const { data: userData, error: userError } = useSWR("/api/users");
   const onClickAddFriend = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
@@ -18,13 +21,17 @@ const SearchBarModal = ({
     },
     []
   );
+  if (!userData) return <Loading />;
   return (
     <div className="search-bar-modal">
       <img src={image} width={20} height={20} />
       <div>{name}</div>
-      <button onClick={onClickAddFriend} className="add-button">
-        Add
-      </button>
+      {/* 친구등록상태이면 Delete, 아니면 ADD */}
+      {name !== userData.username && (
+        <button onClick={onClickAddFriend} className="add-button">
+          Add
+        </button>
+      )}
       <style jsx>{`
         .add-button {
           font-family: "Fragment Mono", monospace;

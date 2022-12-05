@@ -4,17 +4,14 @@ import { useCallback } from "react";
 import { mutate } from "swr";
 import useSocket from "../Utils/socket";
 
-const Logout = ({ accessToken }: { accessToken: string }) => {
+const Logout = () => {
   const router = useRouter();
-  const [, disconnetGame] = useSocket(accessToken, "game");
-  const [, disconnetChat] = useSocket(accessToken, "chat");
+  const [, disconnetGame] = useSocket(null, "game");
+  const [, disconnetChat] = useSocket(null, "chat");
+
   const logout = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
-    // await axios
-    //   .post("", { valid: false })
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
     try {
       await axios.post("/api/two-factor/valid", {
         valid: false,
@@ -29,6 +26,7 @@ const Logout = ({ accessToken }: { accessToken: string }) => {
       router.push("/");
     } catch (e) {
       console.log(e);
+      await axios.get("/api/auth/refresh").catch((e) => console.log(e));
     }
   }, []);
 

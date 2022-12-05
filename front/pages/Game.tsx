@@ -3,25 +3,17 @@ import GameBody from "../component/Game/GameBody";
 import GameList from "../component/Game/GameList";
 import Layout from "../component/Layout";
 import Title from "../component/Title";
-import tokenManager from "../component/Utils/tokenManager";
 import Loading from "../component/errorAndLoading/Loading";
 import useSocket from "../component/Utils/socket";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { useEffect } from "react";
 
 export default function Game({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
   const [socket] = useSocket(accessToken, "game");
 
-  // useEffect((): (() => void) => {
-  //   socket?.on("connect", () => {
-  //     console.log("game", socket.id);
-  //   });
-  //   return () => socket?.off("connect");
-  // });
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socket) return <Loading />;
   return (

@@ -39,15 +39,22 @@ export default function Gaming({
   otherPlayerName: string;
 }) {
   const { data, error } = useSWR("/api/users");
-  const [socket] = useSocket(accessToken, "game");
+  const [socket, disconnect] = useSocket(accessToken, "game");
+  // 게임오버 화면 만들어둠!
   const [isGameover, setIsGameover] = useState<boolean>(false);
   // otherPlayerName없어서 대체용
   const otherPlayerNameTest = "나중에 이거 지워야함";
   // 방 이름 확인용. useEffect써서 리랜더링용
   const router = useRouter();
   // 마운트 파트
-  // 게임
-  //   const [gameChanged, setGameChanged] = useState<GameElement | undefined>(undefined);
+  const [ballX, setBallX] = useState<number>(1375 / 2);
+  const [ballY, setBallY] = useState<number>(725 / 2);
+  const [ballSize, setBallSize] = useState<number>(50);
+  const [leftPaddle, setLeftPaddle] = useState<number>(650 / 2);
+  const [rightPaddle, setRightPaddle] = useState<number>(650 / 2);
+  const [ownerScore, setOwnerScore] = useState<number>(0);
+  const [playerScore, setPlayerScore] = useState<number>(0);
+  const [winOrLose, setWinOrLose] = useState<boolean>(true);
   /**
    * ///////////////////////////////////////////////////////모든 위치 : 볼, 패들 을 중간값으로 주어야한다.
    */
@@ -56,15 +63,6 @@ export default function Gaming({
    *
    *
    */
-  const [gameChanged, setGameChanged] = useState<GameElement>({
-    ballX: 1375 / 2, // 0 ~ 1375
-    ballY: 725 / 2, // 0 ~ 725
-    ballSize: 50,
-    leftPaddle: 650 / 2, // 0 ~ 650
-    rightPaddle: 650 / 2,
-    ownerScore: "5",
-    playerScore: "3",
-  });
 
   /**
    * /////////////////////////////////////////////////////// room 모든사람이아니라, room에 있는 플레이어들의 목록을 받아야함
@@ -76,39 +74,55 @@ export default function Gaming({
    */
   // 문제: state가 객체로 되어있으면, 포인터가 바뀌는것이 아니기때문에,
   // 전체가 변화하지않음
-  const onChangeftPaddle = useCallback(
+  const onChangePaddle = useCallback(
     (e: KeyboardEvent) => {
-      if (gameChanged === undefined) return;
       const key = e.key;
       if (key === "w" || key === "s") {
-        if (!(gameChanged.leftPaddle >= 0 && gameChanged.leftPaddle <= 650))
-          return;
+        if (!(leftPaddle >= 0 && leftPaddle <= 650)) return;
         if (key === "w") {
           socket?.emit("paddle", {
             myRole,
             key: "up",
           });
-          console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
+          console.log(`left paddle 위치 :  ${leftPaddle}`);
         } else {
           socket?.emit("paddle", {
             myRole,
             key: "down",
           });
-          console.log(`left paddle 위치 :  ${gameChanged.leftPaddle}`);
+          console.log(`left paddle 위치 :  ${leftPaddle}`);
         }
       }
     },
-    [gameChanged]
+    [leftPaddle, rightPaddle]
   );
 
   useEffect((): (() => void) => {
+    /**
+     * myRole : player | owner
+     *
+     * if myRole: watcher {
+     *  socket.emit('watchGame', 'roomName')
+     * }
+     * socket.on ('live_game', data)
+     */
+    socket?.on("gameover", () => {
+      // 점수차이로 승패 저장
+      if (myRole === "owner") {
+        setWinOrLose(ownerScore - playerScore > 0 ? true : false);
+      } else {
+        setWinOrLose(ownerScore - playerScore > 0 ? false : true);
+      }
+      setIsGameover(true);
+    });
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
-    window.addEventListener("keydown", onChangeftPaddle);
+    window.addEventListener("keydown", onChangePaddle);
     return () => {
       // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
+      disconnect();
     };
   }, [router.query.id]);
 
@@ -120,26 +134,30 @@ export default function Gaming({
       {data.two_factor_activated && !data.two_factor_valid && (
         <TwoFactorModal />
       )}
-      {!isGameover && <Gameover />}
       <div className="grid-div">
         <GameList accessToken={accessToken} />
-        <div className="play-game">
-          <div className="players-name">
+        {/* 게임결과 보내기 */}
+        {isGameover ? (
+          <Gameover winOrLose={winOrLose} />
+        ) : (
+          <div className="play-game">
             <div className="players-name">
-              {myRole === "owner" ? data.username : otherPlayerNameTest}
+              <div className="players-name">
+                {myRole === "owner" ? data.username : otherPlayerNameTest}
+              </div>
+              <div className="players-name">
+                {myRole === "player" ? data.username : otherPlayerNameTest}
+              </div>
             </div>
-            <div className="players-name">
-              {myRole === "player" ? data.username : otherPlayerNameTest}
+            <div className="score">
+              <div className="score">{ownerScore}</div>
+              <div className="score">{playerScore}</div>
             </div>
+            <div className="ball"></div>
+            <div className="paddle left"></div>
+            <div className="paddle right"></div>
           </div>
-          <div className="score">
-            <div className="score">{gameChanged.ownerScore}</div>
-            <div className="score">{gameChanged.playerScore}</div>
-          </div>
-          <div className="ball"></div>
-          <div className="paddle left"></div>
-          <div className="paddle right"></div>
-        </div>
+        )}
         <style jsx global>{`
           .grid-div {
             display: grid;
@@ -178,13 +196,13 @@ export default function Gaming({
           }
 
           .left {
-            // --position: ${gameChanged?.leftPaddle}px;
-            top: ${gameChanged && gameChanged.leftPaddle - 160}px;
+            // --position: ${leftPaddle}px;
+            top: ${leftPaddle - 160}px;
           }
 
           .right {
-            // --position: ${gameChanged?.rightPaddle}px;
-            top: ${gameChanged && gameChanged.rightPaddle - 160}px;
+            // --position: ${rightPaddle}px;
+            top: ${rightPaddle - 160}px;
             left: ${1500 - 10}px;
           }
 
@@ -217,12 +235,12 @@ export default function Gaming({
           .ball {
             position: relative;
             background-color: var(--foreground-color);
-            left: ${gameChanged && gameChanged.ballX}px;
-            top: ${gameChanged && gameChanged.ballY - 135}px;
+            left: ${ballX}px;
+            top: ${ballY - 135}px;
             trasform: traslate(-50%, -50%);
             border-radius: 50%;
-            width: ${gameChanged && gameChanged.ballSize / 2}px;
-            height: ${gameChanged && gameChanged.ballSize / 2}px;
+            width: ${ballSize / 2}px;
+            height: ${ballSize / 2}px;
           }
         `}</style>
       </div>

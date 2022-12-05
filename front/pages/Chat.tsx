@@ -15,13 +15,14 @@ import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
 import { TypeChatId } from "../interfaceType";
+import Header from "../component/Header/Header";
 
 export default function Chat({
-  accessToken,
   id,
+  accessToken,
 }: {
-  accessToken: string;
   id: TypeChatId;
+  accessToken: string;
 }) {
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
@@ -29,7 +30,6 @@ export default function Chat({
     isId ? `/api/${id.link}/${id.id}` : null,
     isId ? fetcher : null
   );
-  const [socket] = useSocket(accessToken, "chat");
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
   // 룸 데이터 이동 확인용, 모달용
@@ -59,9 +59,10 @@ export default function Chat({
 
   if (userError || (id.id && roomError))
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!userData || (id.id && !roomData) || !socket) return <Loading />;
+  if (!userData || (id.id && !roomData)) return <Loading />;
   return (
     <Layout>
+      <Header id={id} />
       <Title title="ChatRoom" />
       {userData.two_factor_activated && !userData.two_factor_valid && (
         <TwoFactorModal />
@@ -78,7 +79,7 @@ export default function Chat({
       <div className="component-style">
         {/* ///////////////////////////////////////// */}
         {/* 리스트 부분 */}
-        <RoomList accessToken={accessToken} />
+        <RoomList />
         {/* <dmList /> */}
         {/* ///////////////////////////////////////// */}
 
@@ -93,9 +94,15 @@ export default function Chat({
 
         {/* ///////////////////////////////////////// */}
         {/* 참가자 부분 */}
-        {!isId && <Participant id={id} ownerId={null} />}
+        {!isId && (
+          <Participant id={id} ownerId={null} accessToken={accessToken} />
+        )}
         {isId && id.link === "chatroom" && roomData && (
-          <Participant id={id} ownerId={roomData.ownerId} />
+          <Participant
+            id={id}
+            ownerId={roomData.ownerId}
+            accessToken={accessToken}
+          />
         )}
         {/* {isId && id.link === "dm" && (
           <Participant id={id} ownerId={roomData.ownerId} />
@@ -134,5 +141,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   // tokenManager(cookie);
-  return { props: { accessToken, id } };
+  return { props: { id, accessToken } };
 };
