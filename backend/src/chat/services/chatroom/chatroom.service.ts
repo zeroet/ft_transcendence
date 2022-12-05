@@ -345,7 +345,7 @@ export class ChatroomService implements IChatroomService {
       .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
       .innerJoinAndSelect('chat_content.User', 'user')
       // .where('user.block_user_id=:blockUserId', { blockUserId: null })
-      .select(['chat_content', 'user.username', 'user.blockUserId'])
+      .select(['chat_content', 'user.username'])
       .getMany();
     if (contents) {
       console.log('contents', contents);
