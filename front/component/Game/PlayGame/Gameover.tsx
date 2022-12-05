@@ -6,7 +6,7 @@ import styles from "../../../styles/LayoutBox.module.css";
  *
  * boolean 값으로 Win or Lose
  */
-const Gameover = () => {
+const Gameover = ({ winOrLose }: { winOrLose: boolean }) => {
   const router = useRouter();
   const onClickToHome = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     router.push("/Home");
@@ -16,7 +16,9 @@ const Gameover = () => {
       <div>
         <h1>PING PONG</h1>
       </div>
-      <div className="gameover vibration">YOU WIN</div>
+      <div className="gameover vibration">
+        {winOrLose ? "YOU WIN" : "YOU LOSE"}
+      </div>
       <div className="btn-to-home" onClick={onClickToHome}>
         Home
       </div>
@@ -51,13 +53,12 @@ const Gameover = () => {
         .vibration {
           animation: vibration 0.1s infinite;
         }
-
         @keyframes vibration {
           from {
-            transform: rotate(1deg);
+            transform: rotate(2deg);
           }
           to {
-            transform: rotate(-1deg);
+            transform: rotate(-2deg);
           }
         }
       `}</style>

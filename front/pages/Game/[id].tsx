@@ -54,6 +54,7 @@ export default function Gaming({
   const [rightPaddle, setRightPaddle] = useState<number>(650 / 2);
   const [ownerScore, setOwnerScore] = useState<number>(0);
   const [playerScore, setPlayerScore] = useState<number>(0);
+  const [winOrLose, setWinOrLose] = useState<boolean>(true);
   /**
    * ///////////////////////////////////////////////////////모든 위치 : 볼, 패들 을 중간값으로 주어야한다.
    */
@@ -105,6 +106,15 @@ export default function Gaming({
      * }
      * socket.on ('live_game', data)
      */
+    socket?.on("gameover", () => {
+      // 점수차이로 승패 저장
+      if (myRole === "owner") {
+        setWinOrLose(ownerScore - playerScore > 0 ? true : false);
+      } else {
+        setWinOrLose(ownerScore - playerScore > 0 ? false : true);
+      }
+      setIsGameover(true);
+    });
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
@@ -128,7 +138,7 @@ export default function Gaming({
         <GameList accessToken={accessToken} />
         {/* 게임결과 보내기 */}
         {isGameover ? (
-          <Gameover />
+          <Gameover winOrLose={winOrLose} />
         ) : (
           <div className="play-game">
             <div className="players-name">
