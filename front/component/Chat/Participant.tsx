@@ -21,13 +21,15 @@ import { useEffect } from "react";
 export default function Participant({
   id,
   ownerId,
+  accessToken,
 }: {
   id: TypeChatId;
   ownerId: number | null;
+  accessToken: string;
 }) {
   // console.log("type chat id == ", id);
   const isId = Object.keys(id).length !== 0;
-  const [socket] = useSocket(null, "chat");
+  const [socket] = useSocket(accessToken, "chat");
   // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
   const { data: roomMembersData, error: roomMembersError } = useSWR<
     IChatMember[]

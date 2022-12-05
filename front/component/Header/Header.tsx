@@ -18,14 +18,10 @@ export default function Header({ id }: { id: TypeChatId | undefined }) {
   useEffect(() => {
     return () => {
       if (id) {
-        // axios
-        // .delete(`/api/${id.link}/${id.id}/members`)
-        // .then(() => {
         console.log(id.id, id.link);
         console.log("이동");
         mutate(`/api/${id.link}/${id.id}/members`);
-        // })
-        // .catch((err) => console.log(err));
+        console.log(`/api/${id.link}/${id.id}/members`);
       }
     };
   }, [id?.id]);
