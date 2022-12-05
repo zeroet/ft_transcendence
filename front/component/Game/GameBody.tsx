@@ -4,7 +4,6 @@ import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
 import GameReadyModal from "./GameBody/GameReadyModal";
 import GameSettingModal from "./GameBody/GameSettingModal";
-import { GameDTO } from "../../interfaceType";
 
 export default function GameBody({ accessToken }: { accessToken: string }) {
   const [settingModal, setSettingModal] = useState(false);

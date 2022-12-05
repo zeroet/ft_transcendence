@@ -14,12 +14,6 @@ export default function Game({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
   const [socket] = useSocket(accessToken, "game");
 
-  // useEffect((): (() => void) => {
-  //   socket?.on("connect", () => {
-  //     console.log("game", socket.id);
-  //   });
-  //   return () => socket?.off("connect");
-  // });
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socket) return <Loading />;
   return (
