@@ -202,6 +202,19 @@ export class ChatroomService implements IChatroomService {
     return result[0];
   }
 
+  async deleteChatroom(userId: number, chatroomId: number) {
+    const chatroom = await this.findChatroomByIdOrFail(chatroomId);
+    const member = await this.findMemberByIdOrFail(userId, chatroomId);
+    const removedChatroom = await this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .delete()
+      .from(Chatroom)
+      .where('user_id=:userId', { userId })
+      .andWhere('chatroom_id=:ChatroomId', { chatroomId })
+      .execute();
+    return removedChatroom;
+  }
+
   async verifyChatroomPassword(chatroomId: number, password: string) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const isMatch = await bcrypt.compare(password, chatroom.password);

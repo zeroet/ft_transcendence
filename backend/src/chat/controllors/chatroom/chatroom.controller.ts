@@ -87,6 +87,39 @@ export class ChatroomController {
     return await this.chatroomService.getOneChatroom(id);
   }
 
+  @ApiResponse({
+    type: Boolean,
+    description: 'Password validation',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiBody({
+    type: String,
+    description: 'password that a user entered',
+  })
+  @ApiOperation({ summary: 'Verify chatroom password / 대화방 비밀번호 확인' })
+  @Post(':id/password')
+  async verifyChatroomPassword(
+    @Param('id') id: number,
+    @Body('password') password: string,
+  ) {
+    return await this.chatroomService.verifyChatroomPassword(id, password);
+  }
+
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({ summary: 'Delete a chatroom / 특정 대화방 삭제하기' })
+  @Delete(':id')
+  async deleteChatroom(@User() user: IUser, @Param('id') id: number) {
+    return 'delete chatroom test...';
+  }
+
   @ApiBody({
     type: UpdateChatroomDto,
   })
@@ -109,28 +142,6 @@ export class ChatroomController {
       id,
       updateChatroomDto,
     );
-  }
-
-  @ApiResponse({
-    type: Boolean,
-    description: 'password validation',
-  })
-  @ApiParam({
-    name: 'id',
-    example: 1,
-    description: 'Chatroom id',
-  })
-  @ApiBody({
-    type: String,
-    description: 'password that a user entered',
-  })
-  @ApiOperation({ summary: 'verify chatroom password / 대화방 비밀번호 확인' })
-  @Post(':id/password')
-  async verifyChatroomPassword(
-    @Param('id') id: number,
-    @Body('password') password: string,
-  ) {
-    return await this.chatroomService.verifyChatroomPassword(id, password);
   }
 
   @ApiBody({
