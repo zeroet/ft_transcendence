@@ -225,7 +225,7 @@ export class ChatroomService implements IChatroomService {
       );
     }
     const newChatroom = await this.findChatroomByName(chatroomName);
-    if (newChatroom.chatroomName !== chatroom.chatroomName) {
+    if (newChatroom && newChatroom?.chatroomName !== chatroom.chatroomName) {
       throw new BadRequestException(
         `Chatroom of name:${chatroomName} already exists`,
       );
