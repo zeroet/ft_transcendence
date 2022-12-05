@@ -53,7 +53,7 @@ export default function Chat({ id }: { id: TypeChatId }) {
 
   if (userError || (id.id && roomError))
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!userData || (id.id && !roomData) || !socket) return <Loading />;
+  if (!userData || (id.id && !roomData)) return <Loading />;
   return (
     <Layout>
       <Title title="ChatRoom" />

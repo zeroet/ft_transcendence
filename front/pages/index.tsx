@@ -106,7 +106,7 @@ export default function Enter({ path }: { path: string }) {
           </Link>
         )}
         {/* 테스트용 */}
-        {/* <button onClick={test}>+</button> */}
+        <button onClick={test}>+</button>
         {/* 테스트용 */}
         <style jsx>{`
           div {

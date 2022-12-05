@@ -3,6 +3,7 @@ import cookies from "next-cookies";
 import useSWR from "swr";
 import FriendStatus from "../../component/Home/FriendStatus";
 import Profile from "../../component/Home/Profile";
+import TwoFactorModal from "../../component/Home/TwoFactorModal";
 import Layout from "../../component/Layout";
 import Title from "../../component/Title";
 
@@ -13,10 +14,14 @@ const FriendProfile = ({
   accessToken: string;
   id: string;
 }) => {
+  const { data, error } = useSWR("/api/users");
   console.log(id);
   return (
     <Layout>
       <Title title="Home" />
+      {data.two_factor_activated && !data.two_factor_valid && (
+        <TwoFactorModal />
+      )}
       <div
         style={{
           display: "grid",

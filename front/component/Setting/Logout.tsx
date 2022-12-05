@@ -8,13 +8,10 @@ const Logout = () => {
   const router = useRouter();
   const [, disconnetGame] = useSocket(null, "game");
   const [, disconnetChat] = useSocket(null, "chat");
+
   const logout = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
-    // await axios
-    //   .post("", { valid: false })
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
     try {
       await axios.post("/api/two-factor/valid", {
         valid: false,
@@ -29,6 +26,7 @@ const Logout = () => {
       router.push("/");
     } catch (e) {
       console.log(e);
+      await axios.get("/api/auth/refresh").catch((e) => console.log(e));
     }
   }, []);
 
