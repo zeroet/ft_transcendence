@@ -33,7 +33,7 @@ const ChangeNameAndPW = ({
 
       // axios에러
       await axios
-        .post(`/api/chatroom/${roomId}/update`, {
+        .patch(`/api/chatroom/${roomId}/update`, {
           chatroomName: RoomName === "" ? roomData.chatroomName : RoomName,
           password: RoomPw === "" ? null : RoomPw,
         })

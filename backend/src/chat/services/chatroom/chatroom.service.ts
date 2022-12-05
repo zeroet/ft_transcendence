@@ -248,11 +248,13 @@ export class ChatroomService implements IChatroomService {
         ? await this.hashData(updateChatroomDto.password)
         : null;
 
-    const updatedChatroom = await this.chatroomRepository.save({
-      ...chatroom,
-      chatroomName,
-      password: hashedPassword,
-    });
+    // const updatedChatroom = await this.chatroomRepository.update(chatroomId, {
+    //   chatroomName,
+    //   password: hashedPassword,
+    // });
+    chatroom.password = hashedPassword;
+    chatroom.chatroomName = chatroomName;
+    const updatedChatroom = await this.chatroomRepository.save(chatroom);
     console.log('updated chatroom:', updatedChatroom);
     this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
     return updatedChatroom;

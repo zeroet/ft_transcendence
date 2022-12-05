@@ -129,7 +129,7 @@ export class ChatroomController {
     description: 'Chatroom id',
   })
   @ApiOperation({ summary: 'Update one chatroom / 특정 대화방 정보수정하기' })
-  @Post(':id/update')
+  @Patch(':id/update')
   updateChatroom(
     @User() user: IUser,
     @Param('id') id: number,
