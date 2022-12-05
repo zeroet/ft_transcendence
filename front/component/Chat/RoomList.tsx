@@ -4,11 +4,11 @@ import DM from "./RoomList/DM";
 import ChatListHeader from "./RoomList/ChatListHeader";
 import DmHeader from "./RoomList/DmHeader";
 
-export default function RoomList({ accessToken }: { accessToken: string }) {
+export default function RoomList() {
   return (
     <div className={styles.box}>
       <ChatListHeader />
-      <ChatRoom accessToken={accessToken} />
+      <ChatRoom />
       <DmHeader />
       <DM />
     </div>
