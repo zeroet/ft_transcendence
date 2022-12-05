@@ -40,6 +40,7 @@ export default function Gaming({
 }) {
   const { data, error } = useSWR("/api/users");
   const [socket, disconnect] = useSocket(accessToken, "game");
+  // 게임오버 화면 만들어둠!
   const [isGameover, setIsGameover] = useState<boolean>(false);
   // otherPlayerName없어서 대체용
   const otherPlayerNameTest = "나중에 이거 지워야함";
@@ -53,6 +54,7 @@ export default function Gaming({
   const [rightPaddle, setRightPaddle] = useState<number>(650 / 2);
   const [ownerScore, setOwnerScore] = useState<number>(0);
   const [playerScore, setPlayerScore] = useState<number>(0);
+  const [winOrLose, setWinOrLose] = useState<boolean>(true);
   /**
    * ///////////////////////////////////////////////////////모든 위치 : 볼, 패들 을 중간값으로 주어야한다.
    */
@@ -98,12 +100,21 @@ export default function Gaming({
   useEffect((): (() => void) => {
     /**
      * myRole : player | owner
-     * 
+     *
      * if myRole: watcher {
      *  socket.emit('watchGame', 'roomName')
      * }
      * socket.on ('live_game', data)
      */
+    socket?.on("gameover", () => {
+      // 점수차이로 승패 저장
+      if (myRole === "owner") {
+        setWinOrLose(ownerScore - playerScore > 0 ? true : false);
+      } else {
+        setWinOrLose(ownerScore - playerScore > 0 ? false : true);
+      }
+      setIsGameover(true);
+    });
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
@@ -123,26 +134,30 @@ export default function Gaming({
       {data.two_factor_activated && !data.two_factor_valid && (
         <TwoFactorModal />
       )}
-      {!isGameover && <Gameover />}
       <div className="grid-div">
         <GameList accessToken={accessToken} />
-        <div className="play-game">
-          <div className="players-name">
+        {/* 게임결과 보내기 */}
+        {isGameover ? (
+          <Gameover winOrLose={winOrLose} />
+        ) : (
+          <div className="play-game">
             <div className="players-name">
-              {myRole === "owner" ? data.username : otherPlayerNameTest}
+              <div className="players-name">
+                {myRole === "owner" ? data.username : otherPlayerNameTest}
+              </div>
+              <div className="players-name">
+                {myRole === "player" ? data.username : otherPlayerNameTest}
+              </div>
             </div>
-            <div className="players-name">
-              {myRole === "player" ? data.username : otherPlayerNameTest}
+            <div className="score">
+              <div className="score">{ownerScore}</div>
+              <div className="score">{playerScore}</div>
             </div>
+            <div className="ball"></div>
+            <div className="paddle left"></div>
+            <div className="paddle right"></div>
           </div>
-          <div className="score">
-            <div className="score">{ownerScore}</div>
-            <div className="score">{playerScore}</div>
-          </div>
-          <div className="ball"></div>
-          <div className="paddle left"></div>
-          <div className="paddle right"></div>
-        </div>
+        )}
         <style jsx global>{`
           .grid-div {
             display: grid;
