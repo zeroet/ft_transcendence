@@ -16,6 +16,7 @@ const FriendProfile = ({
 }) => {
   const { data, error } = useSWR("/api/users");
   console.log(id);
+  if (!data) return;
   return (
     <Layout>
       <Title title="Home" />
