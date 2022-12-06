@@ -7,7 +7,7 @@ import GameSettingModal from "./GameBody/GameSettingModal";
 
 export default function GameBody({ accessToken }: { accessToken: string }) {
   const [settingModal, setSettingModal] = useState(false);
-  const [socket, disconnect] = useSocket(accessToken, "game");
+  const [socket] = useSocket(accessToken, "game");
   const [ownerOrPlayer, setOwnerOrPlayer] = useState<string>("");
 
   const onClickWaitModal = useCallback(
@@ -52,8 +52,9 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     });
     return () => {
       socket?.off("createRoom");
+      setOwnerOrPlayer("");
     };
-  }, [socket]);
+  }, [socket, ownerOrPlayer]);
 
   if (!socket) return <Loading />;
   return (
