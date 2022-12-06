@@ -210,8 +210,8 @@ export class ChatroomService implements IChatroomService {
     //   .createQueryBuilder('chatroom')
     //   .delete()
     //   .from(Chatroom)
-    //   .where('user_id=:userId', { userId })
-    //   .andWhere('chatroom_id=:ChatroomId', { chatroomId })
+    //   .where('owner_id=:userId', { userId })
+    //   .andWhere('chatroom_id=:chatroomId', { chatroomId })
     //   .execute();
     console.log('removed chatroom:', removedChatroom);
     this.chatEventsGateway.server.emit('newRoomList', removedChatroom);
