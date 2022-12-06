@@ -1,6 +1,7 @@
+import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
 import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
 import ChangeNameAndPW from "./ChatroomSettingModal/ChangeNameAndPW";
@@ -10,17 +11,24 @@ export default function ChatroomSettingModal({ roomId }: { roomId: string }) {
   const router = useRouter();
   const [showChangeModal, setShowChangeModal] = useState<Boolean>(false);
 
-  const onClickExitRoom = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    /**
-     * 방 폭파
-     * axois.get/post('/api/폭파').then(()=> {
-     * socket.emit('방폭파')
-     * })
-     */
-    console.log("방 폭파!");
-  }, []);
+  const onClickExitRoom = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      /**
+       * 방 폭파
+       * axois.get/post('/api/폭파').then(()=> {
+       * socket.emit('방폭파')
+       * })
+       */
+      await axios
+        .delete(`/api/chatroom/${roomId}`)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+      mutate("/api/chatroom");
+    },
+    []
+  );
 
   const onClickChangePWAndName = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
