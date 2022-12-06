@@ -44,7 +44,13 @@ export class DmService implements IDmService {
   }
 
   async getDmList(senderId: number, receiverId: number) {
-    const dms = await this.dmRepository.createQueryBuilder('dm').getMany();
+    const dms = await this.dmRepository
+      .createQueryBuilder('dm')
+      // .where('dm_content.dm_id=:dmId', { dmId })
+      .innerJoinAndSelect('dm.User1', 'user1')
+      .innerJoinAndSelect('dm.User2', 'user2')
+      .select(['dm', 'user1.username', 'user2.username'])
+      .getMany();
     console.log('dms:', dms);
     return dms;
     // const sender = await this.findUserByIdOrFail(senderId);
@@ -168,7 +174,17 @@ export class DmService implements IDmService {
     // return members;
   }
 
-  async getContents(senderId: number, receiverId: number) {
+  async getContents(senderId: number, receiverId: number, dmId: number) {
+    const sender = await this.findUserByIdOrFail(senderId);
+    const receiver = await this.findUserByIdOrFail(receiverId);
+    const contents = await this.dmContentRepository
+      .createQueryBuilder('dm_content')
+      .where('dm_content.dm_id=:dmId', { dmId })
+      .innerJoinAndSelect('dm_content.User1', 'user1')
+      .innerJoinAndSelect('dm_content.User2', 'user2')
+      .select(['dm_content', 'user1.username', 'user2.username'])
+      .getMany();
+
     // const sender = await this.findUserByIdOrFail(senderId);
     // const receiver = await this.findUserByIdOrFail(receiverId);
     // const contents = await this.dmRepository
