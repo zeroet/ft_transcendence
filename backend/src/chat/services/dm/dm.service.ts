@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { Dm, User } from 'src/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, MoreThan, Repository } from 'typeorm';
 import { IDmService } from './dm.interface';
 
 @Injectable()
@@ -88,10 +88,28 @@ export class DmService implements IDmService {
       });
       this.chatEventsGateway.server.emit('newDmList', newDm);
       return newDm;
+
       //   throw new BadRequestException(
       //     `Dm of users of id:${senderId} and ${receiverId} already exists`,
       //   );
     }
+    // else {
+    //   const md = await this.dmRepository
+    //     .createQueryBuilder('dm')
+    //     .where('dm.sender_id=:receiverId', { receiverId })
+    //     .andWhere('dm.receiver_id=:senderId', { senderId })
+    //     .getOne();
+    //   if (md) {
+    //     const newDm = this.dmRepository.create({
+    //       senderId,
+    //       receiverId,
+    //       Sender: sender,
+    //       Receiver: receiver,
+    //     });
+    //     this.chatEventsGateway.server.emit('newDmList', newDm);
+    //     return newDm;
+    //   }
+    // }
     const newDm = this.dmRepository.create({
       senderId,
       receiverId,
@@ -144,5 +162,17 @@ export class DmService implements IDmService {
     });
     await this.dmRepository.save(newContent);
     this.chatEventsGateway.server.emit('newDmContent', newContent);
+  }
+
+  async getUnreads(userId: number, senderId: number, after: number) {
+    const unReadCount = this.dmRepository.count({
+      where: {
+        senderId,
+        receiverId: userId,
+        createdAt: MoreThan(new Date(after)),
+      },
+    });
+    console.log('unReadCount', unReadCount);
+    return unReadCount;
   }
 }

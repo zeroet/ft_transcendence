@@ -94,6 +94,6 @@ export class DmController {
     @Param('senderId') senderId: number,
     @Query('after') after: number,
   ) {
-    return 'testing...';
+    return await this.dmSerivce.getUnreads(user.id, senderId, after);
   }
 }

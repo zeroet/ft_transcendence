@@ -4,4 +4,5 @@ export interface IDmService {
   getMembers(senderId: number, receiverId: number);
   getContents(senderId: number, receiverId: number);
   postContents(senderId: number, receiverId: number, content: string);
+  getUnreads(userId: number, senderId: number, after: number);
 }
