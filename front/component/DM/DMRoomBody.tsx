@@ -7,13 +7,23 @@ import useSWR, { mutate } from "swr";
 import axios from "axios";
 import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
+import { useRouter } from "next/router";
 
 export default function DMRoomBody({ id }: { id: TypeChatId }) {
+  const router = useRouter();
   const [inputText, setInputText] = useState<string>("");
   const { data: chatContentsData, error: chatContentsError } = useSWR<any>(
     `/api/${id.link}/${id.id}/contents`
   );
   const [socket] = useSocket(null, "chat");
+  const { data: mydata, error: myErorr } = useSWR("/api/users");
+  /**
+   * room id를 기반으로 정보를 가져와서 채팅룸의 이름을 나타내고
+   * 또한  query로 접근못하게 만든다
+   */
+  const { data: infoDmRoomData, error: infoDmRoomError } = useSWR(
+    `/api/${id.link}/${id.id}`
+  );
 
   useEffect(() => {
     socket?.on("newDmContent", () => {
@@ -22,9 +32,9 @@ export default function DMRoomBody({ id }: { id: TypeChatId }) {
     return () => {
       socket?.off("newDmContent");
     };
-  }, [chatContentsData]);
+  }, [chatContentsData, mydata, infoDmRoomData]);
 
-  console.log(chatContentsData);
+  //   console.log(chatContentsData);
   const onChangeInputText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputText(e.target.value);
@@ -37,8 +47,6 @@ export default function DMRoomBody({ id }: { id: TypeChatId }) {
       e.preventDefault();
       e.stopPropagation();
       if (inputText === "") return;
-      // api통해서 업데이트 및 mutate수정
-      // optimistic ui
       await axios
         .post(`/api/${id.link}/${id.id}/contents`, {
           content: inputText,
@@ -53,14 +61,27 @@ export default function DMRoomBody({ id }: { id: TypeChatId }) {
     [inputText]
   );
 
-  if (chatContentsError)
+  if (
+    !(
+      infoDmRoomData?.User1.id === mydata?.id ||
+      infoDmRoomData?.User2.id === mydata?.id
+    )
+  ) {
+    router.push("/Chat");
+  }
+  if (chatContentsError || myErorr || infoDmRoomError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!chatContentsData || !socket) return <Loading />;
+  if (!chatContentsData || !infoDmRoomData || !socket || !mydata)
+    return <Loading />;
   return (
     <div className={styles.box}>
       <div className="roomname-header">
         <div className="roomname-img">
-          <h1>{"dm name!!!"}</h1>
+          <h1>
+            {infoDmRoomData.User1.id === mydata.id
+              ? infoDmRoomData.User2.username
+              : infoDmRoomData.User1.username}
+          </h1>
         </div>
       </div>
       <hr />

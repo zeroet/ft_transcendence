@@ -48,9 +48,9 @@ export default function Participant({
     };
   }, [socket, roomMembersData, id.id, myData]);
 
-  if (isId && roomMembersData) {
-    console.log(roomMembersData);
-  }
+  // if (isId && roomMembersData) {
+  //   console.log(roomMembersData);
+  // }
   if (roomMembersError || myError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if ((isId && !roomMembersData) || !socket || !myData) return <Loading />;

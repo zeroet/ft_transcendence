@@ -77,23 +77,10 @@ export default function Chat({
           </div>
         )}
       <div className="component-style">
-        {/* ///////////////////////////////////////// */}
-        {/* 리스트 부분 */}
         <RoomList />
-        {/* <dmList /> */}
-        {/* ///////////////////////////////////////// */}
-
-        {/* ///////////////////////////////////////// */}
-        {/* 채팅 바디부분 */}
         {!isId && <ChatBody />}
-        {/* 채팅룸 */}
         {isId && id.link === "chatroom" && <ChatRoomBody id={id} />}
-        {/* DM */}
         {isId && id.link === "dm" && <DMRoomBody id={id} />}
-        {/* ///////////////////////////////////////// */}
-
-        {/* ///////////////////////////////////////// */}
-        {/* 참가자 부분 */}
         {!isId && (
           <Participant id={id} ownerId={null} accessToken={accessToken} />
         )}
@@ -107,7 +94,6 @@ export default function Chat({
         {/* {isId && id.link === "dm" && (
           <Participant id={id} ownerId={roomData.ownerId} />
         )} */}
-        {/* ///////////////////////////////////////// */}
       </div>
       <style jsx>{`
         .pwmodal-background {

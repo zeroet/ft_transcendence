@@ -18,10 +18,7 @@ export default function Header({ id }: { id: TypeChatId | undefined }) {
   useEffect(() => {
     return () => {
       if (id) {
-        console.log(id.id, id.link);
-        console.log("이동");
         mutate(`/api/${id.link}/${id.id}/members`);
-        console.log(`/api/${id.link}/${id.id}/members`);
       }
     };
   }, [id?.id]);
