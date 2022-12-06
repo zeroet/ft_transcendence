@@ -13,9 +13,10 @@ import {
 import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
-import { Chatroom } from 'src/typeorm';
+import { Chatroom, Dm } from 'src/typeorm';
 import { IUserService } from 'src/users/services/user/user.interface';
 import { Repository } from 'typeorm';
+import { IDmService } from './services/dm/dm.interface';
 
 // @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(JwtWsGuard)
@@ -27,8 +28,10 @@ export class ChatEventsGateway
   constructor(
     @Inject('AUTH_SERVICE') private authService: IAuthService,
     @Inject('USER_SERVICE') private userService: IUserService,
+    @Inject('DM_SERVICE') private dmService: IDmService,
     @InjectRepository(Chatroom)
     private chatroomRepository: Repository<Chatroom>, // private readonly jwtAccessStrategy: JwtAccessStrategy,
+    @InjectRepository(Dm) private dmRepository: Repository<Dm>,
   ) {}
 
   @WebSocketServer()
@@ -42,12 +45,14 @@ export class ChatEventsGateway
   //   this.server.emit('message', socket.id, message);
   // }
 
-  // @SubscribeMessage('dm')
+  // @SubscribeMessage('newDmList')
   // handleDmMessage(
-  //   @MessageBody() dmMessage: string,
+  //   @MessageBody() newDm: string,
   //   @ConnectedSocket() socket: Socket,
   // ) {
-  //   this.server.emit('dm', socket.id, dmMessage);
+  // this.dmRepository.
+  // this.server.emit('newDmList', this.dmService.getDmList());
+  //   this.server.emit('dm', socket.id, newDm);
   // }
 
   // @SubscribeMessage('join')
