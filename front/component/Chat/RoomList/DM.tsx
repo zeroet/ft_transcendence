@@ -12,17 +12,17 @@ export default function DM() {
 
   useEffect(() => {
     socket?.on("newDmList", (data) => {
-      console.log(data, " for new DM list in ChatRoom socket!");
-      // if (myData.id === data.receiverId) {
-      //   alert(`you have DM message from ${data.Sender.username}`);
-      // }
-      // mutate("/api/dm");
+      if (myData.id === data.User2.id) {
+        alert(`you have DM message from ${data.User1.username}`);
+      }
+      mutate("/api/dm");
     });
     return () => {
       socket?.off("newDmList");
     };
-  }, [DMData]);
+  }, [DMData, myData]);
 
+  console.log(DMData);
   if (DMError || myError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!DMData || !myData) return <Loading />;
@@ -31,26 +31,32 @@ export default function DM() {
       <ul>
         {DMData &&
           DMData.map((eachDM: any) => {
+            console.log(eachDM, "is eachDM from DM.tsx");
+            const DM = { username: "", image_url: "" };
+            console.log(eachDM.User1.id, eachDM.User2.id);
+            if (eachDM.User1.id === myData.id) {
+              DM.username = eachDM.User2.username;
+              DM.image_url = eachDM.User2.image_url;
+            } else if (eachDM.User2.id === myData.id) {
+              DM.username = eachDM.User1.username;
+              DM.image_url = eachDM.User1.image_url;
+            } else {
+              return;
+            }
             return (
-              <li>
+              <li key={eachDM.id}>
                 <Link
                   href={{
                     pathname: "/Chat",
                     query: {
-                      receiverId: eachDM.Receiver.id,
-                      senderId: eachDM.Sender.id,
+                      id: eachDM.id,
                       link: "dm",
                     },
                   }}
-                  key={eachDM.Receiver.id}
                 >
                   <div className="DM-list">
-                    <img
-                      src={eachDM.Receiver.image_url}
-                      width={"25px"}
-                      height={"25px"}
-                    />
-                    <div>{eachDM.Receiver.username}</div>
+                    <img src={DM.image_url} width={"25px"} height={"25px"} />
+                    <div>{DM.username}</div>
                   </div>
                 </Link>
               </li>

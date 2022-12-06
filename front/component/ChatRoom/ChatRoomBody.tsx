@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { use, useRef } from "react";
+import React, { useRef } from "react";
 import { useCallback, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import styles from "../../styles/LayoutBox.module.css";
@@ -86,7 +86,6 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
     setShowModal(true);
   };
 
-  console.log(roomData.ownerId === userData.id);
   if (roomError || chatContentsError || userError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!roomData || !userData || !chatContentsData) return <Loading />;
