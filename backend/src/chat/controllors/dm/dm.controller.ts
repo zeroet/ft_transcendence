@@ -19,15 +19,10 @@ import { User } from 'src/utils/decorators/user.decorator';
 export class DmController {
   constructor(@Inject('DM_SERVICE') private dmSerivce: IDmService) {}
 
-  @ApiParam({
-    name: 'id',
-    example: 1,
-    description: 'Receiver id',
-  })
   @ApiOperation({ summary: 'Get all dm list / 디엠 목록가져오기' })
   @Get('')
   async getDmList(@User() user: IUser) {
-    return await this.dmSerivce.getDmList(user.id);
+    return await this.dmSerivce.getDmList(user.id, 0);
   }
 
   @ApiParam({

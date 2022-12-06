@@ -40,17 +40,25 @@ export class DmService implements IDmService {
     return dm;
   }
 
-  async getDmList(senderId: number) {
+  async getDmList(senderId: number, receiverId: number) {
     const sender = await this.findUserByIdOrFail(senderId);
     // const receiver = await this.findUserByIdOrFail(receiverId);
     const dms = await this.dmRepository
       .createQueryBuilder('dm')
-      .distinctOn(['dm.receiver_id'])
-      //   .select('dm.sender_id', 'dm.receiver_id')
+      //   .select('receiver_id')
+      .distinctOn(['dm.receiver_id, dm.sender_id'])
       .where('dm.sender_id=:senderId', { senderId })
-      //   .innerJoinAndSelect('dm.Sender', 'sender')
       .innerJoinAndSelect('dm.Receiver', 'receiver')
-      .select(['dm', 'receiver.username', 'receiver.image_url'])
+      .innerJoinAndSelect('dm.Sender', 'sender')
+      .select([
+        'dm',
+        'receiver.id',
+        'receiver.username',
+        'receiver.image_url',
+        'sender.id',
+        'sender.username',
+        'sender.image_url',
+      ])
       //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
       .getMany();
     console.log('dms:', dms);
