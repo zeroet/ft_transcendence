@@ -1,4 +1,3 @@
-import { Socket } from 'socket.io';
 
 type ball = {
     x: number;
@@ -69,5 +68,10 @@ export class Game{
             return true;
         else
             return false;
+    }
+
+    changeStatus(status :Status)
+    {
+        this.Status = status;
     }
 }

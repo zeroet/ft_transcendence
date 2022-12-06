@@ -16,7 +16,8 @@ import { UserService } from 'src/users/services/user/user.service';
 import { Game, Status } from './interfaces/room';
 import { QueueService } from './queue.service';
 import { Logger } from '@nestjs/common';
-import { create } from 'domain';
+import { Interval } from '@nestjs/schedule';
+// import { GameService } from './game.service';
 
 @UseGuards(JwtWsGuard)
 @WebSocketGateway({ path: '/game', cors: '*' })
@@ -50,7 +51,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       return;
     }
     client.data.user = user;
-    this.logger.log('Lobbby', client.id);
+    this.logger.log('Lobbby', client.data.user);
   }
 
   async handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -146,9 +147,16 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
   async liveGame(name: string, game: Game) {
     for(const room of this.rooms.values()){
-        console.log('live Gameeeeeeeeeeeeeee');
+      room.changeStatus(Status.PLAY);
+      await this.server.to(name).emit('enterGame', name);
     }
-    await this.server.to(name).emit('enterGame', name);
+  }
+
+  @Interval(1000 / 60)
+  loop(): void {
+    for (const room of this.rooms.values())
+      if (room.Status == Status.PLAY) 
+        this.server.to(room.roomName).emit('Play')
   }
     
   @SubscribeMessage('room-list')
