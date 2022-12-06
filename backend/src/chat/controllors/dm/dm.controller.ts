@@ -24,7 +24,18 @@ export class DmController {
     example: 1,
     description: 'Receiver id',
   })
-  @ApiOperation({ summary: 'create a new dm / 디엠 추가하기' })
+  @ApiOperation({ summary: 'Create a new dm / 디엠 추가하기' })
+  @Get('')
+  async getDm(@User() user: IUser) {
+    return await this.dmSerivce.getDm(user.id);
+  }
+
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Receiver id',
+  })
+  @ApiOperation({ summary: 'Create a new dm / 디엠 추가하기' })
   @Post(':receiverId')
   async createDm(@User() user: IUser, @Param('receiverId') receiverId: number) {
     return await this.dmSerivce.createDm(user.id, receiverId);
@@ -71,7 +82,7 @@ export class DmController {
     example: 1,
     description: 'Dm id',
   })
-  @ApiOperation({ summary: 'post contents / 특정 디엠에 대화내용 입력하기' })
+  @ApiOperation({ summary: 'Post contents / 특정 디엠에 대화내용 입력하기' })
   @Post(':receiverId/contents')
   async postContents(
     @User() user: IUser,

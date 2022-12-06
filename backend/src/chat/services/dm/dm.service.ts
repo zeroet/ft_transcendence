@@ -40,6 +40,18 @@ export class DmService implements IDmService {
     return dm;
   }
 
+  async getDm(senderId: number) {
+    const sender = await this.findUserByIdOrFail(senderId);
+    // const receiver = await this.findUserByIdOrFail(receiverId);
+    const dms = await this.dmRepository
+      .createQueryBuilder('dm')
+      .where('dm.sender_id=:senderId', { senderId })
+      //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
+      .getMany();
+    console.log('dms:', dms);
+    return dms;
+  }
+
   async createDm(senderId: number, receiverId: number) {
     const sender = await this.findUserByIdOrFail(senderId);
     const receiver = await this.findUserByIdOrFail(receiverId);
