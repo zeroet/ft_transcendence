@@ -140,7 +140,7 @@ export class ChatroomService implements IChatroomService {
     return timeouts;
   }
 
-  async getAllChatrooms(): Promise<ChatroomDto[]> {
+  async getChatrooms(): Promise<ChatroomDto[]> {
     const chatrooms = await this.chatroomRepository
       .createQueryBuilder('chatroom')
       .addSelect('chatroom.password')
@@ -260,7 +260,7 @@ export class ChatroomService implements IChatroomService {
     return updatedChatroom;
   }
 
-  async getAllMembers(chatroomId: number) {
+  async getMembers(chatroomId: number) {
     let members = await this.chatMemebrRepository
       .createQueryBuilder('chat_member')
       .innerJoin(
@@ -331,13 +331,17 @@ export class ChatroomService implements IChatroomService {
     // if (member.userId === chatroom.ownerId) {
     // ban
     if (updateMemberDto.ban === true) {
-      updatedMember = await this.chatMemebrRepository.update(
-        updateMemberDto.targetUserId,
-        {
-          // bannedAt: this.addNewTimeout(`${targetUser.id}_banned`, 1000),
-          // bannedAt: new Date(),
-        },
+      // updatedMember = await this.chatMemebrRepository.update(
+      // updateMemberDto.targetUserId,
+      this.addNewTimeout(
+        `${targetUser.id}_banned`,
+        targetUser.id,
+        chatroomId,
+        360000,
       );
+      // bannedAt: this.addNewTimeout(`${targetUser.id}_banned`, 1000),
+      // bannedAt: new Date(),
+      // );
     }
     // kick
     else if (updateMemberDto.kick === true) {
@@ -345,12 +349,12 @@ export class ChatroomService implements IChatroomService {
     }
     // mute
     else if (updateMemberDto.mute === true) {
-      updatedMember = await this.chatMemebrRepository.update(
-        updateMemberDto.targetUserId,
-        {
-          mutedAt: new Date(),
-        },
-      );
+      // updatedMember = await this.chatMemebrRepository.update(
+      //   updateMemberDto.targetUserId,
+      //   {
+      //     mutedAt: new Date(),
+      //   },
+      // );
     }
     // }
     console.log('updated member:', updatedMember);

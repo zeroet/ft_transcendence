@@ -44,8 +44,8 @@ export class ChatroomController {
   })
   @ApiOperation({ summary: 'Get all chatrooms / 모든 대화방 가져오기' })
   @Get()
-  async getAllChatrooms() {
-    return this.chatroomService.getAllChatrooms();
+  async getChatrooms() {
+    return this.chatroomService.getChatrooms();
   }
 
   @ApiResponse({
@@ -179,8 +179,8 @@ export class ChatroomController {
       'Get all members from a chatroom / 특정 대화방의 모든 참여자목록 가져오기',
   })
   @Get(':id/members')
-  async getAllMembers(@Param('id') id: number) {
-    return this.chatroomService.getAllMembers(id);
+  async getMembers(@Param('id') id: number) {
+    return this.chatroomService.getMembers(id);
   }
 
   // @ApiResponse({
@@ -269,7 +269,7 @@ export class ChatroomController {
   })
   @ApiBody({
     type: String,
-    description: 'content that a user entered',
+    description: 'Content that a user entered',
   })
   @ApiParam({
     name: 'id',

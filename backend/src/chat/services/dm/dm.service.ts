@@ -1,10 +1,107 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
+import { Dm, User } from 'src/typeorm';
+import { Repository } from 'typeorm';
 import { IDmService } from './dm.interface';
 
 @Injectable()
 export class DmService implements IDmService {
-  getMembers(dmId: number) {}
-  postMembers(userId: number, dmId: number) {}
-  getContents(userId: number, dmId: number) {}
-  postContents(userId: number, dmId: number, content: string) {}
+  constructor(
+    @InjectRepository(Dm) private dmRepository: Repository<Dm>,
+    @InjectRepository(User) private userRepository: Repository<User>,
+    private chatEventsGateway: ChatEventsGateway,
+  ) {}
+
+  async findUserByIdOrFail(userId: number) {
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.user_id=:userId', { userId })
+      .getOne();
+    if (!user) {
+      //   console.log(`findUserByIdOrFail of id: ${userId} not found,`);
+      throw new NotFoundException(`User of id:${userId} not found`);
+    }
+    return user;
+  }
+
+  async findDmByIdOrFail(dmId: number) {
+    const dm = await this.dmRepository
+      .createQueryBuilder('dm')
+      .where('dm.dm_id=:dmId', { dmId })
+      .getOne();
+    if (!dm) {
+      throw new NotFoundException(`Dm of id:${dmId} not found`);
+    }
+    return dm;
+  }
+
+  async createDm(senderId: number, receiverId: number) {
+    const sender = await this.findUserByIdOrFail(senderId);
+    const receiver = await this.findUserByIdOrFail(receiverId);
+    const dm = await this.dmRepository
+      .createQueryBuilder('dm')
+      //   .where('dm.dm_id=:dmId', { dmId })
+      .where('dm.sender_id=:senderId', { senderId })
+      .andWhere('dm.receiver_id=:receiverId', { receiverId })
+      .getOne();
+    if (dm) {
+      this.chatEventsGateway.server.emit('newDmList', dm);
+      return dm;
+      //   throw new BadRequestException(
+      //     `Dm of users of id:${senderId} and ${receiverId} already exists`,
+      //   );
+    }
+    const newDm = this.dmRepository.create({
+      senderId,
+      receiverId,
+      Sender: sender,
+      Receiver: receiver,
+    });
+    await this.dmRepository.save(newDm);
+    this.chatEventsGateway.server.emit('newDmList', newDm);
+    return newDm;
+  }
+
+  async getMembers(dmId: number) {
+    const members = await this.dmRepository
+      .createQueryBuilder('dm')
+      .select('dm.sender_id', 'dm.receiver_id')
+      .where('dm.dm_id=:dmId', { dmId })
+      .getOne();
+    console.log('dm members:', members);
+    return members;
+  }
+
+  async getContents(userId: number, dmId: number) {
+    const sender = await this.findUserByIdOrFail(userId);
+    const contents = await this.dmRepository
+      .createQueryBuilder('dm')
+      .where('dm.dm_id=:dmId', { dmId })
+      .innerJoinAndSelect('dm.Sender', 'sender')
+      .innerJoinAndSelect('dm.Receiver', 'receiver')
+      //   .select(['dm', ]);
+      .getMany();
+    console.log('dm contents:', contents);
+    return contents;
+  }
+
+  async postContents(senderId: number, receiverId: number, content: string) {
+    const sender = await this.findUserByIdOrFail(senderId);
+    const receiver = await this.findUserByIdOrFail(receiverId);
+    // const dm = await this.findDmByIdOrFail(dmId);
+    const newContent = this.dmRepository.create({
+      senderId,
+      receiverId,
+      content,
+      Sender: sender,
+      Receiver: receiver,
+    });
+    await this.dmRepository.save(newContent);
+    this.chatEventsGateway.server.emit('newDmContent', newContent);
+  }
 }
