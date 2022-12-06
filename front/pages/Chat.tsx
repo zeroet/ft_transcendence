@@ -16,6 +16,7 @@ import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
 import { TypeChatId } from "../interfaceType";
 import Header from "../component/Header/Header";
 import DMRoomBody from "../component/DM/DMRoomBody";
+import ParticipantDm from "../component/DM/ParicipantDm";
 
 export default function Chat({
   id,
@@ -91,9 +92,7 @@ export default function Chat({
             accessToken={accessToken}
           />
         )}
-        {/* {isId && id.link === "dm" && (
-          <Participant id={id} ownerId={roomData.ownerId} />
-        )} */}
+        {isId && id.link === "dm" && <ParticipantDm id={id} />}
       </div>
       <style jsx>{`
         .pwmodal-background {

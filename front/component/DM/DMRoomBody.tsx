@@ -17,10 +17,6 @@ export default function DMRoomBody({ id }: { id: TypeChatId }) {
   );
   const [socket] = useSocket(null, "chat");
   const { data: mydata, error: myErorr } = useSWR("/api/users");
-  /**
-   * room id를 기반으로 정보를 가져와서 채팅룸의 이름을 나타내고
-   * 또한  query로 접근못하게 만든다
-   */
   const { data: infoDmRoomData, error: infoDmRoomError } = useSWR(
     `/api/${id.link}/${id.id}`
   );
