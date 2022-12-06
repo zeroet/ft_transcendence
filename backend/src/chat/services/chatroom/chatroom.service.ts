@@ -205,13 +205,17 @@ export class ChatroomService implements IChatroomService {
   async deleteChatroom(userId: number, chatroomId: number) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
-    const removedChatroom = await this.chatroomRepository
-      .createQueryBuilder('chatroom')
-      .delete()
-      .from(Chatroom)
-      .where('user_id=:userId', { userId })
-      .andWhere('chatroom_id=:ChatroomId', { chatroomId })
-      .execute();
+    const removedChatroom = await this.chatroomRepository.remove(chatroom);
+    // const removedChatroom = await this.chatroomRepository
+    //   .createQueryBuilder('chatroom')
+    //   .delete()
+    //   .from(Chatroom)
+    //   .where('user_id=:userId', { userId })
+    //   .andWhere('chatroom_id=:ChatroomId', { chatroomId })
+    //   .execute();
+    console.log('removed chatroom:', removedChatroom);
+    this.chatEventsGateway.server.emit('newRoomList', removedChatroom);
+    this.chatEventsGateway.server.emit('newMemberList', null);
     return removedChatroom;
   }
 
