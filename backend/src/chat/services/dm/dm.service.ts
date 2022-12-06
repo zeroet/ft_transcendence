@@ -51,8 +51,10 @@ export class DmService implements IDmService {
       .innerJoinAndSelect('dm.User2', 'user2')
       .select([
         'dm',
+        'user1.id',
         'user1.username',
         'user1.image_url',
+        'user2.id',
         'user2.username',
         'user2.image_url',
       ])
