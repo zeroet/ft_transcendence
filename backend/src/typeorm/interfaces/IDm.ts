@@ -1,12 +1,14 @@
+import { IDmContent } from './IDmContent';
 import { IUser } from './IUser';
 
 export interface IDm {
   id: number;
-  senderId: number;
-  receiverId: number;
-  content: string;
+  user1: number;
+  user2: number;
+  // content: string;
   createdAt: Date;
   modifiedAt: Date;
-  Sender: IUser;
-  Receiver: IUser;
+  User1: IUser;
+  User2: IUser;
+  DmContent: IDmContent[];
 }

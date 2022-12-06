@@ -11,6 +11,7 @@ import {
   Dm,
   User,
 } from 'src/typeorm';
+import { DmContent } from 'src/typeorm/entities/dmContent.entity';
 import { UsersModule } from 'src/users/users.module';
 import { ChatroomController } from './controllors/chatroom/chatroom.controller';
 import { DmController } from './controllors/dm/dm.controller';
@@ -26,6 +27,7 @@ import { DmService } from './services/dm/dm.service';
       ChatMember,
       ChatContent,
       Dm,
+      DmContent,
     ]),
     UsersModule,
     AuthModule,

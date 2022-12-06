@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { Dm, User } from 'src/typeorm';
+import { DmContent } from 'src/typeorm/entities/dmContent.entity';
 import { IsNull, MoreThan, Repository } from 'typeorm';
 import { IDmService } from './dm.interface';
 
@@ -13,6 +14,8 @@ import { IDmService } from './dm.interface';
 export class DmService implements IDmService {
   constructor(
     @InjectRepository(Dm) private dmRepository: Repository<Dm>,
+    @InjectRepository(DmContent)
+    private dmContentRepository: Repository<DmContent>,
     @InjectRepository(User) private userRepository: Repository<User>,
     private chatEventsGateway: ChatEventsGateway,
   ) {}
@@ -41,58 +44,57 @@ export class DmService implements IDmService {
   }
 
   async getDmList(senderId: number, receiverId: number) {
-    const sender = await this.findUserByIdOrFail(senderId);
-    // const receiver = await this.findUserByIdOrFail(receiverId);
-    // const dms = await this.userRepository
-    //   .createQueryBuilder('users')
-    //   .leftJoin('users.DmSender', 'dm', 'dm.sender_id=:senderId', { senderId })
+    // const sender = await this.findUserByIdOrFail(senderId);
+    // // const receiver = await this.findUserByIdOrFail(receiverId);
+    // // const dms = await this.userRepository
+    // //   .createQueryBuilder('users')
+    // //   .leftJoin('users.DmSender', 'dm', 'dm.sender_id=:senderId', { senderId })
+    // //   .getMany();
+    // const dms = await this.dmRepository
+    //   .createQueryBuilder('dm')
+    //   .distinctOn(['dm.receiver_id, dm.sender_id'])
+    //   .where('dm.sender_id=:senderId', { senderId })
+    //   //   .orWhere('dm.receiver_id=:senderId', { senderId })
+    //   .innerJoinAndSelect('dm.Receiver', 'receiver')
+    //   .innerJoinAndSelect('dm.Sender', 'sender')
+    //   .select([
+    //     'dm',
+    //     'receiver.id',
+    //     'receiver.username',
+    //     'receiver.image_url',
+    //     'sender.id',
+    //     'sender.username',
+    //     'sender.image_url',
+    //   ])
+    //   //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
     //   .getMany();
-    const dms = await this.dmRepository
-      .createQueryBuilder('dm')
-      .distinctOn(['dm.receiver_id, dm.sender_id'])
-      .where('dm.sender_id=:senderId', { senderId })
-      .orWhere('dm.receiver_id=:senderId', { senderId })
-      .innerJoinAndSelect('dm.Receiver', 'receiver')
-      .innerJoinAndSelect('dm.Sender', 'sender')
-      .select([
-        'dm',
-        'receiver.id',
-        'receiver.username',
-        'receiver.image_url',
-        'sender.id',
-        'sender.username',
-        'sender.image_url',
-      ])
-      //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
-      .getMany();
-    console.log('dms:', dms);
-    // this.chatEventsGateway.server.emit('newDmList', dms);
-    return dms;
+    // console.log('dms:', dms);
+    // // this.chatEventsGateway.server.emit('newDmList', dms);
+    // return dms;
   }
 
   async createDm(senderId: number, receiverId: number) {
-    const sender = await this.findUserByIdOrFail(senderId);
-    const receiver = await this.findUserByIdOrFail(receiverId);
-    const dm = await this.dmRepository
-      .createQueryBuilder('dm')
-      //   .where('dm.dm_id=:dmId', { dmId })
-      .where('dm.sender_id=:senderId', { senderId })
-      .andWhere('dm.receiver_id=:receiverId', { receiverId })
-      .getOne();
-    if (dm) {
-      const newDm = this.dmRepository.create({
-        senderId,
-        receiverId,
-        Sender: sender,
-        Receiver: receiver,
-      });
-      this.chatEventsGateway.server.emit('newDmList', newDm);
-      return newDm;
-
-      //   throw new BadRequestException(
-      //     `Dm of users of id:${senderId} and ${receiverId} already exists`,
-      //   );
-    }
+    // const sender = await this.findUserByIdOrFail(senderId);
+    // const receiver = await this.findUserByIdOrFail(receiverId);
+    // const dm = await this.dmRepository
+    //   .createQueryBuilder('dm')
+    //   //   .where('dm.dm_id=:dmId', { dmId })
+    //   .where('dm.sender_id=:senderId', { senderId })
+    //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
+    //   .getOne();
+    // if (dm) {
+    //   const newDm = this.dmRepository.create({
+    //     senderId,
+    //     receiverId,
+    //     Sender: sender,
+    //     Receiver: receiver,
+    //   });
+    //   this.chatEventsGateway.server.emit('newDmList', newDm);
+    //   return newDm;
+    //   //   throw new BadRequestException(
+    //   //     `Dm of users of id:${senderId} and ${receiverId} already exists`,
+    //   //   );
+    // }
     // else {
     //   const md = await this.dmRepository
     //     .createQueryBuilder('dm')
@@ -110,69 +112,69 @@ export class DmService implements IDmService {
     //     return newDm;
     //   }
     // }
-    const newDm = this.dmRepository.create({
-      senderId,
-      receiverId,
-      Sender: sender,
-      Receiver: receiver,
-    });
-    await this.dmRepository.save(newDm);
-    console.log(newDm);
-    this.chatEventsGateway.server.emit('newDmList', newDm);
-    return newDm;
+    // const newDm = this.dmRepository.create({
+    //   senderId,
+    //   receiverId,
+    //   Sender: sender,
+    //   Receiver: receiver,
+    // });
+    // await this.dmRepository.save(newDm);
+    // console.log(newDm);
+    // this.chatEventsGateway.server.emit('newDmList', newDm);
+    // return newDm;
   }
 
   async getMembers(senderId: number, receiverId: number) {
-    const members = await this.dmRepository
-      .createQueryBuilder('dm')
-      .select('dm.sender_id', 'dm.receiver_id')
-      .where('dm.sender_id=:senderId', { senderId })
-      .andWhere('dm.receiver_id=:receiverId', { receiverId })
-      .getOne();
-    console.log('dm members:', members);
-    return members;
+    // const members = await this.dmRepository
+    //   .createQueryBuilder('dm')
+    //   .select('dm.sender_id', 'dm.receiver_id')
+    //   .where('dm.sender_id=:senderId', { senderId })
+    //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
+    //   .getOne();
+    // console.log('dm members:', members);
+    // return members;
   }
 
   async getContents(senderId: number, receiverId: number) {
-    const sender = await this.findUserByIdOrFail(senderId);
-    const receiver = await this.findUserByIdOrFail(receiverId);
-    const contents = await this.dmRepository
-      .createQueryBuilder('dm')
-      .where('dm.sender_id=:senderId', { senderId })
-      .andWhere('dm.receiver_id=:receiverId', { receiverId })
-      //   .where('dm.dm_id=:dmId', { dmId })
-      .innerJoinAndSelect('dm.Sender', 'sender')
-      .innerJoinAndSelect('dm.Receiver', 'receiver')
-      //   .select(['dm', ]);
-      .getMany();
-    console.log('dm contents:', contents);
-    return contents;
+    // const sender = await this.findUserByIdOrFail(senderId);
+    // const receiver = await this.findUserByIdOrFail(receiverId);
+    // const contents = await this.dmRepository
+    //   .createQueryBuilder('dm')
+    //   .where('dm.sender_id=:senderId', { senderId })
+    //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
+    //   //   .where('dm.dm_id=:dmId', { dmId })
+    //   .innerJoinAndSelect('dm.Sender', 'sender')
+    //   .innerJoinAndSelect('dm.Receiver', 'receiver')
+    //   //   .select(['dm', ]);
+    //   .getMany();
+    // console.log('dm contents:', contents);
+    // return contents;
   }
 
   async postContents(senderId: number, receiverId: number, content: string) {
-    const sender = await this.findUserByIdOrFail(senderId);
-    const receiver = await this.findUserByIdOrFail(receiverId);
-    // const dm = await this.findDmByIdOrFail(dmId);
-    const newContent = this.dmRepository.create({
-      senderId,
-      receiverId,
-      content,
-      Sender: sender,
-      Receiver: receiver,
-    });
-    await this.dmRepository.save(newContent);
-    this.chatEventsGateway.server.emit('newDmContent', newContent);
+    // const sender = await this.findUserByIdOrFail(senderId);
+    // const receiver = await this.findUserByIdOrFail(receiverId);
+    // // const dm = await this.findDmByIdOrFail(dmId);
+    // const newContent = this.dmRepository.create({
+    //   senderId,
+    //   receiverId,
+    //   content,
+    //   Sender: sender,
+    //   Receiver: receiver,
+    // });
+    // await this.dmRepository.save(newContent);
+    // this.chatEventsGateway.server.emit('newDmContent', newContent);
   }
 
   async getUnreads(userId: number, senderId: number, after: number) {
-    const unReadCount = this.dmRepository.count({
-      where: {
-        senderId,
-        receiverId: userId,
-        createdAt: MoreThan(new Date(after)),
-      },
-    });
-    console.log('unReadCount', unReadCount);
-    return unReadCount;
+    //     const unReadCount = this.dmRepository.count({
+    //       where: {
+    //         senderId,
+    //         receiverId: userId,
+    //         createdAt: MoreThan(new Date(after)),
+    //       },
+    //     });
+    //     console.log('unReadCount', unReadCount);
+    //     return unReadCount;
   }
 }
