@@ -25,13 +25,6 @@ const ParticipantSettingModal = ({
   const onClickDM = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-
-    /**
-     * sender /
-     * recever / userid
-     *
-     * select from where re
-     */
     await axios
       .post(`/api/dm/${userId}`)
       .then((res) => {
@@ -79,6 +72,7 @@ const ParticipantSettingModal = ({
     console.log("Kick");
   }, []);
 
+  console.log(myData);
   if (!myData) return <Loading />;
   return (
     <div className="participantSettingModal">

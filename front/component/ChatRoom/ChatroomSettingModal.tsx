@@ -10,12 +10,6 @@ export default function ChatroomSettingModal({ roomId }: { roomId: string }) {
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      /**
-       * 방 폭파
-       * axois.get/post('/api/폭파').then(()=> {
-       * socket.emit('방폭파')
-       * })
-       */
       await axios
         .delete(`/api/chatroom/${roomId}`)
         .then((res) => {
