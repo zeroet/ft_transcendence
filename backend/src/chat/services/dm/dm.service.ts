@@ -40,11 +40,12 @@ export class DmService implements IDmService {
     return dm;
   }
 
-  async getDm(senderId: number) {
+  async getDmList(senderId: number) {
     const sender = await this.findUserByIdOrFail(senderId);
     // const receiver = await this.findUserByIdOrFail(receiverId);
     const dms = await this.dmRepository
       .createQueryBuilder('dm')
+      .distinctOn(['dm.receiver_id'])
       .where('dm.sender_id=:senderId', { senderId })
       //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
       .getMany();

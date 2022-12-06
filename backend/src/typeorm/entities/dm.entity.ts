@@ -22,7 +22,7 @@ export class Dm implements IDm {
   @Column({ type: 'int', name: 'receiver_id', nullable: false })
   receiverId: number;
 
-  @Column({ type: 'varchar', name: 'content', nullable: false, length: 100 })
+  @Column({ type: 'varchar', name: 'content', nullable: true, length: 100 })
   content: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })

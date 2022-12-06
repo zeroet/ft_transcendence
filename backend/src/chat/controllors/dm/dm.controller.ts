@@ -24,10 +24,10 @@ export class DmController {
     example: 1,
     description: 'Receiver id',
   })
-  @ApiOperation({ summary: 'Create a new dm / 디엠 추가하기' })
+  @ApiOperation({ summary: 'Get all dm list / 디엠 목록가져오기' })
   @Get('')
-  async getDm(@User() user: IUser) {
-    return await this.dmSerivce.getDm(user.id);
+  async getDmList(@User() user: IUser) {
+    return await this.dmSerivce.getDmList(user.id);
   }
 
   @ApiParam({
