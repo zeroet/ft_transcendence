@@ -82,6 +82,26 @@ export class DmService implements IDmService {
     return dms;
   }
 
+  async getOneDm(dmId: number) {
+    const dm = await this.dmRepository
+      .createQueryBuilder('dm')
+      .where('dm.dm_id=:dmId', { dmId })
+      .innerJoinAndSelect('dm.User1', 'user1')
+      .innerJoinAndSelect('dm.User2', 'user2')
+      .select([
+        'dm',
+        'user1.id',
+        'user1.username',
+        'user1.image_url',
+        'user2.id',
+        'user2.username',
+        'user2.image_url',
+      ])
+      .getOne();
+    console.log('dm info:', dm);
+    return dm;
+  }
+
   async createDm(senderId: number, receiverId: number) {
     const sender = await this.findUserByIdOrFail(senderId);
     const receiver = await this.findUserByIdOrFail(receiverId);
@@ -154,7 +174,7 @@ export class DmService implements IDmService {
       .createQueryBuilder('dm_content')
       .where('dm_content.dm_id=:dmId', { dmId })
       .innerJoinAndSelect('dm_content.User', 'user')
-      // .innerJoinAndSelect('dm.User1', 'user1')
+      // .innerJoinAndSelect(Dm, 'dm', 'dm.dm_id=:dmId', { dmId })
       // .innerJoinAndSelect('dm.User2', 'user2')
       .select(['dm_content', 'user.username'])
       .getMany();
@@ -184,14 +204,14 @@ export class DmService implements IDmService {
   }
 
   async getUnreads(userId: number, senderId: number, after: number) {
-    //     const unReadCount = this.dmRepository.count({
-    //       where: {
-    //         senderId,
-    //         receiverId: userId,
-    //         createdAt: MoreThan(new Date(after)),
-    //       },
-    //     });
-    //     console.log('unReadCount', unReadCount);
-    //     return unReadCount;
+    const unReadCount = this.dmRepository.count({
+      where: {
+        user1: senderId,
+        user2: userId,
+        createdAt: MoreThan(new Date(after)),
+      },
+    });
+    console.log('unReadCount', unReadCount);
+    return unReadCount;
   }
 }

@@ -42,6 +42,17 @@ export class DmController {
     example: 1,
     description: 'Dm id',
   })
+  @ApiOperation({ summary: 'Get one dm / 특정 디엠 가져오기' })
+  @Get(':dmId')
+  async getOneDm(@User() user: IUser, @Param('dmId') dmId: number) {
+    return await this.dmSerivce.getOneDm(dmId);
+  }
+
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Dm id',
+  })
   @ApiOperation({
     summary: 'Get members for a DM / 특정 디엠의 참여자 가져오기',
   })
