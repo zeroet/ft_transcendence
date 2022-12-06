@@ -91,7 +91,7 @@ export class DmService implements IDmService {
       .andWhere('dm.user2=:receiverId', { receiverId })
       .getOne();
     if (dm) {
-      return;
+      throw new BadRequestException(`Dm already exist`);
     }
     const dm2 = await this.dmRepository
       .createQueryBuilder('dm')
@@ -100,7 +100,7 @@ export class DmService implements IDmService {
       .getOne();
 
     if (dm2) {
-      return;
+      throw new BadRequestException(`Dm already exist`);
     }
 
     const newDm = this.dmRepository.create({
@@ -174,9 +174,9 @@ export class DmService implements IDmService {
     // return members;
   }
 
-  async getContents(senderId: number, receiverId: number, dmId: number) {
+  async getContents(senderId: number, dmId: number) {
     const sender = await this.findUserByIdOrFail(senderId);
-    const receiver = await this.findUserByIdOrFail(receiverId);
+    // const receiver = await this.findUserByIdOrFail(receiverId);
     const contents = await this.dmContentRepository
       .createQueryBuilder('dm_content')
       .where('dm_content.dm_id=:dmId', { dmId })
@@ -184,7 +184,8 @@ export class DmService implements IDmService {
       .innerJoinAndSelect('dm_content.User2', 'user2')
       .select(['dm_content', 'user1.username', 'user2.username'])
       .getMany();
-
+    console.log('dm contents:', contents);
+    return contents;
     // const sender = await this.findUserByIdOrFail(senderId);
     // const receiver = await this.findUserByIdOrFail(receiverId);
     // const contents = await this.dmRepository
@@ -200,7 +201,25 @@ export class DmService implements IDmService {
     // return contents;
   }
 
-  async postContents(senderId: number, receiverId: number, content: string) {
+  async postContents(
+    senderId: number,
+    // receiverId: number,
+    dmId: number,
+    content: string,
+  ) {
+    const dm = await this.findDmByIdOrFail(dmId);
+    const sender = await this.findUserByIdOrFail(senderId);
+    // const receiver = await this.findUserByIdOrFail(receiverId);
+    const newContent = this.dmContentRepository.create({
+      dmId,
+      userId: senderId,
+      content,
+      Dm: dm,
+      User: sender,
+    });
+    await this.dmContentRepository.save(newContent);
+    console.log('new dm content:', newContent);
+    this.chatEventsGateway.server.emit('newDmContent', newContent);
     // const sender = await this.findUserByIdOrFail(senderId);
     // const receiver = await this.findUserByIdOrFail(receiverId);
     // // const dm = await this.findDmByIdOrFail(dmId);

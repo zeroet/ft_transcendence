@@ -37,21 +37,21 @@ export class DmController {
     return await this.dmSerivce.createDm(user.id, receiverId);
   }
 
-  @ApiParam({
-    name: 'id',
-    example: 1,
-    description: 'Dm id',
-  })
-  @ApiOperation({
-    summary: 'Get members for a DM / 특정 디엠의 참여자 가져오기',
-  })
-  @Get(':receiverId/members')
-  async getMembers(
-    @User() user: IUser,
-    @Param('receiverId') receiverId: number,
-  ) {
-    return await this.dmSerivce.getMembers(user.id, receiverId);
-  }
+  // @ApiParam({
+  //   name: 'id',
+  //   example: 1,
+  //   description: 'Dm id',
+  // })
+  // @ApiOperation({
+  //   summary: 'Get members for a DM / 특정 디엠의 참여자 가져오기',
+  // })
+  // @Get(':receiverId/members')
+  // async getMembers(
+  //   @User() user: IUser,
+  //   @Param('receiverId') receiverId: number,
+  // ) {
+  //   return await this.dmSerivce.getMembers(user.id, receiverId);
+  // }
 
   @ApiParam({
     name: 'id',
@@ -61,12 +61,9 @@ export class DmController {
   @ApiOperation({
     summary: 'Get contents for a DM / 특정 디엠의 대화내용 가져오기',
   })
-  @Get(':receiverId/contents')
-  async getContents(
-    @User() user: IUser,
-    @Param('receiverId') receiverId: number,
-  ) {
-    return await this.dmSerivce.getContents(user.id, receiverId);
+  @Get(':dmId/contents')
+  async getContents(@User() user: IUser, @Param('dmId') dmId: number) {
+    return await this.dmSerivce.getContents(user.id, dmId);
   }
 
   @ApiBody({
@@ -79,13 +76,13 @@ export class DmController {
     description: 'Dm id',
   })
   @ApiOperation({ summary: 'Post contents / 특정 디엠에 대화내용 입력하기' })
-  @Post(':receiverId/contents')
+  @Post(':dmId/contents')
   async postContents(
     @User() user: IUser,
-    @Param('receiverId') receiverId: number,
+    @Param('dmId') dmId: number,
     @Body('content') content: string,
   ) {
-    return await this.dmSerivce.postContents(user.id, receiverId, content);
+    return await this.dmSerivce.postContents(user.id, dmId, content);
   }
 
   //  @ApiOperation({
