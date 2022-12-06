@@ -66,17 +66,21 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
         .catch((err) => console.log(err));
       setInputText("");
     },
-    [inputText, chatContentsData, roomData, userData]
+    [inputText, chatContentsData, roomData, userData, socket?.id]
   );
 
   useEffect(() => {
     socket?.on("newContent", () => {
       mutate(`/api/${id.link}/${id.id}/contents`);
     });
+    socket?.on("deleteChatroom", (res) => {
+      console.log(res, " is delete chatroom");
+    });
     return () => {
       socket?.off("newContent");
+      socket?.off("deleteChatroom");
     };
-  }, [roomData, chatContentsData, userData]);
+  }, [roomData, chatContentsData, userData, socket?.id]);
 
   const onClickShowSettingModal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>

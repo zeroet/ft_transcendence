@@ -16,7 +16,6 @@ const ParticipantSettingModal = ({
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
 
-  console.log(myData);
   const onClickProfile = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
