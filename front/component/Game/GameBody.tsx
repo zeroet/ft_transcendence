@@ -35,6 +35,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
       e.preventDefault();
       e.stopPropagation();
       setSettingModal(false);
+      socket?.emit("cancle");
     },
     [settingModal]
   );
