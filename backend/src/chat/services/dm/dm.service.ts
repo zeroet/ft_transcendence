@@ -153,9 +153,10 @@ export class DmService implements IDmService {
     const contents = await this.dmContentRepository
       .createQueryBuilder('dm_content')
       .where('dm_content.dm_id=:dmId', { dmId })
-      .innerJoinAndSelect('dm.User1', 'user1')
-      .innerJoinAndSelect('dm.User2', 'user2')
-      .select(['dm_content', 'user1.username', 'user2.username'])
+      .innerJoinAndSelect('dm_content.User', 'user')
+      // .innerJoinAndSelect('dm.User1', 'user1')
+      // .innerJoinAndSelect('dm.User2', 'user2')
+      .select(['dm_content', 'user.username'])
       .getMany();
     console.log('dm contents:', contents);
     return contents;
