@@ -17,20 +17,20 @@ export default function GameList({ accessToken }: { accessToken: string }) {
    *
    */
   useEffect((): (() => void) => {
-    console.log(`socket on ${socket?.id}`);
-    socket?.emit("room-list", "");
+    console.log(`socket on in Room List ${socket?.id}`);
+    socket?.emit("room-list");
     socket?.on("room-list", (res) => {
-      console.log(res, " is result from room list socket");
+      console.log(res, " is result from room list socket!!!!!!!!!!!!!");
       setRoomList(res);
     });
 
     return () => {
       socket?.off("room-list");
-      console.log(`socket off ${socket?.id}`);
+      console.log(`socket off in Room List ${socket?.id}`);
     };
   }, [socket?.id]);
-  if (!socket) return <Loading />;
 
+  if (!socket) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Game List</h1>

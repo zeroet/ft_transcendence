@@ -98,6 +98,8 @@ export default function Gaming({
   );
 
   useEffect((): (() => void) => {
+    // 룸 리스트 업데이트 : 와쳐 용
+    socket?.emit("room-list");
     /**
      * myRole : player | owner
      *
