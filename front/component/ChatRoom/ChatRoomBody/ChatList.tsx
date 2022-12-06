@@ -3,13 +3,14 @@ import React, { useEffect, useRef } from "react";
 import useSWR from "swr";
 import Loading from "../../errorAndLoading/Loading";
 import { IChatContent } from "../../../interfaceType";
-import { TypeChatId } from "../../../interfaceType";
+import { TypeChatId, IDmContent } from "../../../interfaceType";
+
 const ChatList = ({
   id,
   chatContentsData,
 }: {
   id: TypeChatId;
-  chatContentsData: IChatContent[];
+  chatContentsData: IChatContent[] | IDmContent[];
 }) => {
   const { data: userData, error: userError } = useSWR("/api/users");
   const scrollRef = useRef<any>(null);

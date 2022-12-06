@@ -1,17 +1,28 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "../../styles/LayoutBox.module.css";
 import ChatBox from "../ChatRoom/ChatRoomBody/ChatBox";
 import ChatList from "../ChatRoom/ChatRoomBody/ChatList";
 import { TypeChatId } from "../../interfaceType";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import axios from "axios";
 import Loading from "../errorAndLoading/Loading";
+import useSocket from "../Utils/socket";
 
 export default function DMRoomBody({ id }: { id: TypeChatId }) {
   const [inputText, setInputText] = useState<string>("");
   const { data: chatContentsData, error: chatContentsError } = useSWR<any>(
     `/api/${id.link}/${id.id}/contents`
   );
+  const [socket] = useSocket(null, "chat");
+
+  useEffect(() => {
+    socket?.on("newDmContent", () => {
+      mutate(`/api/${id.link}/${id.id}/contents`);
+    });
+    return () => {
+      socket?.off("newDmContent");
+    };
+  }, [chatContentsData]);
 
   console.log(chatContentsData);
   const onChangeInputText = useCallback(
@@ -26,18 +37,17 @@ export default function DMRoomBody({ id }: { id: TypeChatId }) {
       e.preventDefault();
       e.stopPropagation();
       if (inputText === "") return;
-      console.log(inputText, "in chating room body");
       // api통해서 업데이트 및 mutate수정
       // optimistic ui
-      //   await axios
-      //     .post(`/api/${id.link}/${id.id}/contents`, {
-      //       content: inputText,
-      //     })
-      //     .then((res) => {
-      //       console.log(res);
-      //       mutate(`/api/${id.link}/${id.id}/contents`);
-      //     })
-      //     .catch((err) => console.log(err));
+      await axios
+        .post(`/api/${id.link}/${id.id}/contents`, {
+          content: inputText,
+        })
+        .then((res) => {
+          console.log(res);
+          mutate(`/api/${id.link}/${id.id}/contents`);
+        })
+        .catch((err) => console.log(err));
       setInputText("");
     },
     [inputText]
@@ -45,7 +55,7 @@ export default function DMRoomBody({ id }: { id: TypeChatId }) {
 
   if (chatContentsError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!chatContentsData) return <Loading />;
+  if (!chatContentsData || !socket) return <Loading />;
   return (
     <div className={styles.box}>
       <div className="roomname-header">
