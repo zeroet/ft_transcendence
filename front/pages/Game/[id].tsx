@@ -115,6 +115,11 @@ export default function Gaming({
       }
       setIsGameover(true);
     });
+
+    socket?.on("Play", (res) => {
+      console.log("Play event in game!!!!!!!!!!!!!");
+    });
+
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
@@ -122,6 +127,8 @@ export default function Gaming({
     return () => {
       // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
+      socket?.off("Play");
+      socket?.off("gameover");
       disconnect();
     };
   }, [router.query.id]);
