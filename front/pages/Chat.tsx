@@ -27,8 +27,8 @@ export default function Chat({
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
   const { data: roomData, error: roomError } = useSWR(
-    isId && id.link === "chat" ? `/api/${id.link}/${id.id}` : null,
-    isId && id.link === "chat" ? fetcher : null
+    isId && id.link === "chatroom" ? `/api/${id.link}/${id.id}` : null,
+    isId && id.link === "chatroom" ? fetcher : null
   );
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
