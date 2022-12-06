@@ -51,7 +51,7 @@ export class DmService implements IDmService {
       .createQueryBuilder('dm')
       .distinctOn(['dm.receiver_id, dm.sender_id'])
       .where('dm.sender_id=:senderId', { senderId })
-      .andWhere('dm.receiver_id=:senderId', { senderId })
+      .orWhere('dm.receiver_id=:senderId', { senderId })
       .innerJoinAndSelect('dm.Receiver', 'receiver')
       .innerJoinAndSelect('dm.Sender', 'sender')
       .select([
