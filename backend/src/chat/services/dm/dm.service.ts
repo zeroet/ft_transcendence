@@ -44,6 +44,9 @@ export class DmService implements IDmService {
   }
 
   async getDmList(senderId: number, receiverId: number) {
+    const dms = await this.dmRepository.createQueryBuilder('dm').getMany();
+    console.log('dms:', dms);
+    return dms;
     // const sender = await this.findUserByIdOrFail(senderId);
     // // const receiver = await this.findUserByIdOrFail(receiverId);
     // // const dms = await this.userRepository
@@ -74,6 +77,32 @@ export class DmService implements IDmService {
   }
 
   async createDm(senderId: number, receiverId: number) {
+    const sender = await this.findUserByIdOrFail(senderId);
+    const receiver = await this.findUserByIdOrFail(receiverId);
+    const dm = await this.dmRepository
+      .createQueryBuilder('dm')
+      .where('dm.user1=:senderId', { senderId })
+      .andWhere('dm.user2=:receiverId', { receiverId })
+      .getOne();
+    const dm2 = await this.dmRepository
+      .createQueryBuilder('dm')
+      .where('dm.user2=:senderId', { senderId })
+      .andWhere('dm.user1=:receiverId', { receiverId })
+      .getOne();
+
+    if (dm && dm2) {
+      return;
+    }
+
+    const newDm = this.dmRepository.create({
+      user1: senderId,
+      user2: receiverId,
+      User1: sender,
+      User2: receiver,
+    });
+    await this.dmRepository.save(newDm);
+    console.log('newDm:', newDm);
+    return newDm;
     // const sender = await this.findUserByIdOrFail(senderId);
     // const receiver = await this.findUserByIdOrFail(receiverId);
     // const dm = await this.dmRepository
