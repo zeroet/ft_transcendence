@@ -43,25 +43,29 @@ export class DmService implements IDmService {
   async getDmList(senderId: number, receiverId: number) {
     const sender = await this.findUserByIdOrFail(senderId);
     // const receiver = await this.findUserByIdOrFail(receiverId);
-    const dms = await this.dmRepository
-      .createQueryBuilder('dm')
-      .distinctOn(['dm.receiver_id, dm.sender_id'])
-      .where('dm.sender_id=:senderId', { senderId })
-      .innerJoinAndSelect('dm.Receiver', 'receiver')
-      .innerJoinAndSelect('dm.Sender', 'sender')
-      .select([
-        'dm',
-        'receiver.id',
-        'receiver.username',
-        'receiver.image_url',
-        'sender.id',
-        'sender.username',
-        'sender.image_url',
-      ])
-      //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
+    const dms = await this.userRepository
+      .createQueryBuilder('users')
+      .leftJoin('users.DmSender', 'dm', 'dm.sender_id=:senderId', { senderId })
       .getMany();
+    // const dms = await this.dmRepository
+    //   .createQueryBuilder('dm')
+    //   .distinctOn(['dm.receiver_id, dm.sender_id'])
+    //   .where('dm.sender_id=:senderId', { senderId })
+    //   .innerJoinAndSelect('dm.Receiver', 'receiver')
+    //   .innerJoinAndSelect('dm.Sender', 'sender')
+    //   .select([
+    //     'dm',
+    //     'receiver.id',
+    //     'receiver.username',
+    //     'receiver.image_url',
+    //     'sender.id',
+    //     'sender.username',
+    //     'sender.image_url',
+    //   ])
+    //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
+    //   .getMany();
     console.log('dms:', dms);
-    this.chatEventsGateway.server.emit('newDmList', dms);
+    // this.chatEventsGateway.server.emit('newDmList', dms);
     return dms;
   }
 
