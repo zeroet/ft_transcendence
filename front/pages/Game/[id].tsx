@@ -136,6 +136,12 @@ export default function Gaming({
     };
   }, [router.query.id]);
 
+  const onClickHome = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push("/Home");
+  }, []);
+
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socket) return <Loading />;
   return (
@@ -144,6 +150,12 @@ export default function Gaming({
       {data.two_factor_activated && !data.two_factor_valid && (
         <TwoFactorModal />
       )}
+      <div className="header">
+        <div className="home vibration" onClick={onClickHome}>
+          Home
+        </div>
+      </div>
+      <hr />
       <div className="grid-div">
         <GameList accessToken={accessToken} />
         {/* 게임결과 보내기 */}
@@ -169,6 +181,36 @@ export default function Gaming({
           </div>
         )}
         <style jsx global>{`
+          .vibration {
+            animation: vibration 0.1s infinite;
+          }
+          @keyframes vibration {
+            from {
+              transform: rotate(2deg);
+            }
+            to {
+              transform: rotate(-2deg);
+            }
+          }
+          .home {
+            color: white;
+            background-color: gray;
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            padding-top: 5px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            cursor: pointer;
+          }
+          .home:hover {
+            background-color: red;
+          }
+          .header {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+          }
           .grid-div {
             display: grid;
             grid-template-columns: 1fr 3fr;
