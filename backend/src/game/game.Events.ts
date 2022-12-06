@@ -98,7 +98,10 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     try {
       if ((this.queueNormal.Players[0].id === client.id) || (this.queueNormal.Players[1].id === client.id)) {
         if (this.queueNormal.Players[0].id === client.id)
-         this.server.to(this.queueNormal.Players[1]).emit('close')
+        {   
+          this.server.to(this.queueNormal.Players[1]).emit('close')
+          console.log(this.queueNormal.Players[1].id);
+        }
         else if (this.queueNormal.Players[1].id === client.id)
           this.server.to(this.queueNormal.Players[0]).emit('close')
         this.queueNormal.Players.splice(0, 2)
