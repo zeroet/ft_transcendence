@@ -48,6 +48,9 @@ export class UserService implements IUserService {
       .createQueryBuilder('users')
       .where('users.user_id=:userId', { userId })
       .getOne();
+    if (!user) {
+      throw new BadRequestException(`User of id:${userId} doesn't exist`);
+    }
     const blockUser = await this.userRepository
       .createQueryBuilder('users')
       .where('users.user_id=:blockUserId', { blockUserId })
@@ -63,9 +66,9 @@ export class UserService implements IUserService {
       User: user,
       BlockedUser: blockUser,
     });
-    const updateUserInfo = this.userRepository.update(userId, {
-      Block: [createdBlock],
-    });
+    // const updateUserInfo = this.userRepository.update(userId, {
+    //   Block: createdBlock,
+    // });
     return await this.blockRepository.save(createdBlock);
   }
 
