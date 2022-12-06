@@ -10,7 +10,7 @@ export default function DM() {
   const [socket] = useSocket(null, "chat");
 
   useEffect(() => {
-    socket?.on("newDmList", (data: string) => {
+    socket?.on("newDmList", (data) => {
       console.log(data, " for new DM list in ChatRoom socket!");
       mutate("/api/dm");
     });
@@ -19,7 +19,6 @@ export default function DM() {
     };
   }, [DMData]);
 
-  console.log(DMData);
   if (DMError) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!DMData) return <Loading />;
   return (

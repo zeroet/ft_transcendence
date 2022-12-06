@@ -29,12 +29,12 @@ const ParticipantSettingModal = ({
     await axios
       .post(`/api/dm/${userId}`)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
       })
       .catch((err) => {
         console.log(e);
       });
-    console.log("DM");
+    // console.log("DM");
   }, []);
 
   const onClickGame = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
