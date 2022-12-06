@@ -67,21 +67,25 @@ export class DmService implements IDmService {
     return newDm;
   }
 
-  async getMembers(dmId: number) {
+  async getMembers(senderId: number, receiverId: number) {
     const members = await this.dmRepository
       .createQueryBuilder('dm')
       .select('dm.sender_id', 'dm.receiver_id')
-      .where('dm.dm_id=:dmId', { dmId })
+      .where('dm.sender_id=:senderId', { senderId })
+      .andWhere('dm.receiver_id=:receiverId', { receiverId })
       .getOne();
     console.log('dm members:', members);
     return members;
   }
 
-  async getContents(userId: number, dmId: number) {
-    const sender = await this.findUserByIdOrFail(userId);
+  async getContents(senderId: number, receiverId: number) {
+    const sender = await this.findUserByIdOrFail(senderId);
+    const receiver = await this.findUserByIdOrFail(receiverId);
     const contents = await this.dmRepository
       .createQueryBuilder('dm')
-      .where('dm.dm_id=:dmId', { dmId })
+      .where('dm.sender_id=:senderId', { senderId })
+      .andWhere('dm.receiver_id=:receiverId', { receiverId })
+      //   .where('dm.dm_id=:dmId', { dmId })
       .innerJoinAndSelect('dm.Sender', 'sender')
       .innerJoinAndSelect('dm.Receiver', 'receiver')
       //   .select(['dm', ]);

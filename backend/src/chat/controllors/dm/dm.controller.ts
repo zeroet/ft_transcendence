@@ -1,11 +1,21 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { IDmService } from 'src/chat/services/dm/dm.interface';
 import { IUser } from 'src/typeorm/interfaces/IUser';
 import { User } from 'src/utils/decorators/user.decorator';
 
 @ApiTags('DM')
 @Controller('dm')
+@UseGuards(JwtAccessAuthGuard)
 export class DmController {
   constructor(@Inject('DM_SERVICE') private dmSerivce: IDmService) {}
 
@@ -28,9 +38,12 @@ export class DmController {
   @ApiOperation({
     summary: 'Get members for a DM / 특정 디엠의 참여자 가져오기',
   })
-  @Get(':id/members')
-  async getMembers(@Param('id') id: number) {
-    return await this.dmSerivce.getMembers(id);
+  @Get(':receiverId/members')
+  async getMembers(
+    @User() user: IUser,
+    @Param('receiverId') receiverId: number,
+  ) {
+    return await this.dmSerivce.getMembers(user.id, receiverId);
   }
 
   @ApiParam({
@@ -41,9 +54,12 @@ export class DmController {
   @ApiOperation({
     summary: 'Get contents for a DM / 특정 디엠의 대화내용 가져오기',
   })
-  @Get(':id/contents')
-  async getContents(@User() user: IUser, @Param('id') id: number) {
-    return await this.dmSerivce.getContents(user.id, id);
+  @Get(':receiverId/contents')
+  async getContents(
+    @User() user: IUser,
+    @Param('receiverId') receiverId: number,
+  ) {
+    return await this.dmSerivce.getContents(user.id, receiverId);
   }
 
   @ApiBody({
