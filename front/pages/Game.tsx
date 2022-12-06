@@ -16,9 +16,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
   const [socket, disconnect] = useSocket(accessToken, "game");
 
   useEffect(() => {
-    return () => {
-      if (socket) disconnect();
-    };
+    return () => {};
   }, [socket, data]);
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));

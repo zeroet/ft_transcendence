@@ -129,6 +129,9 @@ export default function Gaming({
       console.log(`mount off play game ${router.query.id} room!`);
       socket?.off("Play");
       socket?.off("gameover");
+      console.log(
+        "game unmount!!!!!!!!!!!!!!!!!!!!!disconnect in 'Game [id].tsx'"
+      );
       disconnect();
     };
   }, [router.query.id]);
