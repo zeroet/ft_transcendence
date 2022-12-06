@@ -80,8 +80,14 @@ export class DmService implements IDmService {
       .andWhere('dm.receiver_id=:receiverId', { receiverId })
       .getOne();
     if (dm) {
-      this.chatEventsGateway.server.emit('newDmList', dm);
-      return dm;
+      const newDm = this.dmRepository.create({
+        senderId,
+        receiverId,
+        Sender: sender,
+        Receiver: receiver,
+      });
+      this.chatEventsGateway.server.emit('newDmList', newDm);
+      return newDm;
       //   throw new BadRequestException(
       //     `Dm of users of id:${senderId} and ${receiverId} already exists`,
       //   );

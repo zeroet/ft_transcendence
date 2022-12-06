@@ -5,6 +5,7 @@ import {
   Inject,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
@@ -85,5 +86,14 @@ export class DmController {
     @Body('content') content: string,
   ) {
     return await this.dmSerivce.postContents(user.id, receiverId, content);
+  }
+
+  @Get(':senderId/unreads')
+  async getUnreads(
+    @User() user: IUser,
+    @Param('senderId') senderId: number,
+    @Query('after') after: number,
+  ) {
+    return 'testing...';
   }
 }
