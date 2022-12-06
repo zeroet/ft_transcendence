@@ -24,7 +24,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      if (socket) disconnect();
+      socket?.emit("cancle");
       setSettingModal(false);
     },
     [settingModal]
