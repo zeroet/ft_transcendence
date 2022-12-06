@@ -214,6 +214,7 @@ export class ChatroomService implements IChatroomService {
     //   .andWhere('chatroom_id=:chatroomId', { chatroomId })
     //   .execute();
     console.log('removed chatroom:', removedChatroom);
+    this.chatEventsGateway.server.emit('deleteChatroom', removedChatroom);
     this.chatEventsGateway.server.emit('newRoomList', removedChatroom);
     this.chatEventsGateway.server.emit('newMemberList', null);
     return removedChatroom;
