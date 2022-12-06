@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
@@ -6,6 +7,7 @@ import GameReadyModal from "./GameBody/GameReadyModal";
 import GameSettingModal from "./GameBody/GameSettingModal";
 
 export default function GameBody({ accessToken }: { accessToken: string }) {
+  const router = useRouter();
   const [settingModal, setSettingModal] = useState(false);
   const [socket] = useSocket(accessToken, "game");
   const [ownerOrPlayer, setOwnerOrPlayer] = useState<string>("");
@@ -24,8 +26,9 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      socket?.emit("cancle");
       setSettingModal(false);
+      setOwnerOrPlayer("");
+      socket?.emit("cancle");
     },
     [settingModal]
   );
@@ -35,6 +38,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
       e.preventDefault();
       e.stopPropagation();
       setSettingModal(false);
+      setOwnerOrPlayer("");
       socket?.emit("cancle");
     },
     [settingModal]
@@ -52,8 +56,6 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     });
     return () => {
       socket?.off("createRoom");
-      setOwnerOrPlayer("");
-      setSettingModal(false);
     };
   }, [socket, ownerOrPlayer]);
 
