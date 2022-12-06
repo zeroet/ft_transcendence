@@ -1,7 +1,8 @@
 export interface IDmService {
-  getDmList(senderId: number, receiverId: number);
+  getDmList();
   createDm(senderId: number, receiverId: number);
-  // getMembers(senderId: number, receiverId: number);
+  getMembers(dmId: number);
+  // postMembers(userId: number, dmId: number);
   getContents(senderId: number, dmId: number);
   postContents(
     senderId: number,

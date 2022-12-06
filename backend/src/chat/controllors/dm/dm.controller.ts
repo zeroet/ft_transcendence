@@ -22,8 +22,8 @@ export class DmController {
 
   @ApiOperation({ summary: 'Get all dm list / 디엠 목록가져오기' })
   @Get('')
-  async getDmList(@User() user: IUser) {
-    return await this.dmSerivce.getDmList(user.id, 0);
+  async getDmList() {
+    return await this.dmSerivce.getDmList();
   }
 
   @ApiParam({
@@ -37,20 +37,30 @@ export class DmController {
     return await this.dmSerivce.createDm(user.id, receiverId);
   }
 
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Dm id',
+  })
+  @ApiOperation({
+    summary: 'Get members for a DM / 특정 디엠의 참여자 가져오기',
+  })
+  @Get(':dmId/members')
+  async getMembers(@Param('dmId') dmId: number) {
+    return await this.dmSerivce.getMembers(dmId);
+  }
+
   // @ApiParam({
   //   name: 'id',
   //   example: 1,
   //   description: 'Dm id',
   // })
   // @ApiOperation({
-  //   summary: 'Get members for a DM / 특정 디엠의 참여자 가져오기',
+  //   summary: 'Post members for a DM / 특정 디엠의 참여자 추가하기',
   // })
-  // @Get(':receiverId/members')
-  // async getMembers(
-  //   @User() user: IUser,
-  //   @Param('receiverId') receiverId: number,
-  // ) {
-  //   return await this.dmSerivce.getMembers(user.id, receiverId);
+  // @Post(':dmId/members')
+  // async postMembers(@User() user: IUser, @Param('dmId') dmId: number) {
+  //   return await this.dmSerivce.postMembers(user.id, dmId);
   // }
 
   @ApiParam({

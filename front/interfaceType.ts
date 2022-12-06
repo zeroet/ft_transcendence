@@ -64,11 +64,24 @@ export interface IChatContent {
 
 export interface IDm {
   id: number;
-  senderId: number;
-  receiverId: number;
+  user1: number;
+  user2: number;
+  createdAt: Date;
+  modifiedAt: Date;
+  // User1: IUser;
+  // User2: IUser;
+  // DmContent: IDmContent[];
+}
+
+export interface IDmContent {
+  id: number;
+  dmId: number;
+  userId: number;
   content: string;
   createdAt: Date;
   modifiedAt: Date;
+  Dm: IDm;
+  // User: IUser;
 }
 
 export interface GameDTO {

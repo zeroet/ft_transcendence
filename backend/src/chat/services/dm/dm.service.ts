@@ -32,6 +32,26 @@ export class DmService implements IDmService {
     return user;
   }
 
+  async findMemberById(userId: number, dmId: number) {
+    const member = await this.dmRepository
+      .createQueryBuilder('dm')
+      .where('dm.dm_id= :dmId', { dmId })
+      .andWhere('dm.user1= :userId', { userId })
+      .orWhere('dm.user2=:userId', { userId })
+      .getOne();
+    return member;
+  }
+
+  async findMemberByIdOrFail(userId: number, dmId: number) {
+    const member = await this.findMemberById(userId, dmId);
+    if (!member) {
+      throw new NotFoundException(
+        `User of id:${userId} doesn't exist in the dm of id:${dmId}`,
+      );
+    }
+    return member;
+  }
+
   async findDmByIdOrFail(dmId: number) {
     const dm = await this.dmRepository
       .createQueryBuilder('dm')
@@ -43,10 +63,9 @@ export class DmService implements IDmService {
     return dm;
   }
 
-  async getDmList(senderId: number, receiverId: number) {
+  async getDmList() {
     const dms = await this.dmRepository
       .createQueryBuilder('dm')
-      // .where('dm_content.dm_id=:dmId', { dmId })
       .innerJoinAndSelect('dm.User1', 'user1')
       .innerJoinAndSelect('dm.User2', 'user2')
       .select([
@@ -61,33 +80,6 @@ export class DmService implements IDmService {
       .getMany();
     console.log('dms:', dms);
     return dms;
-    // const sender = await this.findUserByIdOrFail(senderId);
-    // // const receiver = await this.findUserByIdOrFail(receiverId);
-    // // const dms = await this.userRepository
-    // //   .createQueryBuilder('users')
-    // //   .leftJoin('users.DmSender', 'dm', 'dm.sender_id=:senderId', { senderId })
-    // //   .getMany();
-    // const dms = await this.dmRepository
-    //   .createQueryBuilder('dm')
-    //   .distinctOn(['dm.receiver_id, dm.sender_id'])
-    //   .where('dm.sender_id=:senderId', { senderId })
-    //   //   .orWhere('dm.receiver_id=:senderId', { senderId })
-    //   .innerJoinAndSelect('dm.Receiver', 'receiver')
-    //   .innerJoinAndSelect('dm.Sender', 'sender')
-    //   .select([
-    //     'dm',
-    //     'receiver.id',
-    //     'receiver.username',
-    //     'receiver.image_url',
-    //     'sender.id',
-    //     'sender.username',
-    //     'sender.image_url',
-    //   ])
-    //   //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
-    //   .getMany();
-    // console.log('dms:', dms);
-    // // this.chatEventsGateway.server.emit('newDmList', dms);
-    // return dms;
   }
 
   async createDm(senderId: number, receiverId: number) {
@@ -123,16 +115,37 @@ export class DmService implements IDmService {
     return newDm;
   }
 
-  async getMembers(senderId: number, receiverId: number) {
-    // const members = await this.dmRepository
-    //   .createQueryBuilder('dm')
-    //   .select('dm.sender_id', 'dm.receiver_id')
-    //   .where('dm.sender_id=:senderId', { senderId })
-    //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
-    //   .getOne();
-    // console.log('dm members:', members);
-    // return members;
+  async getMembers(dmId: number) {
+    const members = await this.dmRepository
+      .createQueryBuilder('dm')
+      .where('dm.dm_id=:dmId', { dmId })
+      .innerJoinAndSelect('dm.User1', 'user1')
+      .innerJoinAndSelect('dm.User2', 'user2')
+      .select([
+        'dm',
+        'user1.id',
+        'user1.username',
+        'user1.image_url',
+        'user2.id',
+        'user2.username',
+        'user2.image_url',
+      ])
+      .getMany();
+    console.log('dm members:', members);
+    return members;
   }
+
+  // async postMembers(userId: number, dmId: number) {
+  //   const dm = await this.findDmByIdOrFail(dmId);
+  //   const user = await this.findUserByIdOrFail(userId);
+  //   const member = await this.findMemberById(userId, dmId);
+  //   if (member) {
+  //     console.log(`User already exists in the dm of id:${dmId}`, member);
+  //     throw new BadRequestException(
+  //       `User already exists in the dm of id:${dmId}`,
+  //     );
+  //   }
+  // }
 
   async getContents(senderId: number, dmId: number) {
     const sender = await this.findUserByIdOrFail(senderId);
@@ -140,8 +153,8 @@ export class DmService implements IDmService {
     const contents = await this.dmContentRepository
       .createQueryBuilder('dm_content')
       .where('dm_content.dm_id=:dmId', { dmId })
-      .innerJoinAndSelect('dm_content.User1', 'user1')
-      .innerJoinAndSelect('dm_content.User2', 'user2')
+      .innerJoinAndSelect('dm.User1', 'user1')
+      .innerJoinAndSelect('dm.User2', 'user2')
       .select(['dm_content', 'user1.username', 'user2.username'])
       .getMany();
     console.log('dm contents:', contents);
