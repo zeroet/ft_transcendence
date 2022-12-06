@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { Dm, User } from 'src/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { IDmService } from './dm.interface';
 
 @Injectable()
@@ -45,7 +45,6 @@ export class DmService implements IDmService {
     // const receiver = await this.findUserByIdOrFail(receiverId);
     const dms = await this.dmRepository
       .createQueryBuilder('dm')
-      //   .select('receiver_id')
       .distinctOn(['dm.receiver_id, dm.sender_id'])
       .where('dm.sender_id=:senderId', { senderId })
       .innerJoinAndSelect('dm.Receiver', 'receiver')
@@ -62,6 +61,7 @@ export class DmService implements IDmService {
       //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
       .getMany();
     console.log('dms:', dms);
+    this.chatEventsGateway.server.emit('newDmList', dms);
     return dms;
   }
 
