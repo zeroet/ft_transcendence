@@ -37,9 +37,9 @@ const useSocket = (
     });
   }
   // console.log(`backURL for ${socketType}`);
-  // console.log(
-  //   `=================create new socket========================== ${socketType}`
-  // );
+  console.log(
+    `=================create new socket========================== ${socketType} ${socket.id}`
+  );
   // } else {
   // console.log("use socket in socket.ts");
   // }
