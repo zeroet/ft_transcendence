@@ -9,13 +9,14 @@ import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR, { mutate } from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import useSocket from "../component/Utils/socket";
 import { useEffect, useState } from "react";
 import fetcher from "../component/Utils/fetcher";
 import PWModal from "../component/ChatRoom/PWModal";
 import ChatRoomBody from "../component/ChatRoom/ChatRoomBody";
 import { TypeChatId } from "../interfaceType";
 import Header from "../component/Header/Header";
+import DMRoomBody from "../component/DM/DMRoomBody";
+import ParticipantDm from "../component/DM/ParicipantDm";
 
 export default function Chat({
   id,
@@ -27,8 +28,8 @@ export default function Chat({
   const isId = Object.keys(id).length !== 0;
   const { data: userData, error: userError } = useSWR("/api/users");
   const { data: roomData, error: roomError } = useSWR(
-    isId ? `/api/${id.link}/${id.id}` : null,
-    isId ? fetcher : null
+    isId && id.link === "chatroom" ? `/api/${id.link}/${id.id}` : null,
+    isId && id.link === "chatroom" ? fetcher : null
   );
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
@@ -57,9 +58,9 @@ export default function Chat({
     };
   }, [roomData, id?.id]);
 
-  if (userError || (id.id && roomError))
+  if (userError || (id.link === "chat" && roomError))
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!userData || (id.id && !roomData)) return <Loading />;
+  if (!userData || (id.link === "chat" && !roomData)) return <Loading />;
   return (
     <Layout>
       <Header id={id} />
@@ -77,23 +78,10 @@ export default function Chat({
           </div>
         )}
       <div className="component-style">
-        {/* ///////////////////////////////////////// */}
-        {/* 리스트 부분 */}
         <RoomList />
-        {/* <dmList /> */}
-        {/* ///////////////////////////////////////// */}
-
-        {/* ///////////////////////////////////////// */}
-        {/* 채팅 바디부분 */}
         {!isId && <ChatBody />}
-        {/* 채팅룸 */}
         {isId && id.link === "chatroom" && <ChatRoomBody id={id} />}
-        {/* DM */}
-        {/* {isId && id.link === "dm" && <ChatRoomBody chatroomId={id.id} />} */}
-        {/* ///////////////////////////////////////// */}
-
-        {/* ///////////////////////////////////////// */}
-        {/* 참가자 부분 */}
+        {isId && id.link === "dm" && <DMRoomBody id={id} />}
         {!isId && (
           <Participant id={id} ownerId={null} accessToken={accessToken} />
         )}
@@ -104,10 +92,7 @@ export default function Chat({
             accessToken={accessToken}
           />
         )}
-        {/* {isId && id.link === "dm" && (
-          <Participant id={id} ownerId={roomData.ownerId} />
-        )} */}
-        {/* ///////////////////////////////////////// */}
+        {isId && id.link === "dm" && <ParticipantDm id={id} />}
       </div>
       <style jsx>{`
         .pwmodal-background {

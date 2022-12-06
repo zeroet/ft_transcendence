@@ -50,6 +50,9 @@ export class AuthController {
     this.authService.setRefreshToken(user.id, refreshToken);
   }
 
+  @ApiOperation({
+    summary: 'Dummy login for test / 테스트용 더미 로그인',
+  })
   @Redirect('http://localhost:8000/Home', 301)
   @Post('dummy')
   async test(@Res({ passthrough: true }) res) {

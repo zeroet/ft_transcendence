@@ -140,7 +140,7 @@ export class ChatroomService implements IChatroomService {
     return timeouts;
   }
 
-  async getAllChatrooms(): Promise<ChatroomDto[]> {
+  async getChatrooms(): Promise<ChatroomDto[]> {
     const chatrooms = await this.chatroomRepository
       .createQueryBuilder('chatroom')
       .addSelect('chatroom.password')
@@ -187,7 +187,7 @@ export class ChatroomService implements IChatroomService {
       User: user,
     });
     await this.chatMemebrRepository.save(newMemebr);
-    this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
+    this.chatEventsGateway.server.emit('newRoomList', createdChatroom);
     console.log(newChatroom);
     const result = await this.getChatroomsInfo([newChatroom]);
     return result[0];
@@ -256,11 +256,11 @@ export class ChatroomService implements IChatroomService {
     chatroom.chatroomName = chatroomName;
     const updatedChatroom = await this.chatroomRepository.save(chatroom);
     console.log('updated chatroom:', updatedChatroom);
-    this.chatEventsGateway.server.emit('newRoomList', 'chatroom created');
+    this.chatEventsGateway.server.emit('newRoomList', updatedChatroom);
     return updatedChatroom;
   }
 
-  async getAllMembers(chatroomId: number) {
+  async getMembers(chatroomId: number) {
     let members = await this.chatMemebrRepository
       .createQueryBuilder('chat_member')
       .innerJoin(
@@ -305,8 +305,10 @@ export class ChatroomService implements IChatroomService {
       Chatroom: chatroom,
       User: user,
     });
-    await this.chatMemebrRepository.save(newMember);
-    this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
+    console.log('newMember:', newMember);
+    const savedMember = await this.chatMemebrRepository.save(newMember);
+    console.log('savedMember:', savedMember);
+    this.chatEventsGateway.server.emit('newMemberList', savedMember);
     // return chatroomMember;
   }
 
@@ -331,13 +333,17 @@ export class ChatroomService implements IChatroomService {
     // if (member.userId === chatroom.ownerId) {
     // ban
     if (updateMemberDto.ban === true) {
-      updatedMember = await this.chatMemebrRepository.update(
-        updateMemberDto.targetUserId,
-        {
-          // bannedAt: this.addNewTimeout(`${targetUser.id}_banned`, 1000),
-          // bannedAt: new Date(),
-        },
+      // updatedMember = await this.chatMemebrRepository.update(
+      // updateMemberDto.targetUserId,
+      this.addNewTimeout(
+        `${targetUser.id}_banned`,
+        targetUser.id,
+        chatroomId,
+        360000,
       );
+      // bannedAt: this.addNewTimeout(`${targetUser.id}_banned`, 1000),
+      // bannedAt: new Date(),
+      // );
     }
     // kick
     else if (updateMemberDto.kick === true) {
@@ -345,12 +351,12 @@ export class ChatroomService implements IChatroomService {
     }
     // mute
     else if (updateMemberDto.mute === true) {
-      updatedMember = await this.chatMemebrRepository.update(
-        updateMemberDto.targetUserId,
-        {
-          mutedAt: new Date(),
-        },
-      );
+      // updatedMember = await this.chatMemebrRepository.update(
+      //   updateMemberDto.targetUserId,
+      //   {
+      //     mutedAt: new Date(),
+      //   },
+      // );
     }
     // }
     console.log('updated member:', updatedMember);
@@ -380,8 +386,9 @@ export class ChatroomService implements IChatroomService {
   async deleteMembers(userId: number, chatroomId: number) {
     await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
-    this.chatMemebrRepository.remove(member);
-    this.chatEventsGateway.server.emit('newMemberList', 'member list changed');
+    const removedMember = await this.chatMemebrRepository.remove(member);
+    console.log('removed member:', removedMember);
+    this.chatEventsGateway.server.emit('newMemberList', removedMember);
   }
 
   async getContents(userId: number, chatroomId: number) {
@@ -436,7 +443,7 @@ export class ChatroomService implements IChatroomService {
     });
     await this.chatContentRepository.save(newContent);
     newContent['username'] = user.username;
-    this.chatEventsGateway.server.emit('newContent', 'new content');
+    this.chatEventsGateway.server.emit('newContent', newContent);
     // return newContent;
   }
 }

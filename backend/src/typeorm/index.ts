@@ -3,6 +3,7 @@ import { ChatContent } from './entities/chatContent.entity';
 import { ChatMember } from './entities/chatMember.entitiy';
 import { Chatroom } from './entities/chatroom.entity';
 import { Dm } from './entities/dm.entity';
+import { DmContent } from './entities/dmContent.entity';
 import { Friend } from './entities/friend.entity';
 import { User } from './entities/user.entity';
 
@@ -14,6 +15,16 @@ export const entities = [
   ChatMember,
   ChatContent,
   Dm,
+  DmContent,
 ];
 
-export { User, Block, Friend, Chatroom, ChatMember, ChatContent, Dm };
+export {
+  User,
+  Block,
+  Friend,
+  Chatroom,
+  ChatMember,
+  ChatContent,
+  Dm,
+  DmContent,
+};

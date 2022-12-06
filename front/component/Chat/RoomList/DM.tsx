@@ -1,32 +1,77 @@
-import useSWR from "swr";
-import Error from "../../errorAndLoading/Error";
+import axios from "axios";
+import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
-import fetcher from "../../Utils/fetcher";
-import EachDmRoom from "./EachDmRoom";
+import { useEffect } from "react";
+import useSocket from "../../Utils/socket";
+import Link from "next/link";
 
 export default function DM() {
-  // const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
+  const { data: DMData, error: DMError } = useSWR(`/api/dm`);
+  const [socket] = useSocket(null, "chat");
+  const { data: myData, error: myError } = useSWR("/api/users");
 
-  // if (data) {
-  //   console.log(data);
-  // }
-  // if (error) return <Error />;
-  // if (!data) return <Loading />;
+  useEffect(() => {
+    socket?.on("newDmList", (data) => {
+      if (myData.id === data.User2.id) {
+        alert(`you have DM message from ${data.User1.username}`);
+      }
+      mutate("/api/dm");
+    });
+    return () => {
+      socket?.off("newDmList");
+    };
+  }, [DMData, myData]);
 
+  // console.log(DMData);
+  if (DMError || myError)
+    axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!DMData || !myData) return <Loading />;
   return (
     <div className="DM">
-      {
-        // <ul key={data.posts.id}>
-        //   {data.posts &&
-        //     data.posts.map((post: any) => (
-        //       <li>
-        //         <EachDmRoom title={post.title} id={post.id} />
-        //       </li>
-        //     ))}
-        // </ul>
-      }
+      <ul>
+        {DMData &&
+          DMData.map((eachDM: any) => {
+            // console.log(eachDM, "is eachDM from DM.tsx");
+            const DM = { username: "", image_url: "" };
+            // console.log(eachDM.User1.id, eachDM.User2.id);
+            if (eachDM.User1.id === myData.id) {
+              DM.username = eachDM.User2.username;
+              DM.image_url = eachDM.User2.image_url;
+            } else if (eachDM.User2.id === myData.id) {
+              DM.username = eachDM.User1.username;
+              DM.image_url = eachDM.User1.image_url;
+            } else {
+              return;
+            }
+            return (
+              <li key={eachDM.id}>
+                <Link
+                  href={{
+                    pathname: "/Chat",
+                    query: {
+                      id: eachDM.id,
+                      link: "dm",
+                    },
+                  }}
+                >
+                  <div className="DM-list">
+                    <img src={DM.image_url} width={"25px"} height={"25px"} />
+                    <div>{DM.username}</div>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+      </ul>
       <style jsx>
         {`
+          .DM-list {
+            display: flex;
+          }
+          img {
+            margin-right: 20px;
+            border-radius: 50%;
+          }
           h1 {
             font-family: "Fragment Mono", monospace;
             font-weight: bold;

@@ -42,13 +42,14 @@ export class ChatEventsGateway
   //   this.server.emit('message', socket.id, message);
   // }
 
-  // @SubscribeMessage('dm')
-  // handleDmMessage(
-  //   @MessageBody() dmMessage: string,
-  //   @ConnectedSocket() socket: Socket,
-  // ) {
-  //   this.server.emit('dm', socket.id, dmMessage);
-  // }
+  @SubscribeMessage('newDmList')
+  handleDmMessage(
+    @MessageBody() newDm: string,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    this.server.emit('newDmList', newDm);
+    // this.server.emit('dm', socket.id, dmMessage);
+  }
 
   // @SubscribeMessage('join')
   // joinRoom(@MessageBody() name, @ConnectedSocket() socket: Socket) {

@@ -38,7 +38,7 @@ export default function Participant({
 
   useEffect(() => {
     socket?.on("newMemberList", (res: String) => {
-      console.log(res, "is res from newMemberList socket in participant");
+      // console.log(res, "is res from newMemberList socket in participant");
       if (isId && id.link === "chatroom") {
         mutate(`/api/${id.link}/${id.id}/members`);
       }
@@ -48,9 +48,9 @@ export default function Participant({
     };
   }, [socket, roomMembersData, id.id, myData]);
 
-  if (isId && roomMembersData) {
-    console.log(roomMembersData);
-  }
+  // if (isId && roomMembersData) {
+  //   console.log(roomMembersData);
+  // }
   if (roomMembersError || myError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if ((isId && !roomMembersData) || !socket || !myData) return <Loading />;

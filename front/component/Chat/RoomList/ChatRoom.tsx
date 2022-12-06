@@ -6,15 +6,11 @@ import Loading from "../../errorAndLoading/Loading";
 import fetcher from "../../Utils/fetcher";
 import useSocket from "../../Utils/socket";
 import { IChatroom } from "../../../interfaceType";
-// import EachRoom from "./delete apres";
 
 export default function ChatRoom() {
   const { data, error } = useSWR(`/api/chatroom`, fetcher);
   const [socket] = useSocket(null, "chat");
-  // if (data) {
-  //   console.log(data);
-  // }
-
+  
   useEffect(() => {
     socket?.on("newRoomList", (data: string) => {
       console.log(data, " for new room list in ChatRoom socket!");
@@ -24,6 +20,7 @@ export default function ChatRoom() {
       socket?.off("newRoomList");
     };
   }, [data]);
+  
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (

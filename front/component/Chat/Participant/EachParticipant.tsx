@@ -20,23 +20,27 @@ const EachParticipant = ({
       e.preventDefault();
       e.stopPropagation();
       if (myData.username === username) return;
-
       setShowModal((curr) => !curr);
       // 프로필  용 (모달 안에 넣기)
       // router.push(`/FriendProfile/${userId}`);
     },
     []
   );
-  console.log(
-    "Each participant에서 userId는 유저정보를 불러오거나 API를 사용할때! 위함"
-  );
+
+  // console.log(
+  //   "Each participant에서 userId는 유저정보를 불러오거나 API를 사용할때! 위함"
+  // );
   return (
     <div className="user">
       <div onClick={onClickEachParticipant} className="username">
         # {username}
       </div>
       {showModal && (
-        <ParticipantSettingModal isOwner={isOwner} userId={userId} />
+        <ParticipantSettingModal
+          isOwner={isOwner}
+          userId={userId}
+          setShowModal={setShowModal}
+        />
       )}
       <style jsx>{`
         .user {

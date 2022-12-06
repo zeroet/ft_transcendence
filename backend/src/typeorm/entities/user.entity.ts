@@ -17,6 +17,8 @@ import { Dm } from './dm.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Block } from './block.entity';
 import { IBlock } from '../interfaces/IBlock';
+import { IDmContent } from '../interfaces/IDmContent';
+import { DmContent } from './dmContent.entity';
 
 @Entity({ name: 'users' })
 export class User implements IUser {
@@ -125,9 +127,12 @@ export class User implements IUser {
   @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.User)
   ChatContent: IChatContent[];
 
-  @OneToMany((type) => Dm, (Dm) => Dm.Sender)
-  DmSender: IDm[];
+  @OneToMany((type) => DmContent, (DmContent) => DmContent.User)
+  DmContent: IDmContent[];
 
-  @OneToMany((type) => Dm, (Dm) => Dm.Receiver)
-  DmReceiver: IDm[];
+  @OneToMany((type) => Dm, (Dm) => Dm.User1)
+  DmUser1: IDm[];
+
+  @OneToMany((type) => Dm, (Dm) => Dm.User2)
+  DmUser2: IDm[];
 }
