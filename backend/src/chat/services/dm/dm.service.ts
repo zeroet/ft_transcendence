@@ -84,13 +84,16 @@ export class DmService implements IDmService {
       .where('dm.user1=:senderId', { senderId })
       .andWhere('dm.user2=:receiverId', { receiverId })
       .getOne();
+    if (dm) {
+      return;
+    }
     const dm2 = await this.dmRepository
       .createQueryBuilder('dm')
       .where('dm.user2=:senderId', { senderId })
       .andWhere('dm.user1=:receiverId', { receiverId })
       .getOne();
 
-    if (dm && dm2) {
+    if (dm2) {
       return;
     }
 
@@ -102,6 +105,7 @@ export class DmService implements IDmService {
     });
     await this.dmRepository.save(newDm);
     console.log('newDm:', newDm);
+    this.chatEventsGateway.server.emit('newDmList', newDm);
     return newDm;
     // const sender = await this.findUserByIdOrFail(senderId);
     // const receiver = await this.findUserByIdOrFail(receiverId);
