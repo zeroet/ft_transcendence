@@ -53,6 +53,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     return () => {
       socket?.off("createRoom");
       setOwnerOrPlayer("");
+      setSettingModal(false);
     };
   }, [socket, ownerOrPlayer]);
 
