@@ -25,16 +25,23 @@ const ParticipantSettingModal = ({
   const onClickDM = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    setShowModal(false);
+
+    /**
+     * sender /
+     * recever / userid
+     *
+     * select from where re
+     */
     await axios
       .post(`/api/dm/${userId}`)
       .then((res) => {
-        // console.log(res);
+        console.log(res, " is axios post : /api/dm/userid");
       })
       .catch((err) => {
         console.log(e);
       });
     // console.log("DM");
+    setShowModal(false);
   }, []);
 
   const onClickGame = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
