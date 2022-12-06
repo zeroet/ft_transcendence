@@ -1,30 +1,26 @@
+import axios from "axios";
 import useSWR from "swr";
-import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
-import fetcher from "../../Utils/fetcher";
-import EachDmRoom from "./EachDmRoom";
+import { IDm } from "../../../interfaceType";
 
 export default function DM() {
-  // const { data, error } = useSWR(`https://dummyjson.com/posts/`, fetcher);
+  const { data: DMData, error: DMError } = useSWR(`/api/dm`);
 
-  // if (data) {
-  //   console.log(data);
-  // }
-  // if (error) return <Error />;
-  // if (!data) return <Loading />;
+  console.log(DMData);
 
+  if (DMError) axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!DMData) return <Loading />;
   return (
     <div className="DM">
-      {
-        // <ul key={data.posts.id}>
-        //   {data.posts &&
-        //     data.posts.map((post: any) => (
-        //       <li>
-        //         <EachDmRoom title={post.title} id={post.id} />
-        //       </li>
-        //     ))}
-        // </ul>
-      }
+      <ul>
+        {DMData &&
+          DMData.map((eachDM: IDm) => {
+            <li>
+              eachDM senderId: ${eachDM.senderId} and receiverId: $
+              {eachDM.receiverId}
+            </li>;
+          })}
+      </ul>
       <style jsx>
         {`
           h1 {
