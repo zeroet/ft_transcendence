@@ -29,16 +29,8 @@ export default function DM() {
   return (
     <div className="DM">
       <ul>
-        {/* {DMData &&
+        {DMData &&
           DMData.map((eachDM: any) => {
-            const DM = { username: "", image_url: "" };
-            if (eachDM.senderId === myData.id) {
-              DM.username = eachDM.Receiver.username;
-              DM.image_url = eachDM.Receiver.image_url;
-            } else {
-              DM.username = eachDM.Sender.username;
-              DM.image_url = eachDM.Sender.image_url;
-            }
             return (
               <li>
                 <Link
@@ -50,16 +42,20 @@ export default function DM() {
                       link: "dm",
                     },
                   }}
-                  key={eachDM.id}
+                  key={eachDM.Receiver.id}
                 >
                   <div className="DM-list">
-                    <img src={DM.image_url} width={"25px"} height={"25px"} />
-                    <div>{DM.username}</div>
+                    <img
+                      src={eachDM.Receiver.image_url}
+                      width={"25px"}
+                      height={"25px"}
+                    />
+                    <div>{eachDM.Receiver.username}</div>
                   </div>
                 </Link>
               </li>
             );
-          })} */}
+          })}
       </ul>
       <style jsx>
         {`
