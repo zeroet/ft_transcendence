@@ -46,7 +46,11 @@ export class DmService implements IDmService {
     const dms = await this.dmRepository
       .createQueryBuilder('dm')
       .distinctOn(['dm.receiver_id'])
+      //   .select('dm.sender_id', 'dm.receiver_id')
       .where('dm.sender_id=:senderId', { senderId })
+      //   .innerJoinAndSelect('dm.Sender', 'sender')
+      .innerJoinAndSelect('dm.Receiver', 'receiver')
+      .select(['dm', 'receiver.username', 'receiver.image_url'])
       //   .andWhere('dm.receiver_id=:receiverId', { receiverId })
       .getMany();
     console.log('dms:', dms);
