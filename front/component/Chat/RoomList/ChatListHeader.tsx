@@ -28,7 +28,6 @@ export default function ChatListHeader() {
             +
           </button>
         </div>
-        <hr />
       </div>
       <style jsx>{`
         h1 {
@@ -51,8 +50,9 @@ export default function ChatListHeader() {
         .chatroom-header {
           background-color: white;
           display: flex;
-          width: 100%;
-          justify-content: space-between;
+          width: 80%;
+          flex-wrap: nowrap;
+          //   justify-content: space-between;
           overflow: auto;
         }
         .button {
