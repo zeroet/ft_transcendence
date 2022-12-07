@@ -53,11 +53,14 @@ export default function DM() {
                       link: "dm",
                     },
                   }}
+                  legacyBehavior
                 >
-                  <div className="DM-list">
-                    <img src={DM.image_url} width={"25px"} height={"25px"} />
-                    <div>{DM.username}</div>
-                  </div>
+                  <a>
+                    <div className="DM-list">
+                      <img src={DM.image_url} width={"25px"} height={"25px"} />
+                      <div className="username">{DM.username}</div>
+                    </div>
+                  </a>
                 </Link>
               </li>
             );
@@ -65,6 +68,14 @@ export default function DM() {
       </ul>
       <style jsx>
         {`
+          li {
+            list-style: none;
+            margin-left: -30px;
+          }
+          a {
+            text-decoration: none;
+            color: black;
+          }
           .DM-list {
             display: flex;
           }
@@ -72,17 +83,9 @@ export default function DM() {
             margin-right: 20px;
             border-radius: 50%;
           }
-          h1 {
-            font-family: "Fragment Mono", monospace;
-            font-weight: bold;
-            font-size: 25px;
-            line-height: 20px;
-            margin-left: 10px;
-            /* identical to box height, or 67% */
-            text-transform: uppercase;
-          }
-          .DM {
-            height: 300px;
+          .username {
+            margin-top: 2px;
+            margin-left: -10px;
           }
         `}
       </style>
