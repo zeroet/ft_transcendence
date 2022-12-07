@@ -25,13 +25,6 @@ const ParticipantSettingModal = ({
   const onClickDM = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-
-    /**
-     * sender /
-     * recever / userid
-     *
-     * select from where re
-     */
     await axios
       .post(`/api/dm/${userId}`)
       .then((res) => {
@@ -51,12 +44,19 @@ const ParticipantSettingModal = ({
     console.log("Game");
   }, []);
 
-  const onClickBlock = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowModal(false);
-    console.log("block");
-  }, []);
+  const onClickBlock = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowModal(false);
+      await axios
+        .post(`/api/users/block/${userId}`)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+      console.log("block");
+    },
+    []
+  );
 
   const onClickMute = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -72,6 +72,7 @@ const ParticipantSettingModal = ({
     console.log("Kick");
   }, []);
 
+  console.log(myData);
   if (!myData) return <Loading />;
   return (
     <div className="participantSettingModal">
@@ -84,11 +85,11 @@ const ParticipantSettingModal = ({
       <div className="router-div" onClick={onClickGame}>
         Game
       </div>
+      <div className="router-div" onClick={onClickBlock}>
+        {myData.Block ? "UnBlock" : "Block"}
+      </div>
       {isOwner && (
         <div>
-          <div className="router-div" onClick={onClickBlock}>
-            Block
-          </div>
           <div className="router-div" onClick={onClickMute}>
             Mute
           </div>

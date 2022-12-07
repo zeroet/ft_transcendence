@@ -118,7 +118,7 @@ export class User implements IUser {
   two_factor_valid: boolean;
 
   @OneToMany((type) => Block, (Block) => Block.User)
-  // @JoinColumn({ name: 'block', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'block', referencedColumnName: 'id' })
   Block: IBlock[];
 
   @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.User)
