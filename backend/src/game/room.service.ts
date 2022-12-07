@@ -1,14 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
-import { Game } from './interfaces/room'
+import { GameService } from './interfaces/room'
 import { Status } from './interfaces/room'
 import { Interval } from "@nestjs/schedule";
 
 @Injectable()
 export class RoomService{
-    private readonly gameService: Game
+        constructor(
+        ) {}
 
-    rooms: Map<string, Game> = new Map();
+    rooms: Map<string, GameService> = new Map();
 
     createRoom (player1: Socket, player2:Socket) {
         player1.emit('createRoom', { isOwner: true } );
@@ -17,7 +18,7 @@ export class RoomService{
 
     startGame(player1: Socket, player2: Socket, Status: Status, roomName:string, owner:string, speed:string, ballsize:string)
     {
-        const game = new Game(player1, player2, Status, roomName, owner, speed, ballsize)
+        const game = new GameService(player1, player2, Status, roomName, owner, speed, ballsize)
         this.rooms.set(roomName, game);
     }
 
@@ -33,7 +34,11 @@ export class RoomService{
       for (const room of this.rooms.values())
         if (room.Status == Status.PLAY) 
         {
-            room.update();
+            const ball = room.update();
+            for(const player of room.Players)
+                player.emit('ball', ball)
+            for(const watcher of room.Watchers)
+                watcher.emit('ball', ball)
         }
     }
 }

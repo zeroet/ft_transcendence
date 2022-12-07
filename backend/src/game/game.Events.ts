@@ -13,10 +13,9 @@ import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
-import { Game, Status } from './interfaces/room';
+import { GameService, Status } from './interfaces/room';
 import { QueueService } from './queue.service';
 import { Logger } from '@nestjs/common';
-import { Interval } from '@nestjs/schedule';
 import { RoomService } from './room.service';
 // import { GameService } from './game.service';
 
@@ -35,9 +34,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   server: Server;
 
   queueNormal: QueueService = new QueueService();
-  //game: GameService = new GameService();
- //
-
+  
   afterInit() {
     this.logger.log("INIT");
   }

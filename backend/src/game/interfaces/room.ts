@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { RoomService } from "../room.service";
+import { Socket } from "socket.io"
 
 type ball = {
     x: number;
@@ -23,7 +24,7 @@ export enum Status {
 }
 
 @Injectable()
-export class Game{
+export class GameService{
  
    private roomService: RoomService
     
@@ -48,7 +49,7 @@ export class Game{
         this.roomName = roomName;
         this.ownerId = ownerId;
         this.speed = Number(speed);
-        this.width = 1375;
+        this.width = 1450;
         this.height = 725;
         this.ballSize = Number(ballSize);
      
@@ -58,12 +59,12 @@ export class Game{
             player1: 0, player2: 0
         };
     }
-    default() {
-        this.ball.x = Math.random()*(this.width/5) + (2*this.width/5);
-        this.ball.y = Math.random()*(this.height/2) + (this.height/4);
-        this.dir.dx = Math.random() > 0.5 ? -1 : 1;
-        this.dir.dy = Math.random() > 0.5 ? -1 : 1;
-    }
+    // default() {
+    //     this.ball.x = Math.random()*(this.width/5) + (2*this.width/5);
+    //     this.ball.y = Math.random()*(this.height/2) + (this.height/4);
+    //     this.dir.dx = Math.random() > 0.5 ? -1 : 1;
+    //     this.dir.dy = Math.random() > 0.5 ? -1 : 1;
+    // }
     // set = function(newX, newY){
         //     this.x = newX;
         //     this.y = newY;
@@ -80,21 +81,46 @@ export class Game{
     // };
       
     update() {
-        this.default()
         var nextX = this.ball.x + this.dir.dx;
         var nextY = this.ball.y + this.dir.dy;
-        if(nextX < this.ballSize || nextX > this.width - this.ballSize){
-          this.dir.dx *= -1;
-        }
-        if(nextY < this.ballSize || nextY > this.height - this.ballSize){
-          this.dir.dy *= -1;
-        }
-        this.ball.x += this.dir.dx * this.speed/100;
-        this.ball.y += this.dir.dy * this.speed/100;
-        for(const user of this.Players) {
-            user.emit('ball', this.ball)
-            console.log(`this ${user.id} this x ${this.ball.x} this y ${this.ball.y}`)
-        }
+        // if(nextX < this.ballSize || nextX > this.width - this.ballSize){
+        //   this.dir.dx *= -1;
+        // }
+        // if(nextY < this.ballSize || nextY > this.height - this.ballSize){
+        //   this.dir.dy *= -1;
+        // }
+        // this.ball.x += this.dir.dx * this.speed;
+        // this.ball.y += this.dir.dy * this.speed;
+        if (
+            nextX <= 1450 ||
+            nextX >= 0 ||
+            nextY <= 725 ||
+            nextY >= 0
+          ) {
+            if (nextX <= 1450) {
+              this.dir.dx *= -1;
+              nextX += 1;
+            }
+            if (nextX >= 10) {
+                this.dir.dx *= -1;
+              nextX -= 1;
+            }
+            if (nextY <= 725) {
+              this.dir.dy *= -1;
+              nextY += 1;
+            }
+            if (nextY >= 10) {
+              this.dir.dy *= -1;
+              nextY -= 1;
+            }
+          }
+          this.ball.x = nextX += this.dir.dx * 0.2 *this.speed/10;
+          this.ball.y = nextY += this.dir.dy * 0.3 *this.speed/10;
+        return this.ball;
+        // for(const user of this.Players) {
+        //     user.socket.emit('ball', this.ball)
+        //     console.log(`this ${user} this x ${this.ball.x} this y ${this.ball.y}`)
+        
     };
 
 

@@ -110,10 +110,10 @@ export default function Gaming({
       }
       setIsGameover(true);
     });
-    socket?.on("ball", (x: number, y: number) => {
+    socket?.on("ball", (ball : {x:number, y:number}) => {
       console.log("s");
-      setBallX(x);
-      setBallY(y);
+      setBallX(ball.x);
+      setBallY(ball.y);
     });
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
