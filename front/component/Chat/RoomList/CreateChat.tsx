@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-// import { toast, ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateChat = ({ onClose }: { onClose: () => void }) => {
   const [RoomName, setName] = useState<string>("");
@@ -19,39 +19,49 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
+        toast.error("Password should more than 4 character");
         setPw("");
         return;
       }
       if (!RoomName) {
-        // toast.success("You should have more than 1 character");
-        console.log("name not enough");
+        toast.error("Room name should have more than 1 character");
         return;
       }
-      await axios
-        .post("/api/chatroom", {
-          chatroomName: RoomName,
-          password: RoomPw === "" ? null : RoomPw,
-        })
-        .then(async (res) => {
-          setName("");
-          setPw("");
-          return await res.data.id;
-        })
-        .then((chatroomId) => {
-          // router.push(`/Chat/${chatroomId}`);
-          router.push({
-            pathname: `/Chat`,
-            query: { id: chatroomId, link: "chatroom" },
+      try {
+        await axios
+          .post("/api/chatroom", {
+            chatroomName: RoomName,
+            password: RoomPw === "" ? null : RoomPw,
+          })
+          .then(async (res) => {
+            setName("");
+            setPw("");
+            return await res.data.id;
+          })
+          .then((chatroomId) => {
+            // router.push(`/Chat/${chatroomId}`);
+            router.push({
+              pathname: `/Chat`,
+              query: { id: chatroomId, link: "chatroom" },
+            });
+            console.log(`we move to /chatroom/${chatroomId}`);
+          })
+          .finally(() => {
+            onClose();
           });
-          console.log(`we move to /chatroom/${chatroomId}`);
-        })
-        .catch((error) => {
-          console.dir(error);
-          alert("We have already same room name");
-        })
-        .finally(() => {
-          onClose();
-        });
+      } catch (e) {
+        console.dir(e);
+        toast.error("Same room name exist !");
+        setName("");
+      }
+      // .catch((error) => {
+      //   console.dir(error);
+      //   alert("There's already same room name");
+      //   setName("");
+      // });
+      // .finally(() => {
+      //   onClose();
+      // });
     },
     [RoomName, RoomPw]
   );
@@ -97,27 +107,29 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
           </button>
         </div>
       </form>
-      {/* <ToastContainer
+      <ToastContainer
         position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
+        autoClose={3000}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
-        pauseOnHover
-        theme="light"
-      /> */}
+        pauseOnHover={false}
+        limit={1}
+        style={{ width: "500px", textAlign: "center" }}
+        toastStyle={{
+          textTransform: "none",
+        }}
+      />
       <style jsx>{`
         .box {
           position: fixed;
           top: 30%;
           left: 33%;
-
           width: 500px;
           height: 300px;
-
           background-color: white;
           border: 1px inset black;
           box-shadow: 10px 10px;

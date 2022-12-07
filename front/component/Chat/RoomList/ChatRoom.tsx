@@ -26,6 +26,7 @@ export default function ChatRoom() {
   return (
     <div>
       <div className="list">
+        <hr />
         <ul>
           {data.map((room: IChatroom) => {
             return (
@@ -35,24 +36,31 @@ export default function ChatRoom() {
                   query: { id: room.id, link: "chatroom" },
                 }}
                 key={room.id}
+                legacyBehavior
               >
-                <div className="room-li">
-                  <img
-                    src={
-                      room.isPrivate
-                        ? "/images/private.png"
-                        : "/images/public.png"
-                    }
-                    width="20px"
-                  />
-                  <li className="roomname">{room.chatroomName}</li>
-                </div>
+                <a>
+                  <div className="room-li">
+                    <img
+                      src={
+                        room.isPrivate
+                          ? "/images/private.png"
+                          : "/images/public.png"
+                      }
+                      width="20px"
+                    />
+                    <li className="roomname">{room.chatroomName}</li>
+                  </div>
+                </a>
               </Link>
             );
           })}
         </ul>
       </div>
       <style jsx>{`
+        a {
+          text-decoration: none;
+          color: black;
+        }
         .list {
           height: 300px;
           margin-top: 55px;
