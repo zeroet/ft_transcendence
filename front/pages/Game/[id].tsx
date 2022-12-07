@@ -120,7 +120,6 @@ export default function Gaming({
     return () => {
       // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
-      socket?.emit("room-list");
       socket?.off("Play");
       socket?.off("gameover");
       console.log(
