@@ -93,11 +93,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
     <div className={styles.box}>
       {showModal && (
         <div ref={refModal} className="ChatroomSettingModal">
-          <ChatroomSettingModal
-            roomId={id.id}
-            ownerId={roomData.ownerId}
-            userId={userData.id}
-          />
+          <ChatroomSettingModal roomId={id.id} />
         </div>
       )}
       <div className="roomname-header">
@@ -110,7 +106,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
             width="20px"
           />
         </div>
-        {id.link === "chatroom" && (
+        {id.link === "chatroom" && roomData.ownerId === userData.id && (
           <img
             src="/images/config.png"
             className="config"

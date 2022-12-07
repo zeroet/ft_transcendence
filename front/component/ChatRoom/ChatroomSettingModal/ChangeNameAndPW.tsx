@@ -66,7 +66,7 @@ const ChangeNameAndPW = ({
               value={RoomName}
               type="text"
               autoFocus
-              placeholder="leave here if you keep your room name"
+              placeholder="leave it if you don't want to change it"
             />
           </div>
           <label>new password</label>

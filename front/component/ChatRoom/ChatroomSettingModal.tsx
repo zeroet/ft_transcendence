@@ -5,15 +5,7 @@ import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
 import ChangeNameAndPW from "./ChatroomSettingModal/ChangeNameAndPW";
 
-export default function ChatroomSettingModal({
-  roomId,
-  ownerId,
-  userId,
-}: {
-  roomId: string;
-  ownerId: number;
-  userId: number;
-}) {
+export default function ChatroomSettingModal({ roomId }: { roomId: string }) {
   const [socket] = useSocket(null, "chat");
   const router = useRouter();
   const [showChangeModal, setShowChangeModal] = useState<Boolean>(false);
@@ -72,11 +64,9 @@ export default function ChatroomSettingModal({
         <div className="div-button" onClick={onClickExitRoom}>
           <h1>Exit the room</h1>
         </div>
-        {ownerId === userId ? (
-          <div className="div-button" onClick={onClickChangePWAndName}>
-            <h1>Change RoomName / Password</h1>
-          </div>
-        ) : null}
+        <div className="div-button" onClick={onClickChangePWAndName}>
+          <h1>Change RoomName / Password</h1>
+        </div>
       </div>
       <style jsx>{`
         .modal-background {

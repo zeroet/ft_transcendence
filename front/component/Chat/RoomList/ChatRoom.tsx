@@ -10,7 +10,7 @@ import { IChatroom } from "../../../interfaceType";
 export default function ChatRoom() {
   const { data, error } = useSWR(`/api/chatroom`, fetcher);
   const [socket] = useSocket(null, "chat");
-  
+
   useEffect(() => {
     socket?.on("newRoomList", (data: string) => {
       console.log(data, " for new room list in ChatRoom socket!");
@@ -20,12 +20,13 @@ export default function ChatRoom() {
       socket?.off("newRoomList");
     };
   }, [data]);
-  
+
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
   return (
     <div>
       <div className="list">
+        <hr />
         <ul>
           {data.map((room: IChatroom) => {
             return (
@@ -35,24 +36,31 @@ export default function ChatRoom() {
                   query: { id: room.id, link: "chatroom" },
                 }}
                 key={room.id}
+                legacyBehavior
               >
-                <div className="room-li">
-                  <img
-                    src={
-                      room.isPrivate
-                        ? "/images/private.png"
-                        : "/images/public.png"
-                    }
-                    width="20px"
-                  />
-                  <li className="roomname">{room.chatroomName}</li>
-                </div>
+                <a>
+                  <div className="room-li">
+                    <img
+                      src={
+                        room.isPrivate
+                          ? "/images/private.png"
+                          : "/images/public.png"
+                      }
+                      width="20px"
+                    />
+                    <li className="roomname">{room.chatroomName}</li>
+                  </div>
+                </a>
               </Link>
             );
           })}
         </ul>
       </div>
       <style jsx>{`
+        a {
+          text-decoration: none;
+          color: black;
+        }
         .list {
           height: 300px;
           margin-top: 55px;
