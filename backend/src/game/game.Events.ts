@@ -35,7 +35,6 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   queueNormal: QueueService = new QueueService();
   // game: GameService = new GameService();
   rooms: Map<string, Game> = new Map();
-  roomList: string[];
 
   afterInit() {
     this.logger.log("INIT");
@@ -147,27 +146,32 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
   async liveGame(name: string, game: Game) {
     for(const room of this.rooms.values()){
+      this.server.to(name).emit('enterGame', name);
       room.changeStatus(Status.PLAY);
-      await this.server.to(name).emit('enterGame', name);
     }
   }
 
-  @Interval(1000 / 60)
-  loop(): void {
-    for (const room of this.rooms.values())
-      if (room.Status == Status.PLAY) 
-        this.server.to(room.roomName).emit('Play')
-  }
+  // @Interval(1000 / 60)
+  // loop(): void {
+  //   for (const room of this.rooms.values())
+  //     if (room.Status == Status.PLAY) 
+  //     {
+  //       this.server.to(room.roomName).emit('Play')
+  //       console.log('send');
+  //     }
+  // }
     
   @SubscribeMessage('room-list')
-  handleRoomList() {
+  async handleRoomList() {
     try {
-      for (const name of this.rooms.keys())
-        this.roomList.push(name);
-      const names = this.roomList;
-      this.server.emit('room-list', { names })
+      const list = [];
+      for (const name of this.rooms.keys()) {
+        console.log('room-list okkkkkkkkkkkkkkkk', name)
+        list.push(name);
+      }
+      this.server.emit('room-list', list)
     }
-    catch{}
+    catch (e) { console.log(e)}
   }
 
   @SubscribeMessage('watchGame')
