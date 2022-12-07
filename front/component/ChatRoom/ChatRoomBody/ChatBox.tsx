@@ -22,7 +22,7 @@ const ChatBox = ({
       />
       <div className="button-div">
         <button onClick={onClickSubmit} type="submit">
-          <img src="/images/allow.jpeg" width="50px" height="50px" />
+          <img src="/images/sendMsg.png" width="50px" height="50px" />
         </button>
       </div>
       <style jsx>{`
