@@ -7,7 +7,10 @@ export default function Layout({ children }: { children: ReactNode }) {
   const router = useRouter();
   return (
     <div>
-      {router.pathname !== "/Chat" && <Header id={undefined} />}
+      {router.pathname !== "/Chat" && router.pathname !== "/Game/[id]" && (
+        <Header id={undefined} />
+      )}
+
       <div>{children}</div>
       <Footer />
     </div>

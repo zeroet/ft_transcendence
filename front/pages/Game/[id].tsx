@@ -32,11 +32,9 @@ interface GameElement {
 export default function Gaming({
   accessToken,
   myRole,
-  otherPlayerName,
 }: {
   accessToken: string;
   myRole: string;
-  otherPlayerName: string;
 }) {
   const { data, error } = useSWR("/api/users");
   const [socket, disconnect] = useSocket(accessToken, "game");
@@ -76,6 +74,7 @@ export default function Gaming({
   // 전체가 변화하지않음
   const onChangePaddle = useCallback(
     (e: KeyboardEvent) => {
+      if (myRole === "watcher") return;
       const key = e.key;
       if (key === "w" || key === "s") {
         if (!(leftPaddle >= 0 && leftPaddle <= 650)) return;
@@ -98,22 +97,21 @@ export default function Gaming({
   );
 
   useEffect((): (() => void) => {
-    /**
-     * myRole : player | owner
-     *
-     * if myRole: watcher {
-     *  socket.emit('watchGame', 'roomName')
-     * }
-     * socket.on ('live_game', data)
-     */
+    socket?.emit("room-list");
+    if (myRole === "watcher") {
+      socket?.emit("watchGame", router.query.id);
+    }
     socket?.on("gameover", () => {
       // 점수차이로 승패 저장
       if (myRole === "owner") {
         setWinOrLose(ownerScore - playerScore > 0 ? true : false);
-      } else {
+      } else if (myRole === "player") {
         setWinOrLose(ownerScore - playerScore > 0 ? false : true);
       }
       setIsGameover(true);
+    });
+    socket?.on("Play", (res) => {
+      console.log("Play event in game!!!!!!!!!!!!!");
     });
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
@@ -122,9 +120,20 @@ export default function Gaming({
     return () => {
       // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
+      socket?.off("Play");
+      socket?.off("gameover");
+      console.log(
+        "game unmount!!!!!!!!!!!!!!!!!!!!!disconnect in 'Game [id].tsx'"
+      );
       disconnect();
     };
-  }, [router.query.id]);
+  }, []);
+
+  const onClickHome = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push("/Home");
+  }, []);
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socket) return <Loading />;
@@ -134,6 +143,12 @@ export default function Gaming({
       {data.two_factor_activated && !data.two_factor_valid && (
         <TwoFactorModal />
       )}
+      <div className="header">
+        <div className="home vibration" onClick={onClickHome}>
+          Home
+        </div>
+      </div>
+      <hr />
       <div className="grid-div">
         <GameList accessToken={accessToken} />
         {/* 게임결과 보내기 */}
@@ -159,6 +174,36 @@ export default function Gaming({
           </div>
         )}
         <style jsx global>{`
+          .vibration {
+            animation: vibration 0.1s infinite;
+          }
+          @keyframes vibration {
+            from {
+              transform: rotate(2deg);
+            }
+            to {
+              transform: rotate(-2deg);
+            }
+          }
+          .home {
+            color: white;
+            background-color: gray;
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            padding-top: 5px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            cursor: pointer;
+          }
+          .home:hover {
+            background-color: red;
+          }
+          .header {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+          }
           .grid-div {
             display: grid;
             grid-template-columns: 1fr 3fr;
@@ -260,7 +305,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  // tokenManager(cookie);
   return {
     props: {
       accessToken,

@@ -17,26 +17,51 @@ export default function GameList({ accessToken }: { accessToken: string }) {
    *
    */
   useEffect((): (() => void) => {
-    console.log(`socket on ${socket?.id}`);
-    socket?.emit("room-list", "");
-    socket?.on("room-list", (res) => {
-      console.log(res, " is result from room list socket");
-      setRoomList(res);
+    console.log(`socket on in Room List ${socket?.id}`);
+    socket?.emit("room-list");
+    socket?.on("room-list", (gameList) => {
+      setRoomList(gameList);
+      console.log(gameList);
+      console.log("is game list");
     });
 
     return () => {
       socket?.off("room-list");
-      console.log(`socket off ${socket?.id}`);
+      console.log(`socket off in Room List ${socket?.id}`);
     };
   }, [socket?.id]);
-  if (!socket) return <Loading />;
 
+  if (!socket) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Game List</h1>
       <hr />
-      <ul></ul>
+      {roomList &&
+        roomList.map((roomName: string) => {
+          return (
+            <Link
+              href={{
+                pathname: `/Game/${roomName}`,
+                query: { myRole: "watcher" },
+              }}
+              key={roomName}
+            >
+              <div className="room-name">
+                <strong> # {roomName}</strong>
+              </div>
+            </Link>
+          );
+        })}
       <style jsx>{`
+        .room-name {
+          padding-left: 30px;
+          margin-top: 15px;
+        }
+        strong {
+          font-size: 20px;
+
+          color: black;
+        }
         h1 {
           font-family: "Fragment Mono", monospace;
           font-size: 25px;

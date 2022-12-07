@@ -17,6 +17,7 @@ const GameSettingModal = ({
   const [speed, setSpeed] = useState<string>("50");
   const [ballSize, setBallSize] = useState<string>("50");
   const [roomName, setRoomName] = useState<string>("");
+  const [roomList, setRoomList] = useState<string[]>([]);
 
   const onClickSubmit = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -28,6 +29,11 @@ const GameSettingModal = ({
         return;
       }
 
+      if (roomList.includes(roomName)) {
+        alert("We have already same name of game");
+        setRoomName("");
+        return;
+      }
       // 그리고 게임시작
       socket?.emit("startGame", {
         roomName,
@@ -70,16 +76,19 @@ const GameSettingModal = ({
   const onChangeRoomName = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setRoomName(e.target.value.trim());
-      console.log(roomName);
+      console.log(roomList);
     },
     [roomName]
   );
 
   useEffect((): (() => void) => {
     console.log("game setting owner modal", socket?.id);
-
+    socket?.emit("room-list");
+    socket?.on("room-list", (list) => {
+      setRoomList(list);
+    });
     // 완료된 소켓! 받은후에 이동
-    socket?.on("enterGame", (roomName: string, otherPlayerName: string) => {
+    socket?.on("enterGame", (roomName: string) => {
       console.log(roomName, " is room name from server event: enterGame");
       // query로 게임이름
       // 내가 오너인지, 내가 플레이어인지 가지고들어간다.
@@ -95,13 +104,13 @@ const GameSettingModal = ({
         pathname: `/Game/${roomName}`,
         query: {
           myRole: "owner",
-          otherPlayerName,
         },
       });
     });
     return () => {
       console.log("off socket in game setting modal");
       socket?.off("enterGame");
+      socket?.off("room-list");
       // socket?.off("createRoom");
     };
   }, [socket?.id]);

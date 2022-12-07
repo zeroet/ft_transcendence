@@ -31,7 +31,7 @@ const GameReadyModal = ({
 
   useEffect((): (() => void) => {
     console.log("in game ready modal", socket?.id);
-    socket?.on("enterGame", (roomName: string, otherPlayerName: string) => {
+    socket?.on("enterGame", (roomName: string) => {
       console.log(roomName);
       console.log("is room name! from socket");
       // query로 게임이름
@@ -40,7 +40,6 @@ const GameReadyModal = ({
         pathname: `/Game/${roomName}`,
         query: {
           myRole: "player",
-          otherPlayerName,
         },
       });
     });
@@ -54,13 +53,10 @@ const GameReadyModal = ({
   return (
     <div className="box">
       <div className="title">
-        <h2>Game setting</h2>
+        <h2>Just wait! </h2>
       </div>
       <form className="createForm" method="post">
         <div className="buttonDiv">
-          <button onClick={onClickSubmit} className="ok">
-            Ready
-          </button>
           <button onClick={closeSettingModal} className="cancel">
             Cancel
           </button>
