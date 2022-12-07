@@ -18,31 +18,16 @@ export class UserService implements IUserService {
   ) {}
 
   async getCurrentUser(id: number): Promise<User> {
-    const user = await this.userRepository
-      .createQueryBuilder('users')
-      .leftJoinAndSelect(
-        'users.Block',
-        'block',
-        'users.user_id = block.user_id',
-      )
-      .where('users.user_id=:id', { id })
-      .getOne();
-    return user;
-    // return await this.userRepository.findOneBy({ id: id });
+    return await this.userRepository.findOneBy({ id: id });
   }
   async getUserById(id: number) {
-    this.logger.debug(`getUserById() id: ${id}`);
+    // this.logger.debug(`getUserById() id: ${id}`);
     if (id !== undefined) {
       // const user = await this.userRepository.findOneBy({ id: id });
       // const user = await this.userRepository.findOne({ where: { id } });
       const user = await this.userRepository
         .createQueryBuilder('users')
-        .leftJoinAndSelect(
-          'users.Block',
-          'block',
-          'users.user_id = block.user_id',
-        )
-        .where('users.user_id=:id', { id })
+        .where('users.id=:id', { id })
         .getOne();
       // console.log('getUserById() user:', user);
       // this.logger.debug('getUserById() user:');
@@ -54,16 +39,7 @@ export class UserService implements IUserService {
   }
 
   async getAllUsers() {
-    // const users = await this.userRepository.find();
-    const users = await this.userRepository
-      .createQueryBuilder('users')
-      .leftJoinAndSelect(
-        'users.Block',
-        'block',
-        'users.user_id = block.user_id',
-      )
-      .getMany();
-    // console.log('users info:', users);
+    const users = await this.userRepository.find();
     if (users) return users;
   }
 
@@ -72,9 +48,6 @@ export class UserService implements IUserService {
       .createQueryBuilder('users')
       .where('users.user_id=:userId', { userId })
       .getOne();
-    if (!user) {
-      throw new BadRequestException(`User of id:${userId} doesn't exist`);
-    }
     const blockUser = await this.userRepository
       .createQueryBuilder('users')
       .where('users.user_id=:blockUserId', { blockUserId })
@@ -90,9 +63,9 @@ export class UserService implements IUserService {
       User: user,
       BlockedUser: blockUser,
     });
-    // const updateUserInfo = this.userRepository.update(userId, {
-    //   Block: createdBlock,
-    // });
+    const updateUserInfo = this.userRepository.update(userId, {
+      Block: [createdBlock],
+    });
     return await this.blockRepository.save(createdBlock);
   }
 

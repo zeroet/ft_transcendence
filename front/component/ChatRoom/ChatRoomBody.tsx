@@ -10,10 +10,8 @@ import ChatroomSettingModal from "./ChatroomSettingModal";
 import { IChatContent } from "../../interfaceType";
 import useSocket from "../Utils/socket";
 import { TypeChatId } from "../../interfaceType";
-import { useRouter } from "next/router";
 
 export default function ChatRoomBody({ id }: { id: TypeChatId }) {
-  const router = useRouter();
   const [socket] = useSocket(null, "chat");
   const { data: roomData, error: roomError } = useSWR(
     `/api/${id.link}/${id.id}`
@@ -68,25 +66,17 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
         .catch((err) => console.log(err));
       setInputText("");
     },
-    [inputText, chatContentsData, roomData, userData, socket?.id]
+    [inputText, chatContentsData, roomData, userData]
   );
 
   useEffect(() => {
     socket?.on("newContent", () => {
       mutate(`/api/${id.link}/${id.id}/contents`);
     });
-    socket?.on("deleteChatroom", (roomId: number) => {
-      console.log(id.link);
-      console.log(id.id);
-      console.log(roomId);
-      if (id.link === "chatroom" && roomId.toString() === id.id)
-        router.push("/Chat");
-    });
     return () => {
       socket?.off("newContent");
-      socket?.off("deleteChatroom");
     };
-  }, [roomData, chatContentsData, userData, socket?.id]);
+  }, [roomData, chatContentsData, userData]);
 
   const onClickShowSettingModal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
