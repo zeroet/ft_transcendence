@@ -39,7 +39,16 @@ export class UserService implements IUserService {
   }
 
   async getAllUsers() {
-    const users = await this.userRepository.find();
+    // const users = await this.userRepository.find();
+    const users = await this.userRepository
+      .createQueryBuilder('users')
+      .leftJoinAndSelect(
+        'users.Block',
+        'block',
+        'users.user_id = block.user_id',
+      )
+      .getMany();
+    console.log('users info:', users);
     if (users) return users;
   }
 
