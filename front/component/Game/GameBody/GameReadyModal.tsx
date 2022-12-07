@@ -53,13 +53,10 @@ const GameReadyModal = ({
   return (
     <div className="box">
       <div className="title">
-        <h2>Game setting</h2>
+        <h2>Just wait! </h2>
       </div>
       <form className="createForm" method="post">
         <div className="buttonDiv">
-          <button onClick={onClickSubmit} className="ok">
-            Ready
-          </button>
           <button onClick={closeSettingModal} className="cancel">
             Cancel
           </button>
