@@ -2,6 +2,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { mutate } from "swr";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ChangeNameModal = ({
   modal,
@@ -48,7 +50,8 @@ const ChangeNameModal = ({
           router.push("/Home");
         }
       } else {
-        alert("new nickname should be 1 ~ 30 characters");
+        toast.error("nickname should be 1 ~ 30 characters");
+        // alert("new nickname should be 1 ~ 30 characters");
         // modal(e);
       }
     },
@@ -80,12 +83,28 @@ const ChangeNameModal = ({
           </button>
         </div>
       </form>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={false}
+        limit={1}
+        style={{ width: "500px", textAlign: "center", fontSize: "15px" }}
+        toastStyle={{
+          textTransform: "none",
+        }}
+      />
       <style jsx>{`
         .box {
           font-family: "Fragment Mono", monospace;
           position: fixed;
           top: 30%;
-          left: 33%;
+          left: 37%;
 
           width: 500px;
           height: 300px;

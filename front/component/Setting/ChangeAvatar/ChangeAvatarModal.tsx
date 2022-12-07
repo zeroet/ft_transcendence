@@ -2,6 +2,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 import { mutate } from "swr";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ChangeAvatarModal = ({
   modal,
@@ -46,7 +48,8 @@ const ChangeAvatarModal = ({
             }
           };
         } else {
-          alert("File should be pgn, jpg or");
+          toast.error("File should be PNG, JPG, JPEG or SVG");
+          //   alert("File should be pgn, jpg or");
         }
       }
     },
@@ -70,11 +73,13 @@ const ChangeAvatarModal = ({
           router.push("/Home");
         } catch (err) {
           console.log(`error for avatar`, err);
-          alert("Size of file is too big, please less than 10kb");
+          toast.error("File is too big, file should be less than 10kb");
+          //   alert("Size of file is too big, please less than 10kb");
           console.log(e);
         }
       } else {
-        alert("no file uploaded. Plz upload a file");
+        toast.error("no file uploaded. Plz upload a file");
+        // alert("no file uploaded. Plz upload a file");
       }
       // modal(e);
     },
@@ -113,6 +118,22 @@ const ChangeAvatarModal = ({
           </button>
         </div>
       </form>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={false}
+        limit={1}
+        style={{ width: "500px", textAlign: "center", fontSize: "15px" }}
+        toastStyle={{
+          textTransform: "none",
+        }}
+      />
       <style jsx>{`
         .upload-image {
           border: 2px solid black;
@@ -153,7 +174,7 @@ const ChangeAvatarModal = ({
           font-family: "Fragment Mono", monospace;
           position: fixed;
           top: 30%;
-          left: 33%;
+          left: 37%;
 
           width: 500px;
 
