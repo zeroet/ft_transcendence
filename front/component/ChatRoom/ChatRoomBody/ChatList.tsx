@@ -38,69 +38,60 @@ const ChatList = ({
           })}
       </ul>
       <style jsx>{`
-      ul {
-        padding-left: 0px;
-      }
-      .my-div-box {
-        margin: 0px;
-        display: flex;
-        justify-content: flex-end;
-      }     
-
-      .other-div-box {
-        margin: 0px;
-        display: flex;
-      } 
-
-      .my-content-box {
-        margin: 10px;
-        height: 60px;
-        display: inline-block;
-        background: #A8DADD;
-      }
-
-      .other-content-box {
-        margin: 10px;
-        height: 60px;
-        display: inline-block;
-        background: #f9d4d4;
-      }
-
-      .c-body {
-        height: 80%;
-        margin-left: 10px;
-        margin-right: 10px;
-      }
-      p {
-        margin: 5px;
-        pedding: 0px;
-      }
-      .username {
-        margin-top 
-        font-family: "Doppio One";
-        font-style: normal;
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 20px;
-        /* identical to box height, or 118% */
-        
-        text-transform: uppercase;
-          
-        color: #000000;
-      }
-      .content {
-        font-family: "Doppio One";
-        font-style: normal;
-        font-weight: 400;
-        font-size: 21px;
-        line-height: 20px;
-        /* identical to box height, or 95% */
-        margin-left: 11px;
-        text-transform: uppercase;
-        
-        color: #000000;
-      }
-        `}</style>
+        ul {
+          padding-left: 0px;
+        }
+        .my-div-box {
+          margin: 0px;
+          display: flex;
+          justify-content: flex-end;
+        }
+        .other-div-box {
+          margin: 0px;
+          display: flex;
+        }
+        .my-content-box {
+          background: #a8dadd;
+          margin: 5px;
+          border-top: 10px solid transparent;
+          border-right: 10px solid white;
+        }
+        .other-content-box {
+          background: #f9d4d4;
+          margin: 5px;
+          border-top: 10px solid transparent;
+          border-left: 15px solid white;
+        }
+        .c-body {
+          height: 80%;
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+        p {
+          margin: 5px;
+          pedding: 0px;
+        }
+        .username {
+          margin-top: -3px;
+          font-family: "Fragment Mono", monospace;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 20px;
+          /* identical to box height, or 118% */
+          color: #000000;
+        }
+        .content {
+          font-family: "Fragment Mono", monospace;
+          font-style: normal;
+          font-weight: bold;
+          font-size: 20px;
+          line-height: 20px;
+          /* identical to box height, or 95% */
+          margin-left: 11px;
+          color: #000000;
+        }
+      `}</style>
     </div>
   );
 };
