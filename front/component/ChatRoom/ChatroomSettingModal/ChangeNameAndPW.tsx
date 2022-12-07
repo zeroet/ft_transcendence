@@ -22,7 +22,7 @@ const ChangeNameAndPW = ({
   const onChangePw = (e: React.ChangeEvent<HTMLInputElement>) =>
     setPw(e.target.value.trim());
 
-  const createRoom = useCallback(
+  const changeApply = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
@@ -54,7 +54,7 @@ const ChangeNameAndPW = ({
   return (
     <div className="box">
       <div className="title">
-        <h2>Change Chat Room</h2>
+        <h2>Change Roomname / Password</h2>
       </div>
       <form method="post">
         <div className="submitform">
@@ -66,6 +66,7 @@ const ChangeNameAndPW = ({
               value={RoomName}
               type="text"
               autoFocus
+              placeholder="leave here if you keep your room name"
             />
           </div>
           <label>new password</label>
@@ -80,7 +81,7 @@ const ChangeNameAndPW = ({
           </div>
         </div>
         <div className="buttonDiv">
-          <button type="submit" onClick={createRoom} className="ok">
+          <button type="submit" onClick={changeApply} className="ok">
             OK
           </button>
           <button type="submit" onClick={cancelRoom} className="cancel">
