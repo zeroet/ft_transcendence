@@ -18,8 +18,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   );
   const { data: userData, error: userError } = useSWR("/api/users");
   const [inputText, setInputText] = useState<string>("");
-  const [showOwnerModal, setShowOwnerModal] = useState<boolean>(false);
-  //   const [showPublicModal, setShowPublicModal] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const refModal = useRef<any>(null);
   const { data: chatContentsData, error: chatContentsError } = useSWR<
     IChatContent[]
@@ -28,10 +27,10 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   const handleCloseModal = useCallback(
     (e: any) => {
       if (!refModal?.current?.contains(e.target)) {
-        setShowOwnerModal(false);
+        setShowModal(false);
       }
     },
-    [showOwnerModal, refModal]
+    [showModal, refModal]
   );
 
   useEffect(() => {
@@ -84,7 +83,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   ) => {
     e.stopPropagation();
     e.preventDefault();
-    setShowOwnerModal(true);
+    setShowModal(true);
   };
 
   if (roomError || chatContentsError || userError)
@@ -92,7 +91,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   if (!roomData || !userData || !chatContentsData) return <Loading />;
   return (
     <div className={styles.box}>
-      {showOwnerModal && (
+      {showModal && (
         <div ref={refModal} className="ChatroomSettingModal">
           <ChatroomSettingModal
             roomId={id.id}
