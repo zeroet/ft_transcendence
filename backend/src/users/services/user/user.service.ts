@@ -63,11 +63,7 @@ export class UserService implements IUserService {
         'users.user_id = block.user_id',
       )
       .getMany();
-<<<<<<< HEAD
     // console.log('users info:', users);
-=======
-    console.log('users info:', users);
->>>>>>> 9c6b096aa86a5eb4ca819c2adb010105fe21b2d7
     if (users) return users;
   }
 
