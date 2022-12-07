@@ -18,7 +18,7 @@ const ChatBox = ({
         onChange={onChangeInputText}
         value={inputText}
         type="text"
-        placeholder="TYPE HERE"
+        placeholder="TYPE HERE / ENTER TO SEND"
       />
       <div className="button-div">
         <button onClick={onClickSubmit} type="submit">
