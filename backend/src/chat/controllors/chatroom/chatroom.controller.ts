@@ -117,7 +117,8 @@ export class ChatroomController {
   @ApiOperation({ summary: 'Delete a chatroom / 특정 대화방 삭제하기' })
   @Delete(':id')
   async deleteChatroom(@User() user: IUser, @Param('id') id: number) {
-    return 'delete chatroom test...';
+    return this.chatroomService.deleteChatroom(user.id, id);
+    // return 'delete chatroom test...';
   }
 
   @ApiBody({
