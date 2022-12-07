@@ -32,11 +32,9 @@ interface GameElement {
 export default function Gaming({
   accessToken,
   myRole,
-  otherPlayerName,
 }: {
   accessToken: string;
   myRole: string;
-  otherPlayerName: string;
 }) {
   const { data, error } = useSWR("/api/users");
   const [socket, disconnect] = useSocket(accessToken, "game");
@@ -46,6 +44,7 @@ export default function Gaming({
   const otherPlayerNameTest = "나중에 이거 지워야함";
   // 방 이름 확인용. useEffect써서 리랜더링용
   const router = useRouter();
+  console.log(router);
   // 마운트 파트
   const [ballX, setBallX] = useState<number>(1375 / 2);
   const [ballY, setBallY] = useState<number>(725 / 2);
@@ -76,6 +75,7 @@ export default function Gaming({
   // 전체가 변화하지않음
   const onChangePaddle = useCallback(
     (e: KeyboardEvent) => {
+      if (myRole === "watcher") return;
       const key = e.key;
       if (key === "w" || key === "s") {
         if (!(leftPaddle >= 0 && leftPaddle <= 650)) return;
@@ -100,6 +100,9 @@ export default function Gaming({
   useEffect((): (() => void) => {
     // 룸 리스트 업데이트 : 와쳐 용
     socket?.emit("room-list");
+    if (myRole === "watcher") {
+      socket?.emit("watchGame", router.query.roomName);
+    }
     /**
      * myRole : player | owner
      *
@@ -112,7 +115,7 @@ export default function Gaming({
       // 점수차이로 승패 저장
       if (myRole === "owner") {
         setWinOrLose(ownerScore - playerScore > 0 ? true : false);
-      } else {
+      } else if (myRole === "player") {
         setWinOrLose(ownerScore - playerScore > 0 ? false : true);
       }
       setIsGameover(true);
@@ -136,7 +139,7 @@ export default function Gaming({
       );
       disconnect();
     };
-  }, [router.query.id]);
+  }, []);
 
   const onClickHome = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -314,7 +317,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  // tokenManager(cookie);
   return {
     props: {
       accessToken,

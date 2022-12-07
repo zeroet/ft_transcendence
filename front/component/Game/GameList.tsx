@@ -19,9 +19,9 @@ export default function GameList({ accessToken }: { accessToken: string }) {
   useEffect((): (() => void) => {
     console.log(`socket on in Room List ${socket?.id}`);
     socket?.emit("room-list");
-    socket?.on("room-list", (res) => {
-      console.log(res, " is result from room list socket!!!!!!!!!!!!!");
-      setRoomList(res);
+    socket?.on("room-list", (gameList) => {
+      setRoomList(gameList);
+      console.log(gameList, "is game list");
     });
 
     return () => {
@@ -35,7 +35,20 @@ export default function GameList({ accessToken }: { accessToken: string }) {
     <div className={styles.box}>
       <h1>Game List</h1>
       <hr />
-      <ul></ul>
+      {roomList &&
+        roomList.map((roomName: string) => {
+          return (
+            <Link
+              href={{
+                pathname: `/Game/${roomName}`,
+                query: { myRole: "watcher", roomName },
+              }}
+              key={roomName}
+            >
+              # {roomName}
+            </Link>
+          );
+        })}
       <style jsx>{`
         h1 {
           font-family: "Fragment Mono", monospace;
