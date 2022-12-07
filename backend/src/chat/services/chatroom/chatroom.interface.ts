@@ -10,7 +10,6 @@ export interface IChatroomService {
     createChatroomDto: CreateChatroomDto,
   ): Promise<ChatroomDto>;
   getOneChatroom(chatroomId: number): Promise<ChatroomDto>;
-  deleteChatroom(userId: number, chatroomId: number);
   verifyChatroomPassword(chatroomId: number, password: string);
   updateChatroomInfo(
     userId: number,

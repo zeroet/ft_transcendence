@@ -205,18 +205,13 @@ export class ChatroomService implements IChatroomService {
   async deleteChatroom(userId: number, chatroomId: number) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
-    const removedChatroom = await this.chatroomRepository.remove(chatroom);
-    // const removedChatroom = await this.chatroomRepository
-    //   .createQueryBuilder('chatroom')
-    //   .delete()
-    //   .from(Chatroom)
-    //   .where('owner_id=:userId', { userId })
-    //   .andWhere('chatroom_id=:chatroomId', { chatroomId })
-    //   .execute();
-    console.log('removed chatroom:', removedChatroom);
-    this.chatEventsGateway.server.emit('deleteChatroom', chatroomId);
-    this.chatEventsGateway.server.emit('newRoomList', removedChatroom);
-    this.chatEventsGateway.server.emit('newMemberList', null);
+    const removedChatroom = await this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .delete()
+      .from(Chatroom)
+      .where('user_id=:userId', { userId })
+      .andWhere('chatroom_id=:ChatroomId', { chatroomId })
+      .execute();
     return removedChatroom;
   }
 
@@ -400,12 +395,12 @@ export class ChatroomService implements IChatroomService {
     // const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
     console.log('my user id:', user.id);
-    const Blockedusers = await this.blockRepository
+    const Blockeduser = await this.blockRepository
       .createQueryBuilder('block')
       .where('block.user_id=:userId', { userId })
-      // .select('block.blocked_user_id')
+      .select('block.blocked_user_id')
       .getMany();
-    console.log('Blocked users:', Blockedusers, Blockedusers.length);
+    console.log('Blocked user:', Blockeduser, Blockeduser.length);
     let contents = await this.chatContentRepository
       .createQueryBuilder('chat_content')
       .where('chat_content.chatroom_id=:chatroomId', { chatroomId })
@@ -418,18 +413,14 @@ export class ChatroomService implements IChatroomService {
     if (contents) {
       // console.log('contents', contents);
     }
-    if (Blockedusers.length > 0) {
-      for (let i = 0; i < contents.length; i++) {
-        for (let j = 0; j < Blockedusers.length; j++) {
-          // console.log('content.userId:', content.userId);
-          // content.userId !== Blockedusers[0].blockedUserId;
-          if (contents[i].userId === Blockedusers[j].blockedUserId) {
-            // console.log('user.blockedUserId:', Blockedusers[j].blockedUserId);
-            contents.splice(i, 1);
-            i--;
-          }
-        }
-      }
+    if (Blockeduser.length > 0) {
+      contents = contents.filter((content: any) =>
+        Blockeduser.forEach((user) => {
+          console.log('content.userId:', content.userId);
+          console.log('user.blockedUserId:', user.blockedUserId);
+          content.userId === user.blockedUserId;
+        }),
+      );
     }
     // console.log(`chat content of chatroom id: ${chatroomId}`, contents);
     return contents;
