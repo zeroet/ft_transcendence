@@ -21,7 +21,8 @@ export default function GameList({ accessToken }: { accessToken: string }) {
     socket?.emit("room-list");
     socket?.on("room-list", (gameList) => {
       setRoomList(gameList);
-      console.log(gameList, "is game list");
+      console.log(gameList);
+      console.log("is game list");
     });
 
     return () => {
@@ -41,15 +42,26 @@ export default function GameList({ accessToken }: { accessToken: string }) {
             <Link
               href={{
                 pathname: `/Game/${roomName}`,
-                query: { myRole: "watcher", roomName },
+                query: { myRole: "watcher" },
               }}
               key={roomName}
             >
-              # {roomName}
+              <div className="room-name">
+                <strong> # {roomName}</strong>
+              </div>
             </Link>
           );
         })}
       <style jsx>{`
+        .room-name {
+          padding-left: 30px;
+          margin-top: 15px;
+        }
+        strong {
+          font-size: 20px;
+
+          color: black;
+        }
         h1 {
           font-family: "Fragment Mono", monospace;
           font-size: 25px;

@@ -44,7 +44,6 @@ export default function Gaming({
   const otherPlayerNameTest = "나중에 이거 지워야함";
   // 방 이름 확인용. useEffect써서 리랜더링용
   const router = useRouter();
-  console.log(router);
   // 마운트 파트
   const [ballX, setBallX] = useState<number>(1375 / 2);
   const [ballY, setBallY] = useState<number>(725 / 2);
@@ -98,19 +97,10 @@ export default function Gaming({
   );
 
   useEffect((): (() => void) => {
-    // 룸 리스트 업데이트 : 와쳐 용
     socket?.emit("room-list");
     if (myRole === "watcher") {
-      socket?.emit("watchGame", router.query.roomName);
+      socket?.emit("watchGame", router.query.id);
     }
-    /**
-     * myRole : player | owner
-     *
-     * if myRole: watcher {
-     *  socket.emit('watchGame', 'roomName')
-     * }
-     * socket.on ('live_game', data)
-     */
     socket?.on("gameover", () => {
       // 점수차이로 승패 저장
       if (myRole === "owner") {
@@ -120,11 +110,9 @@ export default function Gaming({
       }
       setIsGameover(true);
     });
-
     socket?.on("Play", (res) => {
       console.log("Play event in game!!!!!!!!!!!!!");
     });
-
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
@@ -132,6 +120,7 @@ export default function Gaming({
     return () => {
       // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
+      socket?.emit("room-list");
       socket?.off("Play");
       socket?.off("gameover");
       console.log(
