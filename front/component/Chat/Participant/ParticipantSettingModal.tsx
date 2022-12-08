@@ -8,10 +8,12 @@ const ParticipantSettingModal = ({
   isOwner,
   userId,
   setShowModal,
+  chatId,
 }: {
   isOwner: boolean;
   userId: number;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  chatId: string;
 }) => {
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
@@ -93,12 +95,22 @@ const ParticipantSettingModal = ({
     console.log("Kick");
   }, []);
 
-  const onClickSetAdmin = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowModal(false);
-    console.log("Set Admin");
-  }, []);
+  const onClickSetAdmin = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .patch(`/api/chatroom/${chatId}/admin`, {
+          targetUserId: userId,
+        })
+        .then(() => {
+          // mutate("/api/users");
+          setShowModal(false);
+        })
+        .catch((err) => console.log(err));
+    },
+    [myData, userId]
+  );
 
   useEffect(() => {
     if (!myData || !blockedListData) return;

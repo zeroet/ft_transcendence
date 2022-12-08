@@ -68,6 +68,7 @@ export default function Participant({
                     username={member.User.username}
                     userId={member.userId}
                     isOwner={ownerId === myData.id}
+                    chatId={id.id}
                   />
                   {ownerId === member.userId && (
                     <img
