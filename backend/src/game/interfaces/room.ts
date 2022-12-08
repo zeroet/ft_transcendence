@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
 import { RoomService } from "../room.service";
 import { Socket } from "socket.io"
+import { Inject } from "@nestjs/common";
 
 type ball = {
     x: number;
@@ -17,19 +17,29 @@ type score = {
     player2: number;
 }
 
+type name = {
+    name1: string;
+    name2: string;
+}
+
+type paddles = {
+    paddle1: number;
+    paddle2: number;
+}
+
 export enum Status {
     READY,
     PLAY,
     END,
 }
 
-@Injectable()
+
 export class GameService{
- 
-   private roomService: RoomService
-    
+    @Inject() roomService: RoomService
+
     Status: Status;
     Players = [];
+    name : name;
     Watchers: Array<any>;
     roomName: string;
     ownerId: string;
@@ -40,8 +50,11 @@ export class GameService{
     dir : dir
     width: number;
     height: number;
-    
+    paddles: paddles;
+    flag:number;
+
     constructor(Player1, Player2, Status:Status, roomName:string, ownerId:string, speed:string, ballSize:string) {
+        this.roomService = new RoomService()
         this.Status = Status;
         this.Players.push(Player1);
         this.Players.push(Player2);
@@ -52,77 +65,103 @@ export class GameService{
         this.width = 1450;
         this.height = 725;
         this.ballSize = Number(ballSize);
-     
-        this.ball = {x:0, y:0};
+        this.name = {name1:"", name2:""};
+        this.ball = {x: this.width/2, y:this.height/2};
         this.dir = {dx:1, dy:1};
         this.score = {
             player1: 0, player2: 0
         };
+        this.flag = 0;
+        this.paddles = {paddle1: this.height/2, paddle2: this.height/2}
     }
-    // default() {
-    //     this.ball.x = Math.random()*(this.width/5) + (2*this.width/5);
-    //     this.ball.y = Math.random()*(this.height/2) + (this.height/4);
-    //     this.dir.dx = Math.random() > 0.5 ? -1 : 1;
-    //     this.dir.dy = Math.random() > 0.5 ? -1 : 1;
+    
+    default() {
+        this.ball.x = Math.random()*(this.width/5) + (2*this.width/5);
+        this.ball.y = Math.random()*(this.height/2) + (this.height/4);
+        this.dir.dx = Math.random() > 0.5 ? -1 : 1;
+        this.dir.dy = Math.random() > 0.5 ? -1 : 1;
+    }
+
+    gameover() {
+        this.Status = Status.END;
+        this.roomService.gameOver(this.Players)
+    }
+
+    // inGameOver() {
+    //     this.roomService.gameOver(this.Players)
     // }
-    // set = function(newX, newY){
-        //     this.x = newX;
-        //     this.y = newY;
-    // };
-      
-    // setD = function(_dx, _dy){
-    //     this.dx = _dx;
-    //     this.dy = _dy;
-    // };
-      
-    // randomDirection = function(){
-    //     this.dx = Math.random() > 0.5 ? -1 : 1;
-    //     this.dy = Math.random() > 0.5 ? -1 : 1;
-    // };
+
+    sendName(){
+        this.flag += 1;
+        this.roomService.sendName(this.Players, this.name)
+    }
       
     update() {
+        if (this.flag === 0)
+            this.sendName()
+        //player out  over case
+        if (this.Players.length != 2) {
+            this.Status = Status.END;
+            this.gameover()
+        }
+
+        
         var nextX = this.ball.x + this.dir.dx;
         var nextY = this.ball.y + this.dir.dy;
-        // if(nextX < this.ballSize || nextX > this.width - this.ballSize){
-        //   this.dir.dx *= -1;
-        // }
-        // if(nextY < this.ballSize || nextY > this.height - this.ballSize){
-        //   this.dir.dy *= -1;
-        // }
-        // this.ball.x += this.dir.dx * this.speed;
-        // this.ball.y += this.dir.dy * this.speed;
-        if (
-            nextX <= 1450 ||
-            nextX >= 0 ||
-            nextY <= 725 ||
-            nextY >= 0
-          ) {
-            if (nextX <= 1450) {
-              this.dir.dx *= -1;
-              nextX += 1;
-            }
-            if (nextX >= 10) {
-                this.dir.dx *= -1;
-              nextX -= 1;
-            }
+        
+        //top bottom dir change
+        if (nextY <= 725 || nextY >= 0) {
             if (nextY <= 725) {
-              this.dir.dy *= -1;
-              nextY += 1;
+                this.dir.dy *= -1;
+                nextY += 1;
             }
             if (nextY >= 10) {
-              this.dir.dy *= -1;
-              nextY -= 1;
+                this.dir.dy *= -1;
+                nextY -= 1;
             }
-          }
-          this.ball.x = nextX += this.dir.dx * 0.2 *this.speed/10;
-          this.ball.y = nextY += this.dir.dy * 0.3 *this.speed/10;
-        return this.ball;
-        // for(const user of this.Players) {
-        //     user.socket.emit('ball', this.ball)
-        //     console.log(`this ${user} this x ${this.ball.x} this y ${this.ball.y}`)
+        }
         
-    };
+        // new x y
+        this.ball.x = nextX += this.dir.dx * 0.2 *this.speed/2;
+        this.ball.y = nextY += this.dir.dy * 0.3 *this.speed/2;
+        // paddles
 
+        if ((this.ball.x + this.ballSize + 30) >= 1450 || (this.ball.x - this.ballSize - 30) <= 10)
+        {
+            if (100 <= this.ball.y && this.ball.y <= 500)
+            {
+                this.dir.dx *= -1;
+                nextX += 1;
+            }
+        }
+
+        // score 
+        if ((this.ball.x - this.ballSize) >= 1450 || (this.ball.x + this.ballSize) <= 10)
+        {
+            this.ball.x >= 1450 ? this.score.player2 += 1 : this.score.player1 += 1;
+            console.log(`${this.score.player1} : ${this.score.player2}`)
+            if (this.score.player1 == 10) {
+                this.gameover()
+                // db
+            }
+            else if (this.score.player2 == 10) {
+                this.gameover()
+                // db 
+                this.Status = Status.END
+            }
+            this.default()
+        }
+
+        //return 
+        return ({
+            x:this.ball.x,
+            y:this.ball.y,
+            score1:this.score.player1,
+            score2:this.score.player2,
+            paddle1:this.paddles.paddle1,
+            paddle2:this.paddles.paddle2
+        })
+    };
 
     isPlayer(user:any) {
         if(this.Players.indexOf(user) != -1)
@@ -155,5 +194,30 @@ export class GameService{
     changeStatus(status :Status)
     {
         this.Status = status;
+    }
+
+    addName1(name)
+    {
+        this.name.name1 = name;
+    }
+
+    addName2(name)
+    {
+        this.name.name2 = name;
+    }
+
+    keyPaddle1(input:number){
+        this.paddles.paddle1 += input;
+        console.log('paddle1111111111', this.paddles.paddle1);
+    }
+
+    keyPaddle2(input:number) {
+        this.paddles.paddle2 += input;
+        console.log('paddle2222222222', this.paddles.paddle2);
+    }
+
+    pushWatcher(watcher: Socket)
+    {
+        this.Watchers.push(watcher);
     }
 }

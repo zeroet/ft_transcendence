@@ -102,6 +102,7 @@ export default function Gaming({
     socket?.emit("room-list");
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
+      console.log('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
     }
 
     socket?.on("gameover", () => {

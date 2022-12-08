@@ -34,11 +34,60 @@ export class RoomService{
       for (const room of this.rooms.values())
         if (room.Status == Status.PLAY) 
         {
-            const ball = room.update();
+            const res = room.update();
             for(const player of room.Players)
-                player.emit('ball', ball)
-            for(const watcher of room.Watchers)
-                watcher.emit('ball', ball)
+                player.emit('ball', res)
+            for(const watcher of room.Watchers) {
+                watcher.emit('ball', res)
+            }
+            console.log(`${res.x}, ${res.y}, ${res.score1}, ${res.score2}`)
+        }
+    }
+
+    addWatcher(watcher: Socket, roomName:string){
+
+        for (const room of this.rooms.values())
+            if (room.isPlayer(watcher)) return ;
+        for(const room of this.rooms.values())
+        {
+            if (room.roomName === roomName) {
+                watcher.join(roomName);
+                room.pushWatcher(watcher);
+            }
+        }
+    }
+
+    addName(player, name){
+        for(const room of this.rooms.values()) {
+            if (room.isPlayer(player))
+            {
+                if(room.isOwner(player)) 
+                    room.addName1(name)
+                else if(room.isPlayer2(player))
+                    room.addName2(name)
+            }
+        }
+    }
+
+    sendName(Players, name){
+        for(const player of Players)
+            player.emit('initialGame', name)
+    }
+
+    gameOver(Players){
+        for(const player of Players)
+            player.emit('gameover');
+    }
+
+    movePaddle(player:Socket, data:any){
+        for (const room of this.rooms.values())
+        {
+            if (room.isOwner(player)) {
+                
+            }
+            else if (room.isPlayer2(player)){
+
+            }
         }
     }
 }
