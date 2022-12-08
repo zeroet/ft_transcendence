@@ -146,17 +146,26 @@ const ParticipantSettingModal = ({
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          border: 2px solid black;
+          border: 1px solid black;
           margin: 2px;
+          margin-left: 45px;
+          margin-top: -3px;
+          //   font-weight: bold;
+          text-transform: uppercase;
+          font-size: 15px;
+          background-color: white;
+          box-shadow: 10px 10px 2px 2px;
         }
         .router-div {
+          background-color: white;
           border: 1px solid black;
-          width: 150px;
+          width: 100px;
           text-align: center;
-          transition: width 2s, height 2s, background-color 2s, transform 2s;
+          transition: width 0.5s, height 0.5s, background-color 0.5s,
+            transform 0.5s;
         }
         .router-div:hover {
-          background-color: gray;
+          background-color: black;
           color: white;
         }
       `}</style>

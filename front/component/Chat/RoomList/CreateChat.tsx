@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 const CreateChat = ({ onClose }: { onClose: () => void }) => {
   const [RoomName, setName] = useState<string>("");
@@ -19,12 +19,30 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
-        toast.error("Password should more than 4 character");
+        toast.error("Password should more than 4 character", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
         setPw("");
         return;
       }
       if (!RoomName) {
-        toast.error("Room name should have more than 1 character");
+        toast.error("Room name should have more than 1 character", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
         return;
       }
       try {
@@ -51,7 +69,16 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
           });
       } catch (e) {
         console.dir(e);
-        toast.error("Same room name exist !");
+        toast.error("Same room name exist !", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
         setName("");
       }
 
@@ -108,22 +135,22 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
           </button>
         </div>
       </form>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover={false}
-        limit={1}
+      {/* <ToastContainer
+        // position="top-center"
+        // autoClose={3000}
+        // hideProgressBar={true}
+        // newestOnTop={false}
+        // closeOnClick
+        // rtl={false}
+        // pauseOnFocusLoss
+        // draggable
+        // pauseOnHover={false}
+        // limit={1}
         style={{ width: "500px", textAlign: "center" }}
         toastStyle={{
           textTransform: "none",
         }}
-      />
+      /> */}
       <style jsx>{`
         .box {
           position: fixed;

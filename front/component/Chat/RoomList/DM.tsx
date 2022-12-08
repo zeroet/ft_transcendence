@@ -4,6 +4,8 @@ import Loading from "../../errorAndLoading/Loading";
 import { useEffect } from "react";
 import useSocket from "../../Utils/socket";
 import Link from "next/link";
+import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 export default function DM() {
   const { data: DMData, error: DMError } = useSWR(`/api/dm`);
@@ -13,7 +15,16 @@ export default function DM() {
   useEffect(() => {
     socket?.on("newDmList", (data) => {
       if (myData.id === data.User2.id) {
-        alert(`you have DM message from ${data.User1.username}`);
+        toast.info(`you have DM message from ${data.User1.username}`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: true,
+        });
       }
       mutate("/api/dm");
     });
@@ -66,11 +77,28 @@ export default function DM() {
             );
           })}
       </ul>
+      {/* <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={true}
+        theme="colored"
+        style={{ width: "500px", textAlign: "center" }}
+        toastStyle={{
+          textTransform: "none",
+        }}
+      /> */}
       <style jsx>
         {`
           li {
             list-style: none;
             margin-left: -30px;
+            margin-bottom: 7px;
           }
           a {
             text-decoration: none;
