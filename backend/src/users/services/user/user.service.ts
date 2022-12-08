@@ -5,7 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { Block, Friend, User } from 'src/typeorm';
 import { Status } from 'src/utils/types';
 import { Repository } from 'typeorm';
@@ -18,7 +17,6 @@ export class UserService implements IUserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Block) private blockRepository: Repository<Block>,
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
-    private chatEventsGateway: ChatEventsGateway,
   ) {}
 
   async findUserByIdOrFail(userId: number) {
@@ -175,7 +173,6 @@ export class UserService implements IUserService {
     const user = await this.findUserByIdOrFail(userId);
     user.status = status;
     const updatedUser = await this.userRepository.save(user);
-    this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
   }
   // updateUserById(id: number) {}

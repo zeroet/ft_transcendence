@@ -12,14 +12,12 @@ import { Repository } from 'typeorm';
 import { IAuthService } from './auth.interface';
 import * as bcrypt from 'bcrypt';
 import { CookieOptions } from 'express';
-import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
-    private chatEventsGateway: ChatEventsGateway,
   ) {}
 
   defaultCookieOptions: CookieOptions = {
@@ -181,7 +179,6 @@ export class AuthService implements IAuthService {
     }
     user.status = status;
     const updatedUser = await this.userRepository.save(user);
-    this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
   }
 }
