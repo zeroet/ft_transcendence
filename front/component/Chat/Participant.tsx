@@ -39,9 +39,8 @@ export default function Participant({
   useEffect(() => {
     socket?.on("newMemberList", (res: String) => {
       // console.log(res, "is res from newMemberList socket in participant");
-      if (isId && id.link === "chatroom") {
-        mutate(`/api/${id.link}/${id.id}/members`);
-      }
+      mutate(`/api/${id.link}/${id.id}/members`);
+      mutate(`/api/${id.link}/${id.id}`);
     });
     return () => {
       socket?.off("newMemberList");
@@ -68,6 +67,7 @@ export default function Participant({
                     username={member.User.username}
                     userId={member.userId}
                     isOwner={ownerId === myData.id}
+                    chatId={id.id}
                   />
                   {ownerId === member.userId && (
                     <img

@@ -5,7 +5,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
+// import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
+import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { Block, ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
 import { IChatroom } from 'src/typeorm/interfaces/IChatroom';
@@ -356,12 +357,12 @@ export class ChatroomService implements IChatroomService {
     }
     // mute
     else if (updateMemberDto.mute === true) {
-      // updatedMember = await this.chatMemebrRepository.update(
-      //   updateMemberDto.targetUserId,
-      //   {
-      //     mutedAt: new Date(),
-      //   },
-      // );
+      this.addNewTimeout(
+        `${targetUser.id}_muted`,
+        targetUser.id,
+        chatroomId,
+        360000,
+      );
     }
     // }
     console.log('updated member:', updatedMember);
@@ -381,10 +382,13 @@ export class ChatroomService implements IChatroomService {
       );
     }
     // set ad admin
-    const updatedChatroom = await this.chatroomRepository.update(userId, {
-      ownerId: targetUserId,
-    });
-    console.log('updated chatroom owner:', updatedChatroom);
+    chatroom.ownerId = targetUserId;
+    const updatedChatroom = await this.chatroomRepository.save(chatroom);
+    // const updatedChatroom = await this.chatroomRepository.update(userId, {
+    //   ownerId: targetUserId,
+    // });
+    // console.log('updated chatroom owner:', updatedChatroom);
+    this.chatEventsGateway.server.emit('newMemberList', updatedChatroom);
     return updatedChatroom;
   }
 
