@@ -43,19 +43,10 @@ export default function Gaming({
       if (myRole === "watcher") return;
       const key = e.key;
       if (key === "w" || key === "s") {
-        if (!(leftPaddle >= 0 && leftPaddle <= 650)) return;
         if (key === "w") {
-          socket?.emit("paddle", {
-            myRole,
-            key: "up",
-          });
-          console.log(`left paddle 위치 :  ${leftPaddle}`);
+          socket?.emit("paddle", 1);
         } else {
-          socket?.emit("paddle", {
-            myRole,
-            key: "down",
-          });
-          console.log(`left paddle 위치 :  ${leftPaddle}`);
+          socket?.emit("paddle", 2);
         }
       }
     },
