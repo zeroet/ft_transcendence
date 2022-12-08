@@ -21,6 +21,7 @@ import { IDmContent } from '../interfaces/IDmContent';
 import { DmContent } from './dmContent.entity';
 import { IFriend } from '../interfaces/IFriend';
 import { Friend } from './friend.entity';
+import { Status } from 'src/utils/types';
 
 @Entity({ name: 'users' })
 export class User implements IUser {
@@ -82,6 +83,19 @@ export class User implements IUser {
     length: 30,
   })
   username: string;
+
+  @ApiProperty({
+    required: true,
+    example: 'Login',
+    description: 'User status: Login or Logout or Playing',
+  })
+  @Column({
+    type: 'varchar',
+    name: 'status',
+    nullable: false,
+    default: Status.LOGOUT,
+  })
+  status: Status;
 
   @ApiProperty({
     description: 'Created time',

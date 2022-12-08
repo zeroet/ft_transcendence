@@ -3,11 +3,18 @@ export interface TokenType {
   refreshToken?: string;
 }
 
+export enum Status {
+  LOGIN = "Login",
+  LOGOUT = "Logout",
+  PLAYING = "Playing",
+}
+
 export interface UserInfo {
   intra_id: string;
   email: string;
   image_url: string;
   username: string;
+  status: Status;
   created_at: Date;
   modified_at: Date;
   hashed_refresh_token: string;
