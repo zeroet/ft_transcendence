@@ -56,8 +56,9 @@ export default function Chat({
       }
       setShowPWModal(true);
     };
-  }, [roomData, id?.id]);
+  }, [roomData?.id, id?.id]);
 
+  console.log(roomData);
   if (userError || (id.link === "chat" && roomError))
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData || (id.link === "chat" && !roomData)) return <Loading />;

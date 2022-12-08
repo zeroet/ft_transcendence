@@ -3,14 +3,17 @@ import React, { useCallback, useEffect, useState } from "react";
 import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
 import { GameDTO } from "../../../interfaceType";
+import { toast } from "react-toastify";
 // 오너가 아니면, 일반 체크만 하는 페이지도 만들어야한다
 
 const GameSettingModal = ({
   accessToken,
   closeSettingModal,
+  username,
 }: {
   accessToken: string;
   closeSettingModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  username: string;
 }) => {
   const router = useRouter();
   const [socket] = useSocket(accessToken, "game");
@@ -25,7 +28,17 @@ const GameSettingModal = ({
       e.preventDefault();
 
       if (!roomName) {
-        alert("Room name please");
+        toast.error("Room name must have more than 1 character", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("Room name please");
         return;
       }
 
@@ -41,17 +54,11 @@ const GameSettingModal = ({
         ballSize,
       });
 
-      // setSpeed("50");
-      // setBallSize("50");
-      // setRoomName("");
-      //테스트용 원래는 useEffect에서 해야함
-      // 확인! 셋팅
       console.log(
         `game room name : ${roomName}, ball size : ${ballSize}, ball speed : ${speed}`
       );
 
       setRoomName("");
-      // router.push(`/Game/test!!!`);
     },
     [speed, ballSize, roomName]
   );
@@ -82,6 +89,16 @@ const GameSettingModal = ({
   );
 
   useEffect((): (() => void) => {
+    toast.success("player matched!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      rtl: false,
+      pauseOnFocusLoss: true,
+      draggable: false,
+      pauseOnHover: false,
+    });
     console.log("game setting owner modal", socket?.id);
     socket?.emit("room-list");
     socket?.on("room-list", (list) => {
@@ -89,17 +106,8 @@ const GameSettingModal = ({
     });
     // 완료된 소켓! 받은후에 이동
     socket?.on("enterGame", (roomName: string) => {
+      socket?.emit("myname", username);
       console.log(roomName, " is room name from server event: enterGame");
-      // query로 게임이름
-      // 내가 오너인지, 내가 플레이어인지 가지고들어간다.
-      /**
-       * 게임이름,
-       * 유저이름
-       * 플레이어이름
-       * 볼 속도
-       * 볼 사이즈
-       * 내 역활
-       */
       router.push({
         pathname: `/Game/${roomName}`,
         query: {
@@ -111,7 +119,6 @@ const GameSettingModal = ({
       console.log("off socket in game setting modal");
       socket?.off("enterGame");
       socket?.off("room-list");
-      // socket?.off("createRoom");
     };
   }, [socket?.id]);
 
@@ -123,36 +130,37 @@ const GameSettingModal = ({
       </div>
       <form className="createForm" method="post">
         <div className="submitform">
-          <div className="input input-text">
-            <p>Room Name</p>
+          <div className="input-div-roomname">
+            <p className="p-roomname">Room Name</p>
             <input
               onChange={onChangeRoomName}
               value={roomName}
-              className="input-bar"
+              className="input-name"
               type="text"
+              placeholder="more than 1 character needed"
             />
           </div>
-          <div className="input">
+          <div className="div-speedbar">
             <p>Speed</p>
             <input
               onChange={onChangeSpeed}
               value={speed}
-              className="input-bar"
+              className="input-speedbar"
               type="range"
             />
           </div>
-          <div className="input">
+          <div className="div-ballsizebar">
             <p>Ball Size</p>
             <input
               onChange={onChangeBallSize}
               value={ballSize}
-              className="input-bar"
+              className="input-ballsizebar"
               type="range"
             />
           </div>
         </div>
         <div className="buttonDiv">
-          <button onClick={onClickSubmit} className="ok">
+          <button onClick={onClickSubmit} className="ready">
             Ready
           </button>
           <button onClick={closeSettingModal} className="cancel">
@@ -161,11 +169,31 @@ const GameSettingModal = ({
         </div>
       </form>
       <style jsx>{`
-        .input-bar {
-          width: 300px;
+        p {
+          font-weight: bold;
         }
-        .input-text {
-          height: 40px;
+        .p-roomname {
+          //   background-color: red;
+          margin-right: 20px;
+          margin-left: 30px;
+        }
+        .input-name {
+          width: 320px;
+          height: 30px;
+          //   margin-top: 10px;
+          border-top: none;
+          border-left: none;
+          border-right: none;
+          outline: none;
+          border-bottom: 2px solid black;
+          text-align: center;
+          font-size: 17px;
+        }
+        .input-div-roomname {
+          //   background-color: red;
+          margin-top: 5px;
+          display: flex;
+          //   height: 40px;
         }
         .submitform {
           display: grid;
@@ -184,23 +212,39 @@ const GameSettingModal = ({
 
           background-color: white;
           border: 1px inset black;
-          // box-shadow: 10px 10px;
           text-transform: uppercase;
         }
         .title {
           text-align: center;
           background-color: black;
           color: white;
-
-          //   height: 100%;
+        }
+        input::placeholder {
+          font-size: 12px;
+          color: red;
+          font-family: "Fragment Mono", monospace;
+          text-align: center;
         }
 
-        .input {
+        .div-speedbar {
           display: flex;
-          justify-content: space-evenly;
-          width: 100%;
-          margin-top: 0;
-          //   background-color: red;
+          margin-left: 30px;
+          //   margin-top: 5px;
+        }
+
+        .input-speedbar {
+          width: 327px;
+          margin-left: 57px;
+        }
+        .div-ballsizebar {
+          //   margin-top: 5px;
+          display: flex;
+          margin-left: 30px;
+        }
+
+        .input-ballsizebar {
+          width: 327px;
+          margin-left: 20px;
         }
 
         button {
@@ -209,11 +253,10 @@ const GameSettingModal = ({
         }
         .buttonDiv {
           display: flex;
-          justify-content: space-evenly;
-          //   background-color: yellow;
-          margin-top: 10px;
+          justify-content: center;
+          margin-top: -5px;
         }
-        .ok {
+        .ready {
           font-family: "Fragment Mono", monospace;
           font-size: 20px;
           color: white;
@@ -228,6 +271,31 @@ const GameSettingModal = ({
           padding: 10px 20px;
           border: 1px solid black;
           cursor: pointer;
+        }
+        input[type="range"] {
+          //   width: 100%;
+          -webkit-appearance: none;
+          background: transparent;
+        }
+        input[type="range"]:focus {
+          outline: none;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+          //   width: 100%;
+          //   height: 100%;
+          cursor: pointer;
+          //   border-radius: 5px;
+          border: 1px solid black;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 10px;
+          height: 10px;
+          background: black;
+          //   box-shadow: 1px 1px 7px gray;
+          cursor: pointer;
+          //   box-shadow: -100vw 0 0 100vw #ff96ab;
         }
       `}</style>
     </div>

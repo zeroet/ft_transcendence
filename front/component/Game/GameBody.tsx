@@ -1,5 +1,6 @@
-import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import useSWR from "swr";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
@@ -7,11 +8,10 @@ import GameReadyModal from "./GameBody/GameReadyModal";
 import GameSettingModal from "./GameBody/GameSettingModal";
 
 export default function GameBody({ accessToken }: { accessToken: string }) {
-  const router = useRouter();
   const [settingModal, setSettingModal] = useState(false);
   const [socket] = useSocket(accessToken, "game");
   const [ownerOrPlayer, setOwnerOrPlayer] = useState<string>("");
-
+  const { data: myData, error: myError } = useSWR("/api/users");
   const onClickWaitModal = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
       e.preventDefault();
@@ -58,14 +58,24 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
       console.log("close!!!!");
       setOwnerOrPlayer("");
       setSettingModal(false);
+      toast.error("Game Canceled!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        rtl: false,
+        pauseOnFocusLoss: true,
+        draggable: false,
+        pauseOnHover: false,
+      });
     });
     return () => {
       socket?.off("createRoom");
       socket?.off("close");
     };
-  }, [socket, ownerOrPlayer]);
+  }, [socket, ownerOrPlayer, myData]);
 
-  if (!socket) return <Loading />;
+  if (!socket || !myData) return <Loading />;
   return (
     <div className={styles.box}>
       {!settingModal && (
@@ -90,6 +100,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
           <GameSettingModal
             accessToken={accessToken}
             closeSettingModal={closeSettingModal}
+            username={myData.username}
           />
         </div>
       )}
@@ -98,6 +109,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
           <GameReadyModal
             accessToken={accessToken}
             closeSettingModal={closeSettingModal}
+            username={myData.username}
           />
         </div>
       )}

@@ -14,7 +14,7 @@ import { JwtRefreshAuthGuard } from 'src/auth/guards/jwt.refresh-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { TwoFactorService } from 'src/auth/services/two-factor/two-factor.service';
 import { User } from 'src/utils/decorators/user.decorator';
-import { Cookies } from 'src/utils/types';
+import { Cookies, Status } from 'src/utils/types';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -48,6 +48,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
+    this.authService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({
@@ -98,6 +99,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
+    this.authService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({
@@ -139,5 +141,6 @@ export class AuthController {
         this.authService.defaultCookieOptions,
       );
     }
+    this.authService.updateUserStatus(user.id, Status.LOGOUT);
   }
 }
