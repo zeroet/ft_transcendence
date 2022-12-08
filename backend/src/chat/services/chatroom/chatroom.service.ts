@@ -357,12 +357,12 @@ export class ChatroomService implements IChatroomService {
     }
     // mute
     else if (updateMemberDto.mute === true) {
-      // updatedMember = await this.chatMemebrRepository.update(
-      //   updateMemberDto.targetUserId,
-      //   {
-      //     mutedAt: new Date(),
-      //   },
-      // );
+      this.addNewTimeout(
+        `${targetUser.id}_muted`,
+        targetUser.id,
+        chatroomId,
+        360000,
+      );
     }
     // }
     console.log('updated member:', updatedMember);
