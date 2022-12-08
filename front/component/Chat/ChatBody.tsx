@@ -26,7 +26,7 @@ export default function ChatBody() {
           }
           .c-body h1 {
             // background-color: blue;
-            padding: 46% 0;
+            padding: 35% 0;
             margin: 0;
           }
         `}

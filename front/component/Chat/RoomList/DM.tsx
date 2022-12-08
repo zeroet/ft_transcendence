@@ -4,6 +4,8 @@ import Loading from "../../errorAndLoading/Loading";
 import { useEffect } from "react";
 import useSocket from "../../Utils/socket";
 import Link from "next/link";
+import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 export default function DM() {
   const { data: DMData, error: DMError } = useSWR(`/api/dm`);
@@ -13,7 +15,16 @@ export default function DM() {
   useEffect(() => {
     socket?.on("newDmList", (data) => {
       if (myData.id === data.User2.id) {
-        alert(`you have DM message from ${data.User1.username}`);
+        toast.info(`you have DM message from ${data.User1.username}`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: true,
+        });
       }
       mutate("/api/dm");
     });
@@ -53,18 +64,46 @@ export default function DM() {
                       link: "dm",
                     },
                   }}
+                  legacyBehavior
                 >
-                  <div className="DM-list">
-                    <img src={DM.image_url} width={"25px"} height={"25px"} />
-                    <div>{DM.username}</div>
-                  </div>
+                  <a>
+                    <div className="DM-list">
+                      <img src={DM.image_url} width={"25px"} height={"25px"} />
+                      <div className="username">{DM.username}</div>
+                    </div>
+                  </a>
                 </Link>
               </li>
             );
           })}
       </ul>
+      {/* <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={true}
+        theme="colored"
+        style={{ width: "500px", textAlign: "center" }}
+        toastStyle={{
+          textTransform: "none",
+        }}
+      /> */}
       <style jsx>
         {`
+          li {
+            list-style: none;
+            margin-left: -30px;
+            margin-bottom: 7px;
+          }
+          a {
+            text-decoration: none;
+            color: black;
+          }
           .DM-list {
             display: flex;
           }
@@ -72,17 +111,9 @@ export default function DM() {
             margin-right: 20px;
             border-radius: 50%;
           }
-          h1 {
-            font-family: "Fragment Mono", monospace;
-            font-weight: bold;
-            font-size: 25px;
-            line-height: 20px;
-            margin-left: 10px;
-            /* identical to box height, or 67% */
-            text-transform: uppercase;
-          }
-          .DM {
-            height: 300px;
+          .username {
+            margin-top: 2px;
+            margin-left: -10px;
           }
         `}
       </style>

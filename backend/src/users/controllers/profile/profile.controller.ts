@@ -14,10 +14,10 @@ export class ProfileController {
   @UseGuards(JwtAccessAuthGuard)
   @Post('username')
   async changeUsername(@User() user, @Body() newUserName: profileDTO) {
-    // if (newUserName.username.length > 30) throw new BadRequestException('Username is tool long (max 30)');
-    console.log('post username in ');
-    console.log(newUserName);
-    await this.profileService.updateUserName(user.id, newUserName.username);
+    return await this.profileService.updateUserName(
+      user.id,
+      newUserName.username,
+    );
   }
 
   @ApiOperation({ summary: 'Update user image / 사용자사진 변경' })

@@ -30,13 +30,19 @@ export default function ParticipantDm({ id }: { id: TypeChatId }) {
         {/* {myData.id === dmRoomParticipantData.User1.id
             ? dmRoomParticipantData.User2.username
             : dmRoomParticipantData.User1.username} */}
-        <li># {dmRoomParticipantData.User1.username}</li>
-        <li># {dmRoomParticipantData.User2.username}</li>
+        <li className="participant">
+          # {dmRoomParticipantData.User1.username}
+        </li>
+        <li className="participant">
+          # {dmRoomParticipantData.User2.username}
+        </li>
       </ul>
       <style jsx>{`
         .participant {
           display: flex;
           margin-left: -25px;
+          margin-bottom: 7px;
+          font-size: 17px;
         }
         img {
           margin-left: 10px;

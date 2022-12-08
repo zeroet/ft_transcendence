@@ -2,6 +2,8 @@ import React, { useState, useCallback } from "react";
 import axios from "axios";
 import useSWR from "swr";
 import Loading from "../../errorAndLoading/Loading";
+import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 const ChangeNameAndPW = ({
   setShowChangeModal,
@@ -26,22 +28,32 @@ const ChangeNameAndPW = ({
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
-        alert("new Room PW more than 4");
+        toast.error("Password should more than 4 character", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("new Room PW more than 4");
         setPw("");
         return;
       }
-
-      // axios에러
-      await axios
-        .patch(`/api/chatroom/${roomId}/update`, {
-          chatroomName: RoomName === "" ? roomData.chatroomName : RoomName,
-          password: RoomPw === "" ? null : RoomPw,
-        })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err))
-        .finally(() => {
-          setShowChangeModal(false);
-        });
+      if (RoomName)
+        // axios에러
+        await axios
+          .patch(`/api/chatroom/${roomId}/update`, {
+            chatroomName: RoomName === "" ? roomData.chatroomName : RoomName,
+            password: RoomPw === "" ? null : RoomPw,
+          })
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err))
+          .finally(() => {
+            setShowChangeModal(false);
+          });
     },
     [RoomName, RoomPw, roomData]
   );
@@ -54,7 +66,7 @@ const ChangeNameAndPW = ({
   return (
     <div className="box">
       <div className="title">
-        <h2>Change Chat Room</h2>
+        <h2>Change Room name / password</h2>
       </div>
       <form method="post">
         <div className="submitform">
@@ -66,6 +78,7 @@ const ChangeNameAndPW = ({
               value={RoomName}
               type="text"
               autoFocus
+              placeholder="leave it if you want to keep the room name"
             />
           </div>
           <label>new password</label>
@@ -90,15 +103,19 @@ const ChangeNameAndPW = ({
       </form>
       {/* <ToastContainer
         position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
+        autoClose={3000}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
-        pauseOnHover
-        theme="light"
+        pauseOnHover={false}
+        limit={1}
+        style={{ width: "500px", textAlign: "center" }}
+        toastStyle={{
+          textTransform: "none",
+        }}
       /> */}
       <style jsx>{`
         .box {

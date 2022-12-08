@@ -25,10 +25,9 @@ export default function ChatListHeader() {
         <div className="chatroom-header">
           <h1>CHAT ROOM</h1>
           <button onClick={addChat} className="button" type="button">
-            +
+            <img src="/images/createChat.png" width="25px" height="25px" />
           </button>
         </div>
-        <hr />
       </div>
       <style jsx>{`
         h1 {
@@ -47,12 +46,12 @@ export default function ChatListHeader() {
           border-style: none;
           cursor: pointer;
         }
-
         .chatroom-header {
           background-color: white;
           display: flex;
-          width: 100%;
-          justify-content: space-between;
+          width: 80%;
+          flex-wrap: nowrap;
+          //   justify-content: space-between;
           overflow: auto;
         }
         .button {

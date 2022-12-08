@@ -56,6 +56,7 @@ const SearchBar = () => {
                       setInputValue={setInputValue}
                       image={user.image_url}
                       name={user.username}
+                      id={user.id}
                     />
                   </div>
                 );
