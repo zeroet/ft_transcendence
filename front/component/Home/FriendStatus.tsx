@@ -1,14 +1,19 @@
+import { useEffect } from "react";
 import useSWR from "swr";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
+import useSocket from "../Utils/socket";
 
 export default function FriendStatus({ id }: { id: string }) {
+  const [chatSocket] = useSocket(null, "chat");
+
   const { data: friendListData, error: friendListError } = useSWR(
     `/api/users/friend/list`
   );
 
+  useEffect(() => {}, [friendListData, chatSocket?.id]);
   console.log(friendListData);
-  if (!friendListData) return <Loading />;
+  if (!friendListData || !chatSocket) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Friend Status</h1>
