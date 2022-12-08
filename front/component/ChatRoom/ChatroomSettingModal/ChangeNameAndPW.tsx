@@ -54,7 +54,7 @@ const ChangeNameAndPW = ({
   return (
     <div className="box">
       <div className="title">
-        <h2>Change Chat Room</h2>
+        <h2>Change Room name / password</h2>
       </div>
       <form method="post">
         <div className="submitform">
@@ -66,6 +66,7 @@ const ChangeNameAndPW = ({
               value={RoomName}
               type="text"
               autoFocus
+              placeholder="leave it if you want to keep the room name"
             />
           </div>
           <label>new password</label>

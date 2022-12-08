@@ -46,7 +46,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
             });
             console.log(`we move to /chatroom/${chatroomId}`);
           })
-          .finally(() => {
+          .then(() => {
             onClose();
           });
       } catch (e) {
@@ -54,6 +54,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
         toast.error("Same room name exist !");
         setName("");
       }
+
       // .catch((error) => {
       //   console.dir(error);
       //   alert("There's already same room name");
