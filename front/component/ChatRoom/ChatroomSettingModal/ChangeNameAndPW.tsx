@@ -2,8 +2,8 @@ import React, { useState, useCallback } from "react";
 import axios from "axios";
 import useSWR from "swr";
 import Loading from "../../errorAndLoading/Loading";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 const ChangeNameAndPW = ({
   setShowChangeModal,
@@ -28,7 +28,16 @@ const ChangeNameAndPW = ({
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
-        toast.error("Password should more than 4 character");
+        toast.error("Password should more than 4 character", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
         // alert("new Room PW more than 4");
         setPw("");
         return;
@@ -94,15 +103,19 @@ const ChangeNameAndPW = ({
       </form>
       {/* <ToastContainer
         position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
+        autoClose={3000}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
-        pauseOnHover
-        theme="light"
+        pauseOnHover={false}
+        limit={1}
+        style={{ width: "500px", textAlign: "center" }}
+        toastStyle={{
+          textTransform: "none",
+        }}
       /> */}
       <style jsx>{`
         .box {

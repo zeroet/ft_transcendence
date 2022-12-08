@@ -2,8 +2,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 import { mutate } from "swr";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 const ChangeAvatarModal = ({
   modal,
@@ -48,7 +48,16 @@ const ChangeAvatarModal = ({
             }
           };
         } else {
-          toast.error("File should be PNG, JPG, JPEG or SVG");
+          toast.error("File should be PNG, JPG, JPEG or SVG", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            rtl: false,
+            pauseOnFocusLoss: true,
+            draggable: false,
+            pauseOnHover: false,
+          });
           //   alert("File should be pgn, jpg or");
         }
       }
@@ -73,12 +82,30 @@ const ChangeAvatarModal = ({
           router.push("/Home");
         } catch (err) {
           console.log(`error for avatar`, err);
-          toast.error("File is too big, file should be less than 10kb");
+          toast.error("File is too big, file should be less than 10kb", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            rtl: false,
+            pauseOnFocusLoss: true,
+            draggable: false,
+            pauseOnHover: false,
+          });
           //   alert("Size of file is too big, please less than 10kb");
           console.log(e);
         }
       } else {
-        toast.error("no file uploaded. Plz upload a file");
+        toast.error("no file uploaded. Plz upload a file", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
         // alert("no file uploaded. Plz upload a file");
       }
       // modal(e);
@@ -118,7 +145,7 @@ const ChangeAvatarModal = ({
           </button>
         </div>
       </form>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-center"
         autoClose={3000}
         hideProgressBar={true}
@@ -133,7 +160,7 @@ const ChangeAvatarModal = ({
         toastStyle={{
           textTransform: "none",
         }}
-      />
+      /> */}
       <style jsx>{`
         .upload-image {
           border: 2px solid black;
