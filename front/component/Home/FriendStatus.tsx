@@ -19,8 +19,6 @@ export default function FriendStatus({ id }: { id: string }) {
     };
   }, [friendListData, chatSocket?.id]);
 
-  console.log(friendListData?.status);
-
   if (!friendListData || !chatSocket) return <Loading />;
   return (
     <div className={styles.box}>
@@ -41,11 +39,12 @@ export default function FriendStatus({ id }: { id: string }) {
       <style jsx>{`
         .friend {
           display: flex;
+          align-items: center;
         }
         .status {
-          background-color: ${friendListData.status === "login" && "green"};
-          background-color: ${friendListData.status === "game" && "yellow"};
-          background-color: ${friendListData.status === "logout" && "red"};
+          background-color: ${friendListData.status === "Login" && "green"};
+          background-color: ${friendListData.status === "Game" && "yellow"};
+          background-color: ${friendListData.status === "Logout" && "red"};
           width: 10px;
           height: 10px;
           border-radius: 50%;
