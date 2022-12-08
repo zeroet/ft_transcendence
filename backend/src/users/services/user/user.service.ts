@@ -38,6 +38,11 @@ export class UserService implements IUserService {
         'block',
         'users.user_id = block.user_id',
       )
+      .leftJoinAndSelect(
+        'users.Friend',
+        'friend',
+        'users.user_id = friend.user_id',
+      )
       .where('users.user_id=:id', { id })
       .getOne();
     return user;
@@ -70,11 +75,11 @@ export class UserService implements IUserService {
     // const users = await this.userRepository.find();
     const users = await this.userRepository
       .createQueryBuilder('users')
-      .leftJoinAndSelect(
-        'users.Block',
-        'block',
-        'users.user_id = block.user_id',
-      )
+      // .leftJoinAndSelect(
+      //   'users.Block',
+      //   'block',
+      //   'users.user_id = block.user_id',
+      // )
       .getMany();
     // console.log('users info:', users);
     if (users) return users;
