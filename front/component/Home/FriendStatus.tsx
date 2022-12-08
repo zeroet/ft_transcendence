@@ -27,10 +27,21 @@ export default function FriendStatus({ id }: { id: string }) {
       <ul>
         {friendListData &&
           friendListData.map((eachFriend: any) => {
-            console.log(eachFriend);
+            const color = { color: "" };
+            if (eachFriend.status === "Login") {
+              color.color = "green";
+            } else if (eachFriend.status === "Logout") {
+              color.color = "red";
+            } else if (eachFriend.status === "Game") {
+              color.color = "yellow";
+            }
+            console.log(color);
             return (
               <div key={eachFriend.id} className="friend">
-                <div className="status"></div>
+                <div
+                  className="status"
+                  style={{ backgroundColor: color.color }}
+                ></div>
                 <div>{eachFriend.friendUsername}</div>
               </div>
             );
@@ -42,9 +53,6 @@ export default function FriendStatus({ id }: { id: string }) {
           align-items: center;
         }
         .status {
-          background-color: ${friendListData.status === "Login" && "green"};
-          background-color: ${friendListData.status === "Game" && "yellow"};
-          background-color: ${friendListData.status === "Logout" && "red"};
           width: 10px;
           height: 10px;
           border-radius: 50%;
