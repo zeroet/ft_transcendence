@@ -110,8 +110,10 @@ export default function Gaming({
       }
       setIsGameover(true);
     });
-    socket?.on("Play", (res) => {
-      console.log("Play event in game!!!!!!!!!!!!!");
+    socket?.on("ball", (ball : {x:number, y:number}) => {
+      console.log("s");
+      setBallX(ball.x);
+      setBallY(ball.y);
     });
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
@@ -120,7 +122,7 @@ export default function Gaming({
     return () => {
       // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
-      socket?.off("Play");
+      socket?.off("ball");
       socket?.off("gameover");
       console.log(
         "game unmount!!!!!!!!!!!!!!!!!!!!!disconnect in 'Game [id].tsx'"
