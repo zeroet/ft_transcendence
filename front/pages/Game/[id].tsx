@@ -106,12 +106,6 @@ export default function Gaming({
     }
 
     socket?.on("gameover", () => {
-      socket?.on("initialGame", (names: { name1: string; name2: string }) => {
-        console.log(names);
-        setOwnerName(names.name1);
-        setplayerName(names.name2);
-      });
-
       if (myRole === "owner") {
         setWinOrLose(ownerScore - playerScore > 0 ? true : false);
       } else if (myRole === "player") {
@@ -119,10 +113,30 @@ export default function Gaming({
       }
       setIsGameover(true);
     });
-    socket?.on("ball", (ball: { x: number; y: number }) => {
-      setBallX(ball.x);
-      setBallY(ball.y);
-    });
+    socket?.on(
+      "info",
+      (info: {
+        x: number;
+        y: number;
+        name1: string;
+        name2: string;
+        score1: number;
+        score2: number;
+        paddle1: number;
+        paddle2: number;
+        ballsize: number;
+      }) => {
+        setBallX(info.x);
+        setBallY(info.y);
+        setOwnerName(info.name1);
+        setplayerName(info.name2);
+        setOwnerScore(info.score1);
+        setPlayerScore(info.score1);
+        setLeftPaddle(info.paddle1);
+        setRightPaddle(info.paddle2);
+        setBallSize(info.ballsize);
+      }
+    );
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
