@@ -1,5 +1,4 @@
 import cookies from "next-cookies";
-import GameList from "../../component/Game/GameList";
 import Layout from "../../component/Layout";
 import Title from "../../component/Title";
 import Loading from "../../component/errorAndLoading/Loading";
@@ -11,23 +10,7 @@ import { GetServerSideProps } from "next";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Gameover from "../../component/Game/PlayGame/Gameover";
-
-interface GameElement {
-  ballX: number;
-  ballY: number;
-  ballSize: number;
-  leftPaddle: number;
-  rightPaddle: number;
-  ownerScore: string;
-  playerScore: string;
-}
-
-// const ballLeftMax: 0;
-// const ballRightMax: 1375;
-// const ballTopMax : 0;
-// const ballBottomMax : 725
-// const PaddleTopMax: 0;
-// const paddleBottomMax: 650;
+import GameExplain from "../../component/Game/PlayGame/GameExplain";
 
 export default function Gaming({
   accessToken,
@@ -41,7 +24,6 @@ export default function Gaming({
   // 게임오버 화면 만들어둠!
   const [isGameover, setIsGameover] = useState<boolean>(false);
   // otherPlayerName없어서 대체용
-  const otherPlayerNameTest = "나중에 이거 지워야함";
   // 방 이름 확인용. useEffect써서 리랜더링용
   const router = useRouter();
   // 마운트 파트
@@ -53,25 +35,9 @@ export default function Gaming({
   const [ownerScore, setOwnerScore] = useState<number>(0);
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [winOrLose, setWinOrLose] = useState<boolean>(true);
-  /**
-   * ///////////////////////////////////////////////////////모든 위치 : 볼, 패들 을 중간값으로 주어야한다.
-   */
-  /**
-   *
-   *
-   *
-   */
+  const [ownerName, setOwnerName] = useState<string>("");
+  const [playerName, setplayerName] = useState<string>("");
 
-  /**
-   * /////////////////////////////////////////////////////// room 모든사람이아니라, room에 있는 플레이어들의 목록을 받아야함
-   * /////////////////////////////////////////////////////// 소켓 id비교해서 룸안에있는사람만이 바꿀수있음!!!!!!!
-   * /////////////////////////////////////////////////////// 모든조건에 넣어야함
-   * /////////////////////////////////////////////////////// socket emit에만 넣으면 될듯
-   * /////////////////////////////////////////////////////// @param e 이벤트
-   * @returns
-   */
-  // 문제: state가 객체로 되어있으면, 포인터가 바뀌는것이 아니기때문에,
-  // 전체가 변화하지않음
   const onChangePaddle = useCallback(
     (e: KeyboardEvent) => {
       if (myRole === "watcher") return;
@@ -100,9 +66,10 @@ export default function Gaming({
     socket?.emit("room-list");
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
+      console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
     }
+
     socket?.on("gameover", () => {
-      // 점수차이로 승패 저장
       if (myRole === "owner") {
         setWinOrLose(ownerScore - playerScore > 0 ? true : false);
       } else if (myRole === "player") {
@@ -110,11 +77,31 @@ export default function Gaming({
       }
       setIsGameover(true);
     });
-    socket?.on("ball", (ball : {x:number, y:number}) => {
-      console.log("s");
-      setBallX(ball.x);
-      setBallY(ball.y);
-    });
+
+    socket?.on(
+      "info",
+      (info: {
+        x: number;
+        y: number;
+        name1: string;
+        name2: string;
+        score1: number;
+        score2: number;
+        paddle1: number;
+        paddle2: number;
+        ballsize: number;
+      }) => {
+        setBallX(info.x);
+        setBallY(info.y);
+        setOwnerName(info.name1);
+        setplayerName(info.name2);
+        setOwnerScore(info.score1);
+        setPlayerScore(info.score2);
+        setLeftPaddle(info.paddle1);
+        setRightPaddle(info.paddle2);
+        setBallSize(info.ballsize);
+      }
+    );
     console.log(
       `mount on play game ${router.query.id} room! with socket id : ${socket?.id}`
     );
@@ -124,12 +111,13 @@ export default function Gaming({
       console.log(`mount off play game ${router.query.id} room!`);
       socket?.off("ball");
       socket?.off("gameover");
+      socket?.off("initialGame");
       console.log(
         "game unmount!!!!!!!!!!!!!!!!!!!!!disconnect in 'Game [id].tsx'"
       );
       disconnect();
     };
-  }, []);
+  }, [socket?.id]);
 
   const onClickHome = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -152,19 +140,15 @@ export default function Gaming({
       </div>
       <hr />
       <div className="grid-div">
-        <GameList accessToken={accessToken} />
+        <GameExplain />
         {/* 게임결과 보내기 */}
         {isGameover ? (
           <Gameover winOrLose={winOrLose} />
         ) : (
           <div className="play-game">
             <div className="players-name">
-              <div className="players-name">
-                {myRole === "owner" ? data.username : otherPlayerNameTest}
-              </div>
-              <div className="players-name">
-                {myRole === "player" ? data.username : otherPlayerNameTest}
-              </div>
+              <div className="players-name">{ownerName}</div>
+              <div className="players-name">{playerName}</div>
             </div>
             <div className="score">
               <div className="score">{ownerScore}</div>

@@ -42,20 +42,18 @@ const ChangeNameAndPW = ({
         setPw("");
         return;
       }
-      if (RoomName)
-        // axios에러
-        await axios
-          .patch(`/api/chatroom/${roomId}/update`, {
-            chatroomName: RoomName === "" ? roomData.chatroomName : RoomName,
-            password: RoomPw === "" ? null : RoomPw,
-          })
-          .then((res) => {
-            // mutate(`/api/chatroom/${roomId}`);
-          })
-          .catch((err) => console.log(err))
-          .finally(() => {
-            setShowChangeModal(false);
-          });
+      await axios
+        .patch(`/api/chatroom/${roomId}/update`, {
+          chatroomName: RoomName === "" ? roomData.chatroomName : RoomName,
+          password: RoomPw === "" ? null : RoomPw,
+        })
+        .then((res) => {
+          mutate(`/api/chatroom/${roomId}`);
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {
+          setShowChangeModal(false);
+        });
     },
     [RoomName, RoomPw, roomData]
   );
