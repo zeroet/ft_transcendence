@@ -5,7 +5,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
+// import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
+import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { Block, ChatContent, ChatMember, Chatroom, User } from 'src/typeorm';
 import { IChatroom } from 'src/typeorm/interfaces/IChatroom';
