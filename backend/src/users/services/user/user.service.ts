@@ -127,6 +127,8 @@ export class UserService implements IUserService {
     return removedBlock;
   }
 
+  async getBlockList(userId: number) {}
+
   async addFriend(userId: number, friendUserId: number) {
     const user = await this.findUserByIdOrFail(userId);
     const friendUser = await this.findUserByIdOrFail(friendUserId);
@@ -167,5 +169,6 @@ export class UserService implements IUserService {
     return removedFriend;
   }
 
+  async getFriendList(userId: number) {}
   // updateUserById(id: number) {}
 }
