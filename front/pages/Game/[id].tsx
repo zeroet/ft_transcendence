@@ -96,7 +96,7 @@ export default function Gaming({
         setOwnerName(info.name1);
         setplayerName(info.name2);
         setOwnerScore(info.score1);
-        setPlayerScore(info.score1);
+        setPlayerScore(info.score2);
         setLeftPaddle(info.paddle1);
         setRightPaddle(info.paddle2);
         setBallSize(info.ballsize);
