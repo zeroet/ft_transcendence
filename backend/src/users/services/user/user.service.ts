@@ -45,8 +45,41 @@ export class UserService implements IUserService {
         'users.user_id = friend.user_id',
       )
       .where('users.user_id=:id', { id })
-      .innerJoinAndSelect('friend.FriendUser', 'frienduser')
+      // .innerJoinAndSelect('friend.FriendUser.status', 'status')
+      .innerJoinAndSelect('friend.FriendUser', 'friendUser')
+      // .innerJoinAndMapMany('friend.FriendUser', 'friendUser')
+      // .select(['users', 'friend.friendUser.status'])
       .getOne();
+
+    const FriendUsers = await this.friendRepository
+      .createQueryBuilder('friend')
+      .where('friend.user_id=:id', { id })
+      .innerJoinAndSelect('friend.FriendUser', 'friendUser')
+      .getMany();
+
+    console.log('friend users:', FriendUsers);
+    // if (FriendUsers.length > 0) {
+    for (let i = 0; i < user.Friend.length; i++) {
+      for (let j = 0; j < FriendUsers.length; j++) {
+        if (user.Friend[i].friendUserId === FriendUsers[j].FriendUser.id) {
+          console.log('testtest');
+          const { status } = user.Friend[i].FriendUser;
+          // delete user.Friend[i].FriendUser.email;
+          // delete user.Friend[i].FriendUser.created_at;
+          // delete user.Friend[i].FriendUser.modified_at;
+          // delete user.Friend[i].FriendUser.image_url;
+          // delete user.Friend[i].FriendUser.two_factor_activated;
+          // delete user.Friend[i].FriendUser.two_factor_valid;
+          // delete user.Friend[i].FriendUser.intra_id;
+          // delete user.Friend[i].FriendUser.username;
+          // delete user.Friend[i].FriendUser.id;
+          delete user.Friend[i].FriendUser;
+          user.Friend[i]['status'] = status;
+          // user.Friend[i].FriendUser['test'] = 'test';
+        }
+      }
+      // }
+    }
     return user;
   }
   async getUserById(id: number) {
@@ -162,7 +195,7 @@ export class UserService implements IUserService {
     const friends = await this.friendRepository
       .createQueryBuilder('friend')
       .where('friend.user_id=:userId', { userId })
-      .innerJoinAndSelect('friend.FriendUser', 'frienduser')
+      .innerJoinAndSelect('friend.FriendUser', 'friendUser')
       .getMany();
     return friends;
   }
