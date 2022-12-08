@@ -13,6 +13,7 @@ import { UsersModule } from 'src/users/users.module';
 import { TwoFactorContorller } from './controllers/two-factor/two-factor.controller';
 import { TwoFactorService } from './services/two-factor/two-factor.service';
 import { JwtTwoFactorStrategy } from './strategies/jwt.two-factor.strategy';
+import { EventsModule } from 'src/events/events.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { JwtTwoFactorStrategy } from './strategies/jwt.two-factor.strategy';
     UsersModule,
     JwtModule.register({}),
     PassportModule,
+    EventsModule,
   ],
   controllers: [AuthController, TwoFactorContorller],
   providers: [
