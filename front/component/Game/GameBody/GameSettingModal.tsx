@@ -43,17 +43,11 @@ const GameSettingModal = ({
         ballSize,
       });
 
-      // setSpeed("50");
-      // setBallSize("50");
-      // setRoomName("");
-      //테스트용 원래는 useEffect에서 해야함
-      // 확인! 셋팅
       console.log(
         `game room name : ${roomName}, ball size : ${ballSize}, ball speed : ${speed}`
       );
 
       setRoomName("");
-      // router.push(`/Game/test!!!`);
     },
     [speed, ballSize, roomName]
   );
@@ -91,17 +85,8 @@ const GameSettingModal = ({
     });
     // 완료된 소켓! 받은후에 이동
     socket?.on("enterGame", (roomName: string) => {
+      socket?.emit("myname", username);
       console.log(roomName, " is room name from server event: enterGame");
-      // query로 게임이름
-      // 내가 오너인지, 내가 플레이어인지 가지고들어간다.
-      /**
-       * 게임이름,
-       * 유저이름
-       * 플레이어이름
-       * 볼 속도
-       * 볼 사이즈
-       * 내 역활
-       */
       router.push({
         pathname: `/Game/${roomName}`,
         query: {
@@ -113,7 +98,6 @@ const GameSettingModal = ({
       console.log("off socket in game setting modal");
       socket?.off("enterGame");
       socket?.off("room-list");
-      // socket?.off("createRoom");
     };
   }, [socket?.id]);
 

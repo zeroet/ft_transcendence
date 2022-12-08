@@ -18,6 +18,7 @@ const GameReadyModal = ({
   useEffect((): (() => void) => {
     console.log("in game ready modal", socket?.id);
     socket?.on("enterGame", (roomName: string) => {
+      socket?.emit("myname", username);
       console.log(roomName);
       console.log("is room name! from socket");
       // query로 게임이름
@@ -32,7 +33,6 @@ const GameReadyModal = ({
     return () => {
       console.log("off socket in game ready modal");
       socket?.off("enterGame");
-      // socket?.off("game_setting");
     };
   }, [socket?.id]);
 
