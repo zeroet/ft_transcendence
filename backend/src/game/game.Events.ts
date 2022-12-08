@@ -17,6 +17,7 @@ import { GameService, Status } from './interfaces/room';
 import { QueueService } from './queue.service';
 import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
+import { dataCollectionPhase } from 'typeorm-model-generator/dist/src/Engine';
 // import { GameService } from './game.service';
 
 @UseGuards(JwtWsGuard)
@@ -72,8 +73,8 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     for (const room of this.roomService.rooms.values()) {
       if (room.Watchers.indexOf(client) != -1) {
         console.log('watcherrrr outttttttttttttt')
-        client.leave(room.roomName);    
         room.Watchers.splice(room.Watchers.indexOf(client), 1)
+        client.leave(room.roomName);    
       }
     }
     const list = this.roomService.roomList()
@@ -117,13 +118,6 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     catch{}
   }
 
-  // createRoom(player1: Socket, palyer2: Socket) {
-
-  //   console.log(player1.id, palyer2.id);
-  //   player1.emit('createRoom', { isOwner: true });
-  //   palyer2.emit('createRoom', { isOwner: false });
-  // }
-
   @SubscribeMessage('startGame')
   async startGame(
     @ConnectedSocket() client: Socket,
@@ -136,7 +130,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
           this.queueNormal.Players.shift().join(data.roomName);
           this.queueNormal.size -= 2;
         if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
-         await this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
+         return this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
         this.liveGame(data.roomName);
       }
      }
@@ -153,6 +147,11 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     }
   }
 
+  @SubscribeMessage('myname')
+  myname(@ConnectedSocket() client: Socket, @MessageBody() data)
+  {
+    this.roomService.addName(client, data);
+  }
  
     
   @SubscribeMessage('room-list')
@@ -165,14 +164,10 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   watchGame(
     @ConnectedSocket() watcher: Socket, 
     @MessageBody() data:any) {
-      if (!data.roomName)
+      if (!data)
         return ;
-      for (const room of this.roomService.rooms.values())
-         if (room.roomName === data.roomName) {
-           watcher.join(data.roomName);
-           room.Watchers.push(watcher);
-           this.server.to(data.roomName).emit('enterGame', data.roomName);
-      }
+      this.roomService.addWatcher(watcher, data);
+      this.server.to(data.roomName).emit('enterGame', data);
   }
 }
 

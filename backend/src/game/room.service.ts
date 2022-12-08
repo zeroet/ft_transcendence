@@ -37,8 +37,33 @@ export class RoomService{
             const ball = room.update();
             for(const player of room.Players)
                 player.emit('ball', ball)
-            for(const watcher of room.Watchers)
+            for(const watcher of room.Watchers) {
                 watcher.emit('ball', ball)
+            }
         }
+    }
+
+    addWatcher(watcher: Socket, roomName:string){
+
+        for (const room of this.rooms.values())
+            if (room.isPlayer(watcher)) return ;
+        for(const room of this.rooms.values())
+        {
+            if (room.roomName === roomName) {
+                watcher.join(roomName);
+                room.pushWatcher(watcher);
+            }
+        }
+    }
+
+    addName(player, name){
+        for(const room of this.rooms.values())
+            if (room.isPlayer == player)
+            {
+                if(room.isOwner(player))
+                    room.name.name1 = name;
+                if (room.isPlayer(player))
+                    room.name.name2 = name;
+            }
     }
 }
