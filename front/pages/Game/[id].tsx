@@ -1,5 +1,4 @@
 import cookies from "next-cookies";
-import GameList from "../../component/Game/GameList";
 import Layout from "../../component/Layout";
 import Title from "../../component/Title";
 import Loading from "../../component/errorAndLoading/Loading";
@@ -11,6 +10,7 @@ import { GetServerSideProps } from "next";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Gameover from "../../component/Game/PlayGame/Gameover";
+import GameExplain from "../../component/Game/PlayGame/GameExplain";
 
 interface GameElement {
   ballX: number;
@@ -53,6 +53,8 @@ export default function Gaming({
   const [ownerScore, setOwnerScore] = useState<number>(0);
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [winOrLose, setWinOrLose] = useState<boolean>(true);
+  const [ownerName, setOwnerName] = useState<string>("");
+  const [playerName, setplayerName] = useState<string>("");
   /**
    * ///////////////////////////////////////////////////////모든 위치 : 볼, 패들 을 중간값으로 주어야한다.
    */
@@ -102,8 +104,14 @@ export default function Gaming({
       socket?.emit("watchGame", router.query.id);
       console.log('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
     }
+
     socket?.on("gameover", () => {
-      // 점수차이로 승패 저장
+      socket?.emit("initialGame");
+      socket?.on("initialGame", (ownerName: string, playerName: string) => {
+        setOwnerName(ownerName);
+        setplayerName(playerName);
+      });
+
       if (myRole === "owner") {
         setWinOrLose(ownerScore - playerScore > 0 ? true : false);
       } else if (myRole === "player") {
@@ -111,8 +119,7 @@ export default function Gaming({
       }
       setIsGameover(true);
     });
-    socket?.on("ball", (ball : {x:number, y:number}) => {
-      console.log("s");
+    socket?.on("ball", (ball: { x: number; y: number }) => {
       setBallX(ball.x);
       setBallY(ball.y);
     });
@@ -125,6 +132,7 @@ export default function Gaming({
       console.log(`mount off play game ${router.query.id} room!`);
       socket?.off("ball");
       socket?.off("gameover");
+      socket?.off("initialGame");
       console.log(
         "game unmount!!!!!!!!!!!!!!!!!!!!!disconnect in 'Game [id].tsx'"
       );
@@ -153,19 +161,15 @@ export default function Gaming({
       </div>
       <hr />
       <div className="grid-div">
-        <GameList accessToken={accessToken} />
+        <GameExplain />
         {/* 게임결과 보내기 */}
         {isGameover ? (
           <Gameover winOrLose={winOrLose} />
         ) : (
           <div className="play-game">
             <div className="players-name">
-              <div className="players-name">
-                {myRole === "owner" ? data.username : otherPlayerNameTest}
-              </div>
-              <div className="players-name">
-                {myRole === "player" ? data.username : otherPlayerNameTest}
-              </div>
+              <div className="players-name">{ownerName}</div>
+              <div className="players-name">{playerName}</div>
             </div>
             <div className="score">
               <div className="score">{ownerScore}</div>
