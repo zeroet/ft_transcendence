@@ -36,9 +36,9 @@ export class RoomService{
         {
             const res = room.update();
             for(const player of room.Players)
-                player.emit('ball', res)
+                player.emit('info', res)
             for(const watcher of room.Watchers) {
-                watcher.emit('ball', res)
+                watcher.emit('info', res)
             }
             console.log(`${res.x}, ${res.y}, ${res.score1}, ${res.score2}`)
         }
@@ -67,11 +67,6 @@ export class RoomService{
                     room.addName2(name)
             }
         }
-    }
-
-    sendName(Players, name){
-        for(const player of Players)
-            player.emit('initialGame', name)
     }
 
     gameOver(Players){

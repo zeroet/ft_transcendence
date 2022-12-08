@@ -107,7 +107,7 @@ export default function Gaming({
 
     socket?.on("gameover", () => {
       socket?.on("initialGame", (names: { name1: string; name2: string }) => {
-        console.log(names);
+        console.log(names, ' is names');
         setOwnerName(names.name1);
         setplayerName(names.name2);
       });

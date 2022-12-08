@@ -51,7 +51,6 @@ export class GameService{
     width: number;
     height: number;
     paddles: paddles;
-    flag:number;
 
     constructor(Player1, Player2, Status:Status, roomName:string, ownerId:string, speed:string, ballSize:string) {
         this.roomService = new RoomService()
@@ -71,7 +70,6 @@ export class GameService{
         this.score = {
             player1: 0, player2: 0
         };
-        this.flag = 0;
         this.paddles = {paddle1: this.height/2, paddle2: this.height/2}
     }
     
@@ -91,14 +89,8 @@ export class GameService{
     //     this.roomService.gameOver(this.Players)
     // }
 
-    sendName(){
-        this.flag += 1;
-        this.roomService.sendName(this.Players, this.name)
-    }
       
     update() {
-        if (this.flag === 0)
-            this.sendName()
         //player out  over case
         if (this.Players.length != 2) {
             this.Status = Status.END;
@@ -156,6 +148,8 @@ export class GameService{
         return ({
             x:this.ball.x,
             y:this.ball.y,
+            name1:this.name.name1,
+            name2:this.name.name2,
             score1:this.score.player1,
             score2:this.score.player2,
             paddle1:this.paddles.paddle1,
