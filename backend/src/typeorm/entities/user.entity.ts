@@ -92,7 +92,12 @@ export class User implements IUser {
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
   modified_at: Date;
 
-  @Column({ type: 'varchar', name: 'hashed_refresh_token', nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'hashed_refresh_token',
+    nullable: true,
+    select: false,
+  })
   hashed_refresh_token: string;
 
   @ApiProperty({
@@ -108,7 +113,12 @@ export class User implements IUser {
     example: 'NUGQEHCBAAERQBQ6',
     description: 'two_factor_secret',
   })
-  @Column({ type: 'varchar', name: 'two_factor_secret', nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'two_factor_secret',
+    nullable: true,
+    select: false,
+  })
   two_factor_secret: string;
 
   @ApiProperty({
