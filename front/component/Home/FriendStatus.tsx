@@ -1,25 +1,24 @@
+import useSWR from "swr";
 import styles from "../../styles/LayoutBox.module.css";
+import Loading from "../errorAndLoading/Loading";
 
 export default function FriendStatus({ id }: { id: string }) {
-  /**
-   * id === -1이면 내정보
-   */
+  const { data: friendListData, error: friendListError } = useSWR(
+    `/api/users/friend/list`
+  );
+
+  console.log(friendListData);
+  if (!friendListData) return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Friend Status</h1>
       <hr />
       <ul>
-        <li>hyungyoo1</li>
-        <li>hyungyoo2</li>
-        <li>hyungyoo3</li>
-        <li>hyungyoo3</li>
-        <li>hyungyoo3</li>
-        <li>hyungyoo3</li>
-        <li>hyungyoo3</li>
-        <li>hyungyoo3</li>
-        <li>hyungyoo3</li>
-        <li>hyungyoo3</li>
-        <li>hyungyoo3</li>
+        {friendListData &&
+          friendListData.map((eachFriend: any) => {
+            console.log(eachFriend);
+            return <li key={eachFriend.id}>{eachFriend.username}</li>;
+          })}
       </ul>
       <style jsx>{`
         h1 {
