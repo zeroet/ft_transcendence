@@ -153,7 +153,8 @@ export class GameService{
             score1:this.score.player1,
             score2:this.score.player2,
             paddle1:this.paddles.paddle1,
-            paddle2:this.paddles.paddle2
+            paddle2:this.paddles.paddle2,
+            ballsize: this.ballSize
         })
     };
 
