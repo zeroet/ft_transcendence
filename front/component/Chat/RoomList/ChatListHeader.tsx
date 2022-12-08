@@ -25,7 +25,7 @@ export default function ChatListHeader() {
         <div className="chatroom-header">
           <h1>CHAT ROOM</h1>
           <button onClick={addChat} className="button" type="button">
-            +
+            <img src="/images/createChat.png" width="25px" height="25px" />
           </button>
         </div>
       </div>

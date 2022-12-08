@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Block, Friend, User } from 'src/typeorm';
+import { Status } from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { IUserService } from './user.interface';
 
@@ -42,6 +43,11 @@ export class UserService implements IUserService {
         'friend',
         'users.user_id = friend.user_id',
       )
+      // .leftJoinAndSelect(
+      //   'Friend.FriendUser',
+      //   'friend',
+      //   'friend.user_id = users.user_id',
+      // )
       .where('users.user_id=:id', { id })
       .getOne();
     return user;
@@ -129,6 +135,7 @@ export class UserService implements IUserService {
     const createdfriend = this.friendRepository.create({
       userId,
       friendUserId,
+      friendUsername: friendUser.username,
       User: user,
       FriendUser: friendUser,
     });
@@ -160,6 +167,13 @@ export class UserService implements IUserService {
       .where('friend.user_id=:userId', { userId })
       .getMany();
     return friends;
+  }
+
+  async updateUserStatus(userId: number, status: Status) {
+    const user = await this.findUserByIdOrFail(userId);
+    user.status = status;
+    const updatedUser = await this.userRepository.save(user);
+    return user;
   }
   // updateUserById(id: number) {}
 }

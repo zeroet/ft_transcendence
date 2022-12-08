@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
-import { Dm, User } from 'src/typeorm';
+import { Block, Dm, User } from 'src/typeorm';
 import { DmContent } from 'src/typeorm/entities/dmContent.entity';
 import { IsNull, MoreThan, Repository } from 'typeorm';
 import { IDmService } from './dm.interface';
@@ -17,6 +17,7 @@ export class DmService implements IDmService {
     @InjectRepository(DmContent)
     private dmContentRepository: Repository<DmContent>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Block) private blockRepository: Repository<Block>,
     private chatEventsGateway: ChatEventsGateway,
   ) {}
 
@@ -169,16 +170,27 @@ export class DmService implements IDmService {
 
   async getContents(senderId: number, dmId: number) {
     const sender = await this.findUserByIdOrFail(senderId);
-    // const receiver = await this.findUserByIdOrFail(receiverId);
-    const contents = await this.dmContentRepository
+    const Blockedusers = await this.blockRepository
+      .createQueryBuilder('block')
+      .where('block.user_id=:senderId', { senderId })
+      .getMany();
+    let contents = await this.dmContentRepository
       .createQueryBuilder('dm_content')
       .where('dm_content.dm_id=:dmId', { dmId })
       .innerJoinAndSelect('dm_content.User', 'user')
-      // .innerJoinAndSelect(Dm, 'dm', 'dm.dm_id=:dmId', { dmId })
-      // .innerJoinAndSelect('dm.User2', 'user2')
       .select(['dm_content', 'user.username'])
       .getMany();
-    console.log('dm contents:', contents);
+    // console.log('dm contents:', contents);
+    if (Blockedusers.length > 0) {
+      for (let i = 0; i < contents.length; i++) {
+        for (let j = 0; j < Blockedusers.length; j++) {
+          if (contents[i].userId === Blockedusers[j].blockedUserId) {
+            contents.splice(i, 1);
+            i--;
+          }
+        }
+      }
+    }
     return contents;
   }
 

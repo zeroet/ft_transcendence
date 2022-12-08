@@ -24,6 +24,8 @@ import {
 import { UserDto } from 'src/users/dto/user.dto';
 import { User } from 'src/utils/decorators/user.decorator';
 import { IUser } from 'src/typeorm/interfaces/IUser';
+import { Status } from 'src/utils/types';
+import { UpdateUserStatusDto } from 'src/users/dto/update-user.status.dto';
 
 @ApiTags('USERS')
 @Controller('users')
@@ -158,6 +160,18 @@ export class UsersController {
   @Get('friend/list')
   async getFriendList(@User() user: IUser) {
     return await this.userService.getFriendList(user.id);
+  }
+
+  @ApiBody({
+    type: UpdateUserStatusDto,
+    description: 'User status: "LOGIN" or "LOGOUT" or "PLAYING"',
+  })
+  @ApiOperation({
+    summary: 'Update user status / 사용자 상태 변경하기',
+  })
+  @Post('status')
+  async updateUserStatus(@User() user: IUser, @Body('status') status: Status) {
+    return await this.userService.updateUserStatus(user.id, status);
   }
 
   // @Patch(':id')

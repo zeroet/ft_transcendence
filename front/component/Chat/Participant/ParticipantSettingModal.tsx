@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useCallback } from "react";
-import useSWR from "swr";
+import React, { useCallback, useEffect, useState } from "react";
+import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
 
 const ParticipantSettingModal = ({
@@ -15,6 +15,10 @@ const ParticipantSettingModal = ({
 }) => {
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
+  const { data: blockedListData, error: blockedListError } = useSWR(
+    "/api/users/block/list"
+  );
+  const [isBlock, setIsBlock] = useState<string>("Block");
 
   const onClickProfile = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -48,14 +52,31 @@ const ParticipantSettingModal = ({
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      setShowModal(false);
-      await axios
-        .post(`/api/users/block/${userId}`)
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
-      console.log("block");
+      if (isBlock === "Block") {
+        await axios
+          .post(`/api/users/block/${userId}`)
+          .then((res) => {
+            mutate("/api/users/block/list");
+            setIsBlock("Unblock");
+            setShowModal(false);
+          })
+          .catch((err) => console.log(err));
+      } else {
+        if (blockedListData.length === 0) {
+          setIsBlock("Block");
+          return;
+        }
+        await axios
+          .delete(`/api/users/block/${userId}`)
+          .then((res) => {
+            mutate("/api/users/block/list");
+            setIsBlock("Block");
+            setShowModal(false);
+          })
+          .catch((err) => console.log(err));
+      }
     },
-    []
+    [isBlock, blockedListData, myData, userId]
   );
 
   const onClickMute = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -79,8 +100,19 @@ const ParticipantSettingModal = ({
     console.log("Set Admin");
   }, []);
 
-  console.log(myData);
-  if (!myData) return <Loading />;
+  useEffect(() => {
+    if (!myData || !blockedListData) return;
+    console.log(myData);
+    console.log(blockedListData);
+    blockedListData.map((element: any) => {
+      console.log(element.blockedUserId);
+      if (element.blockedUserId === userId) {
+        setIsBlock("Unblock");
+      }
+    });
+  }, [myData, blockedListData]);
+
+  if (!myData || !blockedListData) return <Loading />;
   return (
     <div className="participantSettingModal">
       <div className="router-div" onClick={onClickProfile}>
@@ -93,7 +125,7 @@ const ParticipantSettingModal = ({
         Game
       </div>
       <div className="router-div" onClick={onClickBlock}>
-        {myData.Block ? "UnBlock" : "Block"}
+        {isBlock}
       </div>
       {isOwner && (
         <div>
@@ -114,17 +146,26 @@ const ParticipantSettingModal = ({
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          border: 2px solid black;
+          border: 1px solid black;
           margin: 2px;
+          margin-left: 45px;
+          margin-top: -3px;
+          //   font-weight: bold;
+          text-transform: uppercase;
+          font-size: 15px;
+          background-color: white;
+          box-shadow: 10px 10px 2px 2px;
         }
         .router-div {
+          background-color: white;
           border: 1px solid black;
-          width: 150px;
+          width: 100px;
           text-align: center;
-          transition: width 2s, height 2s, background-color 2s, transform 2s;
+          transition: width 0.5s, height 0.5s, background-color 0.5s,
+            transform 0.5s;
         }
         .router-div:hover {
-          background-color: gray;
+          background-color: black;
           color: white;
         }
       `}</style>
