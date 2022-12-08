@@ -173,7 +173,7 @@ export class UserService implements IUserService {
     const user = await this.findUserByIdOrFail(userId);
     user.status = status;
     const updatedUser = await this.userRepository.save(user);
-    return user;
+    return updatedUser;
   }
   // updateUserById(id: number) {}
 }

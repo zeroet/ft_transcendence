@@ -1,12 +1,13 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
-import { UserDetails } from 'src/utils/types';
+import { Status, UserDetails } from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { IAuthService } from './auth.interface';
 import * as bcrypt from 'bcrypt';
@@ -166,5 +167,18 @@ export class AuthService implements IAuthService {
       return true;
     }
     return false;
+  }
+
+  async updateUserStatus(userId: number, status: Status) {
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.user_id=:userId', { userId })
+      .getOne();
+    if (!user) {
+      throw new NotFoundException(`User of id:${userId} not found`);
+    }
+    user.status = status;
+    const updatedUser = await this.userRepository.save(user);
+    return updatedUser;
   }
 }
