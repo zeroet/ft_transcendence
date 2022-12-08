@@ -110,6 +110,39 @@ export class UsersController {
     console.log('unBlockUserId:', unBlockUserId);
     return await this.userService.unBlockUser(user.id, unBlockUserId);
   }
+  @ApiParam({
+    name: 'Friend user id',
+    example: 12,
+  })
+  @ApiOperation({
+    summary: 'Add a user as a friend by id / id로 특정 사용자 친구 추가하기',
+  })
+  @Post('friend/:friendUserId')
+  async addFriend(
+    @User() user: IUser,
+    @Param('friendUserId') friendUserId: number,
+  ) {
+    console.log('friendUserId:', friendUserId);
+    return await this.userService.addFriend(user.id, friendUserId);
+  }
+
+  @ApiParam({
+    name: 'Unfriend user id',
+    example: 12,
+  })
+  @ApiOperation({
+    summary:
+      'Delete a user from friends list by id / id로 특정 사용자 친구 삭제하기',
+  })
+  @Delete('friend/:unFriendUserId')
+  async deleteFriend(
+    @User() user: IUser,
+    @Param('unFriendUserId') unFriendUserId: number,
+  ) {
+    console.log('unFriendUserId:', unFriendUserId);
+    return await this.userService.deleteFriend(user.id, unFriendUserId);
+  }
+
   // @Patch(':id')
   // updateUserById(@Param('id', ParseIntPipe) id: number) {
   //   this.userService.updateUserById(id);
