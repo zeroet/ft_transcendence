@@ -8,9 +8,11 @@ import { GameDTO } from "../../../interfaceType";
 const GameSettingModal = ({
   accessToken,
   closeSettingModal,
+  username,
 }: {
   accessToken: string;
   closeSettingModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  username: string;
 }) => {
   const router = useRouter();
   const [socket] = useSocket(accessToken, "game");
@@ -39,6 +41,7 @@ const GameSettingModal = ({
         roomName,
         speed,
         ballSize,
+        username,
       });
 
       // setSpeed("50");
