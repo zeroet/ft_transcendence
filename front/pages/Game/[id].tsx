@@ -4,7 +4,7 @@ import Title from "../../component/Title";
 import Loading from "../../component/errorAndLoading/Loading";
 import useSocket from "../../component/Utils/socket";
 import TwoFactorModal from "../../component/Home/TwoFactorModal";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useCallback, useEffect, useState } from "react";
@@ -62,7 +62,20 @@ export default function Gaming({
     [leftPaddle, rightPaddle]
   );
 
+  const statusChange = async (statusForChange: string) => {
+    await axios
+      .post(`/api/users/status`, {
+        status: statusForChange,
+      })
+      .then((res) => {
+        mutate(`/api/users/friend/list`);
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  };
+
   useEffect((): (() => void) => {
+    statusChange("Game");
     socket?.emit("room-list");
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
@@ -115,6 +128,7 @@ export default function Gaming({
       console.log(
         "game unmount!!!!!!!!!!!!!!!!!!!!!disconnect in 'Game [id].tsx'"
       );
+      statusChange("Login");
       disconnect();
     };
   }, [socket?.id]);
