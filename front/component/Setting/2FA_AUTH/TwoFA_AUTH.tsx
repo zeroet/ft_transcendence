@@ -5,7 +5,7 @@ import useSWR, { mutate } from "swr";
 import Error from "../../errorAndLoading/Error";
 import Loading from "../../errorAndLoading/Loading";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 
 const TwoFA_AUTH = ({
   modal,
@@ -60,7 +60,16 @@ const TwoFA_AUTH = ({
             router.push("/Home");
           } catch (e) {
             console.log(e);
-            toast.error("Wrong code");
+            toast.error("Wrong code", {
+              position: "top-center",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              rtl: false,
+              pauseOnFocusLoss: true,
+              draggable: false,
+              pauseOnHover: false,
+            });
             // alert("Wrong code");
           }
         } else if (data.two_factor_activated) {
@@ -124,22 +133,12 @@ const TwoFA_AUTH = ({
           </button>
         </div>
       </form>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover={false}
-        limit={1}
+      {/* <ToastContainer
         style={{ width: "300px", textAlign: "center", fontSize: "15px" }}
         toastStyle={{
           textTransform: "none",
         }}
-      />
+      /> */}
       <style jsx>{`
         .activated {
           padding-top: 50px;

@@ -86,8 +86,8 @@ export class User implements IUser {
 
   @ApiProperty({
     required: true,
-    example: 'Login',
-    description: 'User status: Login or Logout or Playing',
+    example: 'LOGIN',
+    description: 'User status: "LOGIN" or "LOGOUT" or "PLAYING"',
   })
   @Column({
     type: 'varchar',

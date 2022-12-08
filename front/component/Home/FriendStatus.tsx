@@ -22,7 +22,7 @@ export default function FriendStatus({ id }: { id: string }) {
         {friendListData &&
           friendListData.map((eachFriend: any) => {
             console.log(eachFriend);
-            return <li key={eachFriend.id}>{eachFriend.username}</li>;
+            return <li key={eachFriend.id}>{eachFriend.friendUsername}</li>;
           })}
       </ul>
       <style jsx>{`

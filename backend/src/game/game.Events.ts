@@ -13,16 +13,17 @@ import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
-import { Game, Status } from './interfaces/room';
+import { GameService, Status } from './interfaces/room';
 import { QueueService } from './queue.service';
 import { Logger } from '@nestjs/common';
-import { Interval } from '@nestjs/schedule';
+import { RoomService } from './room.service';
 // import { GameService } from './game.service';
 
 @UseGuards(JwtWsGuard)
 @WebSocketGateway({ path: '/game', cors: '*' })
 export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   constructor(
+    private readonly roomService: RoomService,
     @Inject('USER_SERVICE') private readonly userService: UserService,
     @Inject('AUTH_SERVICE') private authService: IAuthService,
   ) {}
@@ -33,9 +34,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   server: Server;
 
   queueNormal: QueueService = new QueueService();
-  // game: GameService = new GameService();
-  rooms: Map<string, Game> = new Map();
-
+  
   afterInit() {
     this.logger.log("INIT");
   }
@@ -60,24 +59,25 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       this.queueNormal.size -= 1;
     }
     // InGame case
-    for (const room of this.rooms.values()){
+    for (const room of this.roomService.rooms.values()){
       if (room.isOwner || room.isPlayer2) {
         // game end
         client.leave(room.roomName);
         await room.deletePlayer(client);
         if (room.Players.length == 0)
-          return this.rooms.delete(room.roomName);
+          this.roomService.rooms.delete(room.roomName);
       }
     }
     // Watcher case
-    for (const room of this.rooms.values()) {
+    for (const room of this.roomService.rooms.values()) {
       if (room.Watchers.indexOf(client) != -1) {
         console.log('watcherrrr outttttttttttttt')
         client.leave(room.roomName);    
-        return room.Watchers.splice(room.Watchers.indexOf(client), 1)
+        room.Watchers.splice(room.Watchers.indexOf(client), 1)
       }
     }
-    this.logger.log('Game disconnection', client.id);
+    const list = this.roomService.roomList()
+    this.server.emit('room-list', list);
   }
 
 
@@ -88,7 +88,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     if (this.queueNormal.isFull())
     {
       console.log ('is in the full');
-      this.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
+      this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
     } 
   }
 
@@ -112,17 +112,17 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         this.queueNormal.size -= 1;
       }
       if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
-        this.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
+        this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
       }
     catch{}
   }
 
-  createRoom(player1: Socket, palyer2: Socket) {
+  // createRoom(player1: Socket, palyer2: Socket) {
 
-    console.log(player1.id, palyer2.id);
-    player1.emit('createRoom', { isOwner: true });
-    palyer2.emit('createRoom', { isOwner: false });
-  }
+  //   console.log(player1.id, palyer2.id);
+  //   player1.emit('createRoom', { isOwner: true });
+  //   palyer2.emit('createRoom', { isOwner: false });
+  // }
 
   @SubscribeMessage('startGame')
   async startGame(
@@ -131,47 +131,34 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   ) {
       try {
         if (client.id === this.queueNormal.Players[0].id) {
-        const game = new Game(this.queueNormal.Players[0], this.queueNormal.Players[1], Status.READY, data.roomName, this.queueNormal.Players[0].id, data.speed, data.ballSize)
-        this.queueNormal.Players.shift().join(data.roomName);
-        this.queueNormal.Players.shift().join(data.roomName);
-        this.queueNormal.size -= 2;
+          this.roomService.startGame(this.queueNormal.Players[0], this.queueNormal.Players[1], Status.READY, data.roomName, this.queueNormal.Players[0].id, data.speed, data.ballSize)
+          this.queueNormal.Players.shift().join(data.roomName);
+          this.queueNormal.Players.shift().join(data.roomName);
+          this.queueNormal.size -= 2;
         if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
-         await this.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
-        this.rooms.set(data.roomName, game);
-        this.liveGame(data.roomName, game);
+         await this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
+        this.liveGame(data.roomName);
       }
      }
-     catch{}
+     catch(e)
+     {}
     }
 
-  async liveGame(name: string, game: Game) {
-    for(const room of this.rooms.values()){
+  async liveGame(name: string) {
+    for(const room of this.roomService.rooms.values()){
+      console.log(name);
+      console.log(room.Players[0].id);
       this.server.to(name).emit('enterGame', name);
       room.changeStatus(Status.PLAY);
     }
   }
 
-  // @Interval(1000 / 60)
-  // loop(): void {
-  //   for (const room of this.rooms.values())
-  //     if (room.Status == Status.PLAY) 
-  //     {
-  //       this.server.to(room.roomName).emit('Play')
-  //       console.log('send');
-  //     }
-  // }
+ 
     
   @SubscribeMessage('room-list')
   async handleRoomList() {
-    try {
-      const list = [];
-      for (const name of this.rooms.keys()) {
-        console.log('room-list okkkkkkkkkkkkkkkk', name)
-        list.push(name);
-      }
+      const list = this.roomService.roomList();
       this.server.emit('room-list', list)
-    }
-    catch (e) { console.log(e)}
   }
 
   @SubscribeMessage('watchGame')
@@ -180,7 +167,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     @MessageBody() data:any) {
       if (!data.roomName)
         return ;
-      for (const room of this.rooms.values())
+      for (const room of this.roomService.rooms.values())
          if (room.roomName === data.roomName) {
            watcher.join(data.roomName);
            room.Watchers.push(watcher);

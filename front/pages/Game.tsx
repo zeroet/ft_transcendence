@@ -52,7 +52,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  // tokenManager(cookie);
   return {
     props: {
       accessToken,
