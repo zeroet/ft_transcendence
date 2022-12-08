@@ -44,12 +44,8 @@ export class UserService implements IUserService {
         'friend',
         'users.user_id = friend.user_id',
       )
-      // .leftJoinAndSelect(
-      //   'Friend.FriendUser',
-      //   'friend',
-      //   'friend.user_id = users.user_id',
-      // )
       .where('users.user_id=:id', { id })
+      .innerJoinAndSelect('friend.FriendUser', 'frienduser')
       .getOne();
     return user;
   }
