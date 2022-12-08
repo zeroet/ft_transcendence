@@ -1,3 +1,5 @@
+import { Status } from 'src/utils/types';
+
 export interface IUserService {
   getCurrentUser(id: number);
   getUserById(id: number);
@@ -8,6 +10,7 @@ export interface IUserService {
   addFriend(userId: number, friendUserId: number);
   deleteFriend(userId: number, unFriendUserId: number);
   getFriendList(userId: number);
+  updateUserStatus(userId: number, status: Status);
   // updateUserById(id: number);
   // createUser(user: UserDto);
   // deleteUser();
