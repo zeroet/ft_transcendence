@@ -1,6 +1,7 @@
 import { IBlock } from './IBlock';
 import { IChatContent } from './IChatContent';
 import { IChatMember } from './IChatMemeber';
+import { IFriend } from './IFriend';
 
 export interface IUser {
   id: number;
@@ -14,6 +15,7 @@ export interface IUser {
   two_factor_activated: boolean;
   two_factor_secret: string;
   two_factor_valid: boolean;
+  Friend: IFriend[];
   Block: IBlock[];
   ChatMember: IChatMember[];
   ChatContent: IChatContent[];

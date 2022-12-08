@@ -49,7 +49,10 @@ export class Block implements IBlock {
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, (User) => User.Block, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'user', referencedColumnName: 'id' })
   User: IUser;
 
