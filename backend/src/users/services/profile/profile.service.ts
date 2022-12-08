@@ -21,11 +21,11 @@ export class ProfileService {
     if (!user) {
       throw new NotFoundException(`User of id:${userId} not found`);
     }
-    const user2 = await this.userRepository
+    const userWithSameUsername = await this.userRepository
       .createQueryBuilder('users')
       .where('users.username=:newUserName', { newUserName })
       .getOne();
-    if (user2) {
+    if (userWithSameUsername) {
       throw new BadRequestException(`User name:${newUserName} already exists`);
     }
     user.username = newUserName;
