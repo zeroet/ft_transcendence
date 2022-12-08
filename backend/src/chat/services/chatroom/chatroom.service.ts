@@ -382,10 +382,13 @@ export class ChatroomService implements IChatroomService {
       );
     }
     // set ad admin
-    const updatedChatroom = await this.chatroomRepository.update(userId, {
-      ownerId: targetUserId,
-    });
-    console.log('updated chatroom owner:', updatedChatroom);
+    chatroom.ownerId = targetUserId;
+    const updatedChatroom = await this.chatroomRepository.save(chatroom);
+    // const updatedChatroom = await this.chatroomRepository.update(userId, {
+    //   ownerId: targetUserId,
+    // });
+    // console.log('updated chatroom owner:', updatedChatroom);
+    this.chatEventsGateway.server.emit('newMemberList', updatedChatroom);
     return updatedChatroom;
   }
 
