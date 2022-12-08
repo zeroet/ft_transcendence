@@ -96,6 +96,7 @@ export default function Participant({
         }
         img {
           margin-left: 10px;
+          margin-top: -2px;
         }
         h1 {
           font-family: "Fragment Mono", monospace;
