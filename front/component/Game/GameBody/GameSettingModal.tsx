@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
 import { GameDTO } from "../../../interfaceType";
+import { toast } from "react-toastify";
 // 오너가 아니면, 일반 체크만 하는 페이지도 만들어야한다
 
 const GameSettingModal = ({
@@ -27,7 +28,17 @@ const GameSettingModal = ({
       e.preventDefault();
 
       if (!roomName) {
-        alert("Room name please");
+        toast.error("Room name must have more than 1 character", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("Room name please");
         return;
       }
 
@@ -78,6 +89,16 @@ const GameSettingModal = ({
   );
 
   useEffect((): (() => void) => {
+    toast.success("player matched!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      rtl: false,
+      pauseOnFocusLoss: true,
+      draggable: false,
+      pauseOnHover: false,
+    });
     console.log("game setting owner modal", socket?.id);
     socket?.emit("room-list");
     socket?.on("room-list", (list) => {

@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
+import { toast } from "react-toastify";
 import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
 
@@ -16,6 +17,16 @@ const GameReadyModal = ({
   const [socket] = useSocket(accessToken, "game");
 
   useEffect((): (() => void) => {
+    toast.success("player matched!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      rtl: false,
+      pauseOnFocusLoss: true,
+      draggable: false,
+      pauseOnHover: false,
+    });
     console.log("in game ready modal", socket?.id);
     socket?.on("enterGame", (roomName: string) => {
       socket?.emit("myname", username);
@@ -40,7 +51,12 @@ const GameReadyModal = ({
   return (
     <div className="box">
       <div className="title">
-        <h2>Just wait! </h2>
+        <h2>Setting game...</h2>
+      </div>
+      <div>
+        <p>The other player sets the game!</p>
+        <p>Wait a second please!</p>
+        <p>(Or not ! :p)</p>
       </div>
       <form className="createForm" method="post">
         <div className="buttonDiv">
@@ -50,6 +66,22 @@ const GameReadyModal = ({
         </div>
       </form>
       <style jsx>{`
+        p {
+          font-weight: bold;
+          text-align: center;
+          font-size: 17px;
+          margin: 15px;
+        }
+        h2 {
+          animation: blink-effect 1s step-end infinite;
+        }
+
+        @keyframes blink-effect {
+          50% {
+            opacity: 0;
+          }
+        }
+
         .box {
           font-family: "Fragment Mono", monospace;
           position: fixed;
@@ -57,7 +89,7 @@ const GameReadyModal = ({
           left: 33%;
 
           width: 500px;
-          height: 130px;
+          height: 250px;
 
           background-color: white;
           border: 1px inset black;
@@ -81,16 +113,9 @@ const GameReadyModal = ({
           //   background-color: yellow;
           margin-top: 10px;
         }
-        .ok {
-          font-family: "Fragment Mono", monospace;
-          font-size: 20px;
+        .cancel {
           color: white;
           background-color: black;
-          padding: 10px 20px;
-          border: 1px solid black;
-          cursor: pointer;
-        }
-        .cancel {
           font-family: "Fragment Mono", monospace;
           font-size: 20px;
           padding: 10px 20px;
