@@ -16,7 +16,6 @@ const GameReadyModal = ({
   const [socket] = useSocket(accessToken, "game");
 
   useEffect((): (() => void) => {
-    socket?.emit("startGame", { username });
     console.log("in game ready modal", socket?.id);
     socket?.on("enterGame", (roomName: string) => {
       console.log(roomName);

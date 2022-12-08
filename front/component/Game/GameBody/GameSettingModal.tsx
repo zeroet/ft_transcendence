@@ -41,7 +41,6 @@ const GameSettingModal = ({
         roomName,
         speed,
         ballSize,
-        username,
       });
 
       // setSpeed("50");
