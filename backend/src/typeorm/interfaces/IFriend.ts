@@ -1,6 +1,6 @@
 import { IUser } from './IUser';
 
-export class IFriend {
+export interface IFriend {
   id: number;
   userId: number;
   friendUserId: number;

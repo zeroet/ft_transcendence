@@ -84,6 +84,24 @@ export interface IDmContent {
   // User: IUser;
 }
 
+export interface IFriend {
+  id: number;
+  userId: number;
+  friendUserId: number;
+  createdAt: Date;
+  // User: UserInfo;
+  // FriendUser: UserInfo;
+}
+
+export interface IBlock {
+  id: number;
+  userId: number;
+  blockedUserId: number;
+  createdAt: Date;
+  // User: UserInfo;
+  // BlockedUser: UserInfo;
+}
+
 export interface GameDTO {
   Players: Array<any>;
   roomName: string;
