@@ -1,8 +1,10 @@
+import { IUser } from './IUser';
+
 export class IFriend {
-  friendId: number;
-  requesterId: number;
-  responserId: number;
-  approval: boolean;
+  id: number;
+  userId: number;
+  friendUserId: number;
   createdAt: Date;
-  modifiedAt: Date;
+  // modifiedAt: Date;
+  User: IUser;
 }
