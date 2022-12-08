@@ -45,43 +45,27 @@ export class UserService implements IUserService {
         'users.user_id = friend.user_id',
       )
       .where('users.user_id=:id', { id })
-      // .innerJoinAndSelect('friend.FriendUser.status', 'status')
-      .innerJoinAndSelect('friend.FriendUser', 'friendUser')
-      // .innerJoinAndMapMany('friend.FriendUser', 'friendUser')
-      // .select(['users', 'friend.friendUser.status'])
+      // .innerJoinAndSelect('friend.FriendUser', 'friendUser')
       .getOne();
+    // const FriendUsers = await this.friendRepository
+    //   .createQueryBuilder('friend')
+    //   .where('friend.user_id=:id', { id })
+    //   .innerJoinAndSelect('friend.FriendUser', 'friendUser')
+    //   .getMany();
 
-    const FriendUsers = await this.friendRepository
-      .createQueryBuilder('friend')
-      .where('friend.user_id=:id', { id })
-      .innerJoinAndSelect('friend.FriendUser', 'friendUser')
-      .getMany();
-
-    console.log('friend users:', FriendUsers);
-    // if (FriendUsers.length > 0) {
-    for (let i = 0; i < user.Friend.length; i++) {
-      for (let j = 0; j < FriendUsers.length; j++) {
-        if (user.Friend[i].friendUserId === FriendUsers[j].FriendUser.id) {
-          console.log('testtest');
-          const { status } = user.Friend[i].FriendUser;
-          // delete user.Friend[i].FriendUser.email;
-          // delete user.Friend[i].FriendUser.created_at;
-          // delete user.Friend[i].FriendUser.modified_at;
-          // delete user.Friend[i].FriendUser.image_url;
-          // delete user.Friend[i].FriendUser.two_factor_activated;
-          // delete user.Friend[i].FriendUser.two_factor_valid;
-          // delete user.Friend[i].FriendUser.intra_id;
-          // delete user.Friend[i].FriendUser.username;
-          // delete user.Friend[i].FriendUser.id;
-          delete user.Friend[i].FriendUser;
-          user.Friend[i]['status'] = status;
-          // user.Friend[i].FriendUser['test'] = 'test';
-        }
-      }
-      // }
-    }
+    // // console.log('friend users:', FriendUsers);
+    // for (let i = 0; i < user.Friend.length; i++) {
+    //   for (let j = 0; j < FriendUsers.length; j++) {
+    //     if (user.Friend[i].friendUserId === FriendUsers[j].FriendUser.id) {
+    //       const { status } = user.Friend[i].FriendUser;
+    //       delete user.Friend[i].FriendUser;
+    //       user.Friend[i]['status'] = status;
+    //     }
+    //   }
+    // }
     return user;
   }
+
   async getUserById(id: number) {
     this.logger.debug(`getUserById() id: ${id}`);
     const user = await this.userRepository
@@ -202,13 +186,9 @@ export class UserService implements IUserService {
       .where('friend.user_id=:userId', { userId })
       .innerJoinAndSelect('friend.FriendUser', 'friendUser')
       .getMany();
-
-    // console.log('friend users:', FriendUsers);
-    // if (FriendUsers.length > 0) {
     for (let i = 0; i < friends.length; i++) {
       for (let j = 0; j < FriendUsers.length; j++) {
         if (friends[i].friendUserId === FriendUsers[j].FriendUser.id) {
-          console.log('testtest');
           const { status } = friends[i].FriendUser;
           delete friends[i].FriendUser;
           friends[i]['status'] = status;
