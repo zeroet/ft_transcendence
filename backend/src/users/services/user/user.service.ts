@@ -162,6 +162,7 @@ export class UserService implements IUserService {
     const friends = await this.friendRepository
       .createQueryBuilder('friend')
       .where('friend.user_id=:userId', { userId })
+      .innerJoinAndSelect('friend.FriendUser', 'frienduser')
       .getMany();
     return friends;
   }
