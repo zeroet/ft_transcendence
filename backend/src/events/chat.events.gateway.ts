@@ -18,18 +18,14 @@ import { IUserService } from 'src/users/services/user/user.interface';
 import { Repository } from 'typeorm';
 
 // @UseFilters(new BaseWsExceptionFilter())
-@UseGuards(JwtWsGuard)
+// @UseGuards(JwtWsGuard)
 @WebSocketGateway({ path: '/chat', cors: '*' })
 export class ChatEventsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   protected readonly logger = new Logger(ChatEventsGateway.name);
-  constructor(
-    @Inject('AUTH_SERVICE') private authService: IAuthService,
-    @Inject('USER_SERVICE') private userService: IUserService,
-    @InjectRepository(Chatroom)
-    private chatroomRepository: Repository<Chatroom>, // private readonly jwtAccessStrategy: JwtAccessStrategy,
-  ) {}
+  constructor() // private chatroomRepository: Repository<Chatroom>, // private readonly jwtAccessStrategy: JwtAccessStrategy, // @InjectRepository(Chatroom) // @Inject('USER_SERVICE') private userService: IUserService, // @Inject('AUTH_SERVICE') private authService: IAuthService,
+  {}
 
   @WebSocketServer()
   server: Server;
@@ -42,14 +38,14 @@ export class ChatEventsGateway
   //   this.server.emit('message', socket.id, message);
   // }
 
-  @SubscribeMessage('newDmList')
-  handleDmMessage(
-    @MessageBody() newDm: string,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    this.server.emit('newDmList', newDm);
-    // this.server.emit('dm', socket.id, dmMessage);
-  }
+  // @SubscribeMessage('newDmList')
+  // handleDmMessage(
+  //   @MessageBody() newDm: string,
+  //   @ConnectedSocket() socket: Socket,
+  // ) {
+  //   this.server.emit('newDmList', newDm);
+  //   // this.server.emit('dm', socket.id, dmMessage);
+  // }
 
   // @SubscribeMessage('join')
   // joinRoom(@MessageBody() name, @ConnectedSocket() socket: Socket) {

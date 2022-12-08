@@ -50,7 +50,10 @@ export class Friend implements IFriend {
   @JoinColumn({ name: 'user', referencedColumnName: 'id' })
   User: IUser;
 
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'friend_user', referencedColumnName: 'id' })
   FriendUser: IUser;
 }

@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { Block, Friend, User } from 'src/typeorm';
 import { Status } from 'src/utils/types';
 import { Repository } from 'typeorm';
@@ -17,6 +18,7 @@ export class UserService implements IUserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Block) private blockRepository: Repository<Block>,
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
+    private chatEventsGateway: ChatEventsGateway,
   ) {}
 
   async findUserByIdOrFail(userId: number) {
@@ -43,15 +45,28 @@ export class UserService implements IUserService {
         'friend',
         'users.user_id = friend.user_id',
       )
-      // .leftJoinAndSelect(
-      //   'Friend.FriendUser',
-      //   'friend',
-      //   'friend.user_id = users.user_id',
-      // )
       .where('users.user_id=:id', { id })
+      // .innerJoinAndSelect('friend.FriendUser', 'friendUser')
       .getOne();
+    // const FriendUsers = await this.friendRepository
+    //   .createQueryBuilder('friend')
+    //   .where('friend.user_id=:id', { id })
+    //   .innerJoinAndSelect('friend.FriendUser', 'friendUser')
+    //   .getMany();
+
+    // // console.log('friend users:', FriendUsers);
+    // for (let i = 0; i < user.Friend.length; i++) {
+    //   for (let j = 0; j < FriendUsers.length; j++) {
+    //     if (user.Friend[i].friendUserId === FriendUsers[j].FriendUser.id) {
+    //       const { status } = user.Friend[i].FriendUser;
+    //       delete user.Friend[i].FriendUser;
+    //       user.Friend[i]['status'] = status;
+    //     }
+    //   }
+    // }
     return user;
   }
+
   async getUserById(id: number) {
     this.logger.debug(`getUserById() id: ${id}`);
     const user = await this.userRepository
@@ -165,7 +180,22 @@ export class UserService implements IUserService {
     const friends = await this.friendRepository
       .createQueryBuilder('friend')
       .where('friend.user_id=:userId', { userId })
+      .innerJoinAndSelect('friend.FriendUser', 'friendUser')
       .getMany();
+    const FriendUsers = await this.friendRepository
+      .createQueryBuilder('friend')
+      .where('friend.user_id=:userId', { userId })
+      .innerJoinAndSelect('friend.FriendUser', 'friendUser')
+      .getMany();
+    for (let i = 0; i < friends.length; i++) {
+      for (let j = 0; j < FriendUsers.length; j++) {
+        if (friends[i].friendUserId === FriendUsers[j].FriendUser.id) {
+          const { status } = friends[i].FriendUser;
+          delete friends[i].FriendUser;
+          friends[i]['status'] = status;
+        }
+      }
+    }
     return friends;
   }
 
@@ -173,6 +203,7 @@ export class UserService implements IUserService {
     const user = await this.findUserByIdOrFail(userId);
     user.status = status;
     const updatedUser = await this.userRepository.save(user);
+    this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
   }
   // updateUserById(id: number) {}

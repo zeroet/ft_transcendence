@@ -48,7 +48,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
-    this.authService.updateUserStatus(user.id, Status.LOGIN);
+    return this.authService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({
@@ -72,6 +72,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
+    return this.authService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({ summary: 'Signup with 42API / 42API를 이용한 사용자등록' })
@@ -99,7 +100,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
-    this.authService.updateUserStatus(user.id, Status.LOGIN);
+    return this.authService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({
@@ -120,7 +121,7 @@ export class AuthController {
       refreshToken,
       this.authService.refreshTokenCookieOptions,
     );
-    this.authService.setRefreshToken(user.id, refreshToken);
+    return this.authService.setRefreshToken(user.id, refreshToken);
   }
 
   @ApiOperation({
@@ -141,6 +142,6 @@ export class AuthController {
         this.authService.defaultCookieOptions,
       );
     }
-    this.authService.updateUserStatus(user.id, Status.LOGOUT);
+    return this.authService.updateUserStatus(user.id, Status.LOGOUT);
   }
 }

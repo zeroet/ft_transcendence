@@ -19,6 +19,7 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
+import { ChangeAdminDto } from 'src/chat/dto/change-admin.dto';
 import { ChatContentDto } from 'src/chat/dto/chat.content.dto';
 import { ChatMemberDto } from 'src/chat/dto/chat.member.dto';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
@@ -146,7 +147,7 @@ export class ChatroomController {
   }
 
   @ApiBody({
-    type: Number,
+    type: ChangeAdminDto,
     description: 'Target user id',
   })
   @ApiParam({

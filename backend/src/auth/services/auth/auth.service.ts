@@ -12,12 +12,15 @@ import { Repository } from 'typeorm';
 import { IAuthService } from './auth.interface';
 import * as bcrypt from 'bcrypt';
 import { CookieOptions } from 'express';
+import { ChatEventsGateway } from 'src/events/chat.events.gateway';
+// import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private chatEventsGateway: ChatEventsGateway,
   ) {}
 
   defaultCookieOptions: CookieOptions = {
@@ -163,7 +166,12 @@ export class AuthService implements IAuthService {
     console.log('deleteDummyUser:', count);
     if (count === 0) {
       console.log('dummy:', user.intra_id);
-      await this.userRepository.delete(user.id);
+      const dummy = await this.userRepository
+        .createQueryBuilder('users')
+        .where('users.user_id=:id', { id: user.id })
+        .getOne();
+      // await this.userRepository.delete(user.id);
+      await this.userRepository.remove(user);
       return true;
     }
     return false;
@@ -179,6 +187,7 @@ export class AuthService implements IAuthService {
     }
     user.status = status;
     const updatedUser = await this.userRepository.save(user);
+    this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
   }
 }
