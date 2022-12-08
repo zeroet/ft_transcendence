@@ -74,7 +74,7 @@ export class ChatMember implements IChatMember {
   readonly modifiedAt: Date;
 
   @ManyToOne((type) => Chatroom, (Chatroom) => Chatroom.ChatMember, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'chatroom_id', referencedColumnName: 'id' })

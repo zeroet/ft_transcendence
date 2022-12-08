@@ -19,6 +19,8 @@ import { Block } from './block.entity';
 import { IBlock } from '../interfaces/IBlock';
 import { IDmContent } from '../interfaces/IDmContent';
 import { DmContent } from './dmContent.entity';
+import { IFriend } from '../interfaces/IFriend';
+import { Friend } from './friend.entity';
 
 @Entity({ name: 'users' })
 export class User implements IUser {
@@ -90,7 +92,12 @@ export class User implements IUser {
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
   modified_at: Date;
 
-  @Column({ type: 'varchar', name: 'hashed_refresh_token', nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'hashed_refresh_token',
+    nullable: true,
+    select: false,
+  })
   hashed_refresh_token: string;
 
   @ApiProperty({
@@ -106,7 +113,12 @@ export class User implements IUser {
     example: 'NUGQEHCBAAERQBQ6',
     description: 'two_factor_secret',
   })
-  @Column({ type: 'varchar', name: 'two_factor_secret', nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'two_factor_secret',
+    nullable: true,
+    select: false,
+  })
   two_factor_secret: string;
 
   @ApiProperty({
@@ -118,8 +130,12 @@ export class User implements IUser {
   two_factor_valid: boolean;
 
   @OneToMany((type) => Block, (Block) => Block.User)
-  // @JoinColumn({ name: 'block', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'block', referencedColumnName: 'id' })
   Block: IBlock[];
+
+  @OneToMany((type) => Friend, (Friend) => Friend.User)
+  @JoinColumn({ name: 'friend', referencedColumnName: 'id' })
+  Friend: IFriend[];
 
   @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.User)
   ChatMember: IChatMember[];
