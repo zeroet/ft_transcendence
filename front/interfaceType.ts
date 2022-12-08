@@ -3,12 +3,19 @@ export interface TokenType {
   refreshToken?: string;
 }
 
+export enum Status {
+  LOGIN = "Login",
+  LOGOUT = "Logout",
+  PLAYING = "Playing",
+}
+
 export interface UserInfo {
   id: number;
   intra_id: string;
   email: string;
   image_url: string;
   username: string;
+  status: Status;
   created_at: Date;
   modified_at: Date;
   hashed_refresh_token: string;
@@ -83,6 +90,24 @@ export interface IDmContent {
   modifiedAt: Date;
   Dm: IDm;
   // User: IUser;
+}
+
+export interface IFriend {
+  id: number;
+  userId: number;
+  friendUserId: number;
+  createdAt: Date;
+  // User: UserInfo;
+  // FriendUser: UserInfo;
+}
+
+export interface IBlock {
+  id: number;
+  userId: number;
+  blockedUserId: number;
+  createdAt: Date;
+  // User: UserInfo;
+  // BlockedUser: UserInfo;
 }
 
 export interface GameDTO {

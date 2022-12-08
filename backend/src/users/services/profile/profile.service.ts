@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/typeorm';
@@ -9,13 +13,24 @@ export class ProfileService {
     @InjectRepository(User) private userRepository: Repository<User>, // private readonly mailerService: MailerService,
   ) {}
 
-  async updateUserName(userID: number, newUserName: string) {
-    await this.userRepository.update(userID, {
-      username: newUserName,
-    });
-    const user = this.userRepository.findOneBy({ id: userID });
-    console.log('in the username');
-    console.log((await user).username);
+  async updateUserName(userId: number, newUserName: string) {
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.user_id=:userId', { userId })
+      .getOne();
+    if (!user) {
+      throw new NotFoundException(`User of id:${userId} not found`);
+    }
+    const user2 = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.username=:newUserName', { newUserName })
+      .getOne();
+    if (user2) {
+      throw new BadRequestException(`User name:${newUserName} already exists`);
+    }
+    user.username = newUserName;
+    const updatedUser = await this.userRepository.save(user);
+    return updatedUser;
   }
 
   async updateUserImage(userID: number, newUserImage: string) {
