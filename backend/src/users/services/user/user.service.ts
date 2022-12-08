@@ -84,6 +84,16 @@ export class UserService implements IUserService {
         `Block user of id:${blockUserId} doesn't exist`,
       );
     }
+    const block = await this.blockRepository
+      .createQueryBuilder('block')
+      .where('block.user_id=:userId', { userId })
+      .andWhere('block.blocked_user_id=:blockUserId', { blockUserId })
+      .getOne();
+    if (block) {
+      throw new BadRequestException(
+        `${user.username} already blocked ${blockUser.username}`,
+      );
+    }
     const createdBlock = this.blockRepository.create({
       userId,
       blockedUserId: blockUserId,
