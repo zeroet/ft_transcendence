@@ -2,6 +2,8 @@ import React, { useState, useCallback } from "react";
 import axios from "axios";
 import useSWR from "swr";
 import Loading from "../../errorAndLoading/Loading";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ChangeNameAndPW = ({
   setShowChangeModal,
@@ -26,7 +28,8 @@ const ChangeNameAndPW = ({
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
-        alert("new Room PW more than 4");
+        toast.error("Password should more than 4 character");
+        // alert("new Room PW more than 4");
         setPw("");
         return;
       }

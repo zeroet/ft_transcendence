@@ -91,6 +91,8 @@ export default function Participant({
         .participant {
           display: flex;
           margin-left: -25px;
+          margin-bottom: 7px;
+          font-size: 17px;
         }
         img {
           margin-left: 10px;

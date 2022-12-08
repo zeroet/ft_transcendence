@@ -72,6 +72,13 @@ const ParticipantSettingModal = ({
     console.log("Kick");
   }, []);
 
+  const onClickSetAdmin = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowModal(false);
+    console.log("Set Admin");
+  }, []);
+
   console.log(myData);
   if (!myData) return <Loading />;
   return (
@@ -95,6 +102,9 @@ const ParticipantSettingModal = ({
           </div>
           <div className="router-div" onClick={onClickKick}>
             Kick
+          </div>
+          <div className="router-div" onClick={onClickSetAdmin}>
+            Set Admin
           </div>
         </div>
       )}
