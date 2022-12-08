@@ -18,7 +18,6 @@ export class UserService implements IUserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Block) private blockRepository: Repository<Block>,
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
-    private chatEventsGateway: ChatEventsGateway,
   ) {}
 
   async findUserByIdOrFail(userId: number) {
@@ -175,7 +174,6 @@ export class UserService implements IUserService {
     const user = await this.findUserByIdOrFail(userId);
     user.status = status;
     const updatedUser = await this.userRepository.save(user);
-    this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
   }
   // updateUserById(id: number) {}

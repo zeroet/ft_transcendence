@@ -6,32 +6,19 @@ import useSocket from "../../Utils/socket";
 const GameReadyModal = ({
   accessToken,
   closeSettingModal,
+  username,
 }: {
   accessToken: string;
   closeSettingModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  username: string;
 }) => {
   const router = useRouter();
   const [socket] = useSocket(accessToken, "game");
 
-  const onClickSubmit = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      e.preventDefault();
-
-      // socket?.emit("starGame", {
-      //   ready: true,
-      // });
-
-      //테스트용 원래는 useEffect에서 해야함
-      console.log("game ready modal click ok");
-      // router.push(`/Game/test!!!`);
-    },
-    []
-  );
-
   useEffect((): (() => void) => {
     console.log("in game ready modal", socket?.id);
     socket?.on("enterGame", (roomName: string) => {
+      socket?.emit("myname", username);
       console.log(roomName);
       console.log("is room name! from socket");
       // query로 게임이름
@@ -46,9 +33,9 @@ const GameReadyModal = ({
     return () => {
       console.log("off socket in game ready modal");
       socket?.off("enterGame");
-      // socket?.off("game_setting");
     };
-  }, []);
+  }, [socket?.id]);
+
   if (!socket) return <Loading />;
   return (
     <div className="box">
