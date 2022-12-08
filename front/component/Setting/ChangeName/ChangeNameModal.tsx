@@ -43,11 +43,12 @@ const ChangeNameModal = ({
             username: newNickName,
           });
           mutate("/api/users");
-          setNewNickName("");
+          router.push("/Home");
         } catch (err) {
           console.log(err);
+          alert(`${newNickName} is already exists`);
         } finally {
-          router.push("/Home");
+          setNewNickName("");
         }
       } else {
         toast.error("nickname should be 1 ~ 30 characters", {
@@ -79,6 +80,7 @@ const ChangeNameModal = ({
               onChange={getNewNickName}
               type="text"
               placeholder="new nickname should be less then 30 characters"
+              value={newNickName}
               autoFocus
             />
           </div>

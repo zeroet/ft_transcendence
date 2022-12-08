@@ -1,22 +1,26 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
-import { UserDetails } from 'src/utils/types';
+import { Status, UserDetails } from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { IAuthService } from './auth.interface';
 import * as bcrypt from 'bcrypt';
 import { CookieOptions } from 'express';
+import { ChatEventsGateway } from 'src/events/chat.events.gateway';
+// import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private chatEventsGateway: ChatEventsGateway,
   ) {}
 
   defaultCookieOptions: CookieOptions = {
@@ -162,9 +166,28 @@ export class AuthService implements IAuthService {
     console.log('deleteDummyUser:', count);
     if (count === 0) {
       console.log('dummy:', user.intra_id);
-      await this.userRepository.delete(user.id);
+      const dummy = await this.userRepository
+        .createQueryBuilder('users')
+        .where('users.user_id=:id', { id: user.id })
+        .getOne();
+      // await this.userRepository.delete(user.id);
+      await this.userRepository.remove(user);
       return true;
     }
     return false;
+  }
+
+  async updateUserStatus(userId: number, status: Status) {
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.user_id=:userId', { userId })
+      .getOne();
+    if (!user) {
+      throw new NotFoundException(`User of id:${userId} not found`);
+    }
+    user.status = status;
+    const updatedUser = await this.userRepository.save(user);
+    this.chatEventsGateway.server.emit('status', updatedUser);
+    return updatedUser;
   }
 }

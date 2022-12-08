@@ -2,11 +2,9 @@
 
 # 추가해야할 사항
 
-setting: 사용자상태(user state), 유니크한 이름(unique username), 친구(friend)
+사용자상태(user state) playing 추가
 
-chat: 방장에게 대화방 삭제 및 권한 부여 or 참여자가 없을 시 자동 삭제
-
-        access & refresh token이 남아있고 디비에 유저가 없을 때 not found 에러 핸들
+chat:  참여자가 없을 시 자동 삭제 여부
 
 # Barcodepong API 문서
 

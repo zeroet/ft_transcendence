@@ -4,7 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
+// import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
+import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { Block, Dm, User } from 'src/typeorm';
 import { DmContent } from 'src/typeorm/entities/dmContent.entity';
 import { IsNull, MoreThan, Repository } from 'typeorm';

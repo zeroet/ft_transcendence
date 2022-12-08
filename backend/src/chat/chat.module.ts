@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
-import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
+import { ChatEventsGateway } from 'src/events/chat.events.gateway';
+import { EventsModule } from 'src/events/events.module';
 import {
   Block,
   ChatContent,
@@ -32,12 +33,12 @@ import { DmService } from './services/dm/dm.service';
     UsersModule,
     AuthModule,
     ScheduleModule.forRoot(),
+    EventsModule,
   ],
   controllers: [DmController, ChatroomController],
   providers: [
     { provide: 'DM_SERVICE', useClass: DmService },
     { provide: 'CHATROOM_SERVICE', useClass: ChatroomService },
-    ChatEventsGateway,
   ],
 })
 export class ChatModule {}

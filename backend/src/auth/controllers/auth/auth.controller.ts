@@ -14,7 +14,7 @@ import { JwtRefreshAuthGuard } from 'src/auth/guards/jwt.refresh-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { TwoFactorService } from 'src/auth/services/two-factor/two-factor.service';
 import { User } from 'src/utils/decorators/user.decorator';
-import { Cookies } from 'src/utils/types';
+import { Cookies, Status } from 'src/utils/types';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -48,6 +48,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
+    return this.authService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({
@@ -71,6 +72,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
+    return this.authService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({ summary: 'Signup with 42API / 42API를 이용한 사용자등록' })
@@ -98,6 +100,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
+    return this.authService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({
@@ -118,7 +121,7 @@ export class AuthController {
       refreshToken,
       this.authService.refreshTokenCookieOptions,
     );
-    this.authService.setRefreshToken(user.id, refreshToken);
+    return this.authService.setRefreshToken(user.id, refreshToken);
   }
 
   @ApiOperation({
@@ -139,5 +142,6 @@ export class AuthController {
         this.authService.defaultCookieOptions,
       );
     }
+    return this.authService.updateUserStatus(user.id, Status.LOGOUT);
   }
 }
