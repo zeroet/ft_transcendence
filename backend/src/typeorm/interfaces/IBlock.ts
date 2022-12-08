@@ -6,4 +6,5 @@ export interface IBlock {
   blockedUserId: number;
   createdAt: Date;
   User: IUser;
+  BlockedUser: IUser;
 }

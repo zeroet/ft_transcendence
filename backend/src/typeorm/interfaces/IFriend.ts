@@ -7,4 +7,5 @@ export class IFriend {
   createdAt: Date;
   // modifiedAt: Date;
   User: IUser;
+  FriendUser: IUser;
 }

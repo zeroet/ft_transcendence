@@ -28,10 +28,14 @@ export class Friend implements IFriend {
   // @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
   // modifiedAt: Date;
 
-  @ManyToOne((type) => User, {
+  @ManyToOne((type) => User, (User) => User.Friend, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'user', referencedColumnName: 'id' })
   User: IUser;
+
+  @ManyToOne((type) => User)
+  @JoinColumn({ name: 'friend_user', referencedColumnName: 'id' })
+  FriendUser: IUser;
 }
