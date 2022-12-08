@@ -127,7 +127,14 @@ export class UserService implements IUserService {
     return removedBlock;
   }
 
-  async getBlockList(userId: number) {}
+  async getBlockList(userId: number) {
+    const user = await this.findUserByIdOrFail(userId);
+    const blocks = await this.blockRepository
+      .createQueryBuilder('block')
+      .where('block.user_id=:userId', { userId })
+      .getMany();
+    return blocks;
+  }
 
   async addFriend(userId: number, friendUserId: number) {
     const user = await this.findUserByIdOrFail(userId);
@@ -169,6 +176,13 @@ export class UserService implements IUserService {
     return removedFriend;
   }
 
-  async getFriendList(userId: number) {}
+  async getFriendList(userId: number) {
+    const user = await this.findUserByIdOrFail(userId);
+    const friends = await this.friendRepository
+      .createQueryBuilder('friend')
+      .where('friend.user_id=:userId', { userId })
+      .getMany();
+    return friends;
+  }
   // updateUserById(id: number) {}
 }
