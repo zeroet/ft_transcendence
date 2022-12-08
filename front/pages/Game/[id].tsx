@@ -106,9 +106,9 @@ export default function Gaming({
 
     socket?.on("gameover", () => {
       socket?.emit("initialGame");
-      socket?.on("initialGame", (ownerName: string, playerName: string) => {
-        setOwnerName(ownerName);
-        setplayerName(playerName);
+      socket?.on("initialGame", (names: { name1: string; name2: string }) => {
+        setOwnerName(names.name1);
+        setplayerName(names.name2);
       });
 
       if (myRole === "owner") {
