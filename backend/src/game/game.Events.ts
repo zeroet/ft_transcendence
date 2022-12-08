@@ -130,7 +130,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
           this.queueNormal.Players.shift().join(data.roomName);
           this.queueNormal.size -= 2;
         if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
-         return this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
+          await this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
         this.liveGame(data.roomName);
       }
      }
@@ -138,7 +138,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
      {}
     }
 
-  async liveGame(name: string) {
+    liveGame(name: string) {
     for(const room of this.roomService.rooms.values()){
       console.log(name);
       console.log(room.Players[0].id);
@@ -148,11 +148,9 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
 
   @SubscribeMessage('myname')
-  myname(@ConnectedSocket() client: Socket, @MessageBody() data)
-  {
+  myname(@ConnectedSocket() client: Socket, @MessageBody() data) {
     this.roomService.addName(client, data);
   }
- 
     
   @SubscribeMessage('room-list')
   async handleRoomList() {
@@ -168,6 +166,15 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         return ;
       this.roomService.addWatcher(watcher, data);
       this.server.to(data.roomName).emit('enterGame', data);
+  }
+
+  @SubscribeMessage('paddle')
+  paddle(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data:any){
+      if(!data)
+        return ;
+      this.roomService.movePaddle(client, data);
   }
 }
 
