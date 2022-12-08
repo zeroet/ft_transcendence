@@ -102,12 +102,12 @@ export default function Gaming({
     socket?.emit("room-list");
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
-      console.log('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
+      console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
     }
 
     socket?.on("gameover", () => {
-      socket?.emit("initialGame");
       socket?.on("initialGame", (names: { name1: string; name2: string }) => {
+        console.log(names);
         setOwnerName(names.name1);
         setplayerName(names.name2);
       });
@@ -138,7 +138,7 @@ export default function Gaming({
       );
       disconnect();
     };
-  }, []);
+  }, [socket?.id]);
 
   const onClickHome = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
