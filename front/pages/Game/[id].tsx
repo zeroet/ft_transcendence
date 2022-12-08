@@ -241,13 +241,11 @@ export default function Gaming({
           }
 
           .left {
-            // --position: ${leftPaddle}px;
-            top: ${leftPaddle - 160}px;
+            top: ${leftPaddle}px;
           }
 
           .right {
-            // --position: ${rightPaddle}px;
-            top: ${rightPaddle - 160}px;
+            top: ${rightPaddle}px;
             left: ${1500 - 10}px;
           }
 
@@ -281,7 +279,7 @@ export default function Gaming({
             position: relative;
             background-color: var(--foreground-color);
             left: ${ballX}px;
-            top: ${ballY - 135}px;
+            top: ${ballY}px;
             trasform: traslate(-50%, -50%);
             border-radius: 50%;
             width: ${ballSize / 2}px;
