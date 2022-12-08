@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import axios from "axios";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
 import { toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
@@ -49,7 +49,9 @@ const ChangeNameAndPW = ({
             chatroomName: RoomName === "" ? roomData.chatroomName : RoomName,
             password: RoomPw === "" ? null : RoomPw,
           })
-          .then((res) => console.log(res))
+          .then((res) => {
+            // mutate(`/api/chatroom/${roomId}`);
+          })
           .catch((err) => console.log(err))
           .finally(() => {
             setShowChangeModal(false);
