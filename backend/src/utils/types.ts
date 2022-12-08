@@ -14,3 +14,9 @@ export enum Cookies {
   ACCESS_TOKEN = 'accessToken',
   REFRESH_TOKEN = 'refreshToken',
 }
+
+export enum Status {
+  LOGIN = 'Login',
+  LOGOUT = 'Logout',
+  PLAYING = 'Playing',
+}

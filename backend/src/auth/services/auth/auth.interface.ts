@@ -1,4 +1,4 @@
-import { UserDetails } from 'src/utils/types';
+import { Status, UserDetails } from 'src/utils/types';
 
 export interface IAuthService {
   defaultCookieOptions;
@@ -12,4 +12,5 @@ export interface IAuthService {
   verify(accessToken: any);
   createDummyUser();
   deleteDummyUser(user);
+  updateUserStatus(userId: number, status: Status);
 }
