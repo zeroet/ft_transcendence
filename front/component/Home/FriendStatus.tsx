@@ -6,7 +6,6 @@ import useSocket from "../Utils/socket";
 
 export default function FriendStatus({ id }: { id: string }) {
   const [chatSocket] = useSocket(null, "chat");
-
   const { data: friendListData, error: friendListError } = useSWR(
     `/api/users/friend/list`
   );
@@ -19,7 +18,8 @@ export default function FriendStatus({ id }: { id: string }) {
       chatSocket?.off("status");
     };
   }, [friendListData, chatSocket?.id]);
-  console.log(friendListData.status);
+
+  console.log(friendListData?.status);
 
   if (!friendListData || !chatSocket) return <Loading />;
   return (
@@ -43,8 +43,9 @@ export default function FriendStatus({ id }: { id: string }) {
           display: flex;
         }
         .status {
-          background-color: red;
-          background-color: ;
+          background-color: ${friendListData.status === "login" && "green"};
+          background-color: ${friendListData.status === "game" && "yellow"};
+          background-color: ${friendListData.status === "logout" && "red"};
           width: 10px;
           height: 10px;
           border-radius: 50%;
