@@ -118,19 +118,27 @@ export class GameService{
         this.ball.y = nextY += this.dir.dy * 0.3 *this.speed/2;
         // paddles
 
-        if ((this.ball.x + this.ballSize + 30) >= 1450 || (this.ball.x - this.ballSize - 30) <= 10)
+        if ((this.ball.x + this.ballSize + 30) >= 1450)
         {
-            if (100 <= this.ball.y && this.ball.y <= 500)
+            if (100 < this.ball.y && this.ball.y < 500)
             {
                 this.dir.dx *= -1;
-                nextX += 1;
+                nextX -= 10;
+            }
+        }
+        else if ((this.ball.x - this.ballSize - 30) <= 10)
+        {
+            if (100 < this.ball.y && this.ball.y < 500)
+            {
+                this.dir.dx *= -1;
+                nextX += 10;
             }
         }
 
         // score 
         if ((this.ball.x - this.ballSize) >= 1450 || (this.ball.x + this.ballSize) <= 10)
         {
-            this.ball.x >= 1450 ? this.score.player2 += 1 : this.score.player1 += 1;
+            this.ball.x >= 1450 ? this.score.player1 += 1 : this.score.player2 += 1;
             console.log(`${this.score.player1} : ${this.score.player2}`)
             if (this.score.player1 == 10) {
                 this.gameover()
