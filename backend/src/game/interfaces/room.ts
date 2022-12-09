@@ -27,6 +27,11 @@ type paddles = {
     paddle2: number;
 }
 
+type wall = {
+    width:number;
+    height:number;
+}
+
 export enum Status {
     READY,
     PLAY,
@@ -51,6 +56,7 @@ export class GameService{
     width: number;
     height: number;
     paddles: paddles;
+    wall: wall;
 
     constructor(Player1, Player2, Status:Status, roomName:string, ownerId:string, speed:string, ballSize:string) {
         this.roomService = new RoomService()
@@ -61,7 +67,7 @@ export class GameService{
         this.roomName = roomName;
         this.ownerId = ownerId;
         this.speed = Number(speed);
-        this.width = 1450;
+        this.width = 1475;
         this.height = 725;
         this.ballSize = Number(ballSize);
         this.name = {name1:"", name2:""};
@@ -70,7 +76,8 @@ export class GameService{
         this.score = {
             player1: 0, player2: 0
         };
-        this.paddles = {paddle1: this.height/2, paddle2: this.height/2}
+        this.wall = {height:100, width:10}
+        this.paddles = {paddle1: 0, paddle2: 0}
     }
     
     default() {
@@ -107,7 +114,7 @@ export class GameService{
                 this.dir.dy *= -1;
                 nextY += 1;
             }
-            if (nextY >= 10) {
+            if (nextY >= 0) {
                 this.dir.dy *= -1;
                 nextY -= 1;
             }
@@ -118,27 +125,28 @@ export class GameService{
         this.ball.y = nextY += this.dir.dy * 0.3 *this.speed/2;
         // paddles
 
-        if ((this.ball.x + this.ballSize + 30) >= 1450)
-        {
-            if (100 < this.ball.y && this.ball.y < 500)
-            {
-                this.dir.dx *= -1;
-                nextX -= 10;
-            }
-        }
-        else if ((this.ball.x - this.ballSize - 30) <= 10)
-        {
-            if (100 < this.ball.y && this.ball.y < 500)
-            {
-                this.dir.dx *= -1;
-                nextX += 10;
-            }
-        }
+        // if ((this.ball.x + this.ballSize + 30) >= 1375)
+        // {
+        //     if (100 < this.ball.y + this.ballSize + 1 && this.ball.y - this.ballSize - 1 < 500)
+        //     {
+        //         this.dir.dx *= -1;
+        //         nextX -= 10;
+        //     }
+        // }
+        // else if ((this.ball.x - this.ballSize - 30) <= 0)
+        // {
+        //     if (100 < this.ball.y + this.ballSize + 1 && this.ball.y - this.ballSize - 1 < 500)
+        //     {
+        //         this.dir.dx *= -1;
+        //         nextX += 10;
+        //     }
+        // }
 
         // score 
-        if ((this.ball.x - this.ballSize) >= 1450 || (this.ball.x + this.ballSize) <= 10)
+        if ((this.ball.x - this.ballSize) >= 1475 || (this.ball.x + this.ballSize) <= 0)
         {
-            this.ball.x >= 1450 ? this.score.player1 += 1 : this.score.player2 += 1;
+            console.log(`${this.ball.x}, ${this.ballSize}`);
+            this.ball.x >= 1475 ? this.score.player1 += 1 : this.score.player2 += 1;
             console.log(`${this.score.player1} : ${this.score.player2}`)
             if (this.score.player1 == 10) {
                 this.gameover()
@@ -210,13 +218,33 @@ export class GameService{
     }
 
     keyPaddle1(input:number){
-        this.paddles.paddle1 += input;
-        console.log('paddle1111111111', this.paddles.paddle1);
+        if (input === 1)
+        {
+            if (this.paddles.paddle1 - 25  < 10)
+                return ;
+            this.paddles.paddle1 -= 25;
+        }
+        else if (input === 2)
+        {
+            if (this.paddles.paddle1 + 25  > 725)
+                return ;
+            this.paddles.paddle1 += 25;
+        }
     }
 
     keyPaddle2(input:number) {
-        this.paddles.paddle2 += input;
-        console.log('paddle2222222222', this.paddles.paddle2);
+        if (input === 1)
+        {
+            if (this.paddles.paddle2 -25 < 10)
+                return ;
+            this.paddles.paddle2 -= 25;
+        }
+        else if (input === 2)
+        {
+            if (this.paddles.paddle2 + 25 > 725)
+                return ;
+            this.paddles.paddle2 += 25;
+        }
     }
 
     pushWatcher(watcher: Socket)

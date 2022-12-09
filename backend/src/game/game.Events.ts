@@ -168,10 +168,11 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       this.server.to(data.roomName).emit('enterGame', data);
   }
 
+  //up : 1 // down: 2
   @SubscribeMessage('paddle')
   paddle(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data:any){
+    @MessageBody() data){
       if(!data)
         return ;
       this.roomService.movePaddle(client, data);

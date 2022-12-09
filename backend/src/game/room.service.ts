@@ -40,7 +40,7 @@ export class RoomService{
             for(const watcher of room.Watchers) {
                 watcher.emit('info', res)
             }
-            console.log(`${res.x}, ${res.y}, ${res.score1}, ${res.score2}`)
+            // console.log(`${res.x}, ${res.y}, ${res.score1}, ${res.score2}`)
         }
     }
 
@@ -74,14 +74,14 @@ export class RoomService{
             player.emit('gameover');
     }
 
-    movePaddle(player:Socket, data:any){
+    movePaddle(player:Socket, data:number){
         for (const room of this.rooms.values())
         {
             if (room.isOwner(player)) {
-                
+                room.keyPaddle1(data);
             }
             else if (room.isPlayer2(player)){
-
+                room.keyPaddle2(data);
             }
         }
     }
