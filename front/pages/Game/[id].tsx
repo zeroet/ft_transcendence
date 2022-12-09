@@ -238,7 +238,7 @@ export default function Gaming({
 
           .right {
             // --position: ${rightPaddle}px;
-            top: ${rightPaddle - 160}px;
+            top: ${rightPaddle - 260}px;
             left: ${1500 - 10}px;
           }
 
