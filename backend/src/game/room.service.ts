@@ -3,6 +3,7 @@ import { Socket } from "socket.io";
 import { GameService } from './interfaces/room'
 import { Status } from './interfaces/room'
 import { Interval } from "@nestjs/schedule";
+import { GameEvents } from "./game.Events";
 
 @Injectable()
 export class RoomService{
@@ -73,6 +74,13 @@ export class RoomService{
         for(const player of Players)
             player.emit('gameover');
     }
+    
+    //watcher event  Front
+    gameOverWatcher(Watchers)
+    {
+        for(const watchers of Watchers)
+        watchers.emit('gameover');
+    }
 
     movePaddle(player:Socket, data:number){
         for (const room of this.rooms.values())
@@ -84,5 +92,22 @@ export class RoomService{
                 room.keyPaddle2(data);
             }
         }
+    }
+
+    watcherOut(watcher:Socket) {
+        for (const room of this.rooms.values())
+        {
+            console.log('outwatcherrrrrrr', watcher.id)
+            if (room.isWatcher(watcher)) {
+                console.log('Watcher id', watcher.id);
+                console.log('room Watcher id', room.Watchers[0].id)
+                console.log('Owner id', room.Players[0].id)
+                console.log('Player2 id', room.Players[1].id)
+                watcher.leave(room.roomName);
+                room.deleteWatcher(watcher);
+                return true;
+            }
+        }
+        return false;
     }
 }

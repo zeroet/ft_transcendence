@@ -17,8 +17,11 @@ import { GameService, Status } from './interfaces/room';
 import { QueueService } from './queue.service';
 import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
-import { dataCollectionPhase } from 'typeorm-model-generator/dist/src/Engine';
 // import { GameService } from './game.service';
+
+export interface CustomSocket extends Socket{
+  user : any;
+}
 
 @UseGuards(JwtWsGuard)
 @WebSocketGateway({ path: '/game', cors: '*' })
@@ -37,7 +40,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   queueNormal: QueueService = new QueueService();
   
   afterInit() {
-    this.logger.log("INIT");
+    this.logger.log('INIT')
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
@@ -49,34 +52,42 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       client.disconnect();
       return;
     }
+
     client.data.user = user;
     this.logger.log('Lobbby', client.data.user);
   }
 
+
+
   async handleDisconnect(@ConnectedSocket() client: Socket) {
     // Queue case 
     if (this.queueNormal.Players.indexOf(client) != -1) {
+      console.log('queueueueue outttttttttttttttttttttttttt')
       this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
       this.queueNormal.size -= 1;
+      return ;
     }
     // InGame case
+    
     for (const room of this.roomService.rooms.values()){
-      if (room.isOwner || room.isPlayer2) {
+      if (room.isPlayer) {
+        console.log('im a playerrrrrrrrrrrrrrrrrrrrr')
         // game end
-        client.leave(room.roomName);
+        // client.leave(room.roomName);
         await room.deletePlayer(client);
         if (room.Players.length == 0)
-          this.roomService.rooms.delete(room.roomName);
+        this.roomService.rooms.delete(room.roomName);
+        // }
+        return ;
       }
+      console.log('im not a player rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
     }
+    
     // Watcher case
-    for (const room of this.roomService.rooms.values()) {
-      if (room.Watchers.indexOf(client) != -1) {
-        console.log('watcherrrr outttttttttttttt')
-        room.Watchers.splice(room.Watchers.indexOf(client), 1)
-        client.leave(room.roomName);    
-      }
-    }
+    console.log('watcherrrr outtttttttttttt')
+    if(this.roomService.watcherOut(client))
+      return ;
+
     const list = this.roomService.roomList()
     this.server.emit('room-list', list);
   }
@@ -95,7 +106,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
   @SubscribeMessage('cancle')
   cancel(@ConnectedSocket() client: Socket) {
-    console.log('cancle')
+    console.log('cancel')
     try {
       if ((this.queueNormal.Players[0].id === client.id) || (this.queueNormal.Players[1].id === client.id)) {
         if (this.queueNormal.Players[0].id === client.id)
