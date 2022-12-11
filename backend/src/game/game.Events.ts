@@ -8,20 +8,20 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
-import { GameService, Status } from './interfaces/room';
+import { GameService, Stat } from './interfaces/room';
 import { QueueService } from './queue.service';
 import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
+import { HttpExceptionFilter } from 'src/utils/http.exception.filter';
+import { ConnectionService } from 'src/connection/connection.service';
+import { Status } from 'src/utils/types';
 // import { GameService } from './game.service';
-
-export interface CustomSocket extends Socket{
-  user : any;
-}
 
 @UseGuards(JwtWsGuard)
 @WebSocketGateway({ path: '/game', cors: '*' })
@@ -32,37 +32,37 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     @Inject('AUTH_SERVICE') private authService: IAuthService,
   ) {}
  
+
   private logger = new Logger('GameGateway');
 
   @WebSocketServer()
   server: Server;
 
+  @Inject()
+  private connectionService: ConnectionService;
+
   queueNormal: QueueService = new QueueService();
   
   afterInit() {
-    this.logger.log('INIT')
+
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
-    const payload = await this.authService.verify(
-      client.handshake.headers.accesstoken,
-    );
-    const user = await this.userService.getUserById(payload.id);
-    if (!user) {
-      client.disconnect();
-      return;
+    try {
+      await this.connectionService.addConnection(client);
+    } catch (err) {
+      throw new WsException('unauthorized: unauthenticated connection');
     }
-
-    client.data.user = user;
-    this.logger.log('Lobbby', client.data.user);
   }
 
-
-
   async handleDisconnect(@ConnectedSocket() client: Socket) {
+    try {
+      await this.connectionService.eraseConnection(client);
+    } catch (err) {
+      throw new WsException('unauthorized connection');
+    }
     // Queue case 
     if (this.queueNormal.Players.indexOf(client) != -1) {
-      console.log('queueueueue outttttttttttttttttttttttttt')
       this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
       this.queueNormal.size -= 1;
       return ;
@@ -70,21 +70,16 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     // InGame case
     
     for (const room of this.roomService.rooms.values()){
-      if (room.isPlayer) {
-        console.log('im a playerrrrrrrrrrrrrrrrrrrrr')
+      if (room.isPlayer(client)) {
         // game end
         // client.leave(room.roomName);
         await room.deletePlayer(client);
         if (room.Players.length == 0)
         this.roomService.rooms.delete(room.roomName);
-        // }
         return ;
       }
-      console.log('im not a player rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
     }
-    
     // Watcher case
-    console.log('watcherrrr outtttttttttttt')
     if(this.roomService.watcherOut(client))
       return ;
 
@@ -92,9 +87,24 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     this.server.emit('room-list', list);
   }
 
+  async getUserfromSocket(client:Socket)
+  {
+    try {  
+      const payload = await this.authService.verify(client.handshake.headers.accesstoken)
+      const user = await this.userService.getUserById(payload.id)
+      return user
+    }
+    catch{}
+  }
 
   @SubscribeMessage('Queue')
-  readyGame(@ConnectedSocket() client: Socket) {
+  async readyGame(@ConnectedSocket() client: Socket) {
+    const user = await this.getUserfromSocket(client)
+    for(const player of this.queueNormal.Players)
+    {
+      let tmp = await this.getUserfromSocket(player)
+      if (user.id === tmp.id) return ;
+    }
     if (!this.queueNormal.addUser(client)) 
       return ;
     if (this.queueNormal.isFull())
@@ -136,7 +146,11 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   ) {
       try {
         if (client.id === this.queueNormal.Players[0].id) {
-          this.roomService.startGame(this.queueNormal.Players[0], this.queueNormal.Players[1], Status.READY, data.roomName, this.queueNormal.Players[0].id, data.speed, data.ballSize)
+          this.roomService.startGame(this.queueNormal.Players[0], this.queueNormal.Players[1], Stat.READY, data.roomName, this.queueNormal.Players[0].id, data.speed, data.ballSize)
+          let user1 = await this.getUserfromSocket(client);
+          let user2 = await this.getUserfromSocket(this.queueNormal.Players[1])
+          await this.userService.updateUserStatus(user1.id, Status.PLAYING)
+          await this.userService.updateUserStatus(user2.id, Status.PLAYING)
           this.queueNormal.Players.shift().join(data.roomName);
           this.queueNormal.Players.shift().join(data.roomName);
           this.queueNormal.size -= 2;
@@ -154,7 +168,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       console.log(name);
       console.log(room.Players[0].id);
       this.server.to(name).emit('enterGame', name);
-      room.changeStatus(Status.PLAY);
+      room.changeStatus(Stat.PLAY);
     }
   }
 
@@ -170,11 +184,23 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
 
   @SubscribeMessage('watchGame')
-  watchGame(
+  async watchGame(
     @ConnectedSocket() watcher: Socket, 
     @MessageBody() data:any) {
       if (!data)
         return ;
+      const user = await this.getUserfromSocket(watcher);
+      const Room = this.roomService.findRoom(data);
+      for (const player of Room.Players)
+      {
+        let tmpUser = await this.getUserfromSocket(player)
+        if (user.id === tmpUser.id) return ;
+      }
+      for (const watcher of Room.Watchers)
+      {
+        let tmpUser = await this.getUserfromSocket(watcher)
+        if (user.id === tmpUser.id) return ;
+      }
       this.roomService.addWatcher(watcher, data);
       this.server.to(data.roomName).emit('enterGame', data);
   }

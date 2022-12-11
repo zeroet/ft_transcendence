@@ -32,7 +32,7 @@ type wall = {
     height:number;
 }
 
-export enum Status {
+export enum Stat {
     READY,
     PLAY,
     END,
@@ -42,7 +42,7 @@ export enum Status {
 export class GameService{
     @Inject() roomService: RoomService
 
-    Status: Status;
+    Status: Stat;
     Players = [];
     name : name;
     Watchers: Array<any>;
@@ -58,7 +58,7 @@ export class GameService{
     paddles: paddles;
     wall: wall;
 
-    constructor(Player1, Player2, Status:Status, roomName:string, ownerId:string, speed:string, ballSize:string) {
+    constructor(Player1, Player2, Status:Stat, roomName:string, ownerId:string, speed:string, ballSize:string) {
         this.roomService = new RoomService()
         this.Status = Status;
         this.Players.push(Player1);
@@ -88,7 +88,7 @@ export class GameService{
     }
 
     gameover() {
-        this.Status = Status.END;
+        this.Status = Stat.END;
         this.roomService.gameOver(this.Players)
         this.roomService.gameOverWatcher(this.Watchers)
     }
@@ -101,7 +101,7 @@ export class GameService{
     update() {
         //player out  over case
         if (this.Players.length != 2) {
-            this.Status = Status.END;
+            this.Status = Stat.END;
             this.gameover()
         }
 
@@ -135,7 +135,7 @@ export class GameService{
         }
         else if (((nextY) <= (this.paddles.paddle1 + 50)) && (nextY) >= (this.paddles.paddle1 - 50))
         {
-            if ((nextX - (this.ballSize/2)) - 5 <= 0)
+            if ((nextX - (this.ballSize/2)) <= 0)
             {
                 this.dir.dx *= -1;
                 nextX += 10;
@@ -152,7 +152,7 @@ export class GameService{
             else if (this.score.player2 == 10) {
                 this.gameover()
                 // db 
-                this.Status = Status.END
+                this.Status = Stat.END
             }
             this.default()
             nextX = this.ball.x
@@ -218,7 +218,7 @@ export class GameService{
             return false;
     }
 
-    changeStatus(status :Status)
+    changeStatus(status :Stat)
     {
         this.Status = status;
     }
