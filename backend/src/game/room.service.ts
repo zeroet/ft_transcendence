@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { GameService } from './interfaces/room'
-import { Status } from './interfaces/room'
+import { Stat } from './interfaces/room'
 import { Interval } from "@nestjs/schedule";
+import { GameEvents } from "./game.Events";
 
 @Injectable()
 export class RoomService{
@@ -16,7 +17,7 @@ export class RoomService{
         player2.emit('createRoom', { isOwner: false });
     }
 
-    startGame(player1: Socket, player2: Socket, Status: Status, roomName:string, owner:string, speed:string, ballsize:string)
+    startGame(player1: Socket, player2: Socket, Status: Stat, roomName:string, owner:string, speed:string, ballsize:string)
     {
         const game = new GameService(player1, player2, Status, roomName, owner, speed, ballsize)
         this.rooms.set(roomName, game);
@@ -32,7 +33,7 @@ export class RoomService{
     @Interval(1000 / 60)
     loop(): void {
       for (const room of this.rooms.values())
-        if (room.Status == Status.PLAY) 
+        if (room.Status == Stat.PLAY) 
         {
             const res = room.update();
             for(const player of room.Players)
@@ -51,7 +52,7 @@ export class RoomService{
         for(const room of this.rooms.values())
         {
             if (room.roomName === roomName) {
-                watcher.join(roomName);
+                // watcher.join(roomName);
                 room.pushWatcher(watcher);
             }
         }
@@ -73,6 +74,13 @@ export class RoomService{
         for(const player of Players)
             player.emit('gameover');
     }
+    
+    //watcher event  Front
+    gameOverWatcher(Watchers)
+    {
+        for(const watchers of Watchers)
+        watchers.emit('gameover');
+    }
 
     movePaddle(player:Socket, data:number){
         for (const room of this.rooms.values())
@@ -85,4 +93,23 @@ export class RoomService{
             }
         }
     }
+
+    watcherOut(watcher:Socket) {
+        for (const room of this.rooms.values())
+        {
+            if (room.isWatcher(watcher)) {
+                room.deleteWatcher(watcher);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    findRoom(roomName:string){
+        for (const room of this.rooms.values())
+            if (room.roomName === roomName)
+                return room;
+        return ;
+    }
+
 }

@@ -9,6 +9,7 @@ import { entities } from './typeorm/index';
 import { GameModule } from 'src/game/game.module';
 import { ChatModule } from './chat/chat.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { ConnectionModule } from './connection/connection.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
     UsersModule,
     GameModule,
     ChatModule,
+    ConnectionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

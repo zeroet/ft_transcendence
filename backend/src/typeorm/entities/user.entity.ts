@@ -22,6 +22,8 @@ import { DmContent } from './dmContent.entity';
 import { IFriend } from '../interfaces/IFriend';
 import { Friend } from './friend.entity';
 import { Status } from 'src/utils/types';
+import { MatchHistory } from './matchHistory.entity';
+
 
 @Entity({ name: 'users' })
 export class User implements IUser {
@@ -165,4 +167,10 @@ export class User implements IUser {
 
   @OneToMany((type) => Dm, (Dm) => Dm.User2)
   DmUser2: IDm[];
+
+  @OneToMany(() => MatchHistory, (match) => match.winner)
+  won: MatchHistory[];
+
+  @OneToMany(() => MatchHistory, (match) => match.loser)
+  lost: MatchHistory[];
 }

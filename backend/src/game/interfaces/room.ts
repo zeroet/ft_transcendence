@@ -32,7 +32,7 @@ type wall = {
     height:number;
 }
 
-export enum Status {
+export enum Stat {
     READY,
     PLAY,
     END,
@@ -42,7 +42,7 @@ export enum Status {
 export class GameService{
     @Inject() roomService: RoomService
 
-    Status: Status;
+    Status: Stat;
     Players = [];
     name : name;
     Watchers: Array<any>;
@@ -58,7 +58,7 @@ export class GameService{
     paddles: paddles;
     wall: wall;
 
-    constructor(Player1, Player2, Status:Status, roomName:string, ownerId:string, speed:string, ballSize:string) {
+    constructor(Player1, Player2, Status:Stat, roomName:string, ownerId:string, speed:string, ballSize:string) {
         this.roomService = new RoomService()
         this.Status = Status;
         this.Players.push(Player1);
@@ -88,8 +88,9 @@ export class GameService{
     }
 
     gameover() {
-        this.Status = Status.END;
+        this.Status = Stat.END;
         this.roomService.gameOver(this.Players)
+        this.roomService.gameOverWatcher(this.Watchers)
     }
 
     // inGameOver() {
@@ -100,7 +101,7 @@ export class GameService{
     update() {
         //player out  over case
         if (this.Players.length != 2) {
-            this.Status = Status.END;
+            this.Status = Stat.END;
             this.gameover()
         }
 
@@ -121,33 +122,29 @@ export class GameService{
         }
         
         // new x y
-        this.ball.x = nextX += this.dir.dx * 0.2 *this.speed/2;
-        this.ball.y = nextY += this.dir.dy * 0.3 *this.speed/2;
         // paddles
-
-        // if ((this.ball.x + this.ballSize + 30) >= 1375)
-        // {
-        //     if (100 < this.ball.y + this.ballSize + 1 && this.ball.y - this.ballSize - 1 < 500)
-        //     {
-        //         this.dir.dx *= -1;
-        //         nextX -= 10;
-        //     }
-        // }
-        // else if ((this.ball.x - this.ballSize - 30) <= 0)
-        // {
-        //     if (100 < this.ball.y + this.ballSize + 1 && this.ball.y - this.ballSize - 1 < 500)
-        //     {
-        //         this.dir.dx *= -1;
-        //         nextX += 10;
-        //     }
-        // }
-
-        // score 
-        if ((this.ball.x - this.ballSize) >= 1475 || (this.ball.x + this.ballSize) <= 0)
+        
+        if (((nextY) <= (this.paddles.paddle2 + 50)) && (nextY) >= (this.paddles.paddle2 - 50))
         {
-            console.log(`${this.ball.x}, ${this.ballSize}`);
-            this.ball.x >= 1475 ? this.score.player1 += 1 : this.score.player2 += 1;
-            console.log(`${this.score.player1} : ${this.score.player2}`)
+            if ((nextX + (this.ballSize/2) + 10) >= 1475)
+            {
+                console.log(`${this.ball.x}, ${this.ball.y} paddle 2 ${this.paddles.paddle2}`)
+                this.dir.dx *= -1;
+                nextX -= 10;
+            }
+        }
+        else if (((nextY) <= (this.paddles.paddle1 + 50)) && (nextY) >= (this.paddles.paddle1 - 50))
+        {
+            if ((nextX - (this.ballSize/2)) <= 0)
+            {
+                this.dir.dx *= -1;
+                nextX += 10;
+            }
+        }
+        // score 
+        if ((nextX - this.ballSize) >= 1475 || (nextX + this.ballSize) <= 0)
+        {
+            nextX >= 1475 ? this.score.player1 += 1 : this.score.player2 += 1;
             if (this.score.player1 == 10) {
                 this.gameover()
                 // db
@@ -155,11 +152,16 @@ export class GameService{
             else if (this.score.player2 == 10) {
                 this.gameover()
                 // db 
-                this.Status = Status.END
+                this.Status = Stat.END
             }
             this.default()
+            nextX = this.ball.x
+            nextY = this.ball.y
         }
-
+        
+        this.ball.x = nextX += this.dir.dx * 0.2 *this.speed/2;
+        this.ball.y = nextY += this.dir.dy * 0.3 *this.speed/2;
+        
         //return 
         return ({
             x:this.ball.x,
@@ -195,6 +197,13 @@ export class GameService{
             return false;
     }
 
+    isWatcher(user: any) {
+        if (user === this.Watchers.indexOf(user))
+            return true;
+        else
+            return false;
+    }
+
     deletePlayer(user :any) {
         if (this.Players.splice(this.Players.indexOf(user), 1))
             return true;
@@ -202,7 +211,14 @@ export class GameService{
             return false;
     }
 
-    changeStatus(status :Status)
+    deleteWatcher(user :any) {
+        if (this.Watchers.splice(this.Watchers.indexOf(user), 1))
+            return true;
+        else
+            return false;
+    }
+
+    changeStatus(status :Stat)
     {
         this.Status = status;
     }
@@ -220,13 +236,13 @@ export class GameService{
     keyPaddle1(input:number){
         if (input === 1)
         {
-            if (this.paddles.paddle1 - 25  < 10)
+            if (this.paddles.paddle1 - 25  < 0)
                 return ;
             this.paddles.paddle1 -= 25;
         }
         else if (input === 2)
         {
-            if (this.paddles.paddle1 + 25  > 725)
+            if (this.paddles.paddle1 + 25  >= 675)
                 return ;
             this.paddles.paddle1 += 25;
         }
@@ -235,13 +251,13 @@ export class GameService{
     keyPaddle2(input:number) {
         if (input === 1)
         {
-            if (this.paddles.paddle2 -25 < 10)
+            if (this.paddles.paddle2 -25 < 0)
                 return ;
             this.paddles.paddle2 -= 25;
         }
         else if (input === 2)
         {
-            if (this.paddles.paddle2 + 25 > 725)
+            if (this.paddles.paddle2 + 25 >= 675)
                 return ;
             this.paddles.paddle2 += 25;
         }
@@ -250,5 +266,9 @@ export class GameService{
     pushWatcher(watcher: Socket)
     {
         this.Watchers.push(watcher);
+        for (const player of this.Players)
+            console.log('playerid', player.id)
+        for (const i of this.Watchers)
+            console.log('watchers', i.id);
     }
 }
