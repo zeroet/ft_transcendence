@@ -38,13 +38,16 @@ export class ConnectionService{
         let sockets: Set<Socket> = this.connections.get(user.id);
         if (!sockets) {
             await this.userService.updateUserStatus(user.id, Status.LOGIN);
-            sockets =new Set<Socket>();
+            sockets = new Set<Socket>();
             sockets.add(socket);
             this.connections.set(user.id, sockets);
         }
         else {
-            sockets.add(socket);
-            this.connections[user.id] = sockets;
+            // sockets.add(socket);
+            // this.connections[user.id] = sockets;
+            console.log(`User ${user.username} is already Connected in GameServer failed Connection ${socket.id}`)
+            socket.disconnect();
+
         }
     }
 
@@ -53,7 +56,7 @@ export class ConnectionService{
         try {
             user = await this.getUserFromSocket(socket);
         } catch (e) {
-            socket.disconnect(); // if the socket not authenticated should disconnect it
+            socket.disconnect();
             return;
         }
         try {
