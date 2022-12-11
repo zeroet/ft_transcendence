@@ -68,7 +68,7 @@ export class UserService implements IUserService {
   }
 
   async getUserById(id: number) {
-    this.logger.debug(`getUserById() id: ${id}`);
+    // this.logger.debug(`getUserById() id: ${id}`);
     const user = await this.userRepository
       .createQueryBuilder('users')
       .where('users.user_id=:id', { id })
