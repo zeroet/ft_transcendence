@@ -492,7 +492,7 @@ export class ChatroomService implements IChatroomService {
     console.log('savedMember:', savedMember);
     this.chatEventsGateway.server.emit('newMemberList', savedMember);
     // return chatroomMember;
-    this.postParticipants(userId, chatroomId);
+    return this.postParticipants(userId, chatroomId);
   }
 
   async updateMemberInfo(
