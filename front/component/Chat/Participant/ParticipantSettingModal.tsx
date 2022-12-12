@@ -84,11 +84,19 @@ const ParticipantSettingModal = ({
   );
 
   const onClickMute = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
+    async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
+      await axios
+        .patch(`/api/chatroom/${chatId}/members/update`, {
+          targetUserId: userId,
+          mute: true,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
       setShowModal(false);
-      console.log("Mute");
     },
     [chatroomData, userId, myData]
   );
