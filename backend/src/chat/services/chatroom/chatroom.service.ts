@@ -344,7 +344,7 @@ export class ChatroomService implements IChatroomService {
       // );
       this.chatEventsGateway.server.emit('kick', {
         chatroomId: chatroomId,
-        targetUserId: targetUser.id,
+        targetUserId: targetUser.userId,
       });
       // return updatedMember;
       // return deletedUser;
