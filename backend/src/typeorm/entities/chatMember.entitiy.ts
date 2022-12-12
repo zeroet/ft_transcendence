@@ -50,16 +50,16 @@ export class ChatMember implements IChatMember {
   })
   mutedAt: Date | null;
 
-  @ApiProperty({
-    description: 'Banned time',
-  })
-  @Column({
-    type: 'timestamp',
-    name: 'banned_at',
-    nullable: true,
-    default: null,
-  })
-  bannedAt: Date | null;
+  // @ApiProperty({
+  //   description: 'Banned time',
+  // })
+  // @Column({
+  //   type: 'timestamp',
+  //   name: 'banned_at',
+  //   nullable: true,
+  //   default: null,
+  // })
+  // bannedAt: Date | null;
 
   @ApiProperty({
     description: 'Created time',

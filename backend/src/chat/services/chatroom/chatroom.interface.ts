@@ -18,6 +18,14 @@ export interface IChatroomService {
     updateChatroomDto: UpdateChatroomDto,
   );
   changeAdmin(userId: number, chatroomId: number, targetUserId: number);
+  getParticipants(chatroomId: number);
+  postParticipants(userId: number, chatroomId: number);
+  updateParticipantInfo(
+    userId: number,
+    chatroomId: number,
+    updateMemberDto: UpdateMemberDto,
+  );
+  deleteParticipants(userId: number, chatroomId: number);
   getMembers(chatroomId: number);
   postMembers(userId: number, chatroomId: number);
   updateMemberInfo(

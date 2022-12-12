@@ -248,6 +248,82 @@ export class ChatroomController {
   }
 
   @ApiResponse({
+    type: ChatMemberDto,
+    description: 'Participant list of a chatroom',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary:
+      'Get all participants from a chatroom / 특정 대화방의 모든 현재 참여자목록 가져오기',
+  })
+  @Get(':id/participants')
+  async getParticipants(@Param('id') id: number) {
+    return this.chatroomService.getParticipants(id);
+  }
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary:
+      'Post participants to a chatroom / 특정 대화방에 새로운 현재 참여자 추가하기',
+  })
+  @Post(':id/participants')
+  async postParticipants(@User() user: IUser, @Param('id') id: number) {
+    return await this.chatroomService.postParticipants(user.id, id);
+  }
+
+  @ApiBody({
+    type: UpdateMemberDto,
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary:
+      'Update participants of a chatroom / 특정 대화방의 현재 참여자 정보 수정하기',
+  })
+  @Patch(':id/participants/update')
+  async updateParticipantsInfo(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body() updateMemberDto: UpdateMemberDto,
+  ) {
+    console.log('updateParticipantDto:', updateMemberDto);
+    console.log('chatroomId:', id);
+    return await this.chatroomService.updateParticipantInfo(
+      user.id,
+      id,
+      updateMemberDto,
+    );
+  }
+
+  @ApiResponse({
+    type: ChatMemberDto,
+    description: 'Participant list of a chatroom',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary:
+      'Delete participants to a chatroom / 특정 대화방에 현재 참여자 삭제하기',
+  })
+  @Delete(':id/participants')
+  deleteParticipants(@User() user: IUser, @Param('id') id: number) {
+    return this.chatroomService.deleteParticipants(user.id, id);
+  }
+
+  @ApiResponse({
     type: ChatContentDto,
     isArray: true,
     description: 'Contents of a chatroom',
