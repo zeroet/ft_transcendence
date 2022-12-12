@@ -353,7 +353,13 @@ export class ChatroomService implements IChatroomService {
     }
     // kick
     else if (updateMemberDto.kick === true) {
-      return await this.deleteMembers(updateMemberDto.targetUserId, chatroomId);
+      updatedMember = await this.deleteMembers(
+        updateMemberDto.targetUserId,
+        chatroomId,
+      );
+      this.chatEventsGateway.server.emit('kick', targetUser);
+      return updatedMember;
+      // return deletedUser;
     }
     // mute
     else if (updateMemberDto.mute === true) {
@@ -363,6 +369,9 @@ export class ChatroomService implements IChatroomService {
         chatroomId,
         360000,
       );
+      targetUser.mutedAt = new Date(360000);
+      updatedMember = await this.userRepository.save(targetUser);
+      this.chatEventsGateway.server.emit('mute', targetUser);
     }
     // }
     console.log('updated member:', updatedMember);
