@@ -184,46 +184,47 @@ export class ChatroomController {
   async getParticipants(@Param('id') id: number) {
     return this.chatroomService.getParticipants(id);
   }
-  @ApiParam({
-    name: 'id',
-    example: 1,
-    description: 'Chatroom id',
-  })
-  @ApiOperation({
-    summary:
-      'Post participants to a chatroom / 특정 대화방에 새로운 참여자 추가하기',
-  })
-  @Post(':id/participants')
-  async postParticipants(@User() user: IUser, @Param('id') id: number) {
-    return await this.chatroomService.postParticipants(user.id, id);
-  }
 
-  @ApiBody({
-    type: UpdateMemberDto,
-  })
-  @ApiParam({
-    name: 'id',
-    example: 1,
-    description: 'Chatroom id',
-  })
-  @ApiOperation({
-    summary:
-      'Update participants of a chatroom / 특정 대화방의 참여자 정보 수정하기',
-  })
-  @Patch(':id/participants/update')
-  async updateParticipantsInfo(
-    @User() user: IUser,
-    @Param('id') id: number,
-    @Body() updateMemberDto: UpdateMemberDto,
-  ) {
-    console.log('updateParticipantDto:', updateMemberDto);
-    console.log('chatroomId:', id);
-    return await this.chatroomService.updateParticipantInfo(
-      user.id,
-      id,
-      updateMemberDto,
-    );
-  }
+  // @ApiParam({
+  //   name: 'id',
+  //   example: 1,
+  //   description: 'Chatroom id',
+  // })
+  // @ApiOperation({
+  //   summary:
+  //     'Post participants to a chatroom / 특정 대화방에 새로운 참여자 추가하기',
+  // })
+  // @Post(':id/participants')
+  // async postParticipants(@User() user: IUser, @Param('id') id: number) {
+  //   return await this.chatroomService.postParticipants(user.id, id);
+  // }
+
+  // @ApiBody({
+  //   type: UpdateMemberDto,
+  // })
+  // @ApiParam({
+  //   name: 'id',
+  //   example: 1,
+  //   description: 'Chatroom id',
+  // })
+  // @ApiOperation({
+  //   summary:
+  //     'Update participants of a chatroom / 특정 대화방의 참여자 정보 수정하기',
+  // })
+  // @Patch(':id/participants/update')
+  // async updateParticipantsInfo(
+  //   @User() user: IUser,
+  //   @Param('id') id: number,
+  //   @Body() updateMemberDto: UpdateMemberDto,
+  // ) {
+  //   console.log('updateParticipantDto:', updateMemberDto);
+  //   console.log('chatroomId:', id);
+  //   return await this.chatroomService.updateParticipantInfo(
+  //     user.id,
+  //     id,
+  //     updateMemberDto,
+  //   );
+  // }
 
   @ApiResponse({
     type: ChatMemberDto,
