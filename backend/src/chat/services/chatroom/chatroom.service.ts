@@ -123,6 +123,7 @@ export class ChatroomService implements IChatroomService {
     const callback = async () => {
       console.log(`Timeout ${timeoutName} executing after ${milliseconds}`);
       const targetUser = await this.findMemberById(targetUserId, chatroomId);
+      console.log(targetUser.mutedAt);
       targetUser.mutedAt = null;
       await this.chatMemebrRepository.save(targetUser);
       this.schedulerRegistry.deleteTimeout(timeoutName);
@@ -353,13 +354,16 @@ export class ChatroomService implements IChatroomService {
     else if (updateMemberDto.mute === true) {
       this.addNewTimeout(
         `${targetUser.id}_muted`,
-        targetUser.id,
+        targetUser.userId,
         chatroomId,
-        360000,
+        60000,
       );
-      targetUser.mutedAt = new Date(360000);
-      updatedMember = await this.userRepository.save(targetUser);
-      this.chatEventsGateway.server.emit('mute', targetUser);
+      targetUser.mutedAt = new Date();
+      updatedMember = await this.chatMemebrRepository.save(targetUser);
+      this.chatEventsGateway.server.emit('mute', {
+        chatroomId: chatroomId,
+        targetUserId: targetUser.userId,
+      });
     }
     // }
     console.log('updated member:', updatedMember);
