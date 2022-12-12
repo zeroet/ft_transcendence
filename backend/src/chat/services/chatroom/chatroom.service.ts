@@ -123,7 +123,6 @@ export class ChatroomService implements IChatroomService {
     const callback = async () => {
       console.log(`Timeout ${timeoutName} executing after ${milliseconds}`);
       const targetUser = await this.findMemberById(targetUserId, chatroomId);
-      console.log(targetUser.mutedAt);
       targetUser.mutedAt = null;
       await this.chatMemebrRepository.save(targetUser);
       this.schedulerRegistry.deleteTimeout(timeoutName);
