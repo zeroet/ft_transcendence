@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 interface TypeProps {
+  isMute: boolean;
   onChangeInputText: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClickSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
   inputText: string;
 }
 
 const ChatBox = ({
+  isMute,
   onChangeInputText,
   onClickSubmit,
   inputText,
@@ -14,11 +16,12 @@ const ChatBox = ({
   return (
     <form className="chat-box" method="post">
       <input
+        disabled={isMute}
         autoFocus
         onChange={onChangeInputText}
         value={inputText}
         type="text"
-        placeholder="TYPE HERE / ENTER TO SEND"
+        placeholder={!isMute ? "TYPE HERE / ENTER TO SEND" : "MUTED"}
       />
       <div className="button-div">
         <button onClick={onClickSubmit} type="submit">

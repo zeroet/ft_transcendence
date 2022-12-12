@@ -11,7 +11,6 @@ import { IChatContent } from "../../interfaceType";
 import useSocket from "../Utils/socket";
 import { TypeChatId } from "../../interfaceType";
 import { useRouter } from "next/router";
-import { onCLS } from "web-vitals";
 
 export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   const router = useRouter();
@@ -26,6 +25,10 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   const { data: chatContentsData, error: chatContentsError } = useSWR<
     IChatContent[]
   >(`/api/${id.link}/${id.id}/contents`);
+  const { data: chatroomMembersData, error: chatroomMembersError } = useSWR(
+    `/api/chatroom/${id.id}/members`
+  );
+  const [isMute, setIsMuted] = useState<boolean>(false);
 
   const handleCloseModal = useCallback(
     (e: any) => {
@@ -56,8 +59,6 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       e.stopPropagation();
       if (inputText === "") return;
       console.log(inputText, "in chating room body");
-      // api통해서 업데이트 및 mutate수정
-      // optimistic ui
       await axios
         .post(`/api/${id.link}/${id.id}/contents`, {
           content: inputText,
@@ -73,15 +74,28 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   );
 
   useEffect(() => {
+    if (chatroomMembersData && userData) {
+      chatroomMembersData.map((res: any) => {
+        if (
+          res.userId === userData.id &&
+          res.mutedAt !== null &&
+          res.chatroomId.toString() === id.id
+        ) {
+          setIsMuted(true);
+        }
+      });
+    }
+    socket?.on("newRoomList", () => {
+      mutate(`/api/${id.link}/${id.id}`);
+      mutate("/api/chatroom");
+    });
     socket?.on("newContent", () => {
       mutate(`/api/${id.link}/${id.id}/contents`);
     });
     socket?.on("deleteChatroom", (roomId: number) => {
-      console.log(id.link);
-      console.log(id.id);
-      console.log(roomId);
       if (id.link === "chatroom" && roomId.toString() === id.id)
         router.push("/Chat");
+      mutate("/api/chatroom");
     });
     socket?.on(
       "kick",
@@ -103,12 +117,14 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       if (id.link === "chatroom") mutate(`/api/chatroom/${id.id}/members`);
     });
     return () => {
+      socket?.off("newRoomList");
       socket?.off("newContent");
       socket?.off("deleteChatroom");
       socket?.off("kick");
       socket?.off("mute");
+      setIsMuted(false);
     };
-  }, [roomData, chatContentsData, userData, socket?.id]);
+  }, [roomData, chatContentsData, userData, socket?.id, chatroomMembersData]);
 
   const onClickShowSettingModal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
@@ -118,9 +134,10 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
     setShowModal(true);
   };
 
-  if (roomError || chatContentsError || userError)
+  if (roomError || chatContentsError || userError || chatroomMembersError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!roomData || !userData || !chatContentsData) return <Loading />;
+  if (!roomData || !userData || !chatContentsData || !chatroomMembersData)
+    return <Loading />;
   return (
     <div className={styles.box}>
       {showModal && (
@@ -149,6 +166,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       <hr />
       <ChatList id={id} chatContentsData={chatContentsData} />
       <ChatBox
+        isMute={isMute}
         onChangeInputText={onChangeInputText}
         onClickSubmit={onClickSubmit}
         inputText={inputText}
