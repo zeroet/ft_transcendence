@@ -336,27 +336,17 @@ export class ChatroomService implements IChatroomService {
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
-    // if (member.userId === chatroom.ownerId) {
-    // ban
-    // if (updateMemberDto.ban === true) {
-    //   this.addNewTimeout(
-    //     `${targetUser.id}_banned`,
-    //     targetUser.id,
-    //     chatroomId,
-    //     360000,
-    //   );
-    // }
     // kick
     if (updateMemberDto.kick === true) {
-      updatedMember = await this.deleteMembers(
-        updateMemberDto.targetUserId,
-        chatroomId,
-      );
+      // updatedMember = await this.deleteMembers(
+      //   updateMemberDto.targetUserId,
+      //   chatroomId,
+      // );
       this.chatEventsGateway.server.emit('kick', {
         chatroomId: chatroomId,
         targetUserId: targetUser.id,
       });
-      return updatedMember;
+      // return updatedMember;
       // return deletedUser;
     }
     // mute
