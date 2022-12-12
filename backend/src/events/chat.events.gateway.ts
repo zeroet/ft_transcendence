@@ -24,28 +24,26 @@ export class ChatEventsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   protected readonly logger = new Logger(ChatEventsGateway.name);
-  constructor() // private chatroomRepository: Repository<Chatroom>, // private readonly jwtAccessStrategy: JwtAccessStrategy, // @InjectRepository(Chatroom) // @Inject('USER_SERVICE') private userService: IUserService, // @Inject('AUTH_SERVICE') private authService: IAuthService,
-  {}
+  constructor() {} // private chatroomRepository: Repository<Chatroom>, // private readonly jwtAccessStrategy: JwtAccessStrategy, // @InjectRepository(Chatroom) // @Inject('USER_SERVICE') private userService: IUserService, // @Inject('AUTH_SERVICE') private authService: IAuthService,
 
   @WebSocketServer()
   server: Server;
 
-  // @SubscribeMessage('message')
-  // handleMessage(
-  //   @MessageBody() message: string,
-  //   @ConnectedSocket() socket: Socket,
-  // ) {
-  //   this.server.emit('message', socket.id, message);
-  // }
+  @SubscribeMessage('kick')
+  handleMemberKick(
+    @MessageBody() message: string,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    this.server.emit('kick', socket.id, message);
+  }
 
-  // @SubscribeMessage('newDmList')
-  // handleDmMessage(
-  //   @MessageBody() newDm: string,
-  //   @ConnectedSocket() socket: Socket,
-  // ) {
-  //   this.server.emit('newDmList', newDm);
-  //   // this.server.emit('dm', socket.id, dmMessage);
-  // }
+  @SubscribeMessage('mute')
+  handleMemberMute(
+    @MessageBody() message: string,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    this.server.emit('mute', socket.id, message);
+  }
 
   // @SubscribeMessage('join')
   // joinRoom(@MessageBody() name, @ConnectedSocket() socket: Socket) {
