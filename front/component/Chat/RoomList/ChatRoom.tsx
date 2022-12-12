@@ -12,14 +12,13 @@ export default function ChatRoom() {
   const [socket] = useSocket(null, "chat");
 
   useEffect(() => {
-    socket?.on("newRoomList", (data: string) => {
-      console.log(data, " for new room list in ChatRoom socket!");
+    socket?.on("newRoomList", () => {
       mutate("/api/chatroom");
     });
     return () => {
       socket?.off("newRoomList");
     };
-  }, [data]);
+  }, [data, socket?.id]);
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data) return <Loading />;
