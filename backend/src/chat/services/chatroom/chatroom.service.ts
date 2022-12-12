@@ -449,12 +449,12 @@ export class ChatroomService implements IChatroomService {
   async deleteMembers(userId: number, chatroomId: number) {
     await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
-    if (member.mutedAt === null) {
-      const removedMember = await this.chatMemebrRepository.remove(member);
-      console.log('removed member:', removedMember);
-      this.chatEventsGateway.server.emit('newMemberList', removedMember);
-    }
-    this.chatEventsGateway.server.emit('newMemberList');
+    // if (member.mutedAt === null) {
+    const removedMember = await this.chatMemebrRepository.remove(member);
+    console.log('removed member:', removedMember);
+    this.chatEventsGateway.server.emit('newMemberList', removedMember);
+    // }
+    // this.chatEventsGateway.server.emit('newMemberList');
   }
 
   async getParticipants(chatroomId: number) {
@@ -500,7 +500,7 @@ export class ChatroomService implements IChatroomService {
       newParticipant,
     );
     // console.log('saved Participant:', savedParticipant);
-    // this.chatEventsGateway.server.emit('newMemberList', savedMember);
+    this.chatEventsGateway.server.emit('newParticipantList', savedParticipant);
     return savedParticipant;
   }
 
@@ -515,7 +515,10 @@ export class ChatroomService implements IChatroomService {
         participant,
       );
       console.log('removed participant:', removedParticipant);
-      // this.chatEventsGateway.server.emit('new participantList', removedparticipant);
+      this.chatEventsGateway.server.emit(
+        'newParticipantList',
+        removedParticipant,
+      );
     }
     // this.chatEventsGateway.server.emit('new participantList');
   }
