@@ -1,6 +1,9 @@
 import { RoomService } from "../room.service";
-import { Socket } from "socket.io"
+
 import { Inject } from "@nestjs/common";
+
+import { Socket } from "socket.io"
+
 
 type ball = {
     x: number;
@@ -42,6 +45,7 @@ export enum Stat {
 export class GameService{
     @Inject() roomService: RoomService
 
+
     Status: Stat;
     Players = [];
     name : name;
@@ -57,9 +61,13 @@ export class GameService{
     height: number;
     paddles: paddles;
     wall: wall;
+    user1: any;
+    user2: any;
 
-    constructor(Player1, Player2, Status:Stat, roomName:string, ownerId:string, speed:string, ballSize:string) {
+    constructor(user1, user2, Player1, Player2, Status:Stat, roomName:string, ownerId:string, speed:string, ballSize:string) {
         this.roomService = new RoomService()
+        this.user1 = user1;
+        this.user2 = user2;
         this.Status = Status;
         this.Players.push(Player1);
         this.Players.push(Player2);
@@ -89,7 +97,7 @@ export class GameService{
 
     gameover() {
         this.Status = Stat.END;
-        this.roomService.gameOver(this.Players)
+        this.roomService.gameOver(this.Players, this.score, this.roomName, this.user1, this.user2)
         this.roomService.gameOverWatcher(this.Watchers)
     }
 
@@ -145,14 +153,11 @@ export class GameService{
         if ((nextX - this.ballSize) >= 1475 || (nextX + this.ballSize) <= 0)
         {
             nextX >= 1475 ? this.score.player1 += 1 : this.score.player2 += 1;
-            if (this.score.player1 == 10) {
+            if (this.score.player1 == 1) {
                 this.gameover()
-                // db
             }
-            else if (this.score.player2 == 10) {
+            else if (this.score.player2 == 1) {
                 this.gameover()
-                // db 
-                this.Status = Stat.END
             }
             this.default()
             nextX = this.ball.x

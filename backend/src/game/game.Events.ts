@@ -76,7 +76,6 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         await room.deletePlayer(client);
         if (room.Players.length == 0)
         this.roomService.rooms.delete(room.roomName);
-        return ;
       }
     }
     // Watcher case
@@ -146,9 +145,11 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   ) {
       try {
         if (client.id === this.queueNormal.Players[0].id) {
-          this.roomService.startGame(this.queueNormal.Players[0], this.queueNormal.Players[1], Stat.READY, data.roomName, this.queueNormal.Players[0].id, data.speed, data.ballSize)
           let user1 = await this.getUserfromSocket(client);
           let user2 = await this.getUserfromSocket(this.queueNormal.Players[1])
+          this.roomService.startGame(user1, user2, this.queueNormal.Players[0], 
+            this.queueNormal.Players[1], Stat.READY, data.roomName, 
+            this.queueNormal.Players[0].id, data.speed, data.ballSize)
           await this.userService.updateUserStatus(user1.id, Status.PLAYING)
           await this.userService.updateUserStatus(user2.id, Status.PLAYING)
           this.queueNormal.Players.shift().join(data.roomName);

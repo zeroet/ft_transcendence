@@ -1,14 +1,25 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
 import { Socket } from "socket.io";
+import { Repository } from 'typeorm';
 import { GameService } from './interfaces/room'
 import { Stat } from './interfaces/room'
 import { Interval } from "@nestjs/schedule";
 import { GameEvents } from "./game.Events";
+import { UserService } from "src/users/services/user/user.service";
+import { MatchHistory, User } from "src/typeorm";
+import { IAuthService } from 'src/auth/services/auth/auth.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AuthService } from "src/auth/services/auth/auth.service";
+
 
 @Injectable()
 export class RoomService{
-        constructor(
+    constructor(
         ) {}
+        @Inject('USER_SERVICE') userService : UserService
+        @InjectRepository(MatchHistory) 
+        private matchHistoryRepository : Repository<MatchHistory>
+    private readonly authService : AuthService        
 
     rooms: Map<string, GameService> = new Map();
 
@@ -17,9 +28,9 @@ export class RoomService{
         player2.emit('createRoom', { isOwner: false });
     }
 
-    startGame(player1: Socket, player2: Socket, Status: Stat, roomName:string, owner:string, speed:string, ballsize:string)
+    startGame(user1, user2, player1: Socket, player2: Socket, Status: Stat, roomName:string, owner:string, speed:string, ballsize:string)
     {
-        const game = new GameService(player1, player2, Status, roomName, owner, speed, ballsize)
+        const game = new GameService(user1, user2, player1, player2, Status, roomName, owner, speed, ballsize)
         this.rooms.set(roomName, game);
     }
 
@@ -70,7 +81,43 @@ export class RoomService{
         }
     }
 
-    gameOver(Players){
+    async getUserfromSocket(client:Socket)
+    {
+      try {  
+        const payload = await this.authService.verify(client.handshake.headers.accesstoken)
+        const user = await this.userService.getUserById(payload.id)
+        console.log(payload, user);
+        return user
+      }
+      catch{}
+    }
+
+    async gameOver(Players, Score, roomName, user1:User, user2:User) {
+        if (Players.length == 2)
+        {
+            if (Score.player1 > Score.player2)
+            {    
+                const winner = user1
+                const loser = user2
+                const score = [Score.player1, Score.player2]
+                console.log(winner, loser, score)
+                const match: MatchHistory = await this.matchHistoryRepository.create({
+                    score, winner, loser} as MatchHistory);
+                await this.matchHistoryRepository.save(match);
+                
+            }
+            else if (Score.player2 > Score.player1)
+            {
+                const winner = user2
+                const loser = user1
+                const score = [Score.player1, Score.player2]
+                console.log(winner, loser, score)
+                
+                const match: MatchHistory = await this.matchHistoryRepository.create({
+                 score, winner, loser} as MatchHistory);
+                await this.matchHistoryRepository.save(match);
+            }    
+        }
         for(const player of Players)
             player.emit('gameover');
     }

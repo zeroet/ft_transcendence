@@ -3,10 +3,11 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  HttpException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
-import { Block, Friend, User } from 'src/typeorm';
+import { Block, Friend, MatchHistory, User } from 'src/typeorm';
 import { Status } from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { IUserService } from './user.interface';
@@ -18,6 +19,7 @@ export class UserService implements IUserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Block) private blockRepository: Repository<Block>,
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
+    @InjectRepository(MatchHistory) private matchHistoryRepository : Repository<MatchHistory>,
     private chatEventsGateway: ChatEventsGateway,
   ) {}
 
@@ -207,4 +209,18 @@ export class UserService implements IUserService {
     return updatedUser;
   }
   // updateUserById(id: number) {}
+
+ async createMatchHistory(data: MatchHistory) {
+  console.log('in the service user')
+  const match: MatchHistory = this.matchHistoryRepository.create({
+    data: new Date(),
+    ...data,} as MatchHistory);
+  try {
+    await this.matchHistoryRepository.save(match);}
+  catch(error) {
+    throw new HttpException(error.mesage, 404);
+    }
+  }
+
 }
+
