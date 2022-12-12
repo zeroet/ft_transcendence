@@ -82,6 +82,11 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       if (id.link === "chatroom" && roomId.toString() === id.id)
         router.push("/Chat");
     });
+    if (id.link === "chatroom") {
+      socket?.on("kick", () => {
+        mutate(`/api/chatroom/${id.id}/members`);
+      });
+    }
     return () => {
       socket?.off("newContent");
       socket?.off("deleteChatroom");

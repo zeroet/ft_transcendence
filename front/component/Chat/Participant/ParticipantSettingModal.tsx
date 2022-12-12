@@ -88,12 +88,23 @@ const ParticipantSettingModal = ({
     console.log("Mute");
   }, []);
 
-  const onClickKick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowModal(false);
-    console.log("Kick");
-  }, []);
+  const onClickKick = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .patch(`/api/chatroom/${chatId}/members/update`, {
+          targetUserId: userId,
+          kick: true,
+        })
+        .then((res) => {
+          console.log(res);
+          setShowModal(false);
+        })
+        .catch((err) => console.log(err));
+    },
+    [myData, userId]
+  );
 
   const onClickSetAdmin = useCallback(
     async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -104,7 +115,6 @@ const ParticipantSettingModal = ({
           targetUserId: userId,
         })
         .then(() => {
-          // mutate("/api/users");
           setShowModal(false);
         })
         .catch((err) => console.log(err));
@@ -114,8 +124,6 @@ const ParticipantSettingModal = ({
 
   useEffect(() => {
     if (!myData || !blockedListData) return;
-    console.log(myData);
-    console.log(blockedListData);
     blockedListData.map((element: any) => {
       console.log(element.blockedUserId);
       if (element.blockedUserId === userId) {
