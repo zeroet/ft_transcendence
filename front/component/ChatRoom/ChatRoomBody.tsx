@@ -11,6 +11,7 @@ import { IChatContent } from "../../interfaceType";
 import useSocket from "../Utils/socket";
 import { TypeChatId } from "../../interfaceType";
 import { useRouter } from "next/router";
+import { onCLS } from "web-vitals";
 
 export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   const router = useRouter();
@@ -82,14 +83,30 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       if (id.link === "chatroom" && roomId.toString() === id.id)
         router.push("/Chat");
     });
-    if (id.link === "chatroom") {
-      socket?.on("kick", () => {
-        mutate(`/api/chatroom/${id.id}/members`);
-      });
-    }
+    socket?.on(
+      "kick",
+      ({
+        chatroomId,
+        targetUserId,
+      }: {
+        chatroomId: number;
+        targetUserId: number;
+      }) => {
+        if (chatroomId.toString() === id.id && targetUserId === userData.id) {
+          router.push("/Chat");
+        }
+        if (id.link === "chatroom") mutate(`/api/chatroom/${id.id}/members`);
+      }
+    );
+    socket?.on("mute", () => {
+      console.log("get emit of event mute");
+      if (id.link === "chatroom") mutate(`/api/chatroom/${id.id}/members`);
+    });
     return () => {
       socket?.off("newContent");
       socket?.off("deleteChatroom");
+      socket?.off("kick");
+      socket?.off("mute");
     };
   }, [roomData, chatContentsData, userData, socket?.id]);
 

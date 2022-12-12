@@ -21,6 +21,9 @@ const ParticipantSettingModal = ({
     "/api/users/block/list"
   );
   const [isBlock, setIsBlock] = useState<string>("Block");
+  const { data: chatroomData, error: chatroomError } = useSWR(
+    `/api/chatroom/${chatId}/members`
+  );
 
   const onClickProfile = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -39,7 +42,6 @@ const ParticipantSettingModal = ({
       .catch((err) => {
         console.log(e);
       });
-    // console.log("DM");
     setShowModal(false);
   }, []);
 
@@ -81,12 +83,15 @@ const ParticipantSettingModal = ({
     [isBlock, blockedListData, myData, userId]
   );
 
-  const onClickMute = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowModal(false);
-    console.log("Mute");
-  }, []);
+  const onClickMute = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowModal(false);
+      console.log("Mute");
+    },
+    [chatroomData, userId, myData]
+  );
 
   const onClickKick = useCallback(
     async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -99,11 +104,11 @@ const ParticipantSettingModal = ({
         })
         .then((res) => {
           console.log(res);
-          setShowModal(false);
         })
         .catch((err) => console.log(err));
+      setShowModal(false);
     },
-    [myData, userId]
+    [chatroomData, myData, userId]
   );
 
   const onClickSetAdmin = useCallback(
@@ -132,7 +137,7 @@ const ParticipantSettingModal = ({
     });
   }, [myData, blockedListData]);
 
-  if (!myData || !blockedListData) return <Loading />;
+  if (!myData || !blockedListData || !chatroomData) return <Loading />;
   return (
     <div className="participantSettingModal">
       <div className="router-div" onClick={onClickProfile}>
