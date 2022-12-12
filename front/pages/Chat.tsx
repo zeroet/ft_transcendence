@@ -33,7 +33,6 @@ export default function Chat({
   );
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
-  // 룸 데이터 이동 확인용, 모달용
   useEffect(() => {
     if (roomData && userData) {
       console.log(`i am in room ${roomData.chatroomName}`);
