@@ -101,9 +101,9 @@ export class RoomService{
                 const loser = user2
                 const score = [Score.player1, Score.player2]
                 console.log(winner, loser, score)
-                const match: MatchHistory = await this.matchHistoryRepository.create({
-                    score, winner, loser} as MatchHistory);
-                await this.matchHistoryRepository.save(match);
+                // const match: MatchHistory = await this.matchHistoryRepository.create({
+                //     score, winner, loser} as MatchHistory);
+                // await this.matchHistoryRepository.save(match);
                 
             }
             else if (Score.player2 > Score.player1)
@@ -113,9 +113,9 @@ export class RoomService{
                 const score = [Score.player1, Score.player2]
                 console.log(winner, loser, score)
                 
-                const match: MatchHistory = await this.matchHistoryRepository.create({
-                 score, winner, loser} as MatchHistory);
-                await this.matchHistoryRepository.save(match);
+                // const match: MatchHistory = await this.matchHistoryRepository.create({
+                //  score, winner, loser} as MatchHistory);
+                // await this.matchHistoryRepository.save(match);
             }    
         }
         for(const player of Players)
