@@ -81,23 +81,21 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
           res.mutedAt !== null &&
           res.chatroomId.toString() === id.id
         ) {
-          console.log("is muted", isMute);
-          console.log("res = ", res);
-          console.log("my data= ", userData);
           setIsMuted(true);
-          // setIsMuted(false);
         }
       });
     }
+    socket?.on("newRoomList", () => {
+      mutate(`/api/${id.link}/${id.id}`);
+      mutate("/api/chatroom");
+    });
     socket?.on("newContent", () => {
       mutate(`/api/${id.link}/${id.id}/contents`);
     });
     socket?.on("deleteChatroom", (roomId: number) => {
-      console.log(id.link);
-      console.log(id.id);
-      console.log(roomId);
       if (id.link === "chatroom" && roomId.toString() === id.id)
         router.push("/Chat");
+      mutate("/api/chatroom");
     });
     socket?.on(
       "kick",
@@ -119,6 +117,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       if (id.link === "chatroom") mutate(`/api/chatroom/${id.id}/members`);
     });
     return () => {
+      socket?.off("newRoomList");
       socket?.off("newContent");
       socket?.off("deleteChatroom");
       socket?.off("kick");

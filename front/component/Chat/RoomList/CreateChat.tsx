@@ -57,7 +57,6 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
             return await res.data.id;
           })
           .then((chatroomId) => {
-            // router.push(`/Chat/${chatroomId}`);
             router.push({
               pathname: `/Chat`,
               query: { id: chatroomId, link: "chatroom" },
