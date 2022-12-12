@@ -338,26 +338,24 @@ export class ChatroomService implements IChatroomService {
     }
     // if (member.userId === chatroom.ownerId) {
     // ban
-    if (updateMemberDto.ban === true) {
-      // updatedMember = await this.chatMemebrRepository.update(
-      // updateMemberDto.targetUserId,
-      this.addNewTimeout(
-        `${targetUser.id}_banned`,
-        targetUser.id,
-        chatroomId,
-        360000,
-      );
-      // bannedAt: this.addNewTimeout(`${targetUser.id}_banned`, 1000),
-      // bannedAt: new Date(),
-      // );
-    }
+    // if (updateMemberDto.ban === true) {
+    //   this.addNewTimeout(
+    //     `${targetUser.id}_banned`,
+    //     targetUser.id,
+    //     chatroomId,
+    //     360000,
+    //   );
+    // }
     // kick
-    else if (updateMemberDto.kick === true) {
+    if (updateMemberDto.kick === true) {
       updatedMember = await this.deleteMembers(
         updateMemberDto.targetUserId,
         chatroomId,
       );
-      this.chatEventsGateway.server.emit('kick', targetUser);
+      this.chatEventsGateway.server.emit('kick', {
+        chatroomId: chatroomId,
+        targetUserId: targetUser.id,
+      });
       return updatedMember;
       // return deletedUser;
     }

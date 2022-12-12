@@ -1,11 +1,13 @@
 import { PickType, OmitType, ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsNumber, IsOptional } from 'class-validator';
 import { ChatMember } from 'src/typeorm';
-export class UpdateMemberDto extends PickType(ChatMember, []) {
+export class UpdateMemberDto {
   @ApiProperty({
     required: true,
     type: Number,
     description: 'Target user id',
   })
+  @IsNumber()
   targetUserId: number;
 
   // @ApiProperty({
@@ -16,16 +18,20 @@ export class UpdateMemberDto extends PickType(ChatMember, []) {
   // ban?: boolean;
 
   @ApiProperty({
-    required: false,
+    // required: false,
     type: Boolean,
     description: 'Kick or not',
   })
-  kick?: boolean;
+  @IsBoolean()
+  @IsOptional()
+  kick: boolean;
 
   @ApiProperty({
-    required: false,
+    // required: false,
     type: Boolean,
     description: 'Mute or not',
   })
-  mute?: boolean;
+  @IsBoolean()
+  @IsOptional()
+  mute: boolean;
 }
