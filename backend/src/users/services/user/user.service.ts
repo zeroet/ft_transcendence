@@ -22,9 +22,9 @@ export class UserService implements IUserService {
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
     @InjectRepository(MatchHistory) private matchHistoryRepository : Repository<MatchHistory>,
     private chatEventsGateway: ChatEventsGateway,
-    private connectionGateway: ConnectionGateway,
-  ) {}
-
+    ) {}
+    private connectionGateway: ConnectionGateway;
+    
   async findUserByIdOrFail(userId: number) {
     const user = await this.userRepository
       .createQueryBuilder('users')
@@ -230,7 +230,7 @@ export class UserService implements IUserService {
     .limit(5)
     
     this.connectionGateway.server.emit('match');
-    
+
     return matchs;
   }
 }
