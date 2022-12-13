@@ -8,11 +8,13 @@ const SearchBarModal = ({
   image,
   name,
   id,
+  setShowEverything,
 }: {
   setInputValue: React.Dispatch<React.SetStateAction<string | undefined>>;
   image: string;
   name: string;
   id: number;
+  setShowEverything: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { data: userData, error: userError } = useSWR("/api/users");
   const { data: friendListData, error: friendListError } = useSWR(
@@ -26,6 +28,7 @@ const SearchBarModal = ({
       e.stopPropagation();
       console.log(name);
       if (addOrDelete === "Add") {
+        console.log("in add");
         await axios
           .post(`/api/users/friend/${id.toString()}`)
           .then(() => {
@@ -33,22 +36,23 @@ const SearchBarModal = ({
             setAddOrDelete("Delete");
           })
           .catch((err) => console.log(err));
-      } else {
+      } else if (addOrDelete === "Delete") {
+        console.log("in delete");
         await axios
           .delete(`/api/users/friend/${id.toString()}`)
           .then(() => {
             mutate(`/api/users/friend/list`);
-            setAddOrDelete("Delete");
+            setAddOrDelete("Add");
           })
           .catch((err) => console.log(err));
       }
       setInputValue("");
+      setShowEverything(false);
     },
     [addOrDelete, friendListData, userData]
   );
 
   useEffect(() => {
-    console.log("search bar");
     if (!friendListData || !userData) return;
     friendListData.map((friend: any) => {
       if (friend.friendUserId === id) {
@@ -62,24 +66,27 @@ const SearchBarModal = ({
     <div className="search-bar-modal">
       <img src={image} width={20} height={20} />
       <div>{name}</div>
-      {/* 친구등록상태이면 Delete, 아니면 ADD */}
       {name !== userData.username && (
         <button onClick={onClickAddOrDeleteFriend} className="add-button">
           {addOrDelete}
         </button>
       )}
+      {name === userData.username && <div className="vide"></div>}
       <style jsx>{`
         .add-button {
           font-family: "Fragment Mono", monospace;
-          font-size: 15px;
+          font-size: 10px;
           color: white;
           background-color: black;
           border: 1px solid black;
           cursor: pointer;
         }
+        .vide {
+          width: 30px;
+        }
         .search-bar-modal {
           display: flex;
-          justify-content: space-around;
+          justify-content: space-between;
           align-items: center;
           border: 1px solid black;
           width: 206px;

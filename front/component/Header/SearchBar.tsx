@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import useSWR from "swr";
 import Loading from "../errorAndLoading/Loading";
 import SearchBarModal from "./SearcheBarModal/SearchBarModal";
@@ -8,6 +8,7 @@ import axios from "axios";
 const SearchBar = () => {
   const [inputValue, setInputValue] = useState<string | undefined>("");
   const { data, error } = useSWR("/api/users/all");
+  const [showEverything, setShowEverything] = useState<boolean>(false);
 
   const onChangeInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement> | undefined) => {
@@ -20,6 +21,7 @@ const SearchBar = () => {
     (e: React.MouseEvent<HTMLImageElement>) => {
       e.stopPropagation();
       e.preventDefault();
+      setShowEverything((curr) => !curr);
     },
     [inputValue]
   );
@@ -57,10 +59,27 @@ const SearchBar = () => {
                       image={user.image_url}
                       name={user.username}
                       id={user.id}
+                      setShowEverything={setShowEverything}
                     />
                   </div>
                 );
               }
+            })}
+          {data &&
+            !inputValue &&
+            showEverything &&
+            data.map((user: UserInfo) => {
+              return (
+                <div key={user.intra_id}>
+                  <SearchBarModal
+                    setInputValue={setInputValue}
+                    image={user.image_url}
+                    name={user.username}
+                    id={user.id}
+                    setShowEverything={setShowEverything}
+                  />
+                </div>
+              );
             })}
         </div>
       </div>

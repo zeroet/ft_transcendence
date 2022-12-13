@@ -10,17 +10,20 @@ import { UsersModule } from 'src/users/users.module';
 import { GameEvents } from './game.Events';
 import { RoomService } from './room.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ChatEventsGateway } from 'src/events/chat.events.gateway';
+import { EventsModule } from 'src/events/events.module';
+import { GameController } from './game.controller';
 
  
 @Module({
   imports: [PassportModule, UsersModule, JwtModule, AuthModule,
+    EventsModule,
     TypeOrmModule.forFeature([
     User,
     Block,
     Friend,
     MatchHistory
   ])],
-  providers: [GameEvents, JwtAccessStrategy, RoomService, ConnectionService, UserService, ChatEventsGateway],
+  controllers: [GameController],
+  providers: [GameEvents, JwtAccessStrategy, RoomService, ConnectionService, UserService],
 })
 export class GameModule {}

@@ -14,11 +14,10 @@ import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { UserService } from 'src/users/services/user/user.service';
-import { GameService, Stat } from './interfaces/room';
+import { Stat } from './interfaces/room';
 import { QueueService } from './queue.service';
 import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
-import { HttpExceptionFilter } from 'src/utils/http.exception.filter';
 import { ConnectionService } from 'src/connection/connection.service';
 import { Status } from 'src/utils/types';
 // import { GameService } from './game.service';
@@ -48,6 +47,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
+    this.logger.debug(`Game socket id ${client.id}`)
     try {
       await this.connectionService.addConnection(client);
     } catch (err) {
@@ -68,7 +68,6 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       return ;
     }
     // InGame case
-    
     for (const room of this.roomService.rooms.values()){
       if (room.isPlayer(client)) {
         // game end
@@ -101,37 +100,34 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     const user = await this.getUserfromSocket(client)
     for(const player of this.queueNormal.Players)
     {
+      // same socket id in the queue Case
       let tmp = await this.getUserfromSocket(player)
       if (user.id === tmp.id) return ;
     }
     if (!this.queueNormal.addUser(client)) 
       return ;
     if (this.queueNormal.isFull())
-    {
-      console.log ('is in the full');
       this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
-    } 
   }
 
   @SubscribeMessage('cancle')
   cancel(@ConnectedSocket() client: Socket) {
-    console.log('cancel')
     try {
+      //ready 0 / 1 index
       if ((this.queueNormal.Players[0].id === client.id) || (this.queueNormal.Players[1].id === client.id)) {
         if (this.queueNormal.Players[0].id === client.id)
-        {   
           this.queueNormal.Players[1].emit('close')
-          console.log(this.queueNormal.Players[1].id);
-        }
         else if (this.queueNormal.Players[1].id === client.id)
           this.queueNormal.Players[0].emit('close')
         this.queueNormal.Players.splice(0, 2)
         this.queueNormal.size -= 2;
       }
+      // 2 ~ end index 
       else if (this.queueNormal.Players.indexOf(client) != -1) {
         this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
         this.queueNormal.size -= 1;
       }
+      //after cancel 0/1 index - > 2/3 << 
       if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
         this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
       }

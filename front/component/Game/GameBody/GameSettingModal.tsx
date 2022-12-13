@@ -147,6 +147,8 @@ const GameSettingModal = ({
               value={speed}
               className="input-speedbar"
               type="range"
+              min="30"
+              max="120"
             />
           </div>
           <div className="div-ballsizebar">
@@ -156,6 +158,8 @@ const GameSettingModal = ({
               value={ballSize}
               className="input-ballsizebar"
               type="range"
+              min="30"
+              max="120"
             />
           </div>
         </div>
