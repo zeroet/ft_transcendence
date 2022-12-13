@@ -20,7 +20,7 @@ export default function Gaming({
   myRole: string;
 }) {
   const { data, error } = useSWR("/api/users");
-  const [socket, disconnect] = useSocket(accessToken, "game");
+  const [socket] = useSocket(accessToken, "game");
   // 게임오버 화면 만들어둠!
   const [isGameover, setIsGameover] = useState<boolean>(false);
   // otherPlayerName없어서 대체용
@@ -116,11 +116,7 @@ export default function Gaming({
       socket?.off("ball");
       socket?.off("gameover");
       socket?.off("initialGame");
-      console.log(
-        "game unmount!!!!!!!!!!!!!!!!!!!!!disconnect in 'Game [id].tsx'"
-      );
       statusChange("Login");
-      disconnect();
     };
   }, [socket?.id]);
 
