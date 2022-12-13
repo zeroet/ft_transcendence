@@ -14,7 +14,10 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     gameSocket?.on("test", () => {
-      alert("get test siginal");
+      const response = confirm("get test siginal");
+      /**
+       * if response === ok, emit ok
+       */
     });
     return () => {
       gameSocket?.off("test");
