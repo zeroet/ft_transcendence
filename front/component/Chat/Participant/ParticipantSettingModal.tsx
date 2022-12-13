@@ -116,6 +116,24 @@ const ParticipantSettingModal = ({
     [chatroomData, userId, myData]
   );
 
+  const onClickBan = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .patch(`/api/chatroom/${chatId}/participants/update`, {
+          targetUserId: userId,
+          ban: true,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
+      setShowModal(false);
+    },
+    [chatroomData, userId, myData]
+  );
+
   const onClickKick = useCallback(
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
@@ -205,6 +223,9 @@ const ParticipantSettingModal = ({
           </div>
           <div className="router-div" onClick={onClickKick}>
             Kick
+          </div>
+          <div className="router-div" onClick={onClickBan}>
+            Ban
           </div>
           <div className="router-div" onClick={onClickSetAdmin}>
             Set Admin
