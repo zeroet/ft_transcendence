@@ -4,9 +4,23 @@ import { SWRConfig } from "swr";
 import fetcher from "../component/Utils/fetcher";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import axios from "axios";
+import cookies from "next-cookies";
+import { GetServerSideProps } from "next";
+import useSocket from "../component/Utils/socket";
+import { useEffect } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [gameSocket] = useSocket(pageProps.accessToken, "game");
+
+  useEffect(() => {
+    gameSocket?.on("test", () => {
+      alert("get test siginal");
+    });
+    return () => {
+      gameSocket?.off("test");
+    };
+  }, [gameSocket?.id]);
+
   return (
     <SWRConfig
       value={{
@@ -31,3 +45,17 @@ export default function App({ Component, pageProps }: AppProps) {
     </SWRConfig>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cookie = cookies(context);
+  const { accessToken } = cookie;
+  if (!accessToken) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return { props: { accessToken } };
+};
