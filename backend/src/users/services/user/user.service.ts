@@ -51,24 +51,25 @@ export class UserService implements IUserService {
         'users.user_id = friend.user_id',
       )
       .where('users.user_id=:id', { id })
-      // .innerJoinAndSelect('friend.FriendUser', 'friendUser')
+      .innerJoinAndSelect('friend.FriendUser', 'friendUser')
       .getOne();
-    // const FriendUsers = await this.friendRepository
-    //   .createQueryBuilder('friend')
-    //   .where('friend.user_id=:id', { id })
-    //   .innerJoinAndSelect('friend.FriendUser', 'friendUser')
-    //   .getMany();
+    const FriendUsers = await this.friendRepository
+      .createQueryBuilder('friend')
+      .where('friend.user_id=:id', { id })
+      .innerJoinAndSelect('friend.FriendUser', 'friendUser')
+      .getMany();
 
-    // // console.log('friend users:', FriendUsers);
-    // for (let i = 0; i < user.Friend.length; i++) {
-    //   for (let j = 0; j < FriendUsers.length; j++) {
-    //     if (user.Friend[i].friendUserId === FriendUsers[j].FriendUser.id) {
-    //       const { status } = user.Friend[i].FriendUser;
-    //       delete user.Friend[i].FriendUser;
-    //       user.Friend[i]['status'] = status;
-    //     }
-    //   }
-    // }
+    // console.log('friend users:', FriendUsers);
+    for (let i = 0; i < user.Friend.length; i++) {
+      for (let j = 0; j < FriendUsers.length; j++) {
+        if (user.Friend[i].friendUserId === FriendUsers[j].FriendUser.id) {
+          const { status, username } = user.Friend[i].FriendUser;
+          delete user.Friend[i].FriendUser;
+          user.Friend[i]['status'] = status;
+          user.Friend[i]['friendUsername'] = username;
+        }
+      }
+    }
     return user;
   }
 
