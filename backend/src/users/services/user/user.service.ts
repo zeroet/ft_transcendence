@@ -195,9 +195,10 @@ export class UserService implements IUserService {
     for (let i = 0; i < friends.length; i++) {
       for (let j = 0; j < FriendUsers.length; j++) {
         if (friends[i].friendUserId === FriendUsers[j].FriendUser.id) {
-          const { status } = friends[i].FriendUser;
+          const { status, username } = friends[i].FriendUser;
           delete friends[i].FriendUser;
           friends[i]['status'] = status;
+          friends[i]['friendUsername'] = username;
         }
       }
     }
