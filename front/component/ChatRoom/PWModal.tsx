@@ -7,10 +7,7 @@ interface TypeModal {
   roomId: string;
 }
 
-export default function PWModal({
-  setShowPWModal,
-  roomId,
-}: TypeModal) {
+export default function PWModal({ setShowPWModal, roomId }: TypeModal) {
   const [pw, setPw] = useState<string>("");
   const router = useRouter();
 
@@ -31,14 +28,6 @@ export default function PWModal({
         })
         .then((res) => res.data)
         .catch((err) => console.log(err));
-      ////////////////////////////////////////////////////////////
-      console.log(
-        pw,
-        "is pw",
-        result,
-        " is result for matching password in chatroom modal"
-      );
-      ////////////////////////////////////////////////////////////
       if (result === true) {
         setShowPWModal(false);
       }
@@ -66,7 +55,7 @@ export default function PWModal({
                 <div className="labelDiv">
                   <label>VERIFICATION PASSWORD </label>
                   <input
-                    type="text"
+                    type="password"
                     onChange={onChangePassword}
                     value={pw}
                     autoFocus
