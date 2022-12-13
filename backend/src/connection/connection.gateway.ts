@@ -16,7 +16,7 @@ export class ConnectionGateway{
     private logger: Logger = new Logger('ConnectionGateway');
 
     async handleConnection(client: Socket) {
-        this.logger.log(`Client connected: ${client.id}`);
+        this.logger.debug(`Client connected: ${client.id}`);
         try {
             await this.connectionSerivce.addConnection(client);
         }
@@ -26,7 +26,7 @@ export class ConnectionGateway{
     }
 
     async handleDisconnect(client: Socket) {
-        this.logger.log(`Client disconnected: ${client.id}`);
+        this.logger.debug(`Client disconnected: ${client.id}`);
         try {
             await this.connectionSerivce.eraseConnection(client);
         } catch (err) {

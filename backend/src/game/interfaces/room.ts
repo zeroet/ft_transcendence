@@ -1,9 +1,9 @@
 import { RoomService } from "../room.service";
-
-import { Inject } from "@nestjs/common";
-
+import { InjectRepository } from "@nestjs/typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { MatchHistory } from "src/typeorm";
 import { Socket } from "socket.io"
-
+import { Repository } from 'typeorm';
 
 type ball = {
     x: number;
@@ -38,12 +38,12 @@ type wall = {
 export enum Stat {
     READY,
     PLAY,
+    CANCEL,
     END,
 }
 
-
-export class GameService{
-    @Inject() roomService: RoomService
+@Injectable()
+export class GameService {
 
 
     Status: Stat;
@@ -65,7 +65,6 @@ export class GameService{
     user2: any;
 
     constructor(user1, user2, Player1, Player2, Status:Stat, roomName:string, ownerId:string, speed:string, ballSize:string) {
-        this.roomService = new RoomService()
         this.user1 = user1;
         this.user2 = user2;
         this.Status = Status;
@@ -85,7 +84,7 @@ export class GameService{
             player1: 0, player2: 0
         };
         this.wall = {height:100, width:10}
-        this.paddles = {paddle1: 0, paddle2: 0}
+        this.paddles = {paddle1: 50, paddle2: 50}
     }
     
     default() {
@@ -95,10 +94,10 @@ export class GameService{
         this.dir.dy = Math.random() > 0.5 ? -1 : 1;
     }
 
-    gameover() {
+    async gameover() {
         this.Status = Stat.END;
-        this.roomService.gameOver(this.Players, this.score, this.roomName, this.user1, this.user2)
-        this.roomService.gameOverWatcher(this.Watchers)
+        // this.roomService.gameOver(this.Players, this.score, this.roomName, this.user1, this.user2)
+        // this.roomService.gameOverWatcher(this.Watchers)
     }
 
     // inGameOver() {
@@ -109,7 +108,7 @@ export class GameService{
     update() {
         //player out  over case
         if (this.Players.length != 2) {
-            this.Status = Stat.END;
+            this.Status = Stat.CANCEL;
             this.gameover()
         }
 
@@ -153,10 +152,10 @@ export class GameService{
         if ((nextX - this.ballSize) >= 1475 || (nextX + this.ballSize) <= 0)
         {
             nextX >= 1475 ? this.score.player1 += 1 : this.score.player2 += 1;
-            if (this.score.player1 == 1) {
+            if (this.score.player1 == 10) {
                 this.gameover()
             }
-            else if (this.score.player2 == 1) {
+            else if (this.score.player2 == 10) {
                 this.gameover()
             }
             this.default()

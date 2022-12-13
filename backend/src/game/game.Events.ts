@@ -18,7 +18,6 @@ import { GameService, Stat } from './interfaces/room';
 import { QueueService } from './queue.service';
 import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
-import { HttpExceptionFilter } from 'src/utils/http.exception.filter';
 import { ConnectionService } from 'src/connection/connection.service';
 import { Status } from 'src/utils/types';
 // import { GameService } from './game.service';
@@ -48,6 +47,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
+    this.logger.debug(`Game socket id ${client.id}`)
     try {
       await this.connectionService.addConnection(client);
     } catch (err) {
