@@ -247,6 +247,14 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
 
   // private Queue
+  @SubscribeMessage('privateQ')
+  async privateQ(@ConnectedSocket() client: Socket,
+  @MessageBody() data) {
+    let connec = this.connectionService.connections
+    const sockets = connec.get(data)
+    for (const socket of sockets)
+      socket.emit('test')
+  }
 
 
 }
