@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConnectionModule } from 'src/connection/connection.module';
 import { EventsModule } from 'src/events/events.module';
 import { Block, Friend, MatchHistory, User } from 'src/typeorm';
 import { ProfileController } from './controllers/profile/profile.controller';
@@ -16,7 +15,6 @@ import { UserService } from './services/user/user.service';
     JwtModule.register({}),
     PassportModule,
     EventsModule,
-    ConnectionModule,
   ],
   controllers: [UsersController, ProfileController],
   providers: [
