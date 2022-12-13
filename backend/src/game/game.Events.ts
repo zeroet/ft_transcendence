@@ -87,7 +87,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
   async getUserfromSocket(client:Socket)
   {
-    try {  
+    try { 
       const payload = await this.authService.verify(client.handshake.headers.accesstoken)
       const user = await this.userService.getUserById(payload.id)
       return user
@@ -95,22 +95,14 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     catch{}
   }
 
-  async checkPlaying(client: Socket)
-  {
-    let user;
-    user = await this.getUserfromSocket(client);
-    user.status
-  }
-
   @SubscribeMessage('Queue')
   async readyGame(@ConnectedSocket() client: Socket) {
     if (!client) 
       return ;
     const user = await this.getUserfromSocket(client)
-    console.log('statussssssss',user.status)
+    console.log('stattttttttttttttt', user.status)
     let stat:string = user.status
     if (stat === 'Game') {
-      console.log('Playinggggggggggggggggggggg');
       client.emit('playing');
       return ;
     }

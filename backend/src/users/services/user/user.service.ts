@@ -210,10 +210,8 @@ export class UserService implements IUserService {
   }
   // updateUserById(id: number) {}
 
- async createMatchHistory(data:any) {
-  const match = this.matchHistoryRepository.create({
-    data: new Date(),
-    ...data,});
+ async createMatchHistory(info:any) {
+  const match = this.matchHistoryRepository.create({...info});
   try {
     await this.matchHistoryRepository.save(match);}
   catch(error) {
