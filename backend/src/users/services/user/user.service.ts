@@ -224,9 +224,9 @@ export class UserService implements IUserService {
     if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
     .innerJoinAndSelect('matchhistory.winner', 'winner')
     .innerJoinAndSelect('matchhistory.loser', 'loser')
-    .getMany()
-
-    console.log(matchs)
+    .orderBy("date", "DESC")
+    .limit(5)
+    
     
     return matchs;
   }

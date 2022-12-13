@@ -97,16 +97,18 @@ export class RoomService{
                 const loser = user2
                 const score = [Score.player1, Score.player2]
                 await this.userService.createMatchHistory({date: new Date(), winner, loser, score});
+                for(const player of Players)
+                    player.emit('gameover', winner.username);
             }
             else if (Score.player2 > Score.player1)
             {
                 const winner = user2
                 const loser = user1
                 const score = [Score.player1, Score.player2]
-                await this.userService.createMatchHistory({date: new Date(), winner, loser, score}) 
+                await this.userService.createMatchHistory({date: new Date(), winner, loser, score})
+                for(const player of Players)
+                    player.emit('gameover', winner.username);
         }
-        for(const player of Players)
-            player.emit('gameover');
         }
     }
     
