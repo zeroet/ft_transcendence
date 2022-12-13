@@ -36,7 +36,6 @@ export default function FriendStatus({ id }: { id: string }) {
             } else if (eachFriend.status === "Game") {
               color.color = "yellow";
             }
-            console.log(eachFriend);
             return (
               <div key={eachFriend.id}>
                 <EachFriend

@@ -24,6 +24,7 @@ const TextProfil = ({ id }: { id: string }) => {
   if (!user) return <Loading />;
   return (
     <div>
+      {id !== "-1" && <h3>You see {user.intra_id}'s Profile</h3>}
       <div className="name">
         <h1 className="userName">{user.username}</h1>
       </div>

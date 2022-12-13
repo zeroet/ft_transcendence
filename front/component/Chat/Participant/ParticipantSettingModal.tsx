@@ -29,7 +29,6 @@ const ParticipantSettingModal = ({
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log(myData);
       router.push(`/FriendProfile/${userId.toString()}`);
     },
     [userId]
@@ -54,7 +53,8 @@ const ParticipantSettingModal = ({
           });
         })
         .catch((err) => {
-          console.log(e);
+          console.log(err);
+          router.push("/Chat");
         });
       setShowModal(false);
     },
@@ -214,6 +214,7 @@ const ParticipantSettingModal = ({
           text-align: center;
           transition: width 0.5s, height 0.5s, background-color 0.5s,
             transform 0.5s;
+          cursor: pointer;
         }
         .router-div:hover {
           background-color: black;
