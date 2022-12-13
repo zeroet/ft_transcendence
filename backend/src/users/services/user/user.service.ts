@@ -3,7 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-  HttpException
+  HttpException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
@@ -20,7 +20,8 @@ export class UserService implements IUserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Block) private blockRepository: Repository<Block>,
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
-    @InjectRepository(MatchHistory) private matchHistoryRepository : Repository<MatchHistory>,
+    @InjectRepository(MatchHistory)
+    private matchHistoryRepository: Repository<MatchHistory>,
     private chatEventsGateway: ChatEventsGateway,
     ) {}
     private connectionGateway: ConnectionGateway;
@@ -205,24 +206,45 @@ export class UserService implements IUserService {
 
   async updateUserStatus(userId: number, status: Status) {
     const user = await this.findUserByIdOrFail(userId);
+    // if (
+    //   status === Status.LOGIN ||
+    //   status === Status.LOGOUT ||
+    //   status === Status.PLAYING
+    // )
     user.status = status;
+    // else {
+    //   throw new BadRequestException(`User status: ${status} is not valid`);
+    // }
     const updatedUser = await this.userRepository.save(user);
     this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
   }
   // updateUserById(id: number) {}
 
+<<<<<<< HEAD
  async createMatchHistory(info:any) {
   const match = this.matchHistoryRepository.create({...info});
   try {
     await this.matchHistoryRepository.save(match);}
   catch(error) {
     throw new HttpException(error.mesage, 404);
+=======
+  async createMatchHistory(data: any) {
+    const match = this.matchHistoryRepository.create({
+      data: new Date(),
+      ...data,
+    });
+    try {
+      await this.matchHistoryRepository.save(match);
+    } catch (error) {
+      throw new HttpException(error.mesage, 404);
+>>>>>>> 97cc00f20150ceb25bf793281607507e8bd561dd
     }
   }
 
-  async getMatch(id:number) {
+  async getMatch(id: number) {
     let matchs = null;
+<<<<<<< HEAD
     if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
     .innerJoinAndSelect('matchhistory.winner', 'winner')
     .innerJoinAndSelect('matchhistory.loser', 'loser')
@@ -230,8 +252,17 @@ export class UserService implements IUserService {
     .limit(5)
     
     this.connectionGateway.server.emit('match');
+=======
+    if (id)
+      matchs = await this.matchHistoryRepository
+        .createQueryBuilder('matchhistory')
+        .innerJoinAndSelect('matchhistory.winner', 'winner')
+        .innerJoinAndSelect('matchhistory.loser', 'loser')
+        .getMany();
+
+    console.log(matchs);
+>>>>>>> 97cc00f20150ceb25bf793281607507e8bd561dd
 
     return matchs;
   }
 }
-

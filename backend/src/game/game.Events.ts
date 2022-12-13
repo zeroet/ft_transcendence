@@ -79,8 +79,11 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     }
     // Watcher case
     if(this.roomService.watcherOut(client))
-      return ;
+    {
+      for(const room of this.roomService.rooms.values())
 
+      return ;
+    }
     const list = this.roomService.roomList()
     this.server.emit('room-list', list);
   }
@@ -194,12 +197,16 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     @MessageBody() data:any) {
       if (!data)
         return ;
+      
+      
       const user = await this.getUserfromSocket(watcher);
       let stat:string = user.status
       if (stat === 'Game') {
         watcher.emit('playing');
         return ;
       }
+
+
       const Room = this.roomService.findRoom(data);
       for (const player of Room.Players)
       {

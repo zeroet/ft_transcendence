@@ -136,11 +136,13 @@ export class AuthController {
       this.authService.defaultCookieOptions,
     );
     await this.twoFactorSerivce.setTwoFactorValid(user.id, false);
+    // if user == dummy then delete dummy
     if (await this.authService.deleteDummyUser(user)) {
       res.clearCookie(
         Cookies.REFRESH_TOKEN,
         this.authService.defaultCookieOptions,
       );
+      return;
     }
     return this.authService.updateUserStatus(user.id, Status.LOGOUT);
   }
