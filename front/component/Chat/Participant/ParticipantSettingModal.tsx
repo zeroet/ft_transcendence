@@ -150,6 +150,21 @@ const ParticipantSettingModal = ({
     [myData, userId]
   );
 
+  const onClickDelete = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .delete(`/api/users/friend/${userId}`)
+        .then(() => {
+          mutate(`/api/users/friend/list`);
+        })
+        .catch((err) => console.log(err));
+      setShowModal(false);
+    },
+    [myData, userId]
+  );
+
   useEffect(() => {
     if (!myData || !blockedListData) return;
     blockedListData.map((element: any) => {
@@ -176,6 +191,11 @@ const ParticipantSettingModal = ({
       {chatId && (
         <div className="router-div" onClick={onClickBlock}>
           {isBlock}
+        </div>
+      )}
+      {!chatId && (
+        <div className="router-div" onClick={onClickDelete}>
+          Delete
         </div>
       )}
       {isOwner && (
