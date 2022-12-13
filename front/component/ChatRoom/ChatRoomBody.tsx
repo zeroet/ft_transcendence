@@ -26,7 +26,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
     IChatContent[]
   >(`/api/${id.link}/${id.id}/contents`);
   const { data: chatroomMembersData, error: chatroomMembersError } = useSWR(
-    `/api/chatroom/${id.id}/members`
+    `/api/chatroom/${id.id}/participants`
   );
   const [isMute, setIsMuted] = useState<boolean>(false);
 

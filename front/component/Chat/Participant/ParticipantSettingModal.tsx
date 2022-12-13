@@ -93,7 +93,7 @@ const ParticipantSettingModal = ({
       e.preventDefault();
       e.stopPropagation();
       await axios
-        .patch(`/api/chatroom/${chatId}/members/update`, {
+        .patch(`/api/chatroom/${chatId}/participants/update`, {
           targetUserId: userId,
           mute: true,
         })
