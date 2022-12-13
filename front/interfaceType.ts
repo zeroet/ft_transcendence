@@ -49,13 +49,24 @@ export interface IChatMember {
   id: number;
   userId: number;
   chatroomId: number;
-  mutedAt: Date;
-  bannedAt: Date;
+  // mutedAt: Date;
   createdAt: Date;
   modifiedAt: Date;
   User: {
     username: string;
   };
+}
+
+export interface IChatParticipant {
+  id: number;
+  userId: number;
+  chatroomId: number;
+  mutedAt: Date;
+  bannedAt: Date;
+  createdAt: Date;
+  modifiedAt: Date;
+  Chatroom: IChatroom;
+  // User: IUser;
 }
 
 export interface IChatContent {

@@ -605,9 +605,9 @@ export class ChatroomService implements IChatroomService {
     const user = await this.findUserByIdOrFail(userId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
 
-    if (member.mutedAt !== null) {
-      return;
-    }
+    // if (member.mutedAt !== null) {
+    //   return;
+    // }
     const newContent = this.chatContentRepository.create({
       userId,
       chatroomId,
