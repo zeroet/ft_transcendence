@@ -2,11 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback } from "react";
 import styles from "../../../styles/LayoutBox.module.css";
 
-/**
- *
- * boolean 값으로 Win or Lose
- */
-const Gameover = ({ winOrLose }: { winOrLose: boolean }) => {
+const Gameover = ({ winOrLose }: { winOrLose: string }) => {
   const router = useRouter();
   const onClickToHome = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     router.push("/Home");
@@ -16,9 +12,7 @@ const Gameover = ({ winOrLose }: { winOrLose: boolean }) => {
       <div>
         <h1>PING PONG</h1>
       </div>
-      <div className="gameover vibration">
-        {winOrLose ? "YOU WIN" : "YOU LOSE"}
-      </div>
+      <div className="gameover vibration">{winOrLose}</div>
       <div className="btn-to-home" onClick={onClickToHome}>
         Home
       </div>
