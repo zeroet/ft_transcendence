@@ -30,7 +30,6 @@ export default function DMRoomBody({ id }: { id: TypeChatId }) {
     };
   }, [chatContentsData, mydata, infoDmRoomData]);
 
-  //   console.log(chatContentsData);
   const onChangeInputText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputText(e.target.value);

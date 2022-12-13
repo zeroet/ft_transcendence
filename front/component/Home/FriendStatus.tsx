@@ -3,6 +3,7 @@ import useSWR, { mutate } from "swr";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
+import { EachFriend } from "./FriendStatus/EachFriend";
 
 export default function FriendStatus({ id }: { id: string }) {
   const [chatSocket] = useSocket(null, "chat");
@@ -35,29 +36,19 @@ export default function FriendStatus({ id }: { id: string }) {
             } else if (eachFriend.status === "Game") {
               color.color = "yellow";
             }
-            console.log(color);
+            console.log(eachFriend);
             return (
-              <div key={eachFriend.id} className="friend">
-                <div
-                  className="status"
-                  style={{ backgroundColor: color.color }}
-                ></div>
-                <div>{eachFriend.friendUsername}</div>
+              <div key={eachFriend.id}>
+                <EachFriend
+                  color={color.color}
+                  friendUsername={eachFriend.friendUsername}
+                  id={eachFriend.friendUserId}
+                />
               </div>
             );
           })}
       </ul>
       <style jsx>{`
-        .friend {
-          display: flex;
-          align-items: center;
-        }
-        .status {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          margin-right: 10px;
-        }
         h1 {
           font-family: "Fragment Mono", monospace;
           font-size: 25px;

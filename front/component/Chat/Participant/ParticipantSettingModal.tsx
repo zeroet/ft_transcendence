@@ -13,22 +13,23 @@ const ParticipantSettingModal = ({
   isOwner: boolean;
   userId: number;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  chatId: string;
+  chatId: string | null;
 }) => {
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
   const { data: blockedListData, error: blockedListError } = useSWR(
-    "/api/users/block/list"
+    chatId ? "/api/users/block/list" : null
   );
   const [isBlock, setIsBlock] = useState<string>("Block");
   const { data: chatroomData, error: chatroomError } = useSWR(
-    `/api/chatroom/${chatId}/members`
+    chatId ? `/api/chatroom/${chatId}/members` : null
   );
 
   const onClickProfile = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
+      console.log(myData);
       router.push(`/FriendProfile/${userId.toString()}`);
     },
     [userId]
@@ -40,8 +41,17 @@ const ParticipantSettingModal = ({
       e.stopPropagation();
       await axios
         .post(`/api/dm/${userId}`)
-        .then((res) => {
-          console.log(res, " is axios post : /api/dm/userid");
+        .then(async (res) => {
+          return await res.data.id;
+        })
+        .then((id) => {
+          router.push({
+            pathname: "/Chat",
+            query: {
+              id: id,
+              link: "dm",
+            },
+          });
         })
         .catch((err) => {
           console.log(e);
@@ -150,7 +160,8 @@ const ParticipantSettingModal = ({
     });
   }, [myData, blockedListData]);
 
-  if (!myData || !blockedListData || !chatroomData) return <Loading />;
+  if (!myData || (chatId && (!blockedListData || !chatroomData)))
+    return <Loading />;
   return (
     <div className="participantSettingModal">
       <div className="router-div" onClick={onClickProfile}>
@@ -162,9 +173,11 @@ const ParticipantSettingModal = ({
       <div className="router-div" onClick={onClickGame}>
         Game
       </div>
-      <div className="router-div" onClick={onClickBlock}>
-        {isBlock}
-      </div>
+      {chatId && (
+        <div className="router-div" onClick={onClickBlock}>
+          {isBlock}
+        </div>
+      )}
       {isOwner && (
         <div>
           <div className="router-div" onClick={onClickMute}>
