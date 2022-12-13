@@ -229,13 +229,13 @@ export class ChatroomService implements IChatroomService {
       password: hashedPassword,
     });
     const createdChatroom = await this.chatroomRepository.save(newChatroom);
-    const newMemebr = this.chatMemebrRepository.create({
-      userId: userId,
-      chatroomId: createdChatroom.id,
-      Chatroom: newChatroom,
-      User: user,
-    });
-    await this.chatMemebrRepository.save(newMemebr);
+    // const newMemebr = this.chatMemebrRepository.create({
+    //   userId: userId,
+    //   chatroomId: createdChatroom.id,
+    //   Chatroom: newChatroom,
+    //   User: user,
+    // });
+    // await this.chatMemebrRepository.save(newMemebr);
     this.chatEventsGateway.server.emit('newRoomList', createdChatroom);
     console.log(newChatroom);
     const result = await this.getChatroomsInfo([newChatroom]);
