@@ -1,21 +1,11 @@
-import { Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Logger } from '@nestjs/common';
 import {
-  BaseWsExceptionFilter,
-  ConnectedSocket,
-  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { JwtWsGuard } from 'src/auth/guards/jwt.ws.guard';
-import { IAuthService } from 'src/auth/services/auth/auth.interface';
-import { Chatroom } from 'src/typeorm';
-import { IUserService } from 'src/users/services/user/user.interface';
-import { Repository } from 'typeorm';
 
 // @UseFilters(new BaseWsExceptionFilter())
 // @UseGuards(JwtWsGuard)
@@ -24,37 +14,10 @@ export class ChatEventsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   protected readonly logger = new Logger(ChatEventsGateway.name);
-  constructor() {} // private chatroomRepository: Repository<Chatroom>, // private readonly jwtAccessStrategy: JwtAccessStrategy, // @InjectRepository(Chatroom) // @Inject('USER_SERVICE') private userService: IUserService, // @Inject('AUTH_SERVICE') private authService: IAuthService,
+  constructor() {}
 
   @WebSocketServer()
   server: Server;
-
-  @SubscribeMessage('kick')
-  handleMemberKick(
-    @MessageBody() message: string,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    this.server.emit('kick', socket.id, message);
-  }
-
-  @SubscribeMessage('mute')
-  handleMemberMute(
-    @MessageBody() message: string,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    this.server.emit('mute', socket.id, message);
-  }
-
-  // @SubscribeMessage('join')
-  // joinRoom(@MessageBody() name, @ConnectedSocket() socket: Socket) {
-  //   // const chatrooms = this.chatroomRepository.find();
-  //   this.server.emit('join');
-  // }
-
-  // @SubscribeMessage('test')
-  // test(socket: Socket, data: string) {
-  //   socket.on('test', () => console.log('test', data));
-  // }
 
   async handleConnection(socket: Socket) {
     // const payload = await this.authService.verify(

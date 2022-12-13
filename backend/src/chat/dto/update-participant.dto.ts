@@ -18,4 +18,13 @@ export class UpdateParticipantDto {
   @IsBoolean()
   @IsOptional()
   mute: boolean;
+
+  @ApiProperty({
+    // required: false,
+    type: Boolean,
+    description: 'Ban or not',
+  })
+  @IsBoolean()
+  @IsOptional()
+  ban: boolean;
 }

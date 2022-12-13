@@ -9,8 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { Block, Friend, MatchHistory, User } from 'src/typeorm';
 import { Status } from 'src/utils/types';
-import { Repository } from 'typeorm';
 import { IUserService } from './user.interface';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -210,11 +210,10 @@ export class UserService implements IUserService {
   }
   // updateUserById(id: number) {}
 
- async createMatchHistory(data: MatchHistory) {
-  console.log('in the service user')
-  const match: MatchHistory = this.matchHistoryRepository.create({
+ async createMatchHistory(data:any) {
+  const match = this.matchHistoryRepository.create({
     data: new Date(),
-    ...data,} as MatchHistory);
+    ...data,});
   try {
     await this.matchHistoryRepository.save(match);}
   catch(error) {
@@ -222,5 +221,16 @@ export class UserService implements IUserService {
     }
   }
 
+  async getMatch(id:number) {
+    let matchs = null;
+    if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
+    .innerJoinAndSelect('matchhistory.winner', 'winner')
+    .innerJoinAndSelect('matchhistory.loser', 'loser')
+    .getMany()
+
+    console.log(matchs)
+    
+    return matchs;
+  }
 }
 

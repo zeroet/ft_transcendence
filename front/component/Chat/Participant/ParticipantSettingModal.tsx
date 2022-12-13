@@ -13,16 +13,16 @@ const ParticipantSettingModal = ({
   isOwner: boolean;
   userId: number;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  chatId: string;
+  chatId: string | null;
 }) => {
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
   const { data: blockedListData, error: blockedListError } = useSWR(
-    "/api/users/block/list"
+    chatId ? "/api/users/block/list" : null
   );
   const [isBlock, setIsBlock] = useState<string>("Block");
   const { data: chatroomData, error: chatroomError } = useSWR(
-    `/api/chatroom/${chatId}/members`
+    chatId ? `/api/chatroom/${chatId}/members` : null
   );
 
   const onClickProfile = useCallback(
@@ -40,11 +40,21 @@ const ParticipantSettingModal = ({
       e.stopPropagation();
       await axios
         .post(`/api/dm/${userId}`)
-        .then((res) => {
-          console.log(res, " is axios post : /api/dm/userid");
+        .then(async (res) => {
+          return await res.data.id;
+        })
+        .then((id) => {
+          router.push({
+            pathname: "/Chat",
+            query: {
+              id: id,
+              link: "dm",
+            },
+          });
         })
         .catch((err) => {
-          console.log(e);
+          console.log(err);
+          router.push("/Chat");
         });
       setShowModal(false);
     },
@@ -97,6 +107,22 @@ const ParticipantSettingModal = ({
           targetUserId: userId,
           mute: true,
         })
+        .then(() => {})
+        .catch((err) => console.log(err));
+      setShowModal(false);
+    },
+    [chatroomData, userId, myData]
+  );
+
+  const onClickBan = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .patch(`/api/chatroom/${chatId}/participants/update`, {
+          targetUserId: userId,
+          ban: true,
+        })
         .then((res) => {
           console.log(res);
         })
@@ -140,6 +166,21 @@ const ParticipantSettingModal = ({
     [myData, userId]
   );
 
+  const onClickDelete = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .delete(`/api/users/friend/${userId}`)
+        .then(() => {
+          mutate(`/api/users/friend/list`);
+        })
+        .catch((err) => console.log(err));
+      setShowModal(false);
+    },
+    [myData, userId]
+  );
+
   useEffect(() => {
     if (!myData || !blockedListData) return;
     blockedListData.map((element: any) => {
@@ -150,7 +191,8 @@ const ParticipantSettingModal = ({
     });
   }, [myData, blockedListData]);
 
-  if (!myData || !blockedListData || !chatroomData) return <Loading />;
+  if (!myData || (chatId && (!blockedListData || !chatroomData)))
+    return <Loading />;
   return (
     <div className="participantSettingModal">
       <div className="router-div" onClick={onClickProfile}>
@@ -162,9 +204,16 @@ const ParticipantSettingModal = ({
       <div className="router-div" onClick={onClickGame}>
         Game
       </div>
-      <div className="router-div" onClick={onClickBlock}>
-        {isBlock}
-      </div>
+      {chatId && (
+        <div className="router-div" onClick={onClickBlock}>
+          {isBlock}
+        </div>
+      )}
+      {!chatId && (
+        <div className="router-div" onClick={onClickDelete}>
+          Delete
+        </div>
+      )}
       {isOwner && (
         <div>
           <div className="router-div" onClick={onClickMute}>
@@ -172,6 +221,9 @@ const ParticipantSettingModal = ({
           </div>
           <div className="router-div" onClick={onClickKick}>
             Kick
+          </div>
+          <div className="router-div" onClick={onClickBan}>
+            Ban
           </div>
           <div className="router-div" onClick={onClickSetAdmin}>
             Set Admin
@@ -188,11 +240,12 @@ const ParticipantSettingModal = ({
           margin: 2px;
           margin-left: 45px;
           margin-top: -3px;
-          //   font-weight: bold;
+          width: 101px;
           text-transform: uppercase;
           font-size: 15px;
           background-color: white;
           box-shadow: 10px 10px 2px 2px;
+          overflow: visible;
         }
         .router-div {
           background-color: white;
@@ -201,6 +254,7 @@ const ParticipantSettingModal = ({
           text-align: center;
           transition: width 0.5s, height 0.5s, background-color 0.5s,
             transform 0.5s;
+          cursor: pointer;
         }
         .router-div:hover {
           background-color: black;

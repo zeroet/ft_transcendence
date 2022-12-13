@@ -1,29 +1,23 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { Socket } from "socket.io";
-import { Repository } from 'typeorm';
 import { GameService } from './interfaces/room'
 import { Stat } from './interfaces/room'
 import { Interval } from "@nestjs/schedule";
-import { GameEvents } from "./game.Events";
 import { UserService } from "src/users/services/user/user.service";
-import { MatchHistory, User } from "src/typeorm";
-import { IAuthService } from 'src/auth/services/auth/auth.interface';
-import { InjectRepository } from '@nestjs/typeorm';
-import { AuthService } from "src/auth/services/auth/auth.service";
+import { User } from "src/typeorm";
+
 
 
 @Injectable()
 export class RoomService{
     constructor(
-        ) {}
-        @Inject('USER_SERVICE') userService : UserService
-        @InjectRepository(MatchHistory) 
-        private matchHistoryRepository : Repository<MatchHistory>
-    private readonly authService : AuthService        
+        @Inject('USER_SERVICE') private userService : UserService,      
+    ) {}
 
     rooms: Map<string, GameService> = new Map();
 
     createRoom (player1: Socket, player2:Socket) {
+        this.userService.getMatch(1);
         player1.emit('createRoom', { isOwner: true } );
         player2.emit('createRoom', { isOwner: false });
     }
@@ -52,7 +46,20 @@ export class RoomService{
             for(const watcher of room.Watchers) {
                 watcher.emit('info', res)
             }
-            // console.log(`${res.x}, ${res.y}, ${res.score1}, ${res.score2}`)
+        }
+        // game Over && db 
+        else if (room.Status == Stat.END) {
+         this.gameOver(room.Players, room.score, room.user1, room.user2)
+         this.rooms.delete(room.roomName);
+        }
+        // before 10 point game Boom
+        else if (room.Status == Stat.CANCEL)
+        {
+            for(const player of room.Players)
+                player.emit('gamecancel')
+            for (const watcher of room.Watchers)
+                watcher.emit('gamecancel')
+            this.rooms.delete(room.roomName)
         }
     }
 
@@ -81,18 +88,8 @@ export class RoomService{
         }
     }
 
-    async getUserfromSocket(client:Socket)
-    {
-      try {  
-        const payload = await this.authService.verify(client.handshake.headers.accesstoken)
-        const user = await this.userService.getUserById(payload.id)
-        console.log(payload, user);
-        return user
-      }
-      catch{}
-    }
 
-    async gameOver(Players, Score, roomName, user1:User, user2:User) {
+    async gameOver(Players, Score, user1:User, user2:User) {
         if (Players.length == 2)
         {
             if (Score.player1 > Score.player2)
@@ -100,26 +97,18 @@ export class RoomService{
                 const winner = user1
                 const loser = user2
                 const score = [Score.player1, Score.player2]
-                console.log(winner, loser, score)
-                const match: MatchHistory = await this.matchHistoryRepository.create({
-                    score, winner, loser} as MatchHistory);
-                await this.matchHistoryRepository.save(match);
-                
+                await this.userService.createMatchHistory({winner, loser, score});
             }
             else if (Score.player2 > Score.player1)
             {
                 const winner = user2
                 const loser = user1
                 const score = [Score.player1, Score.player2]
-                console.log(winner, loser, score)
-                
-                const match: MatchHistory = await this.matchHistoryRepository.create({
-                 score, winner, loser} as MatchHistory);
-                await this.matchHistoryRepository.save(match);
-            }    
+                await this.userService.createMatchHistory({winner, loser, score}) 
         }
         for(const player of Players)
             player.emit('gameover');
+        }
     }
     
     //watcher event  Front
