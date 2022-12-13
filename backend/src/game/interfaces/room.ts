@@ -202,7 +202,7 @@ export class GameService {
     }
 
     isWatcher(user: any) {
-        if (user === this.Watchers.indexOf(user))
+        if (this.Watchers.indexOf(user) != -1)
             return true;
         else
             return false;

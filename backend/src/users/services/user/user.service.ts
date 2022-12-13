@@ -238,13 +238,7 @@ export class UserService implements IUserService {
     .orderBy("matchhistory.date", "DESC")
     .take(5)
     .getMany()
-<<<<<<< HEAD
-
-    this.connectionGateway.server.emit('match');
-=======
     
-    // this.connectionGateway.server.emit('match');
->>>>>>> 5c3228f98065949d0543c199de3ecb0241b747f6
 
     return matchs;
   }
