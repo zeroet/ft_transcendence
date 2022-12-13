@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import useSWR from "swr";
 import styles from "../../styles/LayoutBox.module.css";
 import Loading from "../errorAndLoading/Loading";
@@ -57,6 +58,16 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
       console.log("close!!!!");
       setOwnerOrPlayer("");
       setSettingModal(false);
+      toast.error("Game Canceled!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        rtl: false,
+        pauseOnFocusLoss: true,
+        draggable: false,
+        pauseOnHover: false,
+      });
     });
     return () => {
       socket?.off("createRoom");

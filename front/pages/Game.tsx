@@ -13,7 +13,7 @@ import { useEffect } from "react";
 
 export default function Game({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
-  const [socket, disconnect] = useSocket(accessToken, "game");
+  const [socket] = useSocket(accessToken, "game");
 
   useEffect(() => {
     return () => {};

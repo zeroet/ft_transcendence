@@ -13,6 +13,7 @@ import { IAuthService } from './auth.interface';
 import * as bcrypt from 'bcrypt';
 import { CookieOptions } from 'express';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
+import { Socket } from 'socket.io';
 // import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 
 @Injectable()
