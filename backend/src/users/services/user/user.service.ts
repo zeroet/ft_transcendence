@@ -204,15 +204,15 @@ export class UserService implements IUserService {
 
   async updateUserStatus(userId: number, status: Status) {
     const user = await this.findUserByIdOrFail(userId);
-    if (
-      status === Status.LOGIN ||
-      status === Status.LOGOUT ||
-      status === Status.PLAYING
-    )
-      user.status = status;
-    else {
-      throw new BadRequestException(`User status: ${status} is not valid`);
-    }
+    // if (
+    //   status === Status.LOGIN ||
+    //   status === Status.LOGOUT ||
+    //   status === Status.PLAYING
+    // )
+    user.status = status;
+    // else {
+    //   throw new BadRequestException(`User status: ${status} is not valid`);
+    // }
     const updatedUser = await this.userRepository.save(user);
     this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
