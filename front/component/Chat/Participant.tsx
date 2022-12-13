@@ -35,31 +35,49 @@ export default function Participant({
     IChatMember[]
   >(isId ? `/api/${id.link}/${id.id}/members` : null, isId ? fetcher : null);
   const { data: myData, error: myError } = useSWR("/api/users");
+  const { data: roomParticipantData } = useSWR<IChatMember[]>(
+    isId ? `/api/${id.link}/${id.id}/participants` : null,
+    isId ? fetcher : null
+  );
 
   useEffect(() => {
-    socket?.on("newMemberList", (res: String) => {
-      // console.log(res, "is res from newMemberList socket in participant");
+    socket?.on("newParticipantList", () => {
+      console.log("new participant");
+      mutate(`/api/${id.link}/${id.id}/participants`);
+      mutate(`/api/${id.link}/${id.id}`);
+    });
+    socket?.on("newMemberList", () => {
       mutate(`/api/${id.link}/${id.id}/members`);
       mutate(`/api/${id.link}/${id.id}`);
     });
     return () => {
       socket?.off("newMemberList");
+      socket?.off("newParticipantList");
     };
-  }, [socket, roomMembersData, id.id, myData]);
+  }, [socket?.id, roomMembersData, id.id, myData, roomParticipantData]);
 
-  // if (isId && roomMembersData) {
-  //   console.log(roomMembersData);
-  // }
   if (roomMembersError || myError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if ((isId && !roomMembersData) || !socket || !myData) return <Loading />;
+  if (
+    (isId && !roomMembersData) ||
+    !socket ||
+    (isId && !myData) ||
+    (isId && !roomParticipantData)
+  )
+    return <Loading />;
   return (
     <div className={styles.box}>
       <h1>Participant</h1>
       <hr />
       <ul>
         {isId &&
-          roomMembersData?.map((member: IChatMember) => {
+          roomParticipantData?.map((member: IChatMember) => {
+            const color = { color: "red" };
+            roomMembersData?.map((loginMember: IChatMember) => {
+              if (loginMember.userId === member.userId) {
+                color.color = "green";
+              }
+            });
             return (
               <li key={member.userId}>
                 <div className="participant">
@@ -68,6 +86,7 @@ export default function Participant({
                     userId={member.userId}
                     isOwner={ownerId === myData.id}
                     chatId={id.id}
+                    color={color.color}
                   />
                   {ownerId === member.userId && (
                     <img
@@ -81,12 +100,6 @@ export default function Participant({
             );
           })}
       </ul>
-      {/* <ul>
-        {isId &&
-          id.chatroom === "dm" &&
-          /.../
-        }
-      </ul> */}
       <style jsx>{`
         .participant {
           display: flex;

@@ -80,15 +80,6 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
         });
         setName("");
       }
-
-      // .catch((error) => {
-      //   console.dir(error);
-      //   alert("There's already same room name");
-      //   setName("");
-      // });
-      // .finally(() => {
-      //   onClose();
-      // });
     },
     [RoomName, RoomPw]
   );

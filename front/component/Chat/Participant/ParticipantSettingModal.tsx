@@ -25,31 +25,36 @@ const ParticipantSettingModal = ({
     `/api/chatroom/${chatId}/members`
   );
 
-  const onClickProfile = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    router.push(`/FriendProfile/${userId.toString()}`);
-  }, []);
+  const onClickProfile = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      router.push(`/FriendProfile/${userId.toString()}`);
+    },
+    [userId]
+  );
 
-  const onClickDM = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    await axios
-      .post(`/api/dm/${userId}`)
-      .then((res) => {
-        console.log(res, " is axios post : /api/dm/userid");
-      })
-      .catch((err) => {
-        console.log(e);
-      });
-    setShowModal(false);
-  }, []);
+  const onClickDM = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .post(`/api/dm/${userId}`)
+        .then((res) => {
+          console.log(res, " is axios post : /api/dm/userid");
+        })
+        .catch((err) => {
+          console.log(e);
+        });
+      setShowModal(false);
+    },
+    [userId]
+  );
 
   const onClickGame = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setShowModal(false);
-    console.log("Game");
   }, []);
 
   const onClickBlock = useCallback(

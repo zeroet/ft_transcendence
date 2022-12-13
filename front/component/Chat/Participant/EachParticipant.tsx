@@ -1,6 +1,6 @@
-import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
+import Loading from "../../errorAndLoading/Loading";
 import ParticipantSettingModal from "./ParticipantSettingModal";
 
 const EachParticipant = ({
@@ -8,13 +8,15 @@ const EachParticipant = ({
   userId,
   isOwner,
   chatId,
+  color,
 }: {
   username: string;
   userId: number;
   isOwner: boolean;
   chatId: string;
+  color: string;
 }) => {
-  const { data: myData, error: myError } = useSWR(`/api/users`);
+  const { data: myData } = useSWR(`/api/users`);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const onClickEachParticipant = useCallback(
@@ -23,19 +25,23 @@ const EachParticipant = ({
       e.stopPropagation();
       if (myData.username === username) return;
       setShowModal((curr) => !curr);
-      // 프로필  용 (모달 안에 넣기)
-      // router.push(`/FriendProfile/${userId}`);
     },
-    []
+    [myData, chatId]
   );
 
-  // console.log(
-  //   "Each participant에서 userId는 유저정보를 불러오거나 API를 사용할때! 위함"
-  // );
   return (
     <div className="user">
+      <div
+        style={{
+          backgroundColor: color,
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          marginRight: "5px",
+        }}
+      ></div>
       <div onClick={onClickEachParticipant} className="username">
-        # {username}
+        {username}
       </div>
       {showModal && (
         <ParticipantSettingModal
@@ -47,6 +53,8 @@ const EachParticipant = ({
       )}
       <style jsx>{`
         .user {
+          display: flex;
+          align-items: center;
           cursor: pointer;
         }
         .username {
