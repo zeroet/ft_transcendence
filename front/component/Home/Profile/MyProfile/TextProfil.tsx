@@ -7,17 +7,15 @@ const TextProfil = ({ id }: { id: number }) => {
   const { data: user, error } = useSWR<UserInfo>(`/api/users/${id}`);
   const { data: myData, error: myError } = useSWR<UserInfo>(`/api/users`);
   const userNameFontSize = { size: 50 };
+  const { data: rankData, error: rankError } = useSWR(`/api/users/rank/${id}`);
 
   if (user && user.username.length >= 20) {
     userNameFontSize.size = 25;
   }
-  const loss = 1432;
-  const victory = 44432;
-  const winRate = Math.round((victory / (loss + victory)) * 100);
 
-  if (error || myError)
+  if (error || myError || rankError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!user || !myData) return <Loading />;
+  if (!user || !myData || !rankData) return <Loading />;
   return (
     <div>
       {id != myData.id && <h3>You see {user.intra_id}'s Profile</h3>}
@@ -25,9 +23,7 @@ const TextProfil = ({ id }: { id: number }) => {
         <h1 className="userName">{user.username}</h1>
       </div>
       <div className="info">
-        <h3 className="victory">ViCTORY: {victory}</h3>
-        <h3 className="loss">LOSS: {loss}</h3>
-        <h3>WINRATE: {winRate}%</h3>
+        <h3>ACHIVEMENT : {rankData}</h3>
       </div>
       <style jsx>{`
         div {
