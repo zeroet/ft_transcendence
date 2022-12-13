@@ -3,7 +3,6 @@ import axios from "axios";
 import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
 import { toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
 
 const ChangeNameAndPW = ({
   setShowChangeModal,
@@ -38,7 +37,6 @@ const ChangeNameAndPW = ({
           draggable: false,
           pauseOnHover: false,
         });
-        // alert("new Room PW more than 4");
         setPw("");
         return;
       }

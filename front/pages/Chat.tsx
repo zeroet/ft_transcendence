@@ -33,7 +33,6 @@ export default function Chat({
   );
   const [showPWModal, setShowPWModal] = useState<boolean>(true);
 
-  // 룸 데이터 이동 확인용, 모달용
   useEffect(() => {
     if (roomData && userData) {
       console.log(`i am in room ${roomData.chatroomName}`);
@@ -58,7 +57,6 @@ export default function Chat({
     };
   }, [roomData?.id, id?.id]);
 
-  console.log(roomData);
   if (userError || (id.link === "chat" && roomError))
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!userData || (id.link === "chat" && !roomData)) return <Loading />;

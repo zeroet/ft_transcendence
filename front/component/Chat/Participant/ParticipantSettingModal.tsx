@@ -21,33 +21,40 @@ const ParticipantSettingModal = ({
     "/api/users/block/list"
   );
   const [isBlock, setIsBlock] = useState<string>("Block");
+  const { data: chatroomData, error: chatroomError } = useSWR(
+    `/api/chatroom/${chatId}/members`
+  );
 
-  const onClickProfile = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    router.push(`/FriendProfile/${userId.toString()}`);
-  }, []);
+  const onClickProfile = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      router.push(`/FriendProfile/${userId.toString()}`);
+    },
+    [userId]
+  );
 
-  const onClickDM = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    await axios
-      .post(`/api/dm/${userId}`)
-      .then((res) => {
-        console.log(res, " is axios post : /api/dm/userid");
-      })
-      .catch((err) => {
-        console.log(e);
-      });
-    // console.log("DM");
-    setShowModal(false);
-  }, []);
+  const onClickDM = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .post(`/api/dm/${userId}`)
+        .then((res) => {
+          console.log(res, " is axios post : /api/dm/userid");
+        })
+        .catch((err) => {
+          console.log(e);
+        });
+      setShowModal(false);
+    },
+    [userId]
+  );
 
   const onClickGame = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setShowModal(false);
-    console.log("Game");
   }, []);
 
   const onClickBlock = useCallback(
@@ -81,19 +88,41 @@ const ParticipantSettingModal = ({
     [isBlock, blockedListData, myData, userId]
   );
 
-  const onClickMute = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowModal(false);
-    console.log("Mute");
-  }, []);
+  const onClickMute = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .patch(`/api/chatroom/${chatId}/participants/update`, {
+          targetUserId: userId,
+          mute: true,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
+      setShowModal(false);
+    },
+    [chatroomData, userId, myData]
+  );
 
-  const onClickKick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowModal(false);
-    console.log("Kick");
-  }, []);
+  const onClickKick = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios
+        .patch(`/api/chatroom/${chatId}/members/update`, {
+          targetUserId: userId,
+          kick: true,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
+      setShowModal(false);
+    },
+    [chatroomData, myData, userId]
+  );
 
   const onClickSetAdmin = useCallback(
     async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -104,7 +133,6 @@ const ParticipantSettingModal = ({
           targetUserId: userId,
         })
         .then(() => {
-          // mutate("/api/users");
           setShowModal(false);
         })
         .catch((err) => console.log(err));
@@ -114,8 +142,6 @@ const ParticipantSettingModal = ({
 
   useEffect(() => {
     if (!myData || !blockedListData) return;
-    console.log(myData);
-    console.log(blockedListData);
     blockedListData.map((element: any) => {
       console.log(element.blockedUserId);
       if (element.blockedUserId === userId) {
@@ -124,7 +150,7 @@ const ParticipantSettingModal = ({
     });
   }, [myData, blockedListData]);
 
-  if (!myData || !blockedListData) return <Loading />;
+  if (!myData || !blockedListData || !chatroomData) return <Loading />;
   return (
     <div className="participantSettingModal">
       <div className="router-div" onClick={onClickProfile}>

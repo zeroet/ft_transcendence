@@ -1,12 +1,25 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
+import Loading from "../errorAndLoading/Loading";
 import ChangeNameAndPW from "./ChatroomSettingModal/ChangeNameAndPW";
 
-export default function ChatroomSettingModal({ roomId }: { roomId: string }) {
+export default function ChatroomSettingModal({
+  roomId,
+  isOwner,
+}: {
+  roomId: string;
+  isOwner: Boolean;
+}) {
+  const router = useRouter();
   const [showChangeModal, setShowChangeModal] = useState<Boolean>(false);
+  const { data: participantData } = useSWR(
+    `/api/chatroom/${roomId}/participants`
+  );
+  const { data: myData } = useSWR("/api/users");
 
-  const onClickExitRoom = useCallback(
+  const onClickDeleteRoom = useCallback(
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
@@ -17,23 +30,54 @@ export default function ChatroomSettingModal({ roomId }: { roomId: string }) {
         })
         .catch((err) => console.log(err));
     },
-    []
+    [roomId]
   );
 
   const onClickChangePWAndName = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      /**
-       * 방 바꾸는 모달 보여주고,
-       * 그 모달안에서 axios로 방 이름, 패스워드 변경
-       */
-      console.log("셋팅 화면 출력");
       setShowChangeModal(true);
     },
-    []
+    [roomId]
   );
 
+  const onClickExitRoom = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (isOwner) {
+        if (participantData.length === 1) {
+          onClickDeleteRoom(e);
+        } else {
+          if (participantData[0].userId !== myData.id) {
+            await axios
+              .patch(`/api/chatroom/${roomId}/admin`, {
+                targetUserId: participantData[0].userId,
+              })
+              .then(() => {})
+              .catch((err) => console.log(err));
+          } else {
+            await axios
+              .patch(`/api/chatroom/${roomId}/admin`, {
+                targetUserId: participantData[1].userId,
+              })
+              .then(() => {})
+              .catch((err) => console.log(err));
+          }
+        }
+      }
+      await axios
+        .delete(`/api/chatroom/${roomId}/participants`)
+        .then((res) => {
+          router.push("/Chat");
+        })
+        .catch((err) => console.log(err));
+    },
+    [roomId, myData]
+  );
+
+  if (!participantData || !myData) return <Loading />;
   return (
     <div>
       {showChangeModal && (
@@ -48,9 +92,16 @@ export default function ChatroomSettingModal({ roomId }: { roomId: string }) {
         <div className="div-button" onClick={onClickExitRoom}>
           <h1>Exit the room</h1>
         </div>
-        <div className="div-button" onClick={onClickChangePWAndName}>
-          <h1>Change Room name / Password</h1>
-        </div>
+        {isOwner && (
+          <div className="div-button" onClick={onClickDeleteRoom}>
+            <h1>Delete the room</h1>
+          </div>
+        )}
+        {isOwner && (
+          <div className="div-button" onClick={onClickChangePWAndName}>
+            <h1>Change Room name / Password</h1>
+          </div>
+        )}
       </div>
       <style jsx>{`
         .modal-background {

@@ -57,7 +57,6 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
             return await res.data.id;
           })
           .then((chatroomId) => {
-            // router.push(`/Chat/${chatroomId}`);
             router.push({
               pathname: `/Chat`,
               query: { id: chatroomId, link: "chatroom" },
@@ -81,15 +80,6 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
         });
         setName("");
       }
-
-      // .catch((error) => {
-      //   console.dir(error);
-      //   alert("There's already same room name");
-      //   setName("");
-      // });
-      // .finally(() => {
-      //   onClose();
-      // });
     },
     [RoomName, RoomPw]
   );

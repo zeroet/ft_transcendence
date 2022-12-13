@@ -26,6 +26,7 @@ import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
 import { UpdateMemberDto } from 'src/chat/dto/update-member.dto';
+import { UpdateParticipantDto } from 'src/chat/dto/update-participant.dto';
 import { IChatroomService } from 'src/chat/services/chatroom/chatroom.interface';
 import { IUser } from 'src/typeorm/interfaces/IUser';
 import { User } from 'src/utils/decorators/user.decorator';
@@ -169,6 +170,83 @@ export class ChatroomController {
 
   @ApiResponse({
     type: ChatMemberDto,
+    description: 'Participant list of a chatroom',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary:
+      'Get all participants from a chatroom / 특정 대화방의 모든 참여자목록 가져오기',
+  })
+  @Get(':id/participants')
+  async getParticipants(@Param('id') id: number) {
+    return this.chatroomService.getParticipants(id);
+  }
+
+  // @ApiParam({
+  //   name: 'id',
+  //   example: 1,
+  //   description: 'Chatroom id',
+  // })
+  // @ApiOperation({
+  //   summary:
+  //     'Post participants to a chatroom / 특정 대화방에 새로운 참여자 추가하기',
+  // })
+  // @Post(':id/participants')
+  // async postParticipants(@User() user: IUser, @Param('id') id: number) {
+  //   return await this.chatroomService.postParticipants(user.id, id);
+  // }
+
+  @ApiBody({
+    type: UpdateParticipantDto,
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary:
+      'Update participants of a chatroom / 특정 대화방의 참여자 정보 수정하기',
+  })
+  @Patch(':id/participants/update')
+  async updateParticipantsInfo(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body() updateParticipantDto: UpdateParticipantDto,
+  ) {
+    console.log('updateParticipantDto:', updateParticipantDto);
+    console.log('chatroomId:', id);
+    return await this.chatroomService.updateParticipantInfo(
+      user.id,
+      id,
+      updateParticipantDto,
+    );
+  }
+
+  @ApiResponse({
+    type: ChatMemberDto,
+    description: 'Participant list of a chatroom',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary:
+      'Delete participants to a chatroom / 특정 대화방에 참여자 삭제하기',
+  })
+  @Delete(':id/participants')
+  deleteParticipants(@User() user: IUser, @Param('id') id: number) {
+    return this.chatroomService.deleteParticipants(user.id, id);
+  }
+
+  @ApiResponse({
+    type: ChatMemberDto,
     description: 'Member list of a chatroom',
   })
   @ApiParam({
@@ -178,7 +256,7 @@ export class ChatroomController {
   })
   @ApiOperation({
     summary:
-      'Get all members from a chatroom / 특정 대화방의 모든 참여자목록 가져오기',
+      'Get all members from a chatroom / 특정 대화방의 모든 현재 참여자목록 가져오기',
   })
   @Get(':id/members')
   async getMembers(@Param('id') id: number) {
@@ -196,7 +274,7 @@ export class ChatroomController {
   })
   @ApiOperation({
     summary:
-      'Post members to a chatroom / 특정 대화방에 새로운 참여자 추가하기',
+      'Post members to a chatroom / 특정 대화방에 새로운 현재 참여자 추가하기',
   })
   @Post(':id/members')
   async postMembers(@User() user: IUser, @Param('id') id: number) {
@@ -213,7 +291,7 @@ export class ChatroomController {
   })
   @ApiOperation({
     summary:
-      'Update members of a chatroom / 특정 대화방의 참여자 정보 수정하기',
+      'Update members of a chatroom / 특정 대화방의 현재 참여자 정보 수정하기',
   })
   @Patch(':id/members/update')
   async updateMembersInfo(
@@ -240,7 +318,8 @@ export class ChatroomController {
     description: 'Chatroom id',
   })
   @ApiOperation({
-    summary: 'Delete members to a chatroom / 특정 대화방에 참여자 삭제하기',
+    summary:
+      'Delete members to a chatroom / 특정 대화방에 현재 참여자 삭제하기',
   })
   @Delete(':id/members')
   deleteMembers(@User() user: IUser, @Param('id') id: number) {

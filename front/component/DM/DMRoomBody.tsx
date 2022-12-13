@@ -83,6 +83,7 @@ export default function DMRoomBody({ id }: { id: TypeChatId }) {
       <hr />
       <ChatList id={id} chatContentsData={chatContentsData} />
       <ChatBox
+        isMute={false}
         onChangeInputText={onChangeInputText}
         onClickSubmit={onClickSubmit}
         inputText={inputText}
