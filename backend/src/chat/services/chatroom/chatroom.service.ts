@@ -156,11 +156,13 @@ export class ChatroomService implements IChatroomService {
         chatroomId,
       );
       console.log('addtimeout', timeoutName);
-      // if (timeoutName === `${targetUserId}_banned`) {
-      targetUser.bannedAt = null;
-      // } else if (timeoutName === `${targetUserId}_muted`) {
-      targetUser.mutedAt = null;
-      // }
+      if (targetUser) {
+        if (timeoutName === `${targetUserId}_banned`) {
+          targetUser.bannedAt = null;
+        } else if (timeoutName === `${targetUserId}_muted`) {
+          targetUser.mutedAt = null;
+        }
+      }
       await this.chatParticipantRepository.save(targetUser);
       this.schedulerRegistry.deleteTimeout(timeoutName);
     };
@@ -185,11 +187,13 @@ export class ChatroomService implements IChatroomService {
         chatroomId,
       );
       console.log(timeoutName);
-      // if (timeoutName === `${targetUserId}_banned`) {
-      targetUser.bannedAt = null;
-      // } else if (timeoutName === `${targetUserId}_muted`) {
-      targetUser.mutedAt = null;
-      // }
+      if (targetUser) {
+        if (timeoutName === `${targetUserId}_banned`) {
+          targetUser.bannedAt = null;
+        } else if (timeoutName === `${targetUserId}_muted`) {
+          targetUser.mutedAt = null;
+        }
+      }
       await this.chatParticipantRepository.save(targetUser);
       this.schedulerRegistry.deleteTimeout(timeoutName);
     };
@@ -413,7 +417,7 @@ export class ChatroomService implements IChatroomService {
       console.log('update participant():', targetUser.bannedAt);
       if (targetUser.bannedAt === null) {
         this.addNewTimeout(
-          `${targetUser.id}_banned`,
+          `${targetUser.userId}_banned`,
           targetUser.userId,
           chatroomId,
           15000,
@@ -424,7 +428,7 @@ export class ChatroomService implements IChatroomService {
           targetUser.bannedAt,
         );
         this.updateTimeout(
-          `${targetUser.id}_banned`,
+          `${targetUser.userId}_banned`,
           targetUser.userId,
           chatroomId,
           15000,
@@ -443,14 +447,14 @@ export class ChatroomService implements IChatroomService {
     else if (updateParticipantDto.mute === true) {
       if (targetUser.mutedAt === null) {
         this.addNewTimeout(
-          `${targetUser.id}_muted`,
+          `${targetUser.userId}_muted`,
           targetUser.userId,
           chatroomId,
           15000,
         );
       } else {
         this.updateTimeout(
-          `${targetUser.id}_muted`,
+          `${targetUser.userId}_muted`,
           targetUser.userId,
           chatroomId,
           15000,
