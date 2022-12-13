@@ -20,7 +20,7 @@ export default function Gaming({
   myRole: string;
 }) {
   const { data, error } = useSWR("/api/users");
-  const [socket] = useSocket(accessToken, "game");
+  const [socket, disconnect] = useSocket(accessToken, "game");
   // 게임오버 화면 만들어둠!
   const [isGameover, setIsGameover] = useState<boolean>(false);
   // otherPlayerName없어서 대체용
@@ -73,6 +73,12 @@ export default function Gaming({
       console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
     }
 
+    socket?.on("gamecancel", () => {
+      /**
+       * game cancled 화면으로
+       */
+    });
+
     socket?.on("gameover", () => {
       if (myRole === "owner") {
         setWinOrLose(ownerScore - playerScore > 0 ? true : false);
@@ -116,7 +122,9 @@ export default function Gaming({
       socket?.off("ball");
       socket?.off("gameover");
       socket?.off("initialGame");
+      socket?.off("gamecancel");
       statusChange("Login");
+      disconnect();
     };
   }, [socket?.id]);
 
@@ -146,6 +154,8 @@ export default function Gaming({
         {isGameover ? (
           <Gameover winOrLose={winOrLose} />
         ) : (
+          // 이긴사람이름, 게임 캔슬
+          // <Gameover winOrLose={winOrLose} />
           <div className="play-game">
             <div className="players-name">
               <div className="players-name">{ownerName}</div>

@@ -69,8 +69,13 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
         pauseOnHover: false,
       });
     });
+    socket?.on("playing", () => {
+      alert(`you are already playing`);
+    });
+
     return () => {
       socket?.off("createRoom");
+      socket?.off("playing");
       socket?.off("close");
     };
   }, [socket, ownerOrPlayer, myData]);
