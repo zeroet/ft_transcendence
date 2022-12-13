@@ -12,6 +12,7 @@ export interface IUserService {
   getFriendList(userId: number);
   updateUserStatus(userId: number, status: Status);
   getMatch(userId: number);
+  getRank(userId: number);
   // updateUserById(id: number);
   // createUser(user: UserDto);
   // deleteUser();

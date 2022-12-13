@@ -3,7 +3,7 @@ import Loading from "../../../errorAndLoading/Loading";
 import { UserInfo } from "../../../../interfaceType";
 import axios from "axios";
 
-const TextProfil = ({ id }: { id: string }) => {
+const TextProfil = ({ id }: { id: number }) => {
   const { data: user, error } = useSWR<UserInfo>(`/api/users/${id}`);
   const { data: myData, error: myError } = useSWR<UserInfo>(`/api/users`);
   const userNameFontSize = { size: 50 };
@@ -20,9 +20,7 @@ const TextProfil = ({ id }: { id: string }) => {
   if (!user || !myData) return <Loading />;
   return (
     <div>
-      {myData && id !== myData.id.toString() && (
-        <h3>You see {user.intra_id}'s Profile</h3>
-      )}
+      {id != myData.id && <h3>You see {user.intra_id}'s Profile</h3>}
       <div className="name">
         <h1 className="userName">{user.username}</h1>
       </div>

@@ -13,7 +13,7 @@ const FriendProfile = ({
   id,
 }: {
   accessToken: string;
-  id: string;
+  id: number;
 }) => {
   const { data, error } = useSWR("/api/users");
 

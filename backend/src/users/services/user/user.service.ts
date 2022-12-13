@@ -226,11 +226,22 @@ export class UserService implements IUserService {
     if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
     .innerJoinAndSelect('matchhistory.winner', 'winner')
     .innerJoinAndSelect('matchhistory.loser', 'loser')
-    .orderBy("date", "DESC")
-    .limit(5)
+    .orderBy("matchhistory.date", "DESC")
+    .take(5)
+    .getMany()
     
-    this.connectionGateway.server.emit('match');
+    // this.connectionGateway.server.emit('match');
 
+    return matchs;
+  }
+
+  async getRank(id:number) {
+    let matchs = null;
+    if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
+    .innerJoinAndSelect('matchhistory.winner', 'winner')
+    .innerJoinAndSelect('matchhistory.loser', 'loser')
+    .getMany()
+    
     return matchs;
   }
 }

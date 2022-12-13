@@ -182,7 +182,9 @@ export class UsersController {
   @Get('rank/:id')
   async rank(@Param('id') id:number) {
       let matchs = await this.userService.getMatch(id);
-      const num = matchs.length();
+      let num = 0;
+      for(const match of matchs)
+        num++;
       return num;
   }
 
