@@ -201,11 +201,12 @@ const ParticipantSettingModal = ({
           margin: 2px;
           margin-left: 45px;
           margin-top: -3px;
-          //   font-weight: bold;
+          width: 101px;
           text-transform: uppercase;
           font-size: 15px;
           background-color: white;
           box-shadow: 10px 10px 2px 2px;
+          overflow: visible;
         }
         .router-div {
           background-color: white;
