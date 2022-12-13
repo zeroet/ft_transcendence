@@ -69,7 +69,6 @@ export class RoomService{
         for(const room of this.rooms.values())
         {
             if (room.roomName === roomName) {
-                // watcher.join(roomName);
                 room.pushWatcher(watcher);
             }
         }
