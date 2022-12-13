@@ -20,7 +20,6 @@ import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { ConnectionService } from 'src/connection/connection.service';
 import { Status } from 'src/utils/types';
-import { STATUS_CODES } from 'http';
 // import { GameService } from './game.service';
 
 @UseGuards(JwtWsGuard)
@@ -103,7 +102,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     if (!client) 
       return ;
     const user = await this.getUserfromSocket(client)
-    console.log('stattttttttttttttt', user.status)
+    console.log('stattttttttttttttt', user.username, user.status)
     let stat:string = user.status
     if (stat === 'Game') {
       client.emit('playing');
@@ -113,7 +112,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     {
       // same socket id in the queue Case
       let tmp = await this.getUserfromSocket(player)
-      if (user.id === tmp.id) return ;
+      if (user.id === tmp.id) return console.log('same Userrrrrrrrrrr out') ;
     }
     if (!this.queueNormal.addUser(client)) 
       return ;
@@ -198,7 +197,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       if (!data)
         return ;
       
-      
+      // check if watch User is already playing to another window
       const user = await this.getUserfromSocket(watcher);
       let stat:string = user.status
       if (stat === 'Game') {
@@ -207,19 +206,25 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       }
 
 
+
       const Room = this.roomService.findRoom(data);
       for (const player of Room.Players)
       {
+        let stat:string;
         let tmpUser = await this.getUserfromSocket(player)
-        if (user.id === tmpUser.id) return ;
+        stat = tmpUser.status
+        if(stat === 'Game' || stat === 'Logout' || stat === 'Watching')
+          return ;
       }
-      for (const watcher of Room.Watchers)
-      {
-        let tmpUser = await this.getUserfromSocket(watcher)
-        if (user.id === tmpUser.id) return ;
-      }
+      // for (const watcher of Room.Watchers)
+      // {
+      //   let tmpUser = await this.getUserfromSocket(watcher)
+      //   if (user.id === tmpUser.id) return ;
+      // }
       this.roomService.addWatcher(watcher, data);
+      this.userService.updateUserStatus(user.id, Status.WATCHING);
       this.server.to(data.roomName).emit('enterGame', data);
+      console.log('watchersTattttttttttttttt', user.username, user.status);
   }
 
   //up : 1 // down: 2
@@ -231,6 +236,11 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         return ;
       this.roomService.movePaddle(client, data);
   }
+
+
+  // private Queue
+  
+
 }
 
 

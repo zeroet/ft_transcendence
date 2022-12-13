@@ -221,47 +221,25 @@ export class UserService implements IUserService {
   }
   // updateUserById(id: number) {}
 
-<<<<<<< HEAD
  async createMatchHistory(info:any) {
   const match = this.matchHistoryRepository.create({...info});
   try {
     await this.matchHistoryRepository.save(match);}
   catch(error) {
     throw new HttpException(error.mesage, 404);
-=======
-  async createMatchHistory(data: any) {
-    const match = this.matchHistoryRepository.create({
-      data: new Date(),
-      ...data,
-    });
-    try {
-      await this.matchHistoryRepository.save(match);
-    } catch (error) {
-      throw new HttpException(error.mesage, 404);
->>>>>>> 97cc00f20150ceb25bf793281607507e8bd561dd
     }
   }
 
   async getMatch(id: number) {
     let matchs = null;
-<<<<<<< HEAD
     if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
     .innerJoinAndSelect('matchhistory.winner', 'winner')
     .innerJoinAndSelect('matchhistory.loser', 'loser')
-    .orderBy("date", "DESC")
-    .limit(5)
-    
-    this.connectionGateway.server.emit('match');
-=======
-    if (id)
-      matchs = await this.matchHistoryRepository
-        .createQueryBuilder('matchhistory')
-        .innerJoinAndSelect('matchhistory.winner', 'winner')
-        .innerJoinAndSelect('matchhistory.loser', 'loser')
-        .getMany();
+    .orderBy("matchhistory.date", "DESC")
+    .take(5)
+    .getMany()
 
-    console.log(matchs);
->>>>>>> 97cc00f20150ceb25bf793281607507e8bd561dd
+    this.connectionGateway.server.emit('match');
 
     return matchs;
   }
