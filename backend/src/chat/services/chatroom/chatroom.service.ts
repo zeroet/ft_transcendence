@@ -150,9 +150,12 @@ export class ChatroomService implements IChatroomService {
   ) {
     const callback = async () => {
       console.log(`Timeout ${timeoutName} executing after ${milliseconds}`);
-      const targetUser = await this.findMemberById(targetUserId, chatroomId);
+      const targetUser = await this.findParticipantById(
+        targetUserId,
+        chatroomId,
+      );
       targetUser.mutedAt = null;
-      await this.chatMemebrRepository.save(targetUser);
+      await this.chatParticipantRepository.save(targetUser);
       this.schedulerRegistry.deleteTimeout(timeoutName);
     };
     const timeout = setTimeout(callback, milliseconds);
@@ -169,9 +172,12 @@ export class ChatroomService implements IChatroomService {
       console.log(
         `Timeout ${timeoutName} update executing after ${milliseconds}`,
       );
-      const targetUser = await this.findMemberById(targetUserId, chatroomId);
+      const targetUser = await this.findParticipantById(
+        targetUserId,
+        chatroomId,
+      );
       targetUser.mutedAt = null;
-      await this.chatMemebrRepository.save(targetUser);
+      await this.chatParticipantRepository.save(targetUser);
       this.schedulerRegistry.deleteTimeout(timeoutName);
     };
     this.schedulerRegistry.deleteTimeout(timeoutName);
@@ -427,16 +433,16 @@ export class ChatroomService implements IChatroomService {
       userId,
       chatroomId,
     );
-    if (participant.mutedAt === null) {
-      const removedParticipant = await this.chatParticipantRepository.remove(
-        participant,
-      );
-      console.log('removed participant:', removedParticipant);
-      this.chatEventsGateway.server.emit(
-        'newParticipantList',
-        removedParticipant,
-      );
-    }
+    // if (participant.mutedAt === null) {
+    const removedParticipant = await this.chatParticipantRepository.remove(
+      participant,
+    );
+    console.log('removed participant:', removedParticipant);
+    this.chatEventsGateway.server.emit(
+      'newParticipantList',
+      removedParticipant,
+    );
+    // }
     // this.chatEventsGateway.server.emit('new participantList');
   }
 
