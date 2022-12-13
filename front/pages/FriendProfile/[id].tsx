@@ -16,7 +16,7 @@ const FriendProfile = ({
   id: string;
 }) => {
   const { data, error } = useSWR("/api/users");
-  console.log(id);
+
   if (!data) return;
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   return (

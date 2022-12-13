@@ -4,27 +4,25 @@ import { UserInfo } from "../../../../interfaceType";
 import axios from "axios";
 
 const TextProfil = ({ id }: { id: string }) => {
-  const { data: user, error } = useSWR<UserInfo>(
-    id === "-1" ? "/api/users" : `/api/users/${id}`
-  );
+  const { data: user, error } = useSWR<UserInfo>(`/api/users/${id}`);
+  const { data: myData, error: myError } = useSWR<UserInfo>(`/api/users`);
   const userNameFontSize = { size: 50 };
-  /*
-   1. useSWR with new API for loss, victory, winRate
-  */
 
   if (user && user.username.length >= 20) {
     userNameFontSize.size = 25;
   }
-
   const loss = 1432;
   const victory = 44432;
   const winRate = Math.round((victory / (loss + victory)) * 100);
 
-  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!user) return <Loading />;
+  if (error || myError)
+    axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!user || !myData) return <Loading />;
   return (
     <div>
-      {id !== "-1" && <h3>You see {user.intra_id}'s Profile</h3>}
+      {myData && id !== myData.id.toString() && (
+        <h3>You see {user.intra_id}'s Profile</h3>
+      )}
       <div className="name">
         <h1 className="userName">{user.username}</h1>
       </div>

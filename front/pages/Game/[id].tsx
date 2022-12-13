@@ -67,11 +67,13 @@ export default function Gaming({
 
   useEffect((): (() => void) => {
     statusChange("Game");
+    
     socket?.emit("room-list");
 
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
     }
+
     socket?.on("playing", () => {
       if (myRole === "watcher") {
         alert("You are already playing");
