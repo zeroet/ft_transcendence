@@ -158,14 +158,14 @@ export class User implements IUser {
   // @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.User)
   // ChatContent: IChatContent[];
 
-  @OneToMany((type) => DmContent, (DmContent) => DmContent.User)
-  DmContent: IDmContent[];
+  // @OneToMany((type) => DmContent, (DmContent) => DmContent.User)
+  // DmContent: IDmContent[];
 
-  @OneToMany((type) => Dm, (Dm) => Dm.User1)
-  DmUser1: IDm[];
+  // @OneToMany((type) => Dm, (Dm) => Dm.User1)
+  // DmUser1: IDm[];
 
-  @OneToMany((type) => Dm, (Dm) => Dm.User2)
-  DmUser2: IDm[];
+  // @OneToMany((type) => Dm, (Dm) => Dm.User2)
+  // DmUser2: IDm[];
 
   @OneToMany(() => MatchHistory, (match) => match.winner)
   won: MatchHistory[];

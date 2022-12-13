@@ -7,8 +7,8 @@ export class UserDto extends OmitType(User, [
   'hashed_refresh_token',
   // 'ChatMember',
   // 'ChatContent',
-  'DmUser1',
-  'DmUser2',
+  // 'DmUser1',
+  // 'DmUser2',
 ]) {
   // id: number;
   // intra_id: string;

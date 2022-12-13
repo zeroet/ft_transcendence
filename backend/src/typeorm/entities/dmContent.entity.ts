@@ -56,14 +56,14 @@ export class DmContent implements IDmContent {
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
   readonly modifiedAt: Date;
 
-  @ManyToOne((type) => Dm, (Dm) => Dm.DmContent, {
+  @ManyToOne((type) => Dm, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'dm', referencedColumnName: 'id' })
   Dm: IDm;
 
-  @ManyToOne((type) => User, (User) => User.DmUser1, {
+  @ManyToOne((type) => User, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
