@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useSWR from "swr";
@@ -8,6 +9,7 @@ import GameReadyModal from "./GameBody/GameReadyModal";
 import GameSettingModal from "./GameBody/GameSettingModal";
 
 export default function GameBody({ accessToken }: { accessToken: string }) {
+  const router = useRouter();
   const [settingModal, setSettingModal] = useState(false);
   const [socket] = useSocket(accessToken, "game");
   const [ownerOrPlayer, setOwnerOrPlayer] = useState<string>("");
@@ -71,6 +73,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     });
     socket?.on("playing", () => {
       alert(`you are already playing`);
+      router.push("/Game");
     });
 
     return () => {
