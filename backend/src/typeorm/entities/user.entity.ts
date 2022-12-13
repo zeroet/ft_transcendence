@@ -24,7 +24,6 @@ import { Friend } from './friend.entity';
 import { Status } from 'src/utils/types';
 import { MatchHistory } from './matchHistory.entity';
 
-
 @Entity({ name: 'users' })
 export class User implements IUser {
   @ApiProperty({
@@ -153,20 +152,20 @@ export class User implements IUser {
   @JoinColumn({ name: 'friend', referencedColumnName: 'id' })
   Friend: IFriend[];
 
-  @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.User)
-  ChatMember: IChatMember[];
+  // @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.User)
+  // ChatMember: IChatMember[];
 
-  @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.User)
-  ChatContent: IChatContent[];
+  // @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.User)
+  // ChatContent: IChatContent[];
 
-  @OneToMany((type) => DmContent, (DmContent) => DmContent.User)
-  DmContent: IDmContent[];
+  // @OneToMany((type) => DmContent, (DmContent) => DmContent.User)
+  // DmContent: IDmContent[];
 
-  @OneToMany((type) => Dm, (Dm) => Dm.User1)
-  DmUser1: IDm[];
+  // @OneToMany((type) => Dm, (Dm) => Dm.User1)
+  // DmUser1: IDm[];
 
-  @OneToMany((type) => Dm, (Dm) => Dm.User2)
-  DmUser2: IDm[];
+  // @OneToMany((type) => Dm, (Dm) => Dm.User2)
+  // DmUser2: IDm[];
 
   @OneToMany(() => MatchHistory, (match) => match.winner)
   won: MatchHistory[];

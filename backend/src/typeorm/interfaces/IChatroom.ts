@@ -8,6 +8,6 @@ export interface IChatroom {
   password: string;
   createdAt: Date;
   modifiedAt: Date;
-  ChatMember: IChatMember[];
-  ChatContent: IChatContent[];
+  // ChatMember: IChatMember[];
+  // ChatContent: IChatContent[];
 }

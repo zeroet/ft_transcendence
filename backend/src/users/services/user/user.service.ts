@@ -3,7 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-  HttpException
+  HttpException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
@@ -20,7 +20,8 @@ export class UserService implements IUserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Block) private blockRepository: Repository<Block>,
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
-    @InjectRepository(MatchHistory) private matchHistoryRepository : Repository<MatchHistory>,
+    @InjectRepository(MatchHistory)
+    private matchHistoryRepository: Repository<MatchHistory>,
     private chatEventsGateway: ChatEventsGateway,
     ) {}
     private connectionGateway: ConnectionGateway;
@@ -205,7 +206,15 @@ export class UserService implements IUserService {
 
   async updateUserStatus(userId: number, status: Status) {
     const user = await this.findUserByIdOrFail(userId);
+    // if (
+    //   status === Status.LOGIN ||
+    //   status === Status.LOGOUT ||
+    //   status === Status.PLAYING
+    // )
     user.status = status;
+    // else {
+    //   throw new BadRequestException(`User status: ${status} is not valid`);
+    // }
     const updatedUser = await this.userRepository.save(user);
     this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
@@ -221,7 +230,7 @@ export class UserService implements IUserService {
     }
   }
 
-  async getMatch(id:number) {
+  async getMatch(id: number) {
     let matchs = null;
     if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
     .innerJoinAndSelect('matchhistory.winner', 'winner')
@@ -229,8 +238,13 @@ export class UserService implements IUserService {
     .orderBy("matchhistory.date", "DESC")
     .take(5)
     .getMany()
+<<<<<<< HEAD
+
+    this.connectionGateway.server.emit('match');
+=======
     
     // this.connectionGateway.server.emit('match');
+>>>>>>> 5c3228f98065949d0543c199de3ecb0241b747f6
 
     return matchs;
   }
@@ -245,4 +259,3 @@ export class UserService implements IUserService {
     return matchs;
   }
 }
-

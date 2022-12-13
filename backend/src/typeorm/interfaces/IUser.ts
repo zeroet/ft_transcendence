@@ -19,6 +19,6 @@ export interface IUser {
   two_factor_valid: boolean;
   Friend: IFriend[];
   Block: IBlock[];
-  ChatMember: IChatMember[];
-  ChatContent: IChatContent[];
+  // ChatMember: IChatMember[];
+  // ChatContent: IChatContent[];
 }

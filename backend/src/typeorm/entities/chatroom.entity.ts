@@ -68,9 +68,9 @@ export class Chatroom implements IChatroom {
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at', select: false })
   readonly modifiedAt: Date;
 
-  @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.Chatroom)
-  ChatMember: IChatMember[];
+  // @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.Chatroom)
+  // ChatMember: IChatMember[];
 
-  @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.Chatroom)
-  ChatContent: IChatContent[];
+  // @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.Chatroom)
+  // ChatContent: IChatContent[];
 }
