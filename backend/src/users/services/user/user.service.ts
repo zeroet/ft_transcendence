@@ -228,7 +228,7 @@ export class UserService implements IUserService {
     .innerJoinAndSelect('matchhistory.loser', 'loser')
     .getMany()
 
-    console.log(matchs[1].winner)
+    console.log(matchs)
     
     return matchs;
   }
