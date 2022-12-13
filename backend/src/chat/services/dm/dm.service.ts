@@ -80,7 +80,7 @@ export class DmService implements IDmService {
         'user2.image_url',
       ])
       .getMany();
-    console.log('dms:', dms);
+    // console.log('dms:', dms);
     return dms;
   }
 

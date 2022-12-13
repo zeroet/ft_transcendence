@@ -224,7 +224,6 @@ export class ChatroomService implements IChatroomService {
       throw new BadRequestException(
         `Chatroom of name: '${chatroomName}' already exists`,
       );
-
     const hashedPassword =
       password !== null
         ? await this.hashData(createChatroomDto.password)
@@ -313,7 +312,6 @@ export class ChatroomService implements IChatroomService {
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
-    // set ad admin
     chatroom.ownerId = targetUserId;
     const updatedChatroom = await this.chatroomRepository.save(chatroom);
     this.chatEventsGateway.server.emit('newMemberList', updatedChatroom);
@@ -464,7 +462,6 @@ export class ChatroomService implements IChatroomService {
     //     `User is banned from the chatroom of id:${chatroomId}`,
     //   );
     // } else
-
     if (member) {
       console.log(
         `User already exists in the chatroom of id:${chatroomId}`,
@@ -474,14 +471,13 @@ export class ChatroomService implements IChatroomService {
         `User already exists in the chatroom of id:${chatroomId}`,
       );
     }
-
     const newMember = this.chatMemebrRepository.create({
       userId,
       chatroomId,
       Chatroom: chatroom,
       User: user,
     });
-    console.log('newMember:', newMember);
+    // console.log('newMember:', newMember);
     const savedMember = await this.chatMemebrRepository.save(newMember);
     console.log('savedMember:', savedMember);
     this.chatEventsGateway.server.emit('newMemberList', savedMember);
