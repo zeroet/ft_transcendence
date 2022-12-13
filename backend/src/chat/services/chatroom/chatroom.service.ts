@@ -492,7 +492,11 @@ export class ChatroomService implements IChatroomService {
   }
 
   async postMembers(userId: number, chatroomId: number) {
-    this.postParticipants(userId, chatroomId);
+    try {
+      this.postParticipants(userId, chatroomId);
+    } catch (e) {
+      return e;
+    }
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
     const member = await this.findMemberById(userId, chatroomId);
