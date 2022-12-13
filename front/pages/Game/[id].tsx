@@ -124,7 +124,9 @@ export default function Gaming({
       socket?.off("gameover");
       socket?.off("gamecancel");
       socket?.off("info");
-      statusChange("Login");
+      if (myRole !== "watcher") {
+        statusChange("Login");
+      }
       disconnect();
     };
   }, [socket?.id]);
