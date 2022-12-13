@@ -66,7 +66,7 @@ const ParticipantSettingModal = ({
   const onClickGame = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    gameSocket?.emit("privateQ", { userId });
+    gameSocket?.emit("privateQ", userId);
     setShowModal(false);
   }, []);
 
