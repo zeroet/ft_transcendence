@@ -236,13 +236,6 @@ export class ChatroomService implements IChatroomService {
       password: hashedPassword,
     });
     const createdChatroom = await this.chatroomRepository.save(newChatroom);
-    // const newMemebr = this.chatMemebrRepository.create({
-    //   userId: userId,
-    //   chatroomId: createdChatroom.id,
-    //   Chatroom: newChatroom,
-    //   User: user,
-    // });
-    // await this.chatMemebrRepository.save(newMemebr);
     this.chatEventsGateway.server.emit('newRoomList', createdChatroom);
     console.log(newChatroom);
     const result = await this.getChatroomsInfo([newChatroom]);
@@ -285,7 +278,6 @@ export class ChatroomService implements IChatroomService {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
     // const user = await this.findUserByIdOrFail(userId);
-
     if (chatroom.ownerId !== member.userId) {
       throw new UnauthorizedException(
         `No permission for User ${member.User.username}`,
@@ -301,11 +293,6 @@ export class ChatroomService implements IChatroomService {
       password !== null
         ? await this.hashData(updateChatroomDto.password)
         : null;
-
-    // const updatedChatroom = await this.chatroomRepository.update(chatroomId, {
-    //   chatroomName,
-    //   password: hashedPassword,
-    // });
     chatroom.password = hashedPassword;
     chatroom.chatroomName = chatroomName;
     const updatedChatroom = await this.chatroomRepository.save(chatroom);
@@ -437,7 +424,6 @@ export class ChatroomService implements IChatroomService {
       userId,
       chatroomId,
     );
-    // if (participant.mutedAt === null) {
     const removedParticipant = await this.chatParticipantRepository.remove(
       participant,
     );
@@ -446,8 +432,6 @@ export class ChatroomService implements IChatroomService {
       'newParticipantList',
       removedParticipant,
     );
-    // }
-    // this.chatEventsGateway.server.emit('new participantList');
   }
 
   async getMembers(chatroomId: number) {
@@ -530,44 +514,15 @@ export class ChatroomService implements IChatroomService {
         targetUserId: targetUser.userId,
       });
     }
-    // mute
-    // else if (updateMemberDto.mute === true) {
-    //   if (targetUser.mutedAt === null) {
-    //     this.addNewTimeout(
-    //       `${targetUser.id}_muted`,
-    //       targetUser.userId,
-    //       chatroomId,
-    //       15000,
-    //     );
-    //   } else {
-    //     this.updateTimeout(
-    //       `${targetUser.id}_muted`,
-    //       targetUser.userId,
-    //       chatroomId,
-    //       15000,
-    //     );
-    //   }
-    //   targetUser.mutedAt = new Date();
-    //   updatedMember = await this.chatMemebrRepository.save(targetUser);
-    //   this.chatEventsGateway.server.emit('mute', {
-    //     chatroomId: chatroomId,
-    //     targetUserId: targetUser.userId,
-    //   });
-    // }
-    // console.log('updated member:', updatedMember);
-    // this.updateParticipantInfo(userId, chatroomId, updateMemberDto);
     return updatedMember;
   }
 
   async deleteMembers(userId: number, chatroomId: number) {
     await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
-    // if (member.mutedAt === null) {
     const removedMember = await this.chatMemebrRepository.remove(member);
     console.log('removed member:', removedMember);
     this.chatEventsGateway.server.emit('newMemberList', removedMember);
-    // }
-    // this.chatEventsGateway.server.emit('newMemberList');
   }
 
   async getContents(userId: number, chatroomId: number) {

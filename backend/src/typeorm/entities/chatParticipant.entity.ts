@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -15,7 +14,6 @@ import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { IChatParticipant } from '../interfaces/IChatParticipant';
 
-// @Index('user_id', ['userId'], {})
 @Entity({ name: 'chat_participant' })
 export class ChatParticipant implements IChatParticipant {
   @ApiProperty({

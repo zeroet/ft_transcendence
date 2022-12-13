@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { Block, Dm, User } from 'src/typeorm';
 import { DmContent } from 'src/typeorm/entities/dmContent.entity';
-import { IsNull, MoreThan, Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { IDmService } from './dm.interface';
 
 @Injectable()
