@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import Loading from "../../../errorAndLoading/Loading";
 import { UserInfo } from "../../../../interfaceType";
 import axios from "axios";
@@ -36,7 +36,11 @@ const TextProfil = ({ id }: { id: number }) => {
     } else {
       setAchivement("/images/achivement/4.png");
     }
-  }, [rankData]);
+  }, [rankData, myData]);
+
+  useEffect(() => {
+    mutate(`/api/users/rank/${id}`);
+  }, [myData]);
 
   if (error || myError || rankError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
