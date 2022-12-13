@@ -171,8 +171,7 @@ export class AuthService implements IAuthService {
         .createQueryBuilder('users')
         .where('users.user_id=:id', { id: user.id })
         .getOne();
-      // await this.userRepository.delete(user.id);
-      await this.userRepository.remove(user);
+      await this.userRepository.remove(dummy);
       return true;
     }
     return false;

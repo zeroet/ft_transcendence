@@ -141,6 +141,7 @@ export class AuthController {
         Cookies.REFRESH_TOKEN,
         this.authService.defaultCookieOptions,
       );
+      return;
     }
     return this.authService.updateUserStatus(user.id, Status.LOGOUT);
   }

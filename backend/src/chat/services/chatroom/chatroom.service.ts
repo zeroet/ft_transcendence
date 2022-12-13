@@ -151,15 +151,28 @@ export class ChatroomService implements IChatroomService {
   ) {
     const callback = async () => {
       console.log(`Timeout ${timeoutName} executing after ${milliseconds}`);
-      const targetUser = await this.findParticipantById(
-        targetUserId,
-        chatroomId,
-      );
-      console.log('addtimeout', timeoutName);
+      // const targetUser = await this.findParticipantById(
+      //   targetUserId,
+      //   chatroomId,
+      // );
+      const targetUser = await this.chatParticipantRepository
+        .createQueryBuilder('chat_participant')
+        .where('chat_participant.user_id=:id', {
+          id: targetUserId,
+        })
+        .andWhere('chat_participant.chatroom_id=:chatroomId', { chatroomId })
+        .innerJoinAndSelect('chat_participant.User', 'user')
+        .select(['chat_participant', 'user.username'])
+        .getOne();
+      if (!targetUser) {
+        throw new NotFoundException(
+          `User of id:${targetUserId} doesn't participate in the chatroom of id:${chatroomId}`,
+        );
+      }
       if (targetUser) {
-        if (timeoutName === `${targetUserId}_banned`) {
+        if (timeoutName === `${targetUser.User.username}_banned`) {
           targetUser.bannedAt = null;
-        } else if (timeoutName === `${targetUserId}_muted`) {
+        } else if (timeoutName === `${targetUser.User.username}_muted`) {
           targetUser.mutedAt = null;
         }
       }
@@ -179,18 +192,30 @@ export class ChatroomService implements IChatroomService {
     console.log(timeoutName);
     const callback = async () => {
       console.log(
-        `Timeout ${timeoutName} update executing after ${milliseconds}`,
+        `update Timeout name: ${timeoutName} executing after ${milliseconds}`,
       );
-      console.log('test');
-      const targetUser = await this.findParticipantById(
-        targetUserId,
-        chatroomId,
-      );
-      console.log(timeoutName);
+      // const targetUser = await this.findParticipantById(
+      //   targetUserId,
+      //   chatroomId,
+      // );
+      const targetUser = await this.chatParticipantRepository
+        .createQueryBuilder('chat_participant')
+        .where('chat_participant.user_id=:id', {
+          id: targetUserId,
+        })
+        .andWhere('chat_participant.chatroom_id=:chatroomId', { chatroomId })
+        .innerJoinAndSelect('chat_participant.User', 'user')
+        .select(['chat_participant', 'user.username'])
+        .getOne();
+      if (!targetUser) {
+        throw new NotFoundException(
+          `User of id:${targetUserId} doesn't participate in the chatroom of id:${chatroomId}`,
+        );
+      }
       if (targetUser) {
-        if (timeoutName === `${targetUserId}_banned`) {
+        if (timeoutName === `${targetUser.User.username}_banned`) {
           targetUser.bannedAt = null;
-        } else if (timeoutName === `${targetUserId}_muted`) {
+        } else if (timeoutName === `${targetUser.User.username}_muted`) {
           targetUser.mutedAt = null;
         }
       }
@@ -204,6 +229,7 @@ export class ChatroomService implements IChatroomService {
 
   deleteTimeout(timeoutName: string) {
     this.schedulerRegistry.deleteTimeout(timeoutName);
+    console.log('deleteTimeout:', timeoutName);
   }
 
   getTimeouts() {
@@ -401,10 +427,25 @@ export class ChatroomService implements IChatroomService {
       userId,
       chatroomId,
     );
-    const targetUser = await this.findParticipantByIdOrFail(
-      updateParticipantDto.targetUserId,
-      chatroomId,
-    );
+    // const targetUser = await this.findParticipantByIdOrFail(
+    //   updateParticipantDto.targetUserId,
+    //   chatroomId,
+    // );
+    const targetUser = await this.chatParticipantRepository
+      .createQueryBuilder('chat_participant')
+      .where('chat_participant.user_id=:id', {
+        id: updateParticipantDto.targetUserId,
+      })
+      .andWhere('chat_participant.chatroom_id=:chatroomId', { chatroomId })
+      .innerJoinAndSelect('chat_participant.User', 'user')
+      .select(['chat_participant', 'user.username'])
+      .getOne();
+    if (!targetUser) {
+      throw new NotFoundException(
+        `User of id:${updateParticipantDto.targetUserId} doesn't participate in the chatroom of id:${chatroomId}`,
+      );
+    }
+    console.log('test target user:', targetUser);
     let updatedParticipant = null;
     // owner verification
     if (participant.userId !== chatroom.ownerId) {
@@ -412,12 +453,17 @@ export class ChatroomService implements IChatroomService {
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
+    console.log('update participant: target user:', targetUser.User);
+    // console.log(
+    //   'update participant: target user name:',
+    //   targetUser.User.username,
+    // );
     // ban
     if (updateParticipantDto.ban === true) {
       console.log('update participant():', targetUser.bannedAt);
       if (targetUser.bannedAt === null) {
         this.addNewTimeout(
-          `${targetUser.userId}_banned`,
+          `${targetUser.User.username}_banned`,
           targetUser.userId,
           chatroomId,
           15000,
@@ -428,7 +474,7 @@ export class ChatroomService implements IChatroomService {
           targetUser.bannedAt,
         );
         this.updateTimeout(
-          `${targetUser.userId}_banned`,
+          `${targetUser.User.username}_banned`,
           targetUser.userId,
           chatroomId,
           15000,
@@ -447,14 +493,14 @@ export class ChatroomService implements IChatroomService {
     else if (updateParticipantDto.mute === true) {
       if (targetUser.mutedAt === null) {
         this.addNewTimeout(
-          `${targetUser.userId}_muted`,
+          `${targetUser.User.username}_muted`,
           targetUser.userId,
           chatroomId,
           15000,
         );
       } else {
         this.updateTimeout(
-          `${targetUser.userId}_muted`,
+          `${targetUser.User.username}_muted`,
           targetUser.userId,
           chatroomId,
           15000,
