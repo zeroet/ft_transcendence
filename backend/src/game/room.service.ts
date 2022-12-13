@@ -103,14 +103,31 @@ export class RoomService{
                 const winner = user1
                 const loser = user2
                 const score = [Score.player1, Score.player2]
+<<<<<<< HEAD
                 await this.userService.createMatchHistory({winner, loser, score});
+=======
+                console.log(winner, loser, score)
+                // const match: MatchHistory = await this.matchHistoryRepository.create({
+                //     score, winner, loser} as MatchHistory);
+                // await this.matchHistoryRepository.save(match);
+                
+>>>>>>> a0b7fe521c6d2909702b3ea5a0d311037b382327
             }
             else if (Score.player2 > Score.player1)
             {
                 const winner = user2
                 const loser = user1
                 const score = [Score.player1, Score.player2]
+<<<<<<< HEAD
                 await this.userService.createMatchHistory({winner, loser, score}) 
+=======
+                console.log(winner, loser, score)
+                
+                // const match: MatchHistory = await this.matchHistoryRepository.create({
+                //  score, winner, loser} as MatchHistory);
+                // await this.matchHistoryRepository.save(match);
+            }    
+>>>>>>> a0b7fe521c6d2909702b3ea5a0d311037b382327
         }
         for(const player of Players)
             player.emit('gameover');

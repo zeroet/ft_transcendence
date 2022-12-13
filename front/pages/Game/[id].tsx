@@ -225,9 +225,10 @@ export default function Gaming({
           .paddle {
             position: relative;
             background-color: var(--foreground-color);
-            width: 10px;
+            width: 12px;
             top: calc(var(--position) * 1vh);
             height: 100px;
+            border-radius: 20%;
             trasform: traslate(-50%);
           }
 
