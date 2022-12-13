@@ -72,15 +72,21 @@ export default function Gaming({
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
     }
+    socket?.on("playing", () => {
+      if (myRole === "watcher") {
+        alert("You are already playing");
+        router.push("/Home");
+      }
+    });
 
     socket?.on("gamecancel", () => {
-      setWinOrLose("game cancled");
+      setWinOrLose("Game cancled");
       setIsGameover(true);
     });
 
-    socket?.on("gameover", () => {
+    socket?.on("gameover", (winerName: string) => {
       setWinOrLose(ownerScore - playerScore > 0 ? ownerName : playerName);
-      setWinOrLose((curr) => curr + " is winer");
+      setWinOrLose(winerName + " is Winner");
       setIsGameover(true);
     });
 
@@ -115,10 +121,9 @@ export default function Gaming({
     return () => {
       // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
-      socket?.off("ball");
       socket?.off("gameover");
-      socket?.off("initialGame");
       socket?.off("gamecancel");
+      socket?.off("info");
       statusChange("Login");
       disconnect();
     };

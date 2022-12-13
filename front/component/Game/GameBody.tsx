@@ -73,7 +73,7 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
     });
     socket?.on("playing", () => {
       alert(`you are already playing`);
-      router.push("/Game");
+      router.push("/Home");
     });
 
     return () => {
@@ -102,7 +102,6 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
           </div>
         </div>
       )}
-      {/* 내가 오너일때 */}
       {settingModal && ownerOrPlayer === "owner" && (
         <div className="modal-background">
           <GameSettingModal
