@@ -10,5 +10,5 @@ export interface IDm {
   modifiedAt: Date;
   User1: IUser;
   User2: IUser;
-  DmContent: IDmContent[];
+  // DmContent: IDmContent[];
 }

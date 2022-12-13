@@ -34,20 +34,20 @@ export class Dm implements IDm {
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
   readonly modifiedAt: Date;
 
-  @ManyToOne((type) => User, (User) => User.DmUser1, {
+  @ManyToOne((type) => User, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'user1', referencedColumnName: 'id' })
   User1: IUser;
 
-  @ManyToOne((type) => User, (User) => User.DmUser2, {
+  @ManyToOne((type) => User, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'user2', referencedColumnName: 'id' })
   User2: IUser;
 
-  @OneToMany((type) => DmContent, (DmContent) => DmContent.Dm)
-  DmContent: IDmContent[];
+  // @OneToMany((type) => DmContent, (DmContent) => DmContent.Dm)
+  // DmContent: IDmContent[];
 }

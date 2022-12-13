@@ -171,8 +171,7 @@ export class AuthService implements IAuthService {
         .createQueryBuilder('users')
         .where('users.user_id=:id', { id: user.id })
         .getOne();
-      // await this.userRepository.delete(user.id);
-      await this.userRepository.remove(user);
+      await this.userRepository.remove(dummy);
       return true;
     }
     return false;
@@ -186,7 +185,15 @@ export class AuthService implements IAuthService {
     if (!user) {
       throw new NotFoundException(`User of id:${userId} not found`);
     }
+    // if (
+    //   status === Status.LOGIN ||
+    //   status === Status.LOGOUT ||
+    //   status === Status.PLAYING
+    // )
     user.status = status;
+    // else {
+    //   throw new BadRequestException(`User status: ${status} is not valid`);
+    // }
     const updatedUser = await this.userRepository.save(user);
     this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;

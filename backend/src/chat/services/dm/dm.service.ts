@@ -100,7 +100,7 @@ export class DmService implements IDmService {
         'user2.image_url',
       ])
       .getOne();
-    console.log('dm info:', dm);
+    // console.log('dm info:', dm);
     return dm;
   }
 
@@ -132,7 +132,7 @@ export class DmService implements IDmService {
       User2: receiver,
     });
     await this.dmRepository.save(newDm);
-    console.log('newDm:', newDm);
+    // console.log('newDm:', newDm);
     this.chatEventsGateway.server.emit('newDmList', newDm);
     return newDm;
   }
@@ -153,7 +153,7 @@ export class DmService implements IDmService {
         'user2.image_url',
       ])
       .getMany();
-    console.log('dm members:', members);
+    // console.log('dm members:', members);
     return members;
   }
 
@@ -212,7 +212,7 @@ export class DmService implements IDmService {
       User: sender,
     });
     await this.dmContentRepository.save(newContent);
-    console.log('new dm content:', newContent);
+    // console.log('new dm content:', newContent);
     this.chatEventsGateway.server.emit('newDmContent', newContent);
   }
 
