@@ -107,9 +107,7 @@ const ParticipantSettingModal = ({
           targetUserId: userId,
           mute: true,
         })
-        .then((res) => {
-          console.log(res);
-        })
+        .then(() => {})
         .catch((err) => console.log(err));
       setShowModal(false);
     },

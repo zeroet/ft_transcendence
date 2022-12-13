@@ -42,7 +42,6 @@ export default function Participant({
 
   useEffect(() => {
     socket?.on("newParticipantList", () => {
-      console.log("new participant");
       mutate(`/api/${id.link}/${id.id}/participants`);
       mutate(`/api/${id.link}/${id.id}`);
     });

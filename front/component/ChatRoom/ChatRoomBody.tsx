@@ -9,7 +9,7 @@ import ChatList from "./ChatRoomBody/ChatList";
 import ChatroomSettingModal from "./ChatroomSettingModal";
 import { IChatContent } from "../../interfaceType";
 import useSocket from "../Utils/socket";
-import { TypeChatId, IChatMember } from "../../interfaceType";
+import { TypeChatId, IChatParticipant } from "../../interfaceType";
 import { useRouter } from "next/router";
 
 export default function ChatRoomBody({ id }: { id: TypeChatId }) {
@@ -75,13 +75,13 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
 
   useEffect(() => {
     if (chatroomMembersData && userData) {
-      chatroomMembersData.map((res: IChatMember) => {
+      chatroomMembersData.map((res: IChatParticipant) => {
         if (res.userId === userData.id && res.chatroomId.toString() === id.id) {
           if (res.mutedAt) {
             setIsMuted(true);
           } else if (res.bannedAt) {
-            alert(`You are baned ${roomData.chatroomName}`);
-            router.back();
+            alert(`You are baned room name : [${roomData.chatroomName}]`);
+            router.push("/Chat");
           }
         }
       });
@@ -114,7 +114,6 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       }
     );
     socket?.on("mute", () => {
-      console.log("get emit of event mute");
       if (id.link === "chatroom") mutate(`/api/chatroom/${id.id}/participants`);
     });
     socket?.on("ban", () => {
@@ -126,10 +125,11 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       socket?.off("deleteChatroom");
       socket?.off("kick");
       socket?.off("mute");
+      socket?.off("ban");
       setIsMuted(false);
     };
   }, [roomData, chatContentsData, userData, socket?.id, chatroomMembersData]);
-
+ 
   const onClickShowSettingModal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
