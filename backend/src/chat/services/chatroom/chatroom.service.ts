@@ -352,10 +352,10 @@ export class ChatroomService implements IChatroomService {
         `User already participate in the chatroom of id:${chatroomId}`,
         participant,
       );
-      // return;
-      throw new BadRequestException(
-        `User already participate in the chatroom of id:${chatroomId}`,
-      );
+      return;
+      // throw new BadRequestException(
+      //   `User already participate in the chatroom of id:${chatroomId}`,
+      // );
     }
 
     const newParticipant = this.chatParticipantRepository.create({
