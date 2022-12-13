@@ -6,6 +6,7 @@ import { Chatroom } from './entities/chatroom.entity';
 import { Dm } from './entities/dm.entity';
 import { DmContent } from './entities/dmContent.entity';
 import { Friend } from './entities/friend.entity';
+import { MatchHistory } from './entities/matchHistory.entity';
 import { User } from './entities/user.entity';
 
 export const entities = [
@@ -18,6 +19,7 @@ export const entities = [
   ChatContent,
   Dm,
   DmContent,
+  MatchHistory,
 ];
 
 export {
@@ -30,4 +32,5 @@ export {
   ChatContent,
   Dm,
   DmContent,
+  MatchHistory,
 };

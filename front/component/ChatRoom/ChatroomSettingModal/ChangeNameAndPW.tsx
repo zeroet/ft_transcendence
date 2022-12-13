@@ -45,7 +45,7 @@ const ChangeNameAndPW = ({
           chatroomName: RoomName === "" ? roomData.chatroomName : RoomName,
           password: RoomPw === "" ? null : RoomPw,
         })
-        .then(() => {
+        .then((res) => {
           mutate(`/api/chatroom/${roomId}`);
         })
         .catch((err) => console.log(err))
