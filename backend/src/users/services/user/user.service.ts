@@ -11,6 +11,7 @@ import { Block, Friend, MatchHistory, User } from 'src/typeorm';
 import { Status } from 'src/utils/types';
 import { IUserService } from './user.interface';
 import { Repository } from 'typeorm';
+import { ConnectionGateway } from 'src/connection/connection.gateway';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -21,6 +22,7 @@ export class UserService implements IUserService {
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
     @InjectRepository(MatchHistory) private matchHistoryRepository : Repository<MatchHistory>,
     private chatEventsGateway: ChatEventsGateway,
+    private connectionGateway: ConnectionGateway,
   ) {}
 
   async findUserByIdOrFail(userId: number) {
@@ -227,6 +229,7 @@ export class UserService implements IUserService {
     .orderBy("date", "DESC")
     .limit(5)
     
+    this.connectionGateway.server.emit('match');
     
     return matchs;
   }
