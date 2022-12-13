@@ -32,7 +32,7 @@ export class Friend implements IFriend {
     type: 'varchar',
     name: 'friend_username',
     nullable: false,
-    unique: true,
+    // unique: true,
     length: 30,
   })
   friendUsername: string;

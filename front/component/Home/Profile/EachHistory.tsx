@@ -18,15 +18,11 @@ const EachHistory = ({
   }, [username]);
 
   return (
-    <div className="eachHistory">
+    <div>
       <h3 className={winOrLoss}>{winOrLoss}</h3>
       <p>{`${winer}    ${winnerScore} : ${loserSocre}    ${loser}`}</p>
       <hr />
       <style jsx>{`
-        .eachHistory {
-          background-color: back;
-          width: 100%;
-        }
         p {
           margin: 8px;
         }
