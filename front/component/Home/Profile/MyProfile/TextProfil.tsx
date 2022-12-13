@@ -2,16 +2,41 @@ import useSWR from "swr";
 import Loading from "../../../errorAndLoading/Loading";
 import { UserInfo } from "../../../../interfaceType";
 import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
 
 const TextProfil = ({ id }: { id: number }) => {
   const { data: user, error } = useSWR<UserInfo>(`/api/users/${id}`);
   const { data: myData, error: myError } = useSWR<UserInfo>(`/api/users`);
   const userNameFontSize = { size: 50 };
   const { data: rankData, error: rankError } = useSWR(`/api/users/rank/${id}`);
+  const [showAchivementExplainModal, setShowAchivementExplainModal] =
+    useState(false);
+  const [achivement, setAchivement] = useState("");
 
   if (user && user.username.length >= 20) {
     userNameFontSize.size = 25;
   }
+
+  const onClickShowImg = useCallback(
+    (e: React.MouseEvent<HTMLImageElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowAchivementExplainModal((curr) => !curr);
+    },
+    [myData, rankData]
+  );
+
+  useEffect(() => {
+    if (rankData < 10) {
+      setAchivement("/images/achivement/1.png");
+    } else if (rankData > 10 && rankData < 100) {
+      setAchivement("/images/achivement/2.png");
+    } else if (rankData > 100 && rankData < 1000) {
+      setAchivement("/images/achivement/3.png");
+    } else {
+      setAchivement("/images/achivement/4.png");
+    }
+  }, [rankData]);
 
   if (error || myError || rankError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
@@ -23,12 +48,23 @@ const TextProfil = ({ id }: { id: number }) => {
         <h1 className="userName">{user.username}</h1>
       </div>
       <div className="info">
-        <h3>ACHIVEMENT : {rankData}</h3>
+        <h2>ACHIVEMENT </h2>
+        <img
+          src={achivement}
+          width="50px"
+          height={"50px"}
+          onClick={onClickShowImg}
+        />
       </div>
+      {showAchivementExplainModal && <div>achivement 소개</div>}
       <style jsx>{`
         div {
           display: grid;
           margin-left: 5px;
+        }
+        img {
+          margin-left: 10px;
+          cursor: pointer;
         }
         .userName {
           font-family: "Fragment Mono", monospace;
@@ -61,6 +97,8 @@ const TextProfil = ({ id }: { id: number }) => {
           overflow: hidden;
         }
         .info {
+          display: flex;
+          align-items: center;
           margin-bottom: 30px;
           // background-color: yellow;
         }
