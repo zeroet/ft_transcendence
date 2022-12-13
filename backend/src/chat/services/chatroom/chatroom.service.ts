@@ -352,9 +352,10 @@ export class ChatroomService implements IChatroomService {
         `User is banned from the chatroom of id${chatroomId}`,
         participant,
       );
-      throw new UnauthorizedException(
-        `User is banned from the chatroom of id:${chatroomId}`,
-      );
+      return;
+      // throw new UnauthorizedException(
+      //   `User is banned from the chatroom of id:${chatroomId}`,
+      // );
     } else if (participant) {
       // console.log(
       //   `User already participate in the chatroom of id:${chatroomId}`,
@@ -605,9 +606,9 @@ export class ChatroomService implements IChatroomService {
     const user = await this.findUserByIdOrFail(userId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
 
-    if (member.mutedAt !== null) {
-      return;
-    }
+    // if (member.mutedAt !== null) {
+    //   return;
+    // }
     const newContent = this.chatContentRepository.create({
       userId,
       chatroomId,
