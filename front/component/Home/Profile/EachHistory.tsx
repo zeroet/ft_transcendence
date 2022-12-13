@@ -1,17 +1,32 @@
+import { useEffect, useState } from "react";
 import { infoOfHistory } from "../../../interfaceType";
 
 const EachHistory = ({
-  winOrLoss,
-  firstPlayer,
-  secondPlayer,
-  point,
+  winer,
+  loser,
+  winnerScore,
+  loserSocre,
+  username,
 }: infoOfHistory) => {
+  const [winOrLoss, setWinOrLose] = useState<string>("");
+  useEffect(() => {
+    if (username === winer) {
+      setWinOrLose("win");
+    } else {
+      setWinOrLose("lose");
+    }
+  }, [username]);
+
   return (
-    <div>
-      <p className={winOrLoss}>{winOrLoss}</p>
-      <p>{`${firstPlayer}    ${point}    ${secondPlayer}`}</p>
+    <div className="eachHistory">
+      <h3 className={winOrLoss}>{winOrLoss}</h3>
+      <p>{`${winer}    ${winnerScore} : ${loserSocre}    ${loser}`}</p>
       <hr />
       <style jsx>{`
+        .eachHistory {
+          background-color: back;
+          width: 100%;
+        }
         p {
           margin: 8px;
         }
@@ -19,7 +34,7 @@ const EachHistory = ({
           color: green;
         }
 
-        .loss {
+        .lose {
           color: red;
         }
 
