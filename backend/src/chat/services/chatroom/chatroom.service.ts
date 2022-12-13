@@ -155,7 +155,11 @@ export class ChatroomService implements IChatroomService {
         targetUserId,
         chatroomId,
       );
-      targetUser.mutedAt = null;
+      if (timeoutName === `${targetUserId}_banned`) {
+        targetUser.bannedAt = null;
+      } else if (timeoutName === `${targetUserId}_muted`) {
+        targetUser.mutedAt = null;
+      }
       await this.chatParticipantRepository.save(targetUser);
       this.schedulerRegistry.deleteTimeout(timeoutName);
     };
@@ -177,7 +181,11 @@ export class ChatroomService implements IChatroomService {
         targetUserId,
         chatroomId,
       );
-      targetUser.mutedAt = null;
+      if (timeoutName === `${targetUserId}_banned`) {
+        targetUser.bannedAt = null;
+      } else if (timeoutName === `${targetUserId}_muted`) {
+        targetUser.mutedAt = null;
+      }
       await this.chatParticipantRepository.save(targetUser);
       this.schedulerRegistry.deleteTimeout(timeoutName);
     };
@@ -339,11 +347,19 @@ export class ChatroomService implements IChatroomService {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
     const participant = await this.findParticipantById(userId, chatroomId);
-    if (participant) {
+    if (participant && participant.bannedAt !== null) {
       console.log(
-        `User already participate in the chatroom of id:${chatroomId}`,
+        `User is banned from the chatroom of id${chatroomId}`,
         participant,
       );
+      throw new UnauthorizedException(
+        `User is banned from the chatroom of id:${chatroomId}`,
+      );
+    } else if (participant) {
+      // console.log(
+      //   `User already participate in the chatroom of id:${chatroomId}`,
+      //   participant,
+      // );
       return;
       // throw new BadRequestException(
       //   `User already participate in the chatroom of id:${chatroomId}`,
@@ -385,6 +401,32 @@ export class ChatroomService implements IChatroomService {
       throw new UnauthorizedException(
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
+    }
+    // ban
+    if (updateParticipantDto.ban === true) {
+      if (targetUser.bannedAt === null) {
+        this.addNewTimeout(
+          `${targetUser.id}_banned`,
+          targetUser.userId,
+          chatroomId,
+          15000,
+        );
+      } else {
+        this.updateTimeout(
+          `${targetUser.id}_banned`,
+          targetUser.userId,
+          chatroomId,
+          15000,
+        );
+      }
+      targetUser.bannedAt = new Date();
+      updatedParticipant = await this.chatParticipantRepository.save(
+        targetUser,
+      );
+      this.chatEventsGateway.server.emit('ban', {
+        chatroomId: chatroomId,
+        targetUserId: targetUser.userId,
+      });
     }
     // mute
     if (updateParticipantDto.mute === true) {
@@ -450,6 +492,7 @@ export class ChatroomService implements IChatroomService {
   }
 
   async postMembers(userId: number, chatroomId: number) {
+    this.postParticipants(userId, chatroomId);
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
     const member = await this.findMemberById(userId, chatroomId);
@@ -481,8 +524,8 @@ export class ChatroomService implements IChatroomService {
     const savedMember = await this.chatMemebrRepository.save(newMember);
     console.log('savedMember:', savedMember);
     this.chatEventsGateway.server.emit('newMemberList', savedMember);
-    // return chatroomMember;
-    return this.postParticipants(userId, chatroomId);
+    return savedMember;
+    // return this.postParticipants(userId, chatroomId);
   }
 
   async updateMemberInfo(
