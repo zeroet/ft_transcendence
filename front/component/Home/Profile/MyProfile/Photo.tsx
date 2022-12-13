@@ -3,7 +3,7 @@ import useSWR from "swr";
 import Loading from "../../../errorAndLoading/Loading";
 import axios from "axios";
 
-const Photo = ({ id }: { id: string }) => {
+const Photo = ({ id }: { id: number }) => {
   const { data: user, error } = useSWR<UserInfo>(`/api/users/${id}`);
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));

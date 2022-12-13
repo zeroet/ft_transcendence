@@ -1,18 +1,29 @@
+import { useEffect } from "react";
+import useSWR, { mutate } from "swr";
+import Loading from "../../errorAndLoading/Loading";
+import useSocket from "../../Utils/socket";
 import EachHistory from "./EachHistory";
 
-// interface infoOfHistory {
-//   winOrLoss : string,
-//   firstPlayer : string,
-//   secondPlayer : string,
-//   point: string,
-// }
+const MyHistory = ({ id }: { id: number }) => {
+  const [socketGame] = useSocket(null, "game");
+  const { data: historyData, error: historyError } = useSWR(
+    `/api/users/match/${id}`
+  );
+  const { data: rankData, error: rankError } = useSWR(`/api/users/rank/${id}`);
+  console.log(socketGame);
 
-const MyHistory = ({ id }: { id: string }) => {
-  /**
-   * id == -1이면 본인 정보 내보내기
-   */
-  // EachHistoty -> 5개만 얻어와서 map으로 출력
-  
+  // useEffect(() => {
+  //   socketGame?.on("match", () => {
+  //     mutate(`/api/users/match/${id}`);
+  //     return () => {
+  //       socketGame?.off("match");
+  //     };
+  //   });
+  // }, [socketGame?.id, historyData, rankData]);
+
+  console.log(historyData);
+  console.log(rankData);
+  if (!historyData) return <Loading />;
   return (
     <div>
       <div className="dummy"></div>

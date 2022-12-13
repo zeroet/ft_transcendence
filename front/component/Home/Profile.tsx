@@ -1,7 +1,7 @@
 import MyHistory from "./Profile/MyHistory";
 import MyProfil from "./Profile/MyProfil";
 
-export default function Profile({ id }: { id: string }) {
+export default function Profile({ id }: { id: number }) {
   return (
     <div className="div">
       <MyProfil id={id} />

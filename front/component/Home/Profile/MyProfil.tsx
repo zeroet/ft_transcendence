@@ -1,7 +1,7 @@
 import Photo from "./MyProfile/Photo";
 import TextProfil from "./MyProfile/TextProfil";
 
-const MyProfil = ({ id }: { id: string }) => {
+const MyProfil = ({ id }: { id: number }) => {
   return (
     <div>
       <Photo id={id} />
