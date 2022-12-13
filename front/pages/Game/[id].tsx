@@ -68,7 +68,7 @@ export default function Gaming({
   useEffect((): (() => void) => {
     statusChange("Game");
     socket?.emit("room-list");
-    
+
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
     }
@@ -146,7 +146,6 @@ export default function Gaming({
       <hr />
       <div className="grid-div">
         <GameExplain />
-        {/* 게임결과 보내기 */}
         {isGameover ? (
           <Gameover winOrLose={winOrLose} />
         ) : (

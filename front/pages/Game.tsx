@@ -13,14 +13,15 @@ import { useEffect } from "react";
 
 export default function Game({ accessToken }: { accessToken: string }) {
   const { data, error } = useSWR("/api/users");
-  const [socket] = useSocket(accessToken, "game");
+  // const [socket] = useSocket(accessToken, "game");
 
-  useEffect(() => {
-    return () => {};
-  }, [socket, data]);
+  // useEffect(() => {
+  //   return () => {};
+  // }, [socket, data]);
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!data || !socket) return <Loading />;
+  // if (!data || !socket) return <Loading />;
+  if (!data) return <Loading />;
   return (
     <Layout>
       <Title title="Game" />
