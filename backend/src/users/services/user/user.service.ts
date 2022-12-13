@@ -234,15 +234,6 @@ export class UserService implements IUserService {
 
   async getMatch(id: number) {
     let matchs = null;
-<<<<<<< HEAD
-    if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
-    .innerJoinAndSelect('matchhistory.winner', 'winner')
-    .innerJoinAndSelect('matchhistory.loser', 'loser')
-    .orderBy("matchhistory.date", "DESC")
-    .take(5)
-    .getMany()
-    
-=======
     if (id)
       matchs = await this.matchHistoryRepository
         .createQueryBuilder('matchhistory')
@@ -251,9 +242,6 @@ export class UserService implements IUserService {
         .orderBy('matchhistory.date', 'DESC')
         .take(5)
         .getMany();
-
-    // this.connectionGateway.server.emit('match');
->>>>>>> 8df89e88f048e306f0061ad9201883b4ce54fda9
 
     return matchs;
   }
