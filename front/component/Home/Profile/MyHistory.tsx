@@ -24,7 +24,7 @@ const MyHistory = ({ id }: { id: number }) => {
           userData &&
           historyData.map((eachHistory: any) => {
             return (
-              <div key={eachHistory.id} className="history">
+              <div key={eachHistory.id} className="history-div">
                 <EachHistory
                   winer={eachHistory.winner.username}
                   loser={eachHistory.loser.username}
@@ -80,6 +80,12 @@ const MyHistory = ({ id }: { id: number }) => {
           background: #ffffff;
           border: 1px solid #000000;
           border-radius: 10%;
+        }
+
+        .history-div {
+          display: flex;
+          flex-direction: column;
+          text-align: center;
         }
       `}</style>
     </div>
