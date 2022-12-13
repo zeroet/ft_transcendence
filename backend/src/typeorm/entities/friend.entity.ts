@@ -23,19 +23,19 @@ export class Friend implements IFriend {
   @Column({ type: 'int', name: 'friend_user_id' })
   friendUserId: number;
 
-  @ApiProperty({
-    required: true,
-    example: 'jungmoo cheon',
-    description: 'Friend Username',
-  })
-  @Column({
-    type: 'varchar',
-    name: 'friend_username',
-    nullable: false,
-    // unique: true,
-    length: 30,
-  })
-  friendUsername: string;
+  // @ApiProperty({
+  //   required: true,
+  //   example: 'jungmoo cheon',
+  //   description: 'Friend Username',
+  // })
+  // @Column({
+  //   type: 'varchar',
+  //   name: 'friend_username',
+  //   nullable: false,
+  //   // unique: true,
+  //   length: 30,
+  // })
+  // friendUsername: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
