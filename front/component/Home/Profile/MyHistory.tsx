@@ -13,7 +13,6 @@ const MyHistory = ({ id }: { id: number }) => {
     mutate(`/api/users/match/${id}`);
   }, [userData]);
 
-  console.log(historyData);
   if (!historyData || !userData) return <Loading />;
   return (
     <div>

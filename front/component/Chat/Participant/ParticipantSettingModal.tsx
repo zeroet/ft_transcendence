@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
+import useSocket from "../../Utils/socket";
 
 const ParticipantSettingModal = ({
   isOwner,
@@ -24,6 +25,7 @@ const ParticipantSettingModal = ({
   const { data: chatroomData, error: chatroomError } = useSWR(
     chatId ? `/api/chatroom/${chatId}/members` : null
   );
+  const [gameSocket] = useSocket(null, "game");
 
   const onClickProfile = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -64,6 +66,7 @@ const ParticipantSettingModal = ({
   const onClickGame = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    gameSocket?.emit("privateQ", { userId });
     setShowModal(false);
   }, []);
 
