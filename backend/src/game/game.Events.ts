@@ -20,6 +20,7 @@ import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { ConnectionService } from 'src/connection/connection.service';
 import { Status } from 'src/utils/types';
+import { STATUS_CODES } from 'http';
 // import { GameService } from './game.service';
 
 @UseGuards(JwtWsGuard)
@@ -29,6 +30,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     private readonly roomService: RoomService,
     @Inject('USER_SERVICE') private readonly userService: UserService,
     @Inject('AUTH_SERVICE') private authService: IAuthService,
+    private connectionService: ConnectionService,
   ) {}
  
 
@@ -37,9 +39,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   @WebSocketServer()
   server: Server;
 
-  @Inject()
-  private connectionService: ConnectionService;
-
+  connections = this.connectionService.connections;
   queueNormal: QueueService = new QueueService();
   
   afterInit() {
@@ -95,9 +95,25 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     catch{}
   }
 
+  async checkPlaying(client: Socket)
+  {
+    let user;
+    user = await this.getUserfromSocket(client);
+    user.status
+  }
+
   @SubscribeMessage('Queue')
   async readyGame(@ConnectedSocket() client: Socket) {
+    if (!client) 
+      return ;
     const user = await this.getUserfromSocket(client)
+    console.log('statussssssss',user.status)
+    let stat:string = user.status
+    if (stat === 'Game') {
+      console.log('Playinggggggggggggggggggggg');
+      client.emit('playing');
+      return ;
+    }
     for(const player of this.queueNormal.Players)
     {
       // same socket id in the queue Case
@@ -187,6 +203,11 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       if (!data)
         return ;
       const user = await this.getUserfromSocket(watcher);
+      let stat:string = user.status
+      if (stat === 'Game') {
+        watcher.emit('playing');
+        return ;
+      }
       const Room = this.roomService.findRoom(data);
       for (const player of Room.Players)
       {

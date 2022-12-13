@@ -12,15 +12,4 @@ export class GameController {
         @Inject('USER_SERVICE') private userService: UserService
     ) {}
 
-    @Get('match/:id')
-    async match(@Param('id') id: number) : Promise<MatchHistory[]> {
-        return await this.userService.getMatch(id);
-    }
-
-    @Get('rank/:id')
-    async rank(@Param('id') id:number) {
-        let matchs = await this.userService.getMatch(id);
-        const num = matchs.length();
-        return num;
-    }
 }

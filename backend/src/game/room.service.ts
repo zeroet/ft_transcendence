@@ -17,7 +17,6 @@ export class RoomService{
     rooms: Map<string, GameService> = new Map();
 
     createRoom (player1: Socket, player2:Socket) {
-        this.userService.getMatch(1);
         player1.emit('createRoom', { isOwner: true } );
         player2.emit('createRoom', { isOwner: false });
     }

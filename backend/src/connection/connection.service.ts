@@ -13,7 +13,7 @@ export class ConnectionService{
         @Inject('AUTH_SERVICE') private authService: IAuthService,
     ) {}
 
-    private readonly connections: Map<number, Set<Socket>> = new Map<number, Set<Socket>>();
+    connections: Map<number, Set<Socket>> = new Map<number, Set<Socket>>();
 
     async getUserFromSocket(socket: Socket)
     {
@@ -43,10 +43,11 @@ export class ConnectionService{
             this.connections.set(user.id, sockets);
         }
         else {
-            // sockets.add(socket);
-            // this.connections[user.id] = sockets;
-            console.log(`User ${user.username} is already Connected in GameServer failed Connection ${socket.id}`)
-            socket.disconnect();
+            sockets.add(socket);
+            this.connections[user.id] = sockets;
+            // console.log(`User ${user.username} is already Connected in GameServer failed Connection ${socket.id}`)
+            // socket.disconnect();
+
 
         }
     }
