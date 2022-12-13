@@ -243,11 +243,6 @@ export class UserService implements IUserService {
         .take(5)
         .getMany();
 
-<<<<<<< HEAD
-=======
-    // this.connectionGateway.server.emit('match');
-
->>>>>>> c7c84ecd5d4a4454cbbc92855a4d48e0be82331a
     return matchs;
   }
 
