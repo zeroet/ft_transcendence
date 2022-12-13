@@ -2,6 +2,7 @@ import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
 import { UpdateMemberDto } from 'src/chat/dto/update-member.dto';
+import { UpdateParticipantDto } from 'src/chat/dto/update-participant.dto';
 
 export interface IChatroomService {
   getChatrooms(): Promise<ChatroomDto[]>;
@@ -23,7 +24,7 @@ export interface IChatroomService {
   updateParticipantInfo(
     userId: number,
     chatroomId: number,
-    updateMemberDto: UpdateMemberDto,
+    updateParticipantDto: UpdateParticipantDto,
   );
   deleteParticipants(userId: number, chatroomId: number);
   getMembers(chatroomId: number);

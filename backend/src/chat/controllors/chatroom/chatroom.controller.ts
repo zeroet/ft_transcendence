@@ -26,6 +26,7 @@ import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
 import { UpdateMemberDto } from 'src/chat/dto/update-member.dto';
+import { UpdateParticipantDto } from 'src/chat/dto/update-participant.dto';
 import { IChatroomService } from 'src/chat/services/chatroom/chatroom.interface';
 import { IUser } from 'src/typeorm/interfaces/IUser';
 import { User } from 'src/utils/decorators/user.decorator';
@@ -199,32 +200,32 @@ export class ChatroomController {
   //   return await this.chatroomService.postParticipants(user.id, id);
   // }
 
-  // @ApiBody({
-  //   type: UpdateMemberDto,
-  // })
-  // @ApiParam({
-  //   name: 'id',
-  //   example: 1,
-  //   description: 'Chatroom id',
-  // })
-  // @ApiOperation({
-  //   summary:
-  //     'Update participants of a chatroom / 특정 대화방의 참여자 정보 수정하기',
-  // })
-  // @Patch(':id/participants/update')
-  // async updateParticipantsInfo(
-  //   @User() user: IUser,
-  //   @Param('id') id: number,
-  //   @Body() updateMemberDto: UpdateMemberDto,
-  // ) {
-  //   console.log('updateParticipantDto:', updateMemberDto);
-  //   console.log('chatroomId:', id);
-  //   return await this.chatroomService.updateParticipantInfo(
-  //     user.id,
-  //     id,
-  //     updateMemberDto,
-  //   );
-  // }
+  @ApiBody({
+    type: UpdateParticipantDto,
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary:
+      'Update participants of a chatroom / 특정 대화방의 참여자 정보 수정하기',
+  })
+  @Patch(':id/participants/update')
+  async updateParticipantsInfo(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body() updateParticipantDto: UpdateParticipantDto,
+  ) {
+    console.log('updateParticipantDto:', updateParticipantDto);
+    console.log('chatroomId:', id);
+    return await this.chatroomService.updateParticipantInfo(
+      user.id,
+      id,
+      updateParticipantDto,
+    );
+  }
 
   @ApiResponse({
     type: ChatMemberDto,

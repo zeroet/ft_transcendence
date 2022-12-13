@@ -24,6 +24,7 @@ import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
 import { UpdateMemberDto } from 'src/chat/dto/update-member.dto';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { UpdateParticipantDto } from 'src/chat/dto/update-participant.dto';
 
 @Injectable()
 export class ChatroomService implements IChatroomService {
@@ -382,7 +383,7 @@ export class ChatroomService implements IChatroomService {
   async updateParticipantInfo(
     userId: number,
     chatroomId: number,
-    updateMemberDto: UpdateMemberDto,
+    updateParticipantDto: UpdateParticipantDto,
   ) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const participant = await this.findParticipantByIdOrFail(
@@ -390,19 +391,18 @@ export class ChatroomService implements IChatroomService {
       chatroomId,
     );
     const targetUser = await this.findParticipantByIdOrFail(
-      updateMemberDto.targetUserId,
+      updateParticipantDto.targetUserId,
       chatroomId,
     );
     let updatedParticipant = null;
     // owner verification
-    // if (participant.userId !== chatroom.ownerId) {
-    //   throw new UnauthorizedException(
-    //     `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
-    //   );
-    //   // return;
-    // }
+    if (participant.userId !== chatroom.ownerId) {
+      throw new UnauthorizedException(
+        `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
+      );
+    }
     // mute
-    if (updateMemberDto.mute === true) {
+    if (updateParticipantDto.mute === true) {
       if (targetUser.mutedAt === null) {
         this.addNewTimeout(
           `${targetUser.id}_muted`,
@@ -422,6 +422,10 @@ export class ChatroomService implements IChatroomService {
       updatedParticipant = await this.chatParticipantRepository.save(
         targetUser,
       );
+      this.chatEventsGateway.server.emit('mute', {
+        chatroomId: chatroomId,
+        targetUserId: targetUser.userId,
+      });
     }
     console.log('updated participant:', updatedParticipant);
     return updatedParticipant;
@@ -527,31 +531,31 @@ export class ChatroomService implements IChatroomService {
       });
     }
     // mute
-    else if (updateMemberDto.mute === true) {
-      if (targetUser.mutedAt === null) {
-        this.addNewTimeout(
-          `${targetUser.id}_muted`,
-          targetUser.userId,
-          chatroomId,
-          15000,
-        );
-      } else {
-        this.updateTimeout(
-          `${targetUser.id}_muted`,
-          targetUser.userId,
-          chatroomId,
-          15000,
-        );
-      }
-      targetUser.mutedAt = new Date();
-      updatedMember = await this.chatMemebrRepository.save(targetUser);
-      this.chatEventsGateway.server.emit('mute', {
-        chatroomId: chatroomId,
-        targetUserId: targetUser.userId,
-      });
-    }
-    console.log('updated member:', updatedMember);
-    this.updateParticipantInfo(userId, chatroomId, updateMemberDto);
+    // else if (updateMemberDto.mute === true) {
+    //   if (targetUser.mutedAt === null) {
+    //     this.addNewTimeout(
+    //       `${targetUser.id}_muted`,
+    //       targetUser.userId,
+    //       chatroomId,
+    //       15000,
+    //     );
+    //   } else {
+    //     this.updateTimeout(
+    //       `${targetUser.id}_muted`,
+    //       targetUser.userId,
+    //       chatroomId,
+    //       15000,
+    //     );
+    //   }
+    //   targetUser.mutedAt = new Date();
+    //   updatedMember = await this.chatMemebrRepository.save(targetUser);
+    //   this.chatEventsGateway.server.emit('mute', {
+    //     chatroomId: chatroomId,
+    //     targetUserId: targetUser.userId,
+    //   });
+    // }
+    // console.log('updated member:', updatedMember);
+    // this.updateParticipantInfo(userId, chatroomId, updateMemberDto);
     return updatedMember;
   }
 
