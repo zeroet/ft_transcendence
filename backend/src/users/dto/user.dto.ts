@@ -5,8 +5,8 @@ export class UserDto extends OmitType(User, [
   'created_at',
   'modified_at',
   'hashed_refresh_token',
-  'ChatMember',
-  'ChatContent',
+  // 'ChatMember',
+  // 'ChatContent',
   'DmUser1',
   'DmUser2',
 ]) {

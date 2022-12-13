@@ -56,14 +56,14 @@ export class ChatContent implements IChatContent {
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
   readonly modifiedAt: Date;
 
-  @ManyToOne((type) => Chatroom, (Chatroom) => Chatroom.ChatContent, {
+  @ManyToOne((type) => Chatroom, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn()
   Chatroom: IChatroom;
 
-  @ManyToOne((type) => User, (User) => User.ChatContent, {
+  @ManyToOne((type) => User, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
