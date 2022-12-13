@@ -79,7 +79,8 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
         if (res.userId === userData.id && res.chatroomId.toString() === id.id) {
           if (res.mutedAt) {
             setIsMuted(true);
-          } else if (res.bannedAt) {
+          }
+          if (res.bannedAt) {
             alert(`You are baned room name : [${roomData.chatroomName}]`);
             router.push("/Chat");
           }
@@ -129,7 +130,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       setIsMuted(false);
     };
   }, [roomData, chatContentsData, userData, socket?.id, chatroomMembersData]);
- 
+
   const onClickShowSettingModal = (
     e: React.MouseEvent<HTMLDivElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
