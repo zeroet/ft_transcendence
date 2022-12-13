@@ -23,9 +23,9 @@ export class UserService implements IUserService {
     @InjectRepository(MatchHistory)
     private matchHistoryRepository: Repository<MatchHistory>,
     private chatEventsGateway: ChatEventsGateway,
-    ) {}
-    private connectionGateway: ConnectionGateway;
-    
+  ) {}
+  private connectionGateway: ConnectionGateway;
+
   async findUserByIdOrFail(userId: number) {
     const user = await this.userRepository
       .createQueryBuilder('users')
@@ -221,41 +221,40 @@ export class UserService implements IUserService {
   }
   // updateUserById(id: number) {}
 
- async createMatchHistory(info:any) {
-  const match = this.matchHistoryRepository.create({...info});
-  try {
-    await this.matchHistoryRepository.save(match);}
-  catch(error) {
-    throw new HttpException(error.mesage, 404);
+  async createMatchHistory(info: any) {
+    const match = this.matchHistoryRepository.create({ ...info });
+    try {
+      await this.matchHistoryRepository.save(match);
+    } catch (error) {
+      throw new HttpException(error.mesage, 404);
     }
   }
 
   async getMatch(id: number) {
     let matchs = null;
-    if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
-    .innerJoinAndSelect('matchhistory.winner', 'winner')
-    .innerJoinAndSelect('matchhistory.loser', 'loser')
-    .orderBy("matchhistory.date", "DESC")
-    .take(5)
-    .getMany()
-<<<<<<< HEAD
+    if (id)
+      matchs = await this.matchHistoryRepository
+        .createQueryBuilder('matchhistory')
+        .innerJoinAndSelect('matchhistory.winner', 'winner')
+        .innerJoinAndSelect('matchhistory.loser', 'loser')
+        .orderBy('matchhistory.date', 'DESC')
+        .take(5)
+        .getMany();
 
-    this.connectionGateway.server.emit('match');
-=======
-    
     // this.connectionGateway.server.emit('match');
->>>>>>> 5c3228f98065949d0543c199de3ecb0241b747f6
 
     return matchs;
   }
 
-  async getRank(id:number) {
+  async getRank(id: number) {
     let matchs = null;
-    if (id) matchs = await this.matchHistoryRepository.createQueryBuilder('matchhistory')
-    .innerJoinAndSelect('matchhistory.winner', 'winner')
-    .innerJoinAndSelect('matchhistory.loser', 'loser')
-    .getMany()
-    
+    if (id)
+      matchs = await this.matchHistoryRepository
+        .createQueryBuilder('matchhistory')
+        .innerJoinAndSelect('matchhistory.winner', 'winner')
+        .innerJoinAndSelect('matchhistory.loser', 'loser')
+        .getMany();
+
     return matchs;
   }
 }
