@@ -94,22 +94,22 @@ export class GameService {
         this.dir.dy = Math.random() > 0.5 ? -1 : 1;
     }
 
-    async gameover() {
+    gameover() {
         this.Status = Stat.END;
-        // this.roomService.gameOver(this.Players, this.score, this.roomName, this.user1, this.user2)
-        // this.roomService.gameOverWatcher(this.Watchers)
     }
 
     // inGameOver() {
     //     this.roomService.gameOver(this.Players)
     // }
 
+    gameCancel() {
+        this.Status = Stat.CANCEL;
+    }
       
     update() {
         //player out  over case
         if (this.Players.length != 2) {
-            this.Status = Stat.CANCEL;
-            this.gameover()
+           this.gameCancel()
         }
 
         
