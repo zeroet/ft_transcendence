@@ -30,18 +30,20 @@ const EachParticipant = ({
   );
 
   return (
-    <div className="user">
-      <div
-        style={{
-          backgroundColor: color,
-          width: "10px",
-          height: "10px",
-          borderRadius: "50%",
-          marginRight: "5px",
-        }}
-      ></div>
-      <div onClick={onClickEachParticipant} className="username">
-        {username}
+    <div>
+      <div className="user">
+        <div
+          style={{
+            backgroundColor: color,
+            width: "10px",
+            height: "10px",
+            borderRadius: "50%",
+            marginRight: "5px",
+          }}
+        ></div>
+        <div onClick={onClickEachParticipant} className="username">
+          {username}
+        </div>
       </div>
       {showModal && (
         <ParticipantSettingModal

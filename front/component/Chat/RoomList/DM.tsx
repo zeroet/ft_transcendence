@@ -33,7 +33,6 @@ export default function DM() {
     };
   }, [DMData, myData]);
 
-  // console.log(DMData);
   if (DMError || myError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!DMData || !myData) return <Loading />;
@@ -42,9 +41,7 @@ export default function DM() {
       <ul>
         {DMData &&
           DMData.map((eachDM: any) => {
-            // console.log(eachDM, "is eachDM from DM.tsx");
             const DM = { username: "", image_url: "" };
-            // console.log(eachDM.User1.id, eachDM.User2.id);
             if (eachDM.User1.id === myData.id) {
               DM.username = eachDM.User2.username;
               DM.image_url = eachDM.User2.image_url;
@@ -77,22 +74,6 @@ export default function DM() {
             );
           })}
       </ul>
-      {/* <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover={true}
-        theme="colored"
-        style={{ width: "500px", textAlign: "center" }}
-        toastStyle={{
-          textTransform: "none",
-        }}
-      /> */}
       <style jsx>
         {`
           li {
