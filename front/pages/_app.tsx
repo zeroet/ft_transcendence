@@ -17,11 +17,15 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     gameSocket?.on("createQ", (senderId: number) => {
-      const response = confirm("get test siginal");
-      if (response) {
-        gameSocket?.emit("Private", senderId);
+      if (myData.id === senderId) {
+        alert("Wait!");
       } else {
-        gameSocket?.emit("inviteCancel", senderId);
+        const response = confirm("get test siginal");
+        if (response) {
+          gameSocket?.emit("Private", senderId);
+        } else {
+          gameSocket?.emit("inviteCancel", senderId);
+        }
       }
     });
 
@@ -37,6 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
     gameSocket?.on("Pcancel", () => {
       router.back();
     });
+
     return () => {
       gameSocket?.off("createQ");
       gameSocket?.off("privateRoom");
