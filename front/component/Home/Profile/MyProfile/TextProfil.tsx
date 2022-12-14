@@ -28,7 +28,7 @@ const TextProfil = ({ id }: { id: number }) => {
 
   useEffect(() => {
     if (rankData < 10) {
-      setAchivement("/images/achivement/1.png");
+      setAchivement("/images/achivement/achivement.png");
     } else if (rankData > 10 && rankData < 100) {
       setAchivement("/images/achivement/2.png");
     } else if (rankData > 100 && rankData < 1000) {
@@ -51,16 +51,13 @@ const TextProfil = ({ id }: { id: number }) => {
       <div className="name">
         <h1 className="userName">{user.username}</h1>
       </div>
-      <div className="info">
-        <h2>ACHIVEMENT </h2>
-        <img
-          src={achivement}
-          width="50px"
-          height={"50px"}
-          onClick={onClickShowImg}
-        />
+      <div className="info" onClick={onClickShowImg}>
+        <h2>ACHIVEMENT</h2>
+        <img src={achivement} width="30px" height={"30px"} />
       </div>
-      {showAchivementExplainModal && <div>achivement 소개</div>}
+      {showAchivementExplainModal && (
+        <div className="achivement">achivement 소개</div>
+      )}
       <style jsx>{`
         div {
           display: grid;
@@ -103,8 +100,16 @@ const TextProfil = ({ id }: { id: number }) => {
         .info {
           display: flex;
           align-items: center;
-          margin-bottom: 30px;
-          // background-color: yellow;
+          margin-bottom: 100px;
+          margin-left: 10px;
+          //   background-color: yellow;
+          cursor: pointer;
+        }
+        .achivement {
+          //   background-color: red;
+          margin-top: -110px;
+          margin-left: 10px;
+          //   border: 1px solid black;
         }
       `}</style>
     </div>
