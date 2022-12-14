@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ChangeAdminDto {
+export class ChangeOwnerDto {
   @ApiProperty({
     required: true,
     type: Number,

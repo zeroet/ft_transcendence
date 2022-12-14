@@ -18,7 +18,7 @@ export interface IChatroomService {
     chatroomId: number,
     updateChatroomDto: UpdateChatroomDto,
   );
-  changeAdmin(userId: number, chatroomId: number, targetUserId: number);
+  changeOwner(userId: number, chatroomId: number, targetUserId: number);
   getParticipants(chatroomId: number);
   postParticipants(userId: number, chatroomId: number);
   updateParticipantInfo(

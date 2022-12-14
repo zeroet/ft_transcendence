@@ -19,7 +19,7 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
-import { ChangeAdminDto } from 'src/chat/dto/change-admin.dto';
+import { ChangeOwnerDto } from 'src/chat/dto/change-admin.dto';
 import { ChatContentDto } from 'src/chat/dto/chat.content.dto';
 import { ChatMemberDto } from 'src/chat/dto/chat.member.dto';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
@@ -148,7 +148,7 @@ export class ChatroomController {
   }
 
   @ApiBody({
-    type: ChangeAdminDto,
+    type: ChangeOwnerDto,
     description: 'Target user id',
   })
   @ApiParam({
@@ -157,15 +157,15 @@ export class ChatroomController {
     description: 'Chatroom id',
   })
   @ApiOperation({
-    summary: 'Change admin of a chatroom / 특정 대화방의 관리자 변경하기',
+    summary: 'Change owner of a chatroom / 특정 대화방 주인 변경하기',
   })
   @Patch(':id/admin')
-  async changeAdmin(
+  async changeOwner(
     @User() user: IUser,
     @Param('id') id: number,
     @Body('targetUserId') targetUserId: number,
   ) {
-    return this.chatroomService.changeAdmin(user.id, id, targetUserId);
+    return this.chatroomService.changeOwner(user.id, id, targetUserId);
   }
 
   @ApiResponse({
