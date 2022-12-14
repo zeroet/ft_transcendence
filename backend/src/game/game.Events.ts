@@ -34,17 +34,16 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     @Inject('AUTH_SERVICE') private authService: IAuthService,
     private connectionService: ConnectionService,
   ) {}
- 
-  // PrivateQ: Map<number, Set<Socket>> = new Map<number, Set<Socket>>();
-  PrivateQ:Array<any> = [];
-
+   
+  
   private logger = new Logger('GameGateway');
-
+  
   @WebSocketServer()
   server: Server;
-
+  
   connections = this.connectionService.connections;
   queueNormal: QueueService = new QueueService();
+  queuePv: Map<number, Array<any>> = new Map();
     
 
   
@@ -148,7 +147,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
 
   @SubscribeMessage('cancle')
-  cancel(@ConnectedSocket() client: Socket) {
+  async cancel(@ConnectedSocket() client: Socket) {
     try {
       //ready 0 / 1 index
       if ((this.queueNormal.Players[0].id === client.id) || (this.queueNormal.Players[1].id === client.id)) {
@@ -164,6 +163,16 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
         this.queueNormal.size -= 1;
       }
+      else {
+        let user = await this.getUserfromSocket(client);
+        if (this.queuePv.has(user.id)){
+          const Pq = this.queuePv.get(user.id)
+          Pq[0].emit('close');
+          Pq[1].emit('close');
+          this.queuePv.delete(user.id)
+        }
+      }
+
       //after cancel 0/1 index - > 2/3 << 
       if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
         this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
@@ -274,51 +283,79 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   @SubscribeMessage('privateQ')
   async privateQ(@ConnectedSocket() client: Socket,
   @MessageBody() data) {
+    //get connection list 
     let connec = this.connectionService.connections
 
+    //find sender Id && receiver Id to list && stat check
     const sender = await this.getUserfromSocket(client);
-    let statSender:string = sender.status;
     const sockets:Set<Socket> = await connec.get(data)
     const receiver = await this.userService.getUserById(data)
+    let statSender:string = sender.status;
     let stat:string = receiver.status
     
     
-    // if receiver 
+    // if sender && receiver stat is Playing or Watching 
+    // event isPlaying for cancel Q
     if (statSender === 'Game' || stat === 'Game' || 
     statSender === Status.WATCHING ||
     receiver.status === Status.WATCHING ){
+      console.log('IsPlaying')
       client.emit('isPlaying')
       for (const socket of sockets)
         socket.emit('isPlaying')
       return ;
     }
 
-    this.PrivateQ.push(client);
-    console.log('OWNERID', this.PrivateQ[0].id)
-    // client.emit('createQ');
-    for (const socket of sockets) {
-      socket.emit('createQ')
-      console.log("CREATEQ SEND EMIT",socket.id)
+    // else Make Map < Key : senderId, Value : Array[sender, recevier]>
+    // this.PrivateQ.push(client);
+    if (this.queuePv.has(sender.id))
+      console.log('Sender -- invite ING // Array Existe in the map')
+    else {
+      const Pqueue: Array<any> = [client]
+      this.queuePv.set(sender.id, Pqueue)
+      client.emit('createQ');
+      for (const socket of sockets) {
+        socket.emit('createQ', sender.id) // emit to Socket body { sender.id } number
+        console.log("CREATEQ SEND EMIT", socket.id)
+      }
+    }
+  }
+
+  @SubscribeMessage('inviteCancel')
+  async inviteCancel(@ConnectedSocket() client:Socket, @MessageBody() data?)
+  { 
+    // receiver cancel invitation
+    if (data)
+    {
+      let Pq = this.queuePv.get(data);
+      Pq[0].emit('Pcancel');
+      this.queuePv.delete(data);
+      return ;
     }
   }
 
 
   @SubscribeMessage('Private')
   async startPrivateQ(@ConnectedSocket() client: Socket,
-  @MessageBody() data) 
+  @MessageBody() data?) // data receiver send event to server with { sender.id }
+  // if socket is sender, data is null
   {
-    if(!this.PrivateQ[1]) 
+    let receiver;
+    if(!data)
+    return ;
+    if(this.queuePv.has(data))
     {
-      if (client !== this.PrivateQ[0])
-        this.PrivateQ.push(client);
-      console.log('isPlayer', this.PrivateQ[1])
-      if(this.PrivateQ.length == 2) {
-        this.PrivateQ[0].emit('privateRoom', { isOwner: true })
-        this.PrivateQ[1].emit('privateRoom', { isOwner: false })
+      const Pq:Array<any>  = this.queuePv.get(data);
+      if (Pq.length == 2)
+        client.emit('full')
+      else {
+        Pq.push(client);
+        console.log('PqArray', Pq[0], Pq[1])
+        Pq[0].emit('privateRoom', { isOwner: true })
+        Pq[1].emit('privateRoom', { isOwner: false })
       }
     }
-    else
-      client.emit('full');
+    return ;
   }
 
   @SubscribeMessage('PrivateGame')
@@ -326,19 +363,24 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
+      let Owner = await this.getUserfromSocket(client)
+      if (!this.queuePv.has(Owner.id))
+        return ;
       try {
-        if (client.id === this.PrivateQ[0].id) {
+        const Pq:Array<any> = this.queuePv.get(Owner.id);
+        if (client.id === Pq[0].id) {
           let user1 = await this.getUserfromSocket(client);
-          let user2 = await this.getUserfromSocket(this.PrivateQ[1]);
+          let user2 = await this.getUserfromSocket(Pq[1]);
           this.userService.updateUserStatus(user1.id, Status.READY);
           this.userService.updateUserStatus(user2.id, Status.READY);
-          this.roomService.startGame(user1, user2, this.PrivateQ[0], 
-            this.PrivateQ[1], Stat.READY, data.roomName, 
-            this.PrivateQ[0].id, data.speed, data.ballSize)
+          this.roomService.startGame(user1, user2, Pq[0], 
+            Pq[1], Stat.READY, data.roomName, 
+            Pq[0].id, data.speed, data.ballSize)
           await this.userService.updateUserStatus(user1.id, Status.PLAYING)
           await this.userService.updateUserStatus(user2.id, Status.PLAYING)
-          this.PrivateQ.shift().join(data.roomName);
-          this.PrivateQ.shift().join(data.roomName);
+          Pq[0].join(data.roomName);
+          Pq[1].join(data.roomName);
+          this.queuePv.delete(Owner.id);
         // if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
         //   await this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
         this.liveGame(data.roomName);
