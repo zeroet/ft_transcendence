@@ -51,7 +51,7 @@ const SearchBar = () => {
           {data &&
             inputValue &&
             data.map((user: UserInfo) => {
-              if (user.username.includes(inputValue)) {
+              if (user.username.toLowerCase().includes(inputValue)) {
                 return (
                   <div key={user.intra_id}>
                     <SearchBarModal
