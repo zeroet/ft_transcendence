@@ -17,6 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
       const response = confirm("get test siginal");
       if (response) {
         gameSocket?.emit("Private");
+        console.log("click ok");
       }
     });
     gameSocket?.on("privateRoom", (obj: { isOwner: boolean }) => {
