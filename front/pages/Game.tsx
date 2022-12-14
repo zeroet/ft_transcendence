@@ -14,17 +14,11 @@ export default function Game({
   isOwner,
 }: {
   accessToken: string;
-  isOwner: string | undefined;
+  isOwner: string | null;
 }) {
   const { data, error } = useSWR("/api/users");
-  // const [socket] = useSocket(accessToken, "game");
-
-  // useEffect(() => {
-  //   return () => {};
-  // }, [socket, data]);
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  // if (!data || !socket) return <Loading />;
   if (!data) return <Loading />;
   return (
     <Layout>
@@ -34,7 +28,7 @@ export default function Game({
       )}
       <div>
         <GameList accessToken={accessToken} />
-        <GameBody accessToken={accessToken} />
+        <GameBody accessToken={accessToken} isOwner={isOwner} />
         <style jsx>{`
           div {
             display: grid;
@@ -61,7 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       accessToken,
-      isOwner,
+      isOwner: isOwner ? isOwner : null,
     },
   };
 };
