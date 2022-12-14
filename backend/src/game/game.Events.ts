@@ -66,11 +66,35 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     } catch (err) {
       throw new WsException('unauthorized connection');
     }
+
+
+    // let map = this.queuePv.values()
+    // for (const q of map)
+    // {
+    //   if (q.indexOf(client) != -1)
+    //   {
+    //       q[0].emit('Pcancel')
+    //       q[1].emit('Pcancel');
+    //       let user = await this.getUserfromSocket(q[0]);
+    //       this.queuePv.delete(user.id)
+    //   }
+    // }
+
     // Queue case 
     if (this.queueNormal.Players.indexOf(client) != -1) {
       let user = await this.getUserfromSocket(client)
       // Queue READY case
       if (user.status === Status.LOGOUT)
+      {
+        this.queueNormal.Players[0].emit('close')
+        this.queueNormal.Players[1].emit('close')
+        this.queueNormal.Players.splice(0, 2)
+        this.queueNormal.size -= 2;
+        if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
+        this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
+        return ;
+      }
+      else if (this.queueNormal.Players[0] === client || this.queueNormal.Players[1] === client)
       {
         this.queueNormal.Players[0].emit('close')
         this.queueNormal.Players[1].emit('close')
@@ -302,7 +326,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     statSender === Status.WATCHING ||
     receiver.status === Status.WATCHING ){
       console.log('IsPlaying')
-      client.emit('isPlaying')
+      client.emit('IsPlaying')
       return ;
     }
 
