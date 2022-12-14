@@ -5,6 +5,7 @@ export class QueueService {
     size: number = 0;
     Players: Array<any> = [];
 
+
     addUser(player) {
         for(const socket of this.Players)
             if (socket === player) return false;

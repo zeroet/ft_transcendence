@@ -20,7 +20,7 @@ import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { ConnectionService } from 'src/connection/connection.service';
 import { Status } from 'src/utils/types';
-import { STATUS_CODES } from 'http';
+
 // import { GameService } from './game.service';
 
 @UseGuards(JwtWsGuard)
@@ -33,6 +33,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     private connectionService: ConnectionService,
   ) {}
  
+  PrivateQ:Array<any> = [];
 
   private logger = new Logger('GameGateway');
 
@@ -41,6 +42,8 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
   connections = this.connectionService.connections;
   queueNormal: QueueService = new QueueService();
+    
+
   
   afterInit() {
 
@@ -251,12 +254,37 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   async privateQ(@ConnectedSocket() client: Socket,
   @MessageBody() data) {
     let connec = this.connectionService.connections
+    console.log('DATA ID', data)
     const sockets = connec.get(data)
-    for (const socket of sockets)
-      socket.emit('test')
+    const user = await this.userService.getUserById(data)
+    let stat:string = user.status
+    if (stat === 'Game' || user.status === Status.WATCHING){
+      client.emit('isPlaying')
+      for (const socket of sockets) {
+        socket.emit('isPlaying')
+        console.log("private Q send isPlaying EMIT")
+      }
+      return ;
+    }
+    this.PrivateQ.push(client);
+    console.log(this.PrivateQ[0].id, this.PrivateQ[1])
+    client.emit('createQ')
+    for (const socket of sockets) {
+      socket.emit('createQ')
+      console.log("CREATEQ SEND EMIT")
+    }
   }
 
 
+  @SubscribeMessage('createQ')
+  async startPrivateQ(@ConnectedSocket() client: Socket) {
+    if(!this.PrivateQ[1]) return client.emit('full');
+    if (this.PrivateQ.length == 2)
+    {
+      this.PrivateQ[0].emit('privateRoom', { isOwner: true })
+      this.PrivateQ[1].emit('priavteRoom', { isOwner: false })
+    }
+  }
 }
 
 
