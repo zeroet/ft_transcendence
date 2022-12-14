@@ -305,7 +305,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       this.queuePv.set(sender.id, Pqueue)
       client.emit('createQ');
       for (const socket of sockets) {
-        socket.emit('createQ', sender.id) // emit to Socket body { sender.id } number
+        socket.emit('createQ', sender.id, sender.username) // emit to Socket body { sender.id } number
         console.log("CREATEQ SEND EMIT", socket.id, sender.username)
       }
     }
