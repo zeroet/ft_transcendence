@@ -16,16 +16,9 @@ export default function App({ Component, pageProps }: AppProps) {
   const { data: myData } = useSWR("/api/users");
 
   useEffect(() => {
-    gameSocket?.on("createQ", (senderId: number) => {
-      if (myData.id === senderId) {
-        alert("Wait!");
-      } else {
-        const response = confirm("get test siginal");
-        if (response) {
-          gameSocket?.emit("Private", senderId);
-        } else {
-          gameSocket?.emit("inviteCancel", senderId);
-        }
+    gameSocket?.on("createQ", (senderId: number, senderName: string) => {
+      if (senderName) {
+        alert(`${senderName}이 게임신청함! 이거 토스트로 바꿔주라 경은아`);
       }
     });
 
