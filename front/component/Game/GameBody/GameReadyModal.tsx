@@ -19,7 +19,7 @@ const GameReadyModal = ({
   useEffect((): (() => void) => {
     toast.success("player matched!", {
       position: "top-center",
-      autoClose: 3000,
+      autoClose: 500,
       hideProgressBar: true,
       closeOnClick: true,
       rtl: false,

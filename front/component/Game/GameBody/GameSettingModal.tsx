@@ -32,7 +32,7 @@ const GameSettingModal = ({
       if (!roomName) {
         toast.error("Room name must have more than 1 character", {
           position: "top-center",
-          autoClose: 3000,
+          autoClose: 1000,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,
@@ -101,7 +101,7 @@ const GameSettingModal = ({
   useEffect((): (() => void) => {
     toast.success("player matched!", {
       position: "top-center",
-      autoClose: 3000,
+      autoClose: 500,
       hideProgressBar: true,
       closeOnClick: true,
       rtl: false,

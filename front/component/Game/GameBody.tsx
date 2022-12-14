@@ -74,7 +74,7 @@ export default function GameBody({
         setSettingModal(false);
         toast.error("Game Canceled!", {
           position: "top-center",
-          autoClose: 3000,
+          autoClose: 500,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,
