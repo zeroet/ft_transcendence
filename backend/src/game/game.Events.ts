@@ -286,7 +286,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     }
     this.PrivateQ.push(client);
     console.log('OWNERID', this.PrivateQ[0].id)
-    client.emit('createQ');
+    // client.emit('createQ');
     for (const socket of sockets) {
       socket.emit('createQ')
       console.log("CREATEQ SEND EMIT",socket.id)
@@ -296,15 +296,20 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
   @SubscribeMessage('Private')
   async startPrivateQ(@ConnectedSocket() client: Socket) {
-    if(this.PrivateQ[1]) return client.emit('full');
-    if (client !== this.PrivateQ[0])
-      this.PrivateQ.push(client);
-    if (this.PrivateQ.length == 2)
+    if(!this.PrivateQ[1]) 
     {
-      this.PrivateQ[0].emit('privateRoom', { isOwner: true })
-      this.PrivateQ[1].emit('priavteRoom', { isOwner: false })
+      if (client !== this.PrivateQ[0])
+        this.PrivateQ.push(client);
+      if(this.PrivateQ.length == 2) {
+        this.PrivateQ[0].emit('privateRoom', { isOwner: true })
+        this.PrivateQ[1].emit('privateRoom', { isOwner: false })
+      }
     }
+    else
+      client.emit('full');
   }
 }
+
+
 
 
