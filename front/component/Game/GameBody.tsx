@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useSWR from "swr";
@@ -7,7 +8,14 @@ import useSocket from "../Utils/socket";
 import GameReadyModal from "./GameBody/GameReadyModal";
 import GameSettingModal from "./GameBody/GameSettingModal";
 
-export default function GameBody({ accessToken }: { accessToken: string }) {
+export default function GameBody({
+  accessToken,
+  isOwner,
+}: {
+  accessToken: string;
+  isOwner: string | null;
+}) {
+  const router = useRouter();
   const [settingModal, setSettingModal] = useState(false);
   const [socket] = useSocket(accessToken, "game");
   const [ownerOrPlayer, setOwnerOrPlayer] = useState<string>("");
@@ -46,37 +54,46 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
 
   // owner.emit('createRoom', {isOwner: true});
   useEffect(() => {
-    socket?.on("createRoom", (obj: { isOwner: boolean }) => {
-      console.log(obj.isOwner);
-      if (obj.isOwner) {
-        setOwnerOrPlayer("owner");
-      } else {
-        setOwnerOrPlayer("player");
-      }
-    });
-    socket?.on("close", () => {
-      console.log("close!!!!");
-      setOwnerOrPlayer("");
-      setSettingModal(false);
-      toast.error("Game Canceled!", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        rtl: false,
-        pauseOnFocusLoss: true,
-        draggable: false,
-        pauseOnHover: false,
-      });
-    });
-    socket?.on("playing", () => {
-      alert(`you are already playing`);
-    });
+    if (isOwner) {
+      setOwnerOrPlayer(isOwner);
+      setSettingModal(true);
+    }
 
+    if (!isOwner) {
+      socket?.on("createRoom", (obj: { isOwner: boolean }) => {
+        console.log(obj.isOwner);
+        if (obj.isOwner) {
+          setOwnerOrPlayer("owner");
+        } else {
+          setOwnerOrPlayer("player");
+        }
+      });
+      socket?.on("close", () => {
+        console.log("close!!!!");
+        setOwnerOrPlayer("");
+        setSettingModal(false);
+        toast.error("Game Canceled!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+      });
+      socket?.on("playing", () => {
+        alert(`you are already playing`);
+        router.push("/Home");
+      });
+    }
     return () => {
-      socket?.off("createRoom");
-      socket?.off("playing");
-      socket?.off("close");
+      if (!isOwner) {
+        socket?.off("createRoom");
+        socket?.off("playing");
+        socket?.off("close");
+      }
     };
   }, [socket, ownerOrPlayer, myData]);
 
@@ -99,13 +116,13 @@ export default function GameBody({ accessToken }: { accessToken: string }) {
           </div>
         </div>
       )}
-      {/* 내가 오너일때 */}
       {settingModal && ownerOrPlayer === "owner" && (
         <div className="modal-background">
           <GameSettingModal
             accessToken={accessToken}
             closeSettingModal={closeSettingModal}
             username={myData.username}
+            isOwner={isOwner}
           />
         </div>
       )}

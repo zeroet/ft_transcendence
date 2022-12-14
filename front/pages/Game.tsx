@@ -4,23 +4,22 @@ import GameList from "../component/Game/GameList";
 import Layout from "../component/Layout";
 import Title from "../component/Title";
 import Loading from "../component/errorAndLoading/Loading";
-import useSocket from "../component/Utils/socket";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { useEffect } from "react";
 
-export default function Game({ accessToken }: { accessToken: string }) {
+export default function Game({
+  accessToken,
+  isOwner,
+}: {
+  accessToken: string;
+  isOwner: string | null;
+}) {
   const { data, error } = useSWR("/api/users");
-  const [socket] = useSocket(accessToken, "game");
-
-  useEffect(() => {
-    return () => {};
-  }, [socket, data]);
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!data || !socket) return <Loading />;
+  if (!data) return <Loading />;
   return (
     <Layout>
       <Title title="Game" />
@@ -29,7 +28,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
       )}
       <div>
         <GameList accessToken={accessToken} />
-        <GameBody accessToken={accessToken} />
+        <GameBody accessToken={accessToken} isOwner={isOwner} />
         <style jsx>{`
           div {
             display: grid;
@@ -44,6 +43,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken } = cookie;
+  const { isOwner } = context.query;
   if (!accessToken) {
     return {
       redirect: {
@@ -55,6 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       accessToken,
+      isOwner: isOwner ? isOwner : null,
     },
   };
 };

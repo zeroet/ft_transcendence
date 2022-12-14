@@ -11,6 +11,7 @@ import { Block, Friend, MatchHistory, User } from 'src/typeorm';
 import { Status } from 'src/utils/types';
 import { IUserService } from './user.interface';
 import { Repository } from 'typeorm';
+import { ConnectionGateway } from 'src/connection/connection.gateway';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -23,6 +24,7 @@ export class UserService implements IUserService {
     private matchHistoryRepository: Repository<MatchHistory>,
     private chatEventsGateway: ChatEventsGateway,
   ) {}
+  private connectionGateway: ConnectionGateway;
 
   async findUserByIdOrFail(userId: number) {
     const user = await this.userRepository
@@ -48,8 +50,8 @@ export class UserService implements IUserService {
         'friend',
         'users.user_id = friend.user_id',
       )
-      .where('users.user_id=:id', { id })
       // .innerJoinAndSelect('friend.FriendUser', 'friendUser')
+      .where('users.user_id=:id', { id })
       .getOne();
     // const FriendUsers = await this.friendRepository
     //   .createQueryBuilder('friend')
@@ -61,9 +63,10 @@ export class UserService implements IUserService {
     // for (let i = 0; i < user.Friend.length; i++) {
     //   for (let j = 0; j < FriendUsers.length; j++) {
     //     if (user.Friend[i].friendUserId === FriendUsers[j].FriendUser.id) {
-    //       const { status } = user.Friend[i].FriendUser;
+    //       const { status, username } = user.Friend[i].FriendUser;
     //       delete user.Friend[i].FriendUser;
     //       user.Friend[i]['status'] = status;
+    //       user.Friend[i]['friendUsername'] = username;
     //     }
     //   }
     // }
@@ -153,7 +156,7 @@ export class UserService implements IUserService {
     const createdfriend = this.friendRepository.create({
       userId,
       friendUserId,
-      friendUsername: friendUser.username,
+      // friendUsername: friendUser.username,
       User: user,
       FriendUser: friendUser,
     });
@@ -193,9 +196,10 @@ export class UserService implements IUserService {
     for (let i = 0; i < friends.length; i++) {
       for (let j = 0; j < FriendUsers.length; j++) {
         if (friends[i].friendUserId === FriendUsers[j].FriendUser.id) {
-          const { status } = friends[i].FriendUser;
+          const { status, username } = friends[i].FriendUser;
           delete friends[i].FriendUser;
           friends[i]['status'] = status;
+          friends[i]['friendUsername'] = username;
         }
       }
     }
@@ -219,11 +223,8 @@ export class UserService implements IUserService {
   }
   // updateUserById(id: number) {}
 
-  async createMatchHistory(data: any) {
-    const match = this.matchHistoryRepository.create({
-      data: new Date(),
-      ...data,
-    });
+  async createMatchHistory(info: any) {
+    const match = this.matchHistoryRepository.create({ ...info });
     try {
       await this.matchHistoryRepository.save(match);
     } catch (error) {
@@ -238,9 +239,21 @@ export class UserService implements IUserService {
         .createQueryBuilder('matchhistory')
         .innerJoinAndSelect('matchhistory.winner', 'winner')
         .innerJoinAndSelect('matchhistory.loser', 'loser')
+        .orderBy('matchhistory.date', 'DESC')
+        .take(5)
         .getMany();
 
-    console.log(matchs);
+    return matchs;
+  }
+
+  async getRank(id: number) {
+    let matchs = null;
+    if (id)
+      matchs = await this.matchHistoryRepository
+        .createQueryBuilder('matchhistory')
+        .innerJoinAndSelect('matchhistory.winner', 'winner')
+        .innerJoinAndSelect('matchhistory.loser', 'loser')
+        .getMany();
 
     return matchs;
   }

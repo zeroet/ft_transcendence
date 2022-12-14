@@ -1,42 +1,74 @@
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import Loading from "../../../errorAndLoading/Loading";
 import { UserInfo } from "../../../../interfaceType";
 import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
 
-const TextProfil = ({ id }: { id: string }) => {
-  const { data: user, error } = useSWR<UserInfo>(
-    id === "-1" ? "/api/users" : `/api/users/${id}`
-  );
+const TextProfil = ({ id }: { id: number }) => {
+  const { data: user, error } = useSWR<UserInfo>(`/api/users/${id}`);
+  const { data: myData, error: myError } = useSWR<UserInfo>(`/api/users`);
   const userNameFontSize = { size: 50 };
-  /*
-   1. useSWR with new API for loss, victory, winRate
-  */
+  const { data: rankData, error: rankError } = useSWR(`/api/users/rank/${id}`);
+  const [showAchivementExplainModal, setShowAchivementExplainModal] =
+    useState(false);
+  const [achivement, setAchivement] = useState("");
 
   if (user && user.username.length >= 20) {
     userNameFontSize.size = 25;
   }
 
-  const loss = 1432;
-  const victory = 44432;
-  const winRate = Math.round((victory / (loss + victory)) * 100);
+  const onClickShowImg = useCallback(
+    (e: React.MouseEvent<HTMLImageElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowAchivementExplainModal((curr) => !curr);
+    },
+    [myData, rankData]
+  );
 
-  if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!user) return <Loading />;
+  useEffect(() => {
+    if (rankData < 10) {
+      setAchivement("/images/achivement/1.png");
+    } else if (rankData > 10 && rankData < 100) {
+      setAchivement("/images/achivement/2.png");
+    } else if (rankData > 100 && rankData < 1000) {
+      setAchivement("/images/achivement/3.png");
+    } else {
+      setAchivement("/images/achivement/4.png");
+    }
+  }, [rankData, myData]);
+
+  useEffect(() => {
+    mutate(`/api/users/rank/${id}`);
+  }, [myData]);
+
+  if (error || myError || rankError)
+    axios.get("/api/auth/refresh").catch((e) => console.log(e));
+  if (!user || !myData) return <Loading />;
   return (
     <div>
-      {id !== "-1" && <h3>You see {user.intra_id}'s Profile</h3>}
+      {id != myData.id && <h3>You see {user.intra_id}'s Profile</h3>}
       <div className="name">
         <h1 className="userName">{user.username}</h1>
       </div>
       <div className="info">
-        <h3 className="victory">ViCTORY: {victory}</h3>
-        <h3 className="loss">LOSS: {loss}</h3>
-        <h3>WINRATE: {winRate}%</h3>
+        <h2>ACHIVEMENT </h2>
+        <img
+          src={achivement}
+          width="50px"
+          height={"50px"}
+          onClick={onClickShowImg}
+        />
       </div>
+      {showAchivementExplainModal && <div>achivement 소개</div>}
       <style jsx>{`
         div {
           display: grid;
           margin-left: 5px;
+        }
+        img {
+          margin-left: 10px;
+          cursor: pointer;
         }
         .userName {
           font-family: "Fragment Mono", monospace;
@@ -69,6 +101,8 @@ const TextProfil = ({ id }: { id: string }) => {
           overflow: hidden;
         }
         .info {
+          display: flex;
+          align-items: center;
           margin-bottom: 30px;
           // background-color: yellow;
         }

@@ -16,7 +16,7 @@ export class MatchHistory {
     @Column('int', { array: true, default: [] })
     score: number[];
   
-    @Column({nullable:true, type: 'timestamptz' })
+    @Column({ nullable: true, type: 'timestamp' })
     date: Date;
   
     @ManyToOne((type) => User, (User) => User.won, { onDelete: 'CASCADE' })

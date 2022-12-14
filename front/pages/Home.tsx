@@ -34,8 +34,8 @@ export default function Home({ accessToken }: { accessToken: string }) {
         }}
       >
         {/* {data.two_factor_activated && <TwoFactorModal />} */}
-        <Profile id="-1" />
-        <FriendStatus id="-1" />
+        <Profile id={data.id} />
+        <FriendStatus id={data.id} />
       </div>
     </Layout>
   );

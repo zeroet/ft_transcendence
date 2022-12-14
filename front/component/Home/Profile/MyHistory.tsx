@@ -1,63 +1,47 @@
+import { useEffect } from "react";
+import useSWR, { mutate } from "swr";
+import Loading from "../../errorAndLoading/Loading";
 import EachHistory from "./EachHistory";
 
-// interface infoOfHistory {
-//   winOrLoss : string,
-//   firstPlayer : string,
-//   secondPlayer : string,
-//   point: string,
-// }
+const MyHistory = ({ id }: { id: number }) => {
+  const { data: historyData, error: historyError } = useSWR(
+    `/api/users/match/${id}`
+  );
+  const { data: userData } = useSWR(`/api/users/${id}`);
 
-const MyHistory = ({ id }: { id: string }) => {
-  /**
-   * id == -1이면 본인 정보 내보내기
-   */
-  // EachHistoty -> 5개만 얻어와서 map으로 출력
+  useEffect(() => {
+    mutate(`/api/users/match/${id}`);
+  }, [userData]);
+
+  if (!historyData || !userData) return <Loading />;
   return (
     <div>
-      <div className="dummy"></div>
-      <div className="history">
+      <div className="dummy box"></div>
+      <div className="history box">
         <h1>LAST 5 MATCHES HISTORY</h1>
-        {/* <hr className="titleOfHistory" /> */}
-        {
-          <EachHistory
-            winOrLoss={"win"}
-            firstPlayer={`hyungyoo`}
-            secondPlayer={"cjung-mo"}
-            point={"5:4"}
-          />
-        }
-        {
-          <EachHistory
-            winOrLoss={"loss"}
-            firstPlayer={`cjung-mo`}
-            secondPlayer={"hyungyoo"}
-            point={"4:1"}
-          />
-        }
-        {
-          <EachHistory
-            winOrLoss={"win"}
-            firstPlayer={`hyungyoo`}
-            secondPlayer={"cjung-mo"}
-            point={"5:4"}
-          />
-        }
-        {
-          <EachHistory
-            winOrLoss={"loss"}
-            firstPlayer={`cjung-mo`}
-            secondPlayer={"hyungyoo"}
-            point={"4:1"}
-          />
-        }
-        {
-          <EachHistory
-            winOrLoss={"win"}
-            firstPlayer={`hyungyoo`}
-            secondPlayer={"cjung-mo"}
-            point={"5:4"}
-          />
-        }
+        {historyData &&
+          userData &&
+          historyData.map((eachHistory: any) => {
+            return (
+              <div key={eachHistory.id} className="history-div">
+                <EachHistory
+                  winer={eachHistory.winner.username}
+                  loser={eachHistory.loser.username}
+                  winnerScore={
+                    eachHistory.score[0] > eachHistory.score[1]
+                      ? eachHistory.score[0]
+                      : eachHistory.score[1]
+                  }
+                  loserSocre={
+                    eachHistory.score[0] < eachHistory.score[1]
+                      ? eachHistory.score[0]
+                      : eachHistory.score[1]
+                  }
+                  username={userData.username}
+                />
+              </div>
+            );
+          })}
       </div>
       <style jsx>{`
         div {
@@ -90,12 +74,17 @@ const MyHistory = ({ id }: { id: string }) => {
           display: flex;
           flex-direction: column;
           text-align: center;
-          //   box-sizing: border-box;
           width: 95%;
           height: 95%;
           background: #ffffff;
           border: 1px solid #000000;
           border-radius: 10%;
+        }
+
+        .history-div {
+          display: flex;
+          flex-direction: column;
+          text-align: center;
         }
       `}</style>
     </div>

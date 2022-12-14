@@ -174,6 +174,20 @@ export class UsersController {
     return await this.userService.updateUserStatus(user.id, status);
   }
 
+  @Get('match/:id')
+  async match(@Param('id') id: number) {
+    return await this.userService.getMatch(id);
+  }
+  
+  @Get('rank/:id')
+  async rank(@Param('id') id:number) {
+      let matchs = await this.userService.getMatch(id);
+      let num = 0;
+      for(const match of matchs)
+        num++;
+      return num;
+  }
+
   // @Patch(':id')
   // updateUserById(@Param('id', ParseIntPipe) id: number) {
   //   this.userService.updateUserById(id);

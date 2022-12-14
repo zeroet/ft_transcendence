@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
+import useSocket from "../../Utils/socket";
 
 const ParticipantSettingModal = ({
   isOwner,
@@ -18,12 +19,13 @@ const ParticipantSettingModal = ({
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
   const { data: blockedListData, error: blockedListError } = useSWR(
-    chatId ? "/api/users/block/list" : null
+    "/api/users/block/list"
   );
   const [isBlock, setIsBlock] = useState<string>("Block");
   const { data: chatroomData, error: chatroomError } = useSWR(
     chatId ? `/api/chatroom/${chatId}/members` : null
   );
+  const [gameSocket] = useSocket(null, "game");
 
   const onClickProfile = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -64,6 +66,7 @@ const ParticipantSettingModal = ({
   const onClickGame = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    gameSocket?.emit("privateQ", userId);
     setShowModal(false);
   }, []);
 
@@ -74,9 +77,9 @@ const ParticipantSettingModal = ({
       if (isBlock === "Block") {
         await axios
           .post(`/api/users/block/${userId}`)
-          .then((res) => {
-            mutate("/api/users/block/list");
+          .then(() => {
             setIsBlock("Unblock");
+            mutate("/api/users/block/list");
             setShowModal(false);
           })
           .catch((err) => console.log(err));
@@ -88,14 +91,14 @@ const ParticipantSettingModal = ({
         await axios
           .delete(`/api/users/block/${userId}`)
           .then((res) => {
-            mutate("/api/users/block/list");
             setIsBlock("Block");
+            mutate("/api/users/block/list");
             setShowModal(false);
           })
           .catch((err) => console.log(err));
       }
     },
-    [isBlock, blockedListData, myData, userId]
+    [isBlock, blockedListData, myData, userId, chatId]
   );
 
   const onClickMute = useCallback(
@@ -184,12 +187,11 @@ const ParticipantSettingModal = ({
   useEffect(() => {
     if (!myData || !blockedListData) return;
     blockedListData.map((element: any) => {
-      console.log(element.blockedUserId);
       if (element.blockedUserId === userId) {
         setIsBlock("Unblock");
       }
     });
-  }, [myData, blockedListData]);
+  }, [myData, blockedListData, chatId]);
 
   if (!myData || (chatId && (!blockedListData || !chatroomData)))
     return <Loading />;
@@ -204,11 +206,9 @@ const ParticipantSettingModal = ({
       <div className="router-div" onClick={onClickGame}>
         Game
       </div>
-      {chatId && (
-        <div className="router-div" onClick={onClickBlock}>
-          {isBlock}
-        </div>
-      )}
+      <div className="router-div" onClick={onClickBlock}>
+        {isBlock}
+      </div>
       {!chatId && (
         <div className="router-div" onClick={onClickDelete}>
           Delete

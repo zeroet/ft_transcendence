@@ -19,4 +19,6 @@ export enum Status {
   LOGIN = 'Login',
   LOGOUT = 'Logout',
   PLAYING = 'Playing',
+  WATCHING = 'watching',
+  READY = 'ready'
 }

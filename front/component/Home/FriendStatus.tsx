@@ -5,7 +5,7 @@ import Loading from "../errorAndLoading/Loading";
 import useSocket from "../Utils/socket";
 import { EachFriend } from "./FriendStatus/EachFriend";
 
-export default function FriendStatus({ id }: { id: string }) {
+export default function FriendStatus({ id }: { id: number }) {
   const [chatSocket] = useSocket(null, "chat");
   const { data: friendListData, error: friendListError } = useSWR(
     `/api/users/friend/list`
@@ -23,7 +23,7 @@ export default function FriendStatus({ id }: { id: string }) {
   if (!friendListData || !chatSocket) return <Loading />;
   return (
     <div className={styles.box}>
-      <h1>Friend Status</h1>
+      <h1>My Friend Status</h1>
       <hr />
       <ul>
         {friendListData &&
