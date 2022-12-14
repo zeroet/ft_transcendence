@@ -273,6 +273,7 @@ export class ChatroomService implements IChatroomService {
     // console.log('hashedPassword:', hashedPassword);
     const newChatroom = this.chatroomRepository.create({
       ownerId: userId,
+      adminId: userId,
       chatroomName,
       password: hashedPassword,
     });
@@ -349,12 +350,12 @@ export class ChatroomService implements IChatroomService {
       targetUserId,
       chatroomId,
     );
-    if (member.userId !== chatroom.ownerId) {
+    if (member.userId !== chatroom.adminId) {
       throw new UnauthorizedException(
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
-    chatroom.ownerId = targetUserId;
+    chatroom.adminId = targetUserId;
     const updatedChatroom = await this.chatroomRepository.save(chatroom);
     this.chatEventsGateway.server.emit('newMemberList', updatedChatroom);
     return updatedChatroom;
@@ -448,9 +449,14 @@ export class ChatroomService implements IChatroomService {
     console.log('test target user:', targetUser);
     let updatedParticipant = null;
     // owner verification
-    if (participant.userId !== chatroom.ownerId) {
+    if (participant.userId !== chatroom.adminId) {
       throw new UnauthorizedException(
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
+      );
+    }
+    if (targetUser.userId === chatroom.ownerId) {
+      throw new UnauthorizedException(
+        `No permission to ban or kick or mute owner of chatroom`,
       );
     }
     console.log('update participant: target user:', targetUser.User);
@@ -606,9 +612,14 @@ export class ChatroomService implements IChatroomService {
     );
     let updatedMember = null;
     // owner verification
-    if (member.userId !== chatroom.ownerId) {
+    if (member.userId !== chatroom.adminId) {
       throw new UnauthorizedException(
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
+      );
+    }
+    if (targetUser.userId === chatroom.ownerId) {
+      throw new UnauthorizedException(
+        `No permission to ban or kick or mute owner of chatroom`,
       );
     }
     // kick
