@@ -44,7 +44,7 @@ const TextProfil = ({ id }: { id: number }) => {
 
   if (error || myError || rankError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
-  if (!user || !myData || !rankData) return <Loading />;
+  if (!user || !myData) return <Loading />;
   return (
     <div>
       {id != myData.id && <h3>You see {user.intra_id}'s Profile</h3>}
