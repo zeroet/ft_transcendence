@@ -357,8 +357,8 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     {
       if (q.indexOf(client) != -1)
       {
-          q[1].emit('Pcancel');
           q[0].emit('Pcancel')
+          q[1].emit('Pcancel');
           let user = await this.getUserfromSocket(client);
           this.queuePv.delete(user.id)
       }

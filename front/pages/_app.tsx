@@ -35,16 +35,6 @@ export default function App({ Component, pageProps }: AppProps) {
       });
     });
 
-<<<<<<< HEAD
-    gameSocket?.on("close", ()=> {
-      router.back();
-    });
-
-    return () => {
-      gameSocket?.off("createQ");
-      gameSocket?.off("privateRoom");
-      gameSocket?.off("close");
-=======
     gameSocket?.on("Pcancel", () => {
       router.back();
     });
@@ -52,7 +42,6 @@ export default function App({ Component, pageProps }: AppProps) {
       gameSocket?.off("createQ");
       gameSocket?.off("privateRoom");
       gameSocket?.off("Pcancel");
->>>>>>> eaaa5827ab6731cb1c7775d4700f5a1e032a84c0
     };
   }, [gameSocket?.id, myData]);
 
