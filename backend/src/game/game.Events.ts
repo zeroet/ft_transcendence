@@ -66,6 +66,20 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     } catch (err) {
       throw new WsException('unauthorized connection');
     }
+
+
+    // let map = this.queuePv.values()
+    // for (const q of map)
+    // {
+    //   if (q.indexOf(client) != -1)
+    //   {
+    //       q[0].emit('Pcancel')
+    //       q[1].emit('Pcancel');
+    //       let user = await this.getUserfromSocket(q[0]);
+    //       this.queuePv.delete(user.id)
+    //   }
+    // }
+
     // Queue case 
     if (this.queueNormal.Players.indexOf(client) != -1) {
       let user = await this.getUserfromSocket(client)
@@ -80,6 +94,17 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
         return ;
       }
+      else if (this.queueNormal.Players[0] === client || this.queueNormal.Players[1] === client)
+      {
+        this.queueNormal.Players[0].emit('close')
+        this.queueNormal.Players[1].emit('close')
+        this.queueNormal.Players.splice(0, 2)
+        this.queueNormal.size -= 2;
+        if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
+        this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
+        return ;
+      }
+      
       else {
         console.log(user.status);
       this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
@@ -283,23 +308,36 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     let statSender:string = sender.status;
     let stat:string = receiver.status
     
-    
+    if (this.queueNormal.Players.indexOf(sender) != -1) {
+      client.emit('IsPlaying')
+      return ;
+    }
+
+    for (const socket of sockets) {
+      if (this.queueNormal.Players.indexOf(socket) != -1) {
+        client.emit('IsPlaying')
+        return ;
+      }
+    }
+
+
     // if sender && receiver stat is Playing or Watching 
     // event isPlaying for cancel Q
     if (statSender === 'Game' || stat === 'Game' || 
     statSender === Status.WATCHING ||
     receiver.status === Status.WATCHING ){
       console.log('IsPlaying')
-      client.emit('isPlaying')
-      for (const socket of sockets)
-        socket.emit('isPlaying')
+      client.emit('IsPlaying')
       return ;
     }
 
     // else Make Map < Key : senderId, Value : Array[sender, recevier]>
     // this.PrivateQ.push(client);
-    if (this.queuePv.has(sender.id))
+    if (this.queuePv.has(sender.id)) {
       console.log('Sender -- invite ING // Array Existe in the map')
+      // for(const socket of sockets)
+      //   socket.emit('createQ', sender.id, sender.username)
+    }
     else {
       const Pqueue: Array<any> = [client]
       this.queuePv.set(sender.id, Pqueue)
@@ -337,7 +375,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     {
       const Pq:Array<any>  = this.queuePv.get(data);
       if (Pq.length == 2)
-        client.emit('full')
+        return ;
       else {
         Pq.push(client);
         Pq[0].emit('privateRoom', { isOwner: true })

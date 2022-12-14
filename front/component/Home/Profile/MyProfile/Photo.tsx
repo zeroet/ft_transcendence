@@ -11,13 +11,13 @@ const Photo = ({ id }: { id: number }) => {
   return (
     <div>
       <div className="photo">
-        <img height={240} width={240} src={user.image_url} />
+        <img width="100%" height="auto" src={user.image_url} />
       </div>
       <style jsx>{`
         .photo {
-          // display: relative;
-          width: 203px;
-          height: 203px;
+          //   background-color: red;
+          max-width: 250px;
+          height: auto;
           margin: auto;
           margin-top: 50px;
         }

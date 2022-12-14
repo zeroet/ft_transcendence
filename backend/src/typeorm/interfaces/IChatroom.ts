@@ -4,7 +4,7 @@ import { IChatMember } from './IChatMemeber';
 export interface IChatroom {
   id: number;
   ownerId: number;
-  adminId: number;
+  // adminId: number;
   chatroomName: string;
   password: string;
   createdAt: Date;

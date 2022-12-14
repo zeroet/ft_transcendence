@@ -35,11 +35,15 @@ export default function App({ Component, pageProps }: AppProps) {
     gameSocket?.on("Pcancel", () => {
       router.back();
     });
-
+    // IsPlaying
+    gameSocket?.on("IsPlaying", () => {
+      alert('너가 신청한 플레이어는 게임중임')
+    });
     return () => {
       gameSocket?.off("createQ");
       gameSocket?.off("privateRoom");
-      gameSocket?.off("Pcancel");
+      gameSocket?.off("Pcancel"); 
+      gameSocket?.off("IsPlaying");
     };
   }, [gameSocket?.id, myData]);
 

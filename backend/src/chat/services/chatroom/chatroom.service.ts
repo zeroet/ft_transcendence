@@ -273,7 +273,7 @@ export class ChatroomService implements IChatroomService {
     // console.log('hashedPassword:', hashedPassword);
     const newChatroom = this.chatroomRepository.create({
       ownerId: userId,
-      adminId: userId,
+      // adminId: userId,
       chatroomName,
       password: hashedPassword,
     });
@@ -343,19 +343,19 @@ export class ChatroomService implements IChatroomService {
     return updatedChatroom;
   }
 
-  async changeAdmin(userId: number, chatroomId: number, targetUserId: number) {
+  async changeOwner(userId: number, chatroomId: number, targetUserId: number) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
     const targetUser = await this.findMemberByIdOrFail(
       targetUserId,
       chatroomId,
     );
-    if (member.userId !== chatroom.adminId) {
+    if (member.userId !== chatroom.ownerId) {
       throw new UnauthorizedException(
-        `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
+        `User of id:${userId} is not an owner of chatroom of id:${chatroomId}`,
       );
     }
-    chatroom.adminId = targetUserId;
+    chatroom.ownerId = targetUserId;
     const updatedChatroom = await this.chatroomRepository.save(chatroom);
     this.chatEventsGateway.server.emit('newMemberList', updatedChatroom);
     return updatedChatroom;
@@ -449,16 +449,16 @@ export class ChatroomService implements IChatroomService {
     console.log('test target user:', targetUser);
     let updatedParticipant = null;
     // owner verification
-    if (participant.userId !== chatroom.adminId) {
+    if (participant.userId !== chatroom.ownerId) {
       throw new UnauthorizedException(
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
-    if (targetUser.userId === chatroom.ownerId) {
-      throw new UnauthorizedException(
-        `No permission to ban or kick or mute owner of chatroom`,
-      );
-    }
+    // if (targetUser.userId === chatroom.ownerId) {
+    //   throw new UnauthorizedException(
+    //     `No permission to ban or kick or mute owner of chatroom`,
+    //   );
+    // }
     console.log('update participant: target user:', targetUser.User);
     // console.log(
     //   'update participant: target user name:',
@@ -612,16 +612,16 @@ export class ChatroomService implements IChatroomService {
     );
     let updatedMember = null;
     // owner verification
-    if (member.userId !== chatroom.adminId) {
+    if (member.userId !== chatroom.ownerId) {
       throw new UnauthorizedException(
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
-    if (targetUser.userId === chatroom.ownerId) {
-      throw new UnauthorizedException(
-        `No permission to ban or kick or mute owner of chatroom`,
-      );
-    }
+    // if (targetUser.userId === chatroom.ownerId) {
+    //   throw new UnauthorizedException(
+    //     `No permission to ban or kick or mute owner of chatroom`,
+    //   );
+    // }
     // kick
     if (updateMemberDto.kick === true) {
       this.chatEventsGateway.server.emit('kick', {
