@@ -10,10 +10,12 @@ const GameSettingModal = ({
   accessToken,
   closeSettingModal,
   username,
+  isOwner,
 }: {
   accessToken: string;
   closeSettingModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
   username: string;
+  isOwner: string | null;
 }) => {
   const router = useRouter();
   const [socket] = useSocket(accessToken, "game");
@@ -48,11 +50,19 @@ const GameSettingModal = ({
         return;
       }
       // 그리고 게임시작
-      socket?.emit("startGame", {
-        roomName,
-        speed,
-        ballSize,
-      });
+      if (isOwner) {
+        socket?.emit("PrivateGame", {
+          roomName,
+          speed,
+          ballSize,
+        });
+      } else {
+        socket?.emit("startGame", {
+          roomName,
+          speed,
+          ballSize,
+        });
+      }
 
       console.log(
         `game room name : ${roomName}, ball size : ${ballSize}, ball speed : ${speed}`

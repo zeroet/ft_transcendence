@@ -122,6 +122,7 @@ export default function GameBody({
             accessToken={accessToken}
             closeSettingModal={closeSettingModal}
             username={myData.username}
+            isOwner={isOwner}
           />
         </div>
       )}
