@@ -52,13 +52,11 @@ export default function GameBody({
     [settingModal]
   );
 
-  // owner.emit('createRoom', {isOwner: true});
   useEffect(() => {
     if (isOwner) {
       setOwnerOrPlayer(isOwner);
       setSettingModal(true);
     }
-
     if (!isOwner) {
       socket?.on("createRoom", (obj: { isOwner: boolean }) => {
         console.log(obj.isOwner);

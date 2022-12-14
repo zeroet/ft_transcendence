@@ -16,10 +16,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const { data: myData } = useSWR("/api/users");
 
   useEffect(() => {
-    gameSocket?.on("createQ", () => {
+    gameSocket?.on("createQ", (senderId: number) => {
       const response = confirm("get test siginal");
       if (response) {
         gameSocket?.emit("Private", myData.id);
+      } else {
+        gameSocket?.emit("inviteCancel", senderId);
       }
     });
 
