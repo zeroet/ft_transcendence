@@ -152,10 +152,10 @@ export class GameService {
         if ((nextX - this.ballSize) >= 1475 || (nextX + this.ballSize) <= 0)
         {
             nextX >= 1475 ? this.score.player1 += 1 : this.score.player2 += 1;
-            if (this.score.player1 == 10) {
+            if (this.score.player1 == 3) {
                 this.gameover()
             }
-            else if (this.score.player2 == 10) {
+            else if (this.score.player2 == 3) {
                 this.gameover()
             }
             this.default()

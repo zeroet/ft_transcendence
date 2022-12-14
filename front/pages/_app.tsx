@@ -16,15 +16,14 @@ export default function App({ Component, pageProps }: AppProps) {
   const { data: myData } = useSWR("/api/users");
 
   useEffect(() => {
-    gameSocket?.on("createQ", () => {
-      const response = confirm("get test siginal");
-      if (response) {
-        gameSocket?.emit("Private", myData.id);
+    gameSocket?.on("createQ", (senderId: number, senderName: string) => {
+      if (senderId) {
+        alert(`${senderName}이 게임신청함 : 경은아 이거 토스트로 수정해줘`);
+        gameSocket?.emit("Private", senderId);
       }
     });
 
     gameSocket?.on("privateRoom", (obj: { isOwner: boolean }) => {
-      console.log("consolt");
       router.push({
         pathname: "/Game",
         query: {
@@ -32,9 +31,19 @@ export default function App({ Component, pageProps }: AppProps) {
         },
       });
     });
+
+    gameSocket?.on("Pcancel", () => {
+      router.back();
+    });
+    // IsPlaying
+    gameSocket?.on("IsPlaying", () => {
+      alert('너가 신청한 플레이어는 게임중임')
+    });
     return () => {
       gameSocket?.off("createQ");
       gameSocket?.off("privateRoom");
+      gameSocket?.off("Pcancel"); 
+      gameSocket?.off("IsPlaying");
     };
   }, [gameSocket?.id, myData]);
 

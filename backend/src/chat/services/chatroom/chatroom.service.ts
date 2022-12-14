@@ -273,6 +273,7 @@ export class ChatroomService implements IChatroomService {
     // console.log('hashedPassword:', hashedPassword);
     const newChatroom = this.chatroomRepository.create({
       ownerId: userId,
+      // adminId: userId,
       chatroomName,
       password: hashedPassword,
     });
@@ -342,7 +343,7 @@ export class ChatroomService implements IChatroomService {
     return updatedChatroom;
   }
 
-  async changeAdmin(userId: number, chatroomId: number, targetUserId: number) {
+  async changeOwner(userId: number, chatroomId: number, targetUserId: number) {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
     const targetUser = await this.findMemberByIdOrFail(
@@ -351,7 +352,7 @@ export class ChatroomService implements IChatroomService {
     );
     if (member.userId !== chatroom.ownerId) {
       throw new UnauthorizedException(
-        `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
+        `User of id:${userId} is not an owner of chatroom of id:${chatroomId}`,
       );
     }
     chatroom.ownerId = targetUserId;
@@ -453,6 +454,11 @@ export class ChatroomService implements IChatroomService {
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
+    // if (targetUser.userId === chatroom.ownerId) {
+    //   throw new UnauthorizedException(
+    //     `No permission to ban or kick or mute owner of chatroom`,
+    //   );
+    // }
     console.log('update participant: target user:', targetUser.User);
     // console.log(
     //   'update participant: target user name:',
@@ -611,6 +617,11 @@ export class ChatroomService implements IChatroomService {
         `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
+    // if (targetUser.userId === chatroom.ownerId) {
+    //   throw new UnauthorizedException(
+    //     `No permission to ban or kick or mute owner of chatroom`,
+    //   );
+    // }
     // kick
     if (updateMemberDto.kick === true) {
       this.chatEventsGateway.server.emit('kick', {

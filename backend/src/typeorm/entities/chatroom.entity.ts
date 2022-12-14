@@ -29,6 +29,13 @@ export class Chatroom implements IChatroom {
   @Column({ type: 'int', name: 'owner_id' })
   ownerId: number;
 
+  // @ApiProperty({
+  //   type: Number,
+  //   description: 'admin id',
+  // })
+  // @Column({ type: 'int', name: 'admin_id' })
+  // adminId: number;
+
   @ApiProperty({
     type: String,
     description: 'chatroom name',
