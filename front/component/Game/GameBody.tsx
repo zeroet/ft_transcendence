@@ -47,18 +47,17 @@ export default function GameBody({
       e.stopPropagation();
       setSettingModal(false);
       setOwnerOrPlayer("");
-      socket?.emit("cancle");
+      if (!isOwner) socket?.emit("cancle");
+      if (isOwner) socket?.emit("Pcancel");
     },
     [settingModal]
   );
 
-  // owner.emit('createRoom', {isOwner: true});
   useEffect(() => {
     if (isOwner) {
       setOwnerOrPlayer(isOwner);
       setSettingModal(true);
     }
-
     if (!isOwner) {
       socket?.on("createRoom", (obj: { isOwner: boolean }) => {
         console.log(obj.isOwner);
@@ -69,7 +68,6 @@ export default function GameBody({
         }
       });
       socket?.on("close", () => {
-        console.log("close!!!!");
         setOwnerOrPlayer("");
         setSettingModal(false);
         toast.error("Game Canceled!", {
