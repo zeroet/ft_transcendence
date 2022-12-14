@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
     gameSocket?.on("createQ", (senderId: number) => {
       const response = confirm("get test siginal");
       if (response) {
-        gameSocket?.emit("Private", myData.id);
+        gameSocket?.emit("Private", senderId);
       } else {
         gameSocket?.emit("inviteCancel", senderId);
       }
