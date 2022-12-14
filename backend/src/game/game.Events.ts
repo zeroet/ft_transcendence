@@ -148,21 +148,6 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
   @SubscribeMessage('cancle')
   async cancel(@ConnectedSocket() client: Socket) {
-  
-         let map = this.queuePv.values()
-         for (const q of map)
-         {
-           if (q.indexOf(client) != -1)
-           {
-             console.log('OKKKKK')
-             console.log(q[0].id, q[1].id)
-             q[0].emit('close');
-             q[1].emit('close');
-             let user = await this.getUserfromSocket(client);
-             this.queuePv.delete(user.id)
-             return ;
-           }
-         }
     try {
       //ready 0 / 1 index
       if ((this.queueNormal.Players[0].id === client.id) || (this.queueNormal.Players[1].id === client.id)) {
@@ -358,9 +343,26 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         console.log('PqArray', Pq[0], Pq[1])
         Pq[0].emit('privateRoom', { isOwner: true })
         Pq[1].emit('privateRoom', { isOwner: false })
+        console.log(`Owner ${Pq[0].id}, Receiver${Pq[1].id}`)
       }
     }
     return ;
+  }
+
+  @SubscribeMessage('Pcancel')
+  async Pcancel(@ConnectedSocket() client:Socket) {
+    
+    let map = this.queuePv.values()
+    for (const q of map)
+    {
+      if (q.indexOf(client) != -1)
+      {
+          q[1].emit('Pcancel');
+          q[0].emit('Pcancel')
+          let user = await this.getUserfromSocket(client);
+          this.queuePv.delete(user.id)
+      }
+    }
   }
 
   @SubscribeMessage('PrivateGame')

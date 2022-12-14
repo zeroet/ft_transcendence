@@ -34,9 +34,15 @@ export default function App({ Component, pageProps }: AppProps) {
         },
       });
     });
+
+    gameSocket?.on("close", ()=> {
+      router.back();
+    });
+
     return () => {
       gameSocket?.off("createQ");
       gameSocket?.off("privateRoom");
+      gameSocket?.off("close");
     };
   }, [gameSocket?.id, myData]);
 
