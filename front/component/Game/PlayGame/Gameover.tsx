@@ -1,9 +1,19 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import styles from "../../../styles/LayoutBox.module.css";
+import useSocket from "../../Utils/socket";
+import cookies from "next-cookies";
+import { GetServerSideProps } from "next";
 
-const Gameover = ({ winOrLose }: { winOrLose: string }) => {
+const Gameover = ({
+  winOrLose,
+  accessToken,
+}: {
+  winOrLose: string;
+  accessToken: string;
+}) => {
   const router = useRouter();
+  const [gameSocket] = useSocket(accessToken, "chat");
   const onClickToHome = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     router.push("/Home");
   }, []);
@@ -61,3 +71,23 @@ const Gameover = ({ winOrLose }: { winOrLose: string }) => {
 };
 
 export default Gameover;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cookie = cookies(context);
+  const { accessToken } = cookie;
+  const { isOwner } = context.query;
+  if (!accessToken) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      accessToken,
+      isOwner: isOwner ? isOwner : null,
+    },
+  };
+};
