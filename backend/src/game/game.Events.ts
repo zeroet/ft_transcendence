@@ -306,7 +306,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       client.emit('createQ');
       for (const socket of sockets) {
         socket.emit('createQ', sender.id) // emit to Socket body { sender.id } number
-        console.log("CREATEQ SEND EMIT", socket.id)
+        console.log("CREATEQ SEND EMIT", socket.id, sender.username)
       }
     }
   }
@@ -340,7 +340,6 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         client.emit('full')
       else {
         Pq.push(client);
-        console.log('PqArray', Pq[0], Pq[1])
         Pq[0].emit('privateRoom', { isOwner: true })
         Pq[1].emit('privateRoom', { isOwner: false })
         console.log(`Owner ${Pq[0].id}, Receiver${Pq[1].id}`)
@@ -351,7 +350,6 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
   @SubscribeMessage('Pcancel')
   async Pcancel(@ConnectedSocket() client:Socket) {
-    
     let map = this.queuePv.values()
     for (const q of map)
     {
@@ -359,7 +357,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       {
           q[0].emit('Pcancel')
           q[1].emit('Pcancel');
-          let user = await this.getUserfromSocket(client);
+          let user = await this.getUserfromSocket(q[0]);
           this.queuePv.delete(user.id)
       }
     }
