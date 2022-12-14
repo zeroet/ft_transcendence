@@ -34,7 +34,7 @@ export default function Gaming({
   const [rightPaddle, setRightPaddle] = useState<number>(650 / 2);
   const [ownerScore, setOwnerScore] = useState<number>(0);
   const [playerScore, setPlayerScore] = useState<number>(0);
-  const [winOrLose, setWinOrLose] = useState<boolean>(true);
+  const [winOrLose, setWinOrLose] = useState<string>("");
   const [ownerName, setOwnerName] = useState<string>("");
   const [playerName, setplayerName] = useState<string>("");
 
@@ -67,24 +67,28 @@ export default function Gaming({
 
   useEffect((): (() => void) => {
     statusChange("Game");
+    
     socket?.emit("room-list");
+
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
-      console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
     }
 
-    socket?.on("gamecancel", () => {
-      /**
-       * game cancled 화면으로
-       */
+    socket?.on("playing", () => {
+      if (myRole === "watcher") {
+        alert("You are already playing");
+        router.push("/Home");
+      }
     });
 
-    socket?.on("gameover", () => {
-      if (myRole === "owner") {
-        setWinOrLose(ownerScore - playerScore > 0 ? true : false);
-      } else if (myRole === "player") {
-        setWinOrLose(ownerScore - playerScore > 0 ? false : true);
-      }
+    socket?.on("gamecancel", () => {
+      setWinOrLose("Game cancled");
+      setIsGameover(true);
+    });
+
+    socket?.on("gameover", (winerName: string) => {
+      setWinOrLose(ownerScore - playerScore > 0 ? ownerName : playerName);
+      setWinOrLose(winerName + " is Winner");
       setIsGameover(true);
     });
 
@@ -119,11 +123,12 @@ export default function Gaming({
     return () => {
       // window.removeEventListener("keydown", onChangeftPaddle);
       console.log(`mount off play game ${router.query.id} room!`);
-      socket?.off("ball");
       socket?.off("gameover");
-      socket?.off("initialGame");
       socket?.off("gamecancel");
-      statusChange("Login");
+      socket?.off("info");
+      if (myRole !== "watcher") {
+        statusChange("Login");
+      }
       disconnect();
     };
   }, [socket?.id]);
@@ -150,12 +155,9 @@ export default function Gaming({
       <hr />
       <div className="grid-div">
         <GameExplain />
-        {/* 게임결과 보내기 */}
         {isGameover ? (
           <Gameover winOrLose={winOrLose} />
         ) : (
-          // 이긴사람이름, 게임 캔슬
-          // <Gameover winOrLose={winOrLose} />
           <div className="play-game">
             <div className="players-name">
               <div className="players-name">{ownerName}</div>

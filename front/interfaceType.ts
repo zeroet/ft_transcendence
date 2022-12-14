@@ -25,10 +25,11 @@ export interface UserInfo {
 }
 
 export interface infoOfHistory {
-  winOrLoss: string;
-  firstPlayer: string;
-  secondPlayer: string;
-  point: string;
+  winer: string;
+  loser: string;
+  winnerScore: number;
+  loserSocre: number;
+  username: string;
 }
 
 export interface XYType {

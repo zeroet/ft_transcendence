@@ -5,6 +5,7 @@ import { Stat } from './interfaces/room'
 import { Interval } from "@nestjs/schedule";
 import { UserService } from "src/users/services/user/user.service";
 import { User } from "src/typeorm";
+import { watch } from "fs";
 
 
 
@@ -17,7 +18,6 @@ export class RoomService{
     rooms: Map<string, GameService> = new Map();
 
     createRoom (player1: Socket, player2:Socket) {
-        this.userService.getMatch(1);
         player1.emit('createRoom', { isOwner: true } );
         player2.emit('createRoom', { isOwner: false });
     }
@@ -49,7 +49,7 @@ export class RoomService{
         }
         // game Over && db 
         else if (room.Status == Stat.END) {
-         this.gameOver(room.Players, room.score, room.user1, room.user2)
+         this.gameOver(room.Players, room.Watchers, room.score, room.user1, room.user2)
          this.rooms.delete(room.roomName);
         }
         // before 10 point game Boom
@@ -70,7 +70,6 @@ export class RoomService{
         for(const room of this.rooms.values())
         {
             if (room.roomName === roomName) {
-                // watcher.join(roomName);
                 room.pushWatcher(watcher);
             }
         }
@@ -89,7 +88,7 @@ export class RoomService{
     }
 
 
-    async gameOver(Players, Score, user1:User, user2:User) {
+    async gameOver(Players, Watchers,Score, user1:User, user2:User) {
         if (Players.length == 2)
         {
             if (Score.player1 > Score.player2)
@@ -97,25 +96,24 @@ export class RoomService{
                 const winner = user1
                 const loser = user2
                 const score = [Score.player1, Score.player2]
-                await this.userService.createMatchHistory({winner, loser, score});
+                await this.userService.createMatchHistory({date: new Date(), winner, loser, score});
+                for(const player of Players)
+                    player.emit('gameover', winner.username);
+                for(const watcher of Watchers)
+                    watcher.emit('gameover', winner.username)
             }
             else if (Score.player2 > Score.player1)
             {
                 const winner = user2
                 const loser = user1
                 const score = [Score.player1, Score.player2]
-                await this.userService.createMatchHistory({winner, loser, score}) 
+                await this.userService.createMatchHistory({date: new Date(), winner, loser, score})
+                for(const player of Players)
+                    player.emit('gameover', winner.username);
+                for(const watcher of Watchers)
+                    watcher.emit('gameover', winner.username)
         }
-        for(const player of Players)
-            player.emit('gameover');
         }
-    }
-    
-    //watcher event  Front
-    gameOverWatcher(Watchers)
-    {
-        for(const watchers of Watchers)
-        watchers.emit('gameover');
     }
 
     movePaddle(player:Socket, data:number){
