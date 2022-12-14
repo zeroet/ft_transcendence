@@ -70,7 +70,6 @@ const ParticipantSettingModal = ({
     setShowModal(false);
   }, []);
 
-  console.log(isBlock);
   const onClickBlock = useCallback(
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
@@ -190,7 +189,6 @@ const ParticipantSettingModal = ({
     blockedListData.map((element: any) => {
       console.log(element.blockedUserId);
       if (element.blockedUserId === userId) {
-        console.log("hjere");
         setIsBlock("Unblock");
       }
     });
