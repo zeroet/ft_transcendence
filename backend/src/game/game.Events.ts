@@ -66,11 +66,27 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     }
     // Queue case 
     if (this.queueNormal.Players.indexOf(client) != -1) {
+      let user = await this.getUserfromSocket(client)
+      // Queue READY case
+      if (user.status === Status.LOGOUT)
+      {
+        this.queueNormal.Players[0].emit('close')
+        this.queueNormal.Players[1].emit('close')
+        this.queueNormal.Players.splice(0, 2)
+        this.queueNormal.size -= 2;
+        if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
+        this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
+        return ;
+      }
+      else {
+        console.log(user.status);
       this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
       this.queueNormal.size -= 1;
       console.log('DISCONNECTION CLINET SOCKET')
       return ;
+      }
     }
+
     // InGame case
     for (const room of this.roomService.rooms.values()){
       if (room.isPlayer(client)) {
@@ -160,7 +176,9 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       try {
         if (client.id === this.queueNormal.Players[0].id) {
           let user1 = await this.getUserfromSocket(client);
-          let user2 = await this.getUserfromSocket(this.queueNormal.Players[1])
+          let user2 = await this.getUserfromSocket(this.queueNormal.Players[1]);
+          this.userService.updateUserStatus(user1.id, Status.READY);
+          this.userService.updateUserStatus(user2.id, Status.READY);
           this.roomService.startGame(user1, user2, this.queueNormal.Players[0], 
             this.queueNormal.Players[1], Stat.READY, data.roomName, 
             this.queueNormal.Players[0].id, data.speed, data.ballSize)
@@ -276,7 +294,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
 
 
-  @SubscribeMessage('createQ')
+  @SubscribeMessage('Private')
   async startPrivateQ(@ConnectedSocket() client: Socket) {
     if(!this.PrivateQ[1]) return client.emit('full');
     if (this.PrivateQ.length == 2)
