@@ -187,7 +187,6 @@ const ParticipantSettingModal = ({
   useEffect(() => {
     if (!myData || !blockedListData) return;
     blockedListData.map((element: any) => {
-      console.log(element.blockedUserId);
       if (element.blockedUserId === userId) {
         setIsBlock("Unblock");
       }

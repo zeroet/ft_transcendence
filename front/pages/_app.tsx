@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { SWRConfig } from "swr";
+import useSWR, { SWRConfig } from "swr";
 import fetcher from "../component/Utils/fetcher";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,27 +8,35 @@ import cookies from "next-cookies";
 import { GetServerSideProps } from "next";
 import useSocket from "../component/Utils/socket";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [gameSocket] = useSocket(pageProps.accessToken, "game");
+  const router = useRouter();
+  const { data: myData } = useSWR("/api/users");
 
   useEffect(() => {
     gameSocket?.on("createQ", () => {
       const response = confirm("get test siginal");
       if (response) {
-        gameSocket?.emit("Private");
-        console.log("click ok");
+        gameSocket?.emit("Private", myData.id);
       }
     });
+
     gameSocket?.on("privateRoom", (obj: { isOwner: boolean }) => {
-      console.log(obj);
-      console.log("haha");
+      console.log("consolt");
+      router.push({
+        pathname: "/Game",
+        query: {
+          isOwner: obj.isOwner ? "owner" : "player",
+        },
+      });
     });
     return () => {
       gameSocket?.off("createQ");
       gameSocket?.off("privateRoom");
     };
-  }, [gameSocket?.id]);
+  }, [gameSocket?.id, myData]);
 
   return (
     <SWRConfig

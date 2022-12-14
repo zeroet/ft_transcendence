@@ -4,14 +4,18 @@ import GameList from "../component/Game/GameList";
 import Layout from "../component/Layout";
 import Title from "../component/Title";
 import Loading from "../component/errorAndLoading/Loading";
-import useSocket from "../component/Utils/socket";
 import TwoFactorModal from "../component/Home/TwoFactorModal";
 import useSWR from "swr";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { useEffect } from "react";
 
-export default function Game({ accessToken }: { accessToken: string }) {
+export default function Game({
+  accessToken,
+  isOwner,
+}: {
+  accessToken: string;
+  isOwner: string | undefined;
+}) {
   const { data, error } = useSWR("/api/users");
   // const [socket] = useSocket(accessToken, "game");
 
@@ -45,6 +49,7 @@ export default function Game({ accessToken }: { accessToken: string }) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken } = cookie;
+  const { isOwner } = context.query;
   if (!accessToken) {
     return {
       redirect: {
@@ -56,6 +61,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       accessToken,
+      isOwner,
     },
   };
 };
