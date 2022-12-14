@@ -13,14 +13,18 @@ export default function App({ Component, pageProps }: AppProps) {
   const [gameSocket] = useSocket(pageProps.accessToken, "game");
 
   useEffect(() => {
-    gameSocket?.on("test", () => {
+    gameSocket?.on("createQ", () => {
       const response = confirm("get test siginal");
-      /**
-       * if response === ok, emit ok
-       */
+      if (response) {
+        gameSocket?.emit("Private");
+      }
+      gameSocket?.on("privateRoom", (obj: { isOwner: boolean }) => {
+        console.log(obj);
+      });
     });
     return () => {
-      gameSocket?.off("test");
+      gameSocket?.off("createQ");
+      gameSocket?.off("privateRoom");
     };
   }, [gameSocket?.id]);
 
