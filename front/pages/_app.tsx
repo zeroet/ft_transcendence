@@ -21,6 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
     });
     gameSocket?.on("privateRoom", (obj: { isOwner: boolean }) => {
       console.log(obj);
+      console.log("haha");
     });
     return () => {
       gameSocket?.off("createQ");
