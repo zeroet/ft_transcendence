@@ -47,7 +47,8 @@ export default function GameBody({
       e.stopPropagation();
       setSettingModal(false);
       setOwnerOrPlayer("");
-      socket?.emit("cancle");
+      if (isOwner) socket?.emit("cancle");
+      if (!isOwner) socket?.emit("Pcancel");
     },
     [settingModal]
   );
@@ -67,7 +68,6 @@ export default function GameBody({
         }
       });
       socket?.on("close", () => {
-        console.log("close!!!!");
         setOwnerOrPlayer("");
         setSettingModal(false);
         toast.error("Game Canceled!", {
