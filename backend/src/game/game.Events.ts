@@ -104,6 +104,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
         return ;
       }
+      
       else {
         console.log(user.status);
       this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(client), 1);
