@@ -52,14 +52,14 @@ export default function ChatroomSettingModal({
         } else {
           if (participantData[0].userId !== myData.id) {
             await axios
-              .patch(`/api/chatroom/${roomId}/admin`, {
+              .patch(`/api/chatroom/${roomId}/owner`, {
                 targetUserId: participantData[0].userId,
               })
               .then(() => {})
               .catch((err) => console.log(err));
           } else {
             await axios
-              .patch(`/api/chatroom/${roomId}/admin`, {
+              .patch(`/api/chatroom/${roomId}/owner`, {
                 targetUserId: participantData[1].userId,
               })
               .then(() => {})

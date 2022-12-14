@@ -153,12 +153,12 @@ const ParticipantSettingModal = ({
     [chatroomData, myData, userId]
   );
 
-  const onClickSetAdmin = useCallback(
+  const onClickSetOwner = useCallback(
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
       await axios
-        .patch(`/api/chatroom/${chatId}/admin`, {
+        .patch(`/api/chatroom/${chatId}/owner`, {
           targetUserId: userId,
         })
         .then(() => {
@@ -225,8 +225,8 @@ const ParticipantSettingModal = ({
           <div className="router-div" onClick={onClickBan}>
             Ban
           </div>
-          <div className="router-div" onClick={onClickSetAdmin}>
-            Set Admin
+          <div className="router-div" onClick={onClickSetOwner}>
+            Set Owner
           </div>
         </div>
       )}
