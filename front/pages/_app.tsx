@@ -21,17 +21,6 @@ export default function App({ Component, pageProps }: AppProps) {
         alert(`${senderName}이 게임신청함 : 경은아 이거 토스트로 수정해줘`);
         gameSocket?.emit("Private", senderId);
       }
-      // console.log(senderId, " is senderId");
-      // console.log(myData.id, " is data id");
-      // if (!senderId) {
-      //   alert("Wait!");
-      // } else {
-      //   const response = confirm("get test siginal");
-      //   if (response) {
-      //   } else {
-      //     gameSocket?.emit("inviteCancel", senderId);
-      //   }
-      // }
     });
 
     gameSocket?.on("privateRoom", (obj: { isOwner: boolean }) => {
