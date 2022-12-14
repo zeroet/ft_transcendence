@@ -20,6 +20,8 @@ import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { ConnectionService } from 'src/connection/connection.service';
 import { Status } from 'src/utils/types';
+import { send } from 'process';
+import { sensitiveHeaders } from 'http2';
 
 // import { GameService } from './game.service';
 
@@ -33,6 +35,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     private connectionService: ConnectionService,
   ) {}
  
+  // PrivateQ: Map<number, Set<Socket>> = new Map<number, Set<Socket>>();
   PrivateQ:Array<any> = [];
 
   private logger = new Logger('GameGateway');
@@ -272,18 +275,24 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   async privateQ(@ConnectedSocket() client: Socket,
   @MessageBody() data) {
     let connec = this.connectionService.connections
-    console.log('DATA ID', data)
-    const sockets = await connec.get(data)
-    const user = await this.userService.getUserById(data)
-    let stat:string = user.status
-    if (stat === 'Game' || user.status === Status.WATCHING){
+
+    const sender = await this.getUserfromSocket(client);
+    let statSender:string = sender.status;
+    const sockets:Set<Socket> = await connec.get(data)
+    const receiver = await this.userService.getUserById(data)
+    let stat:string = receiver.status
+    
+    
+    // if receiver 
+    if (statSender === 'Game' || stat === 'Game' || 
+    statSender === Status.WATCHING ||
+    receiver.status === Status.WATCHING ){
       client.emit('isPlaying')
-      for (const socket of sockets) {
+      for (const socket of sockets)
         socket.emit('isPlaying')
-        console.log("private Q send isPlaying EMIT")
-      }
       return ;
     }
+
     this.PrivateQ.push(client);
     console.log('OWNERID', this.PrivateQ[0].id)
     // client.emit('createQ');
@@ -295,11 +304,14 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
 
   @SubscribeMessage('Private')
-  async startPrivateQ(@ConnectedSocket() client: Socket) {
+  async startPrivateQ(@ConnectedSocket() client: Socket,
+  @MessageBody() data) 
+  {
     if(!this.PrivateQ[1]) 
     {
       if (client !== this.PrivateQ[0])
         this.PrivateQ.push(client);
+      console.log('isPlayer', this.PrivateQ[1])
       if(this.PrivateQ.length == 2) {
         this.PrivateQ[0].emit('privateRoom', { isOwner: true })
         this.PrivateQ[1].emit('privateRoom', { isOwner: false })
@@ -308,6 +320,36 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     else
       client.emit('full');
   }
+
+  @SubscribeMessage('PrivateGame')
+  async PrivateGame(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+      try {
+        if (client.id === this.PrivateQ[0].id) {
+          let user1 = await this.getUserfromSocket(client);
+          let user2 = await this.getUserfromSocket(this.PrivateQ[1]);
+          this.userService.updateUserStatus(user1.id, Status.READY);
+          this.userService.updateUserStatus(user2.id, Status.READY);
+          this.roomService.startGame(user1, user2, this.PrivateQ[0], 
+            this.PrivateQ[1], Stat.READY, data.roomName, 
+            this.PrivateQ[0].id, data.speed, data.ballSize)
+          await this.userService.updateUserStatus(user1.id, Status.PLAYING)
+          await this.userService.updateUserStatus(user2.id, Status.PLAYING)
+          this.PrivateQ.shift().join(data.roomName);
+          this.PrivateQ.shift().join(data.roomName);
+        // if (this.queueNormal.Players[0] && this.queueNormal.Players[1] && this.queueNormal.size >= 2)
+        //   await this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
+        this.liveGame(data.roomName);
+      }
+     }
+     catch(e)
+     {}
+    }
+
+
+
 }
 
 
