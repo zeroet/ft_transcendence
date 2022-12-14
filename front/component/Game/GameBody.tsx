@@ -47,8 +47,8 @@ export default function GameBody({
       e.stopPropagation();
       setSettingModal(false);
       setOwnerOrPlayer("");
-      if (isOwner) socket?.emit("cancle");
-      if (!isOwner) socket?.emit("Pcancel");
+      if (!isOwner) socket?.emit("cancle");
+      if (isOwner) socket?.emit("Pcancel");
     },
     [settingModal]
   );

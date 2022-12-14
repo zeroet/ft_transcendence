@@ -26,7 +26,6 @@ export default function App({ Component, pageProps }: AppProps) {
     });
 
     gameSocket?.on("privateRoom", (obj: { isOwner: boolean }) => {
-      console.log("consolt");
       router.push({
         pathname: "/Game",
         query: {
