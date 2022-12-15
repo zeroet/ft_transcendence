@@ -88,7 +88,6 @@ export default function GameBody({
     }
     return () => {
       if (!isOwner) {
-        if (settingModal) socket?.emit("cancle");
         socket?.off("createRoom");
         socket?.off("playing");
         socket?.off("close");
