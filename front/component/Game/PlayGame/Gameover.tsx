@@ -53,14 +53,15 @@ const Gameover = ({
           font-size: 50px;
         }
         .btn-to-home {
-          color: white;
-          background-color: gray;
+          color: black;
+          background-color: yellow;
           width: 100px;
           height: 30px;
           text-align: center;
           padding-top: 5px;
           margin-top: 30px;
           cursor: pointer;
+          font-weight: bold;
         }
         .vibration {
           animation: vibration 0.1s infinite;
