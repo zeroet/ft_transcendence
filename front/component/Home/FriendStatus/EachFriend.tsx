@@ -40,6 +40,7 @@ export const EachFriend = ({
           display: flex;
           align-items: center;
           cursor: pointer;
+          //   background-color: red;
         }
         .status {
           width: 10px;
