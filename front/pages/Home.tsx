@@ -9,14 +9,21 @@ import TwoFactorModal from "../component/Home/TwoFactorModal";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import useSocket from "../component/Utils/socket";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Home({ accessToken }: { accessToken: string }) {
+  const router = useRouter();
   const { data, error } = useSWR("/api/users");
   const [socketGame] = useSocket(accessToken, "game");
   const [socketChat] = useSocket(accessToken, "chat");
 
   console.log(socketChat?.id, "is socket id of Chat");
   console.log(socketGame?.id, "is socket id of Game");
+
+  useEffect(() => {
+    router.replace(router.asPath);
+  }, []);
 
   if (error) axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (!data || !socketChat || !socketGame) return <Loading />;
