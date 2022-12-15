@@ -31,7 +31,7 @@ const TextProfil = ({ id }: { id: number }) => {
       setAchivement("/images/achivement/sesak.png");
     } else if (rankData === 1) {
       setAchivement("/images/achivement/bronze.png");
-    } else if (rankData > 1 && rankData <= 3) {
+    } else if (rankData > 1 && rankData <= 4) {
       setAchivement("/images/achivement/silver.png");
     } else {
       setAchivement("/images/achivement/gold.png");

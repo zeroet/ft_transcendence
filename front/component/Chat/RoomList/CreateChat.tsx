@@ -21,7 +21,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
         toast.error("Password should more than 4 character", {
           position: "top-center",
-          autoClose: 2000,
+          autoClose: 1200,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,
@@ -35,7 +35,7 @@ const CreateChat = ({ onClose }: { onClose: () => void }) => {
       if (!RoomName) {
         toast.error("Room name should have more than 1 character", {
           position: "top-center",
-          autoClose: 2000,
+          autoClose: 1200,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,
