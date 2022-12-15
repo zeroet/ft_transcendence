@@ -133,6 +133,8 @@ export default function Gaming({
         statusChange("Login");
       }
       disconnect();
+      const delay = setInterval(() => {}, 100);
+      clearInterval(delay);
     };
   }, [socket?.id]);
 

@@ -22,13 +22,6 @@ const useSocket = (
 
   if (!socket[socketType] && accessToken) {
     const path = socketType === "chat" ? "/chat" : "/game";
-    // if (socketType === "game") {
-    //   socket[socketType] = socketIOClient("http://localhost:8080", {
-    //     extraHeaders: {
-    //       accessToken,
-    //     },
-    //   });
-    // } else if (socketType === "chat") {
     socket[socketType] = socketIOClient("http://localhost:8080", {
       extraHeaders: {
         accessToken,
@@ -40,12 +33,6 @@ const useSocket = (
       `=================create new socket========================== ${socketType} ${socket.id}`
     );
   }
-  // console.log(`backURL for ${socketType}`);
-  // } else {
-  // console.log("use socket in socket.ts");
-  // }
-  // console.log(socket);
-
   return [socket[socketType], disconnect];
 };
 
