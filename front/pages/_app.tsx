@@ -76,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken } = cookie;
   if (accessToken) {
-    const [gameSocket] = useSocket(accessToken, "game");
+    useSocket(accessToken, "game");
   }
   if (!accessToken) {
     return {

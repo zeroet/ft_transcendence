@@ -18,9 +18,12 @@ const useSocket = (
       socket[socketType].disconnect();
       delete socket[socketType];
     }
-  }, [socketType]);
+  }, [socketType, socket[socketType]?.id]);
 
+  /**make socket으로 들어옴 */
+  console.log("make socket으로 들어옴");
   if (!socket[socketType] && accessToken) {
+    console.log("make socket 분기로  들어옴");
     const path = socketType === "chat" ? "/chat" : "/game";
     socket[socketType] = socketIOClient("http://localhost:8080", {
       extraHeaders: {
