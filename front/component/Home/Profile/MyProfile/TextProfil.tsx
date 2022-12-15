@@ -62,22 +62,45 @@ const TextProfil = ({ id }: { id: number }) => {
           {rankData === 0 && (
             <div>
               <span>Your level: NEWBIE</span>
-              <span>Welcome Newbie! Let's play pong!!!</span>
+              <span className="achivement-text">
+                Welcome Newbie! Let's play pong!!!
+              </span>
             </div>
           )}
-          {rankData === 1 && <h1>You've done 1 pong! Keep it up!</h1>}
+          {rankData === 1 && (
+            <div>
+              <span>Your level: BRONZE</span>
+              <span className="achivement-text">
+                You've done 1 pong! Keep it up!
+              </span>
+            </div>
+          )}
           {rankData > 1 && rankData <= 3 && (
-            <h1>Almost there! go for gold :D</h1>
+            <div>
+              <span>Your level: SILVER</span>
+              <span className="achivement-text">
+                Almost there! go for gold :D
+              </span>
+            </div>
           )}
           {rankData > 3 && (
             <div>
               <span>Your level: GOLD</span>
-              <span>Best player ever!</span>
+              <span className="achivement-text">Best player ever!</span>
             </div>
           )}
         </div>
       )}
       <style jsx>{`
+        .achivement-text {
+          color: blue;
+          animation: blink-effect 1s step-end infinite;
+        }
+        @keyframes blink-effect {
+          50% {
+            opacity: 0;
+          }
+        }
         div {
           display: grid;
           margin-left: 5px;
@@ -116,8 +139,9 @@ const TextProfil = ({ id }: { id: number }) => {
         }
         .achivement {
           //   background-color: red;
-          margin-top: -110px;
-          margin-left: 10px;
+          margin-top: -125px;
+          height: 100px;
+          //   margin-left: 10px;
           //   border: 1px solid black;
         }
       `}</style>

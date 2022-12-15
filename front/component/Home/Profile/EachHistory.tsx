@@ -55,21 +55,19 @@ const EachHistory = ({
           overflow: hidden;
         }
         .result {
-          display: flex;
-          justify-content: center;
+          height: 20px;
+          grid-auto-flow: column dense;
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
         }
         .winner {
           font-size: 14px;
-          width: 250px;
           text-align: left;
           margin-left: 100px;
-          //   font-weight: bold;
         }
         .loser {
           font-size: 14px;
-          width: 250px;
           text-align: right;
-          //   font-weight: bold;
           margin-right: 100px;
         }
         .score {
