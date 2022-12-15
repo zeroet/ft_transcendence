@@ -67,11 +67,18 @@ export default function Gaming({
 
   useEffect((): (() => void) => {
     statusChange("Game");
-    
+
     socket?.emit("room-list");
 
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
+    }
+
+    if (myRole === "watcher") {
+      socket?.on("roomx", () => {
+        alert("방 이미 끝남. 나가!");
+        router.back();
+      });
     }
 
     socket?.on("playing", () => {
@@ -156,7 +163,7 @@ export default function Gaming({
       <div className="grid-div">
         <GameExplain />
         {isGameover ? (
-          <Gameover winOrLose={winOrLose} />
+          <Gameover winOrLose={winOrLose} accessToken={accessToken} />
         ) : (
           <div className="play-game">
             <div className="players-name">
