@@ -20,7 +20,7 @@ const Gameover = ({
   return (
     <div className={`${styles.box} background-div`}>
       <div>
-        <h1>PING PONG</h1>
+        <h1>GAME OVER</h1>
       </div>
       <div className="gameover vibration">{winOrLose}</div>
       <div className="btn-to-home" onClick={onClickToHome}>
@@ -35,7 +35,8 @@ const Gameover = ({
           justify-content: center;
         }
         h1 {
-          background-color: black;
+          background-color: red;
+          height: 70px;
           color: white;
           font-size: 100px;
           font-family: "Lexend Deca", sans-serif;

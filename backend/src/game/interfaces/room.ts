@@ -83,7 +83,7 @@ export class GameService {
         this.wall = {height:100, width:10}
         this.paddles = {paddle1: 50, paddle2: 50}
     }
-    
+
     default() {
         this.ball.x = Math.random()*(this.width/5) + (2*this.width/5);
         this.ball.y = Math.random()*(this.height/2) + (this.height/4);
@@ -102,17 +102,17 @@ export class GameService {
     gameCancel() {
         this.Status = Stat.CANCEL;
     }
-      
+
     update() {
         //player out  over case
         if (this.Players.length != 2) {
            this.gameCancel()
         }
 
-        
+
         var nextX = this.ball.x + this.dir.dx;
         var nextY = this.ball.y + this.dir.dy;
-        
+
         //top bottom dir change
         if (nextY <= 725 || nextY >= 0) {
             if (nextY <= 725) {
@@ -124,10 +124,10 @@ export class GameService {
                 nextY -= 1;
             }
         }
-        
+
         // new x y
         // paddles
-        
+
         if (((nextY) <= (this.paddles.paddle2 + 50)) && (nextY) >= (this.paddles.paddle2 - 50))
         {
             if ((nextX + (this.ballSize/2) + 10) >= 1475)
@@ -145,25 +145,25 @@ export class GameService {
                 nextX += 10;
             }
         }
-        // score 
+        // score
         if ((nextX - this.ballSize) >= 1475 || (nextX + this.ballSize) <= 0)
         {
             nextX >= 1475 ? this.score.player1 += 1 : this.score.player2 += 1;
-            if (this.score.player1 == 3) {
+            if (this.score.player1 == 100) {
                 this.gameover()
             }
-            else if (this.score.player2 == 3) {
+            else if (this.score.player2 == 100) {
                 this.gameover()
             }
             this.default()
             nextX = this.ball.x
             nextY = this.ball.y
         }
-        
+
         this.ball.x = nextX += this.dir.dx * 0.2 *this.speed/2;
         this.ball.y = nextY += this.dir.dy * 0.3 *this.speed/2;
-        
-        //return 
+
+        //return
         return ({
             x:this.ball.x,
             y:this.ball.y,
@@ -180,14 +180,14 @@ export class GameService {
     isPlayer(user:any) {
         if(this.Players.indexOf(user) != -1)
             return true;
-        else    
+        else
             return false
     }
 
     isOwner(user:any){
         if (user.id === this.Players[0].id)
             return true;
-        else   
+        else
             return false;
     }
 

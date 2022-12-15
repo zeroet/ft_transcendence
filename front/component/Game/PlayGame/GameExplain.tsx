@@ -3,9 +3,15 @@ import styles from "../../../styles/LayoutBox.module.css";
 export default function GameExplain() {
   return (
     <div className={styles.box}>
-      <h1>How to play Game</h1>
+      <h1>How to play</h1>
       <hr />
-      <div>여기 설명!</div>
+      <div className="explain">
+        <div>{`<How to win the game>`}</div>
+        <div>Player who win 3 times first win!</div>
+        <div>{`<key>`}</div>
+        <div>W: go upside</div>
+        <div>S: go downside</div>
+      </div>
       <style jsx>{`
         .room-name {
           padding-left: 30px;
