@@ -59,12 +59,22 @@ const TextProfil = ({ id }: { id: number }) => {
       </div>
       {showAchivementExplainModal && (
         <div className="achivement">
-          {rankData === 0 && <h1>Welcome Newbie! Let's play pong!!!</h1>}
+          {rankData === 0 && (
+            <div>
+              <span>Your level: NEWBIE</span>
+              <span>Welcome Newbie! Let's play pong!!!</span>
+            </div>
+          )}
           {rankData === 1 && <h1>You've done 1 pong! Keep it up!</h1>}
           {rankData > 1 && rankData <= 3 && (
             <h1>Almost there! go for gold :D</h1>
           )}
-          {rankData > 3 && <p>Best player ever!</p>}
+          {rankData > 3 && (
+            <div>
+              <span>Your level: GOLD</span>
+              <span>Best player ever!</span>
+            </div>
+          )}
         </div>
       )}
       <style jsx>{`
@@ -85,21 +95,6 @@ const TextProfil = ({ id }: { id: number }) => {
           /* or 40% */
           text-transform: uppercase;
           color: #000000;
-        }
-        h3 {
-          background-color: black;
-          //   font-family: "Fragment Mono", monospace;
-          //   //   font-style: normal;
-          color: white;
-          //   //   font-weight: 400;
-          //   // font-size: 20px;
-          //   line-height: 30px;
-          //   /* or 150% */
-          //   text-transform: uppercase;
-          //   //   margin: 0px;
-          //   margin-left: 600px;
-          //   margin-top: 0px;
-          //   margin-bottom: -30px;
         }
         .victory {
           color: green;

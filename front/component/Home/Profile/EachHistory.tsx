@@ -19,19 +19,28 @@ const EachHistory = ({
 
   return (
     <div>
-      <h3 className={winOrLoss}>{winOrLoss}</h3>
-      <p>{`${winer}    ${winnerScore} : ${loserSocre}    ${loser}`}</p>
+      <div className={winOrLoss}>{winOrLoss}</div>
+      <div className="result">
+        <div className="winner">{`${winer}`}</div>
+        <div className="score">{`${winnerScore} : ${loserSocre}`}</div>
+        <div className="loser">{`${loser}`}</div>
+      </div>
       <hr />
       <style jsx>{`
-        p {
-          margin: 8px;
-        }
         .win {
+          font-size: 17px;
+          font-weight: bold;
           color: green;
+          margin-bottom: 10px;
+          margin-top: 10px;
         }
 
         .lose {
+          font-size: 17px;
+          font-weight: bold;
           color: red;
+          margin-bottom: 10px;
+          margin-top: 10px;
         }
 
         hr {
@@ -44,6 +53,29 @@ const EachHistory = ({
 
         div {
           overflow: hidden;
+        }
+        .result {
+          display: flex;
+          justify-content: center;
+        }
+        .winner {
+          font-size: 14px;
+          width: 250px;
+          text-align: left;
+          margin-left: 100px;
+          //   font-weight: bold;
+        }
+        .loser {
+          font-size: 14px;
+          width: 250px;
+          text-align: right;
+          //   font-weight: bold;
+          margin-right: 100px;
+        }
+        .score {
+          font-size: 14px;
+          font-weight: bold;
+          text-align: center;
         }
       `}</style>
     </div>

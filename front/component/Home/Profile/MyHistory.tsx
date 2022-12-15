@@ -17,8 +17,8 @@ const MyHistory = ({ id }: { id: number }) => {
   return (
     <div>
       <div className="dummy box"></div>
-      <div className="history box">
-        <h1>LAST 5 MATCHES HISTORY</h1>
+      <div className="history">
+        <h1>LAST 5 MATCHES</h1>
         {historyData &&
           userData &&
           historyData.map((eachHistory: any) => {
@@ -54,7 +54,7 @@ const MyHistory = ({ id }: { id: number }) => {
           font-weight: bold;
           background-color: black;
           margin: 0;
-          padding: 30px;
+          padding: 25px;
           color: white;
         }
 
@@ -78,7 +78,8 @@ const MyHistory = ({ id }: { id: number }) => {
           height: 95%;
           background: #ffffff;
           border: 1px solid #000000;
-          border-radius: 10%;
+          box-shadow: 5px 5px;
+          //   border-radius: 10%;
         }
 
         .history-div {
