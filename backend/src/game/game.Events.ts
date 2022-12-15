@@ -20,8 +20,6 @@ import { Logger } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { ConnectionService } from 'src/connection/connection.service';
 import { Status } from 'src/utils/types';
-import { send } from 'process';
-import { sensitiveHeaders } from 'http2';
 
 // import { GameService } from './game.service';
 
@@ -35,7 +33,6 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     private connectionService: ConnectionService,
   ) {}
    
-  
   private logger = new Logger('GameGateway');
   
   @WebSocketServer()
@@ -46,9 +43,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
   queuePv: Map<number, Array<any>> = new Map();
     
 
-  
   afterInit() {
-
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
@@ -67,20 +62,21 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       throw new WsException('unauthorized connection');
     }
 
-
-    // let map = this.queuePv.values()
-    // for (const q of map)
-    // {
-    //   if (q.indexOf(client) != -1)
-    //   {
-    //       q[0].emit('Pcancel')
-    //       q[1].emit('Pcancel');
-    //       let user = await this.getUserfromSocket(q[0]);
-    //       this.queuePv.delete(user.id)
-    //   }
-    // }
+    let map = this.queuePv.values()
+    for (const q of map)
+    {
+      if (q.indexOf(client) != -1)
+      {
+          q[0].emit('Pcancel')
+          q[1].emit('Pcancel');
+          let user = await this.getUserfromSocket(q[0]);
+          this.queuePv.delete(user.id)
+          return ;
+      }
+    }
 
     // Queue case 
+    
     if (this.queueNormal.Players.indexOf(client) != -1) {
       let user = await this.getUserfromSocket(client)
       // Queue READY case
@@ -104,6 +100,10 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1])
         return ;
       }
+      else if (this.queueNormal.Players[0].id === client.id && !this.queueNormal.Players[1]) {
+        this.queueNormal.Players.splice(0,1);
+        this.queueNormal.size = 0;
+      }
       
       else {
         console.log(user.status);
@@ -117,6 +117,8 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     // InGame case
     for (const room of this.roomService.rooms.values()){
       if (room.isPlayer(client)) {
+        // let U = await this.getUserfromSocket(client);
+        // this.userService.updateUserStatus(U.id, Status.LOGOUT)
         await room.deletePlayer(client);
         console.log('DISCONNECTION,,, PLAYER,,,DELETE,,,ROOM')
         if (room.Players.length == 0) {
@@ -171,9 +173,29 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
   }
 
+  @SubscribeMessage('x')
+  x(@ConnectedSocket() client: Socket) {
+    console.log('xxxxxxxxxxxxxx')
+    if (!this.queueNormal.Players[0])
+      return ;
+    if (this.queueNormal.Players[0].id === client.id && this.queueNormal.size === 1) {
+      console.log('in the ifffffffff');
+      this.queueNormal.Players.splice(0, 1)
+      this.queueNormal.size = 0;
+      return ; 
+    }
+  }
+
   @SubscribeMessage('cancle')
   async cancel(@ConnectedSocket() client: Socket) {
     try {
+      if (this.queueNormal.Players[0].id === client.id && this.queueNormal.size === 1) {
+        this.queueNormal.Players.splice(0,1);
+        this.queueNormal.size = 0;
+        console.log('size 1111111111 cancel')
+        return ;
+      }
+  
       //ready 0 / 1 index
       if ((this.queueNormal.Players[0].id === client.id) || (this.queueNormal.Players[1].id === client.id)) {
         if (this.queueNormal.Players[0].id === client.id)
@@ -249,8 +271,17 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     @MessageBody() data:any) {
       if (!data)
         return ;
+      let tmp = this.roomService.findRoom(data);
+      if (!tmp) {
+        watcher.emit('roomx');
+        return ;
+      }
 
       console.log('event on WatchGame')
+      if (this.queueNormal.Players.indexOf(watcher) != -1) {
+        this.queueNormal.Players.splice(this.queueNormal.Players.indexOf(watcher), 1)
+        this.queueNormal.size -= 1;
+      }
       
       // check if watch User is already playing to another window
       const user = await this.getUserfromSocket(watcher);
@@ -261,17 +292,8 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
         return ;
       }
 
-
-
       const Room = this.roomService.findRoom(data);
-      // for (const player of Room.Players)
-      // {
-      //   let stat:string;
-      //   let tmpUser = await this.getUserfromSocket(player)
-      //   stat = tmpUser.status
-      //   if(stat === 'Game')
-      //     return console.log('WatchGame Event user Stat is Game or logout or Watchgin');
-      // }
+      if (Room.Status != Stat.END) {
       for (const watcher of Room.Watchers)
       {
         let tmpUser = await this.getUserfromSocket(watcher)
@@ -281,6 +303,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       this.userService.updateUserStatus(user.id, Status.WATCHING);
       this.roomService.addWatcher(watcher, data);
       this.server.to(data.roomName).emit('enterGame', data);
+      }
   }
 
   //up : 1 // down: 2
@@ -293,6 +316,11 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       this.roomService.movePaddle(client, data);
   }
 
+
+//----------------------------------------------------------------------------------------------------------------------------///
+//-----------------------------                  PRIVATE  GAME                     -------------------------------------------///
+//-------------
+//---------------------------------------------------------------------------------------------------------------///
 
   // private Queue
   @SubscribeMessage('privateQ')
@@ -308,18 +336,26 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     let statSender:string = sender.status;
     let stat:string = receiver.status
     
-    if (this.queueNormal.Players.indexOf(sender) != -1) {
+    if (receiver.status === Status.LOGOUT) {
+      client.emit('Logout')
+      return;
+    }
+
+    if (this.queueNormal.Players.indexOf(client) != -1) {
       client.emit('IsPlaying')
       return ;
     }
 
-    for (const socket of sockets) {
-      if (this.queueNormal.Players.indexOf(socket) != -1) {
-        client.emit('IsPlaying')
-        return ;
+    if(sockets) {
+      for (const socket of sockets) {
+        if (this.queueNormal.Players.indexOf(socket) != -1) {
+          client.emit('IsPlaying')
+          return ;
+        }
       }
     }
-
+    else
+      return ;
 
     // if sender && receiver stat is Playing or Watching 
     // event isPlaying for cancel Q
@@ -331,23 +367,27 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       return ;
     }
 
+
     // else Make Map < Key : senderId, Value : Array[sender, recevier]>
     // this.PrivateQ.push(client);
     if (this.queuePv.has(sender.id)) {
       console.log('Sender -- invite ING // Array Existe in the map')
-      // for(const socket of sockets)
-      //   socket.emit('createQ', sender.id, sender.username)
+      this.queuePv.delete(sender.id)
     }
     else {
       const Pqueue: Array<any> = [client]
       this.queuePv.set(sender.id, Pqueue)
       client.emit('createQ');
+      if (!sockets)
+        return ;
       for (const socket of sockets) {
         socket.emit('createQ', sender.id, sender.username) // emit to Socket body { sender.id } number
         console.log("CREATEQ SEND EMIT", socket.id, sender.username)
       }
     }
   }
+
+
 
   @SubscribeMessage('inviteCancel')
   async inviteCancel(@ConnectedSocket() client:Socket, @MessageBody() data?)
@@ -386,6 +426,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     return ;
   }
 
+
   @SubscribeMessage('Pcancel')
   async Pcancel(@ConnectedSocket() client:Socket) {
     let map = this.queuePv.values()
@@ -400,6 +441,7 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       }
     }
   }
+
 
   @SubscribeMessage('PrivateGame')
   async PrivateGame(
@@ -432,9 +474,6 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
      catch(e)
      {}
     }
-
-
-
 }
 
 
