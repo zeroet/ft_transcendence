@@ -137,6 +137,7 @@ export default function Gaming({
         statusChange("Login");
       }
       disconnect();
+      console.log('언 마운트 실행!')
     };
   }, [socket?.id]);
 

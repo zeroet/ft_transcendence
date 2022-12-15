@@ -27,6 +27,7 @@ export class ConnectionService{
     }
 
     async addConnection(socket: Socket) {
+        //test
         let user;
         try {
             user = await this.getUserFromSocket(socket);
@@ -54,7 +55,10 @@ export class ConnectionService{
 
     async eraseConnection(socket: Socket) {
         let user;
-        try {
+        // test
+        // end
+
+         try {
             user = await this.getUserFromSocket(socket);
         } catch (e) {
             socket.disconnect();
@@ -71,7 +75,7 @@ export class ConnectionService{
                     this.connections[user.id] = sockets;
                 }
             }
-            return { success: true };
+            return ;
         } catch {
             socket.disconnect();
             throw new WsException('the user cannot connect');
