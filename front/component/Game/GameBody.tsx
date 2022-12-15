@@ -88,16 +88,13 @@ export default function GameBody({
     }
     return () => {
       if (!isOwner) {
-        if (settingModal && ownerOrPlayer === "") {
-          socket?.emit("x");
-        }
+        socket?.emit("x");
         socket?.off("createRoom");
         socket?.off("playing");
         socket?.off("close");
       }
     };
   }, [socket, ownerOrPlayer, myData]);
-
   if (!socket || !myData) return <Loading />;
   return (
     <div className={styles.box}>
