@@ -53,7 +53,7 @@ const ChangeNameModal = ({
       } else {
         toast.error("nickname should be 1 ~ 30 characters", {
           position: "top-center",
-          autoClose: 3000,
+          autoClose: 2000,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,

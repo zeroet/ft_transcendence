@@ -50,7 +50,7 @@ const ChangeAvatarModal = ({
         } else {
           toast.error("File should be PNG, JPG, JPEG or SVG", {
             position: "top-center",
-            autoClose: 3000,
+            autoClose: 2000,
             hideProgressBar: true,
             closeOnClick: true,
             rtl: false,
@@ -84,7 +84,7 @@ const ChangeAvatarModal = ({
           console.log(`error for avatar`, err);
           toast.error("File is too big, file should be less than 10kb", {
             position: "top-center",
-            autoClose: 3000,
+            autoClose: 2000,
             hideProgressBar: true,
             closeOnClick: true,
             rtl: false,
@@ -98,7 +98,7 @@ const ChangeAvatarModal = ({
       } else {
         toast.error("no file uploaded. Plz upload a file", {
           position: "top-center",
-          autoClose: 3000,
+          autoClose: 2000,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,
