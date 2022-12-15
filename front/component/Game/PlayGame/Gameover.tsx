@@ -4,6 +4,7 @@ import styles from "../../../styles/LayoutBox.module.css";
 import useSocket from "../../Utils/socket";
 import cookies from "next-cookies";
 import { GetServerSideProps } from "next";
+import style from "../../../styles/firework.module.css";
 
 const Gameover = ({
   winOrLose,
@@ -19,6 +20,12 @@ const Gameover = ({
   }, []);
   return (
     <div className={`${styles.box} background-div`}>
+      <div className={style.firework}></div>
+      <div className={style.firework}></div>
+      <div className={style.firework}></div>
+      <div className={style.firework}></div>
+      <div className={style.firework}></div>
+      <div className={style.firework}></div>
       <div>
         <h1>GAME OVER</h1>
       </div>
