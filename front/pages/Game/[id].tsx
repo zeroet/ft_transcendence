@@ -77,7 +77,7 @@ export default function Gaming({
     if (myRole === "watcher") {
       socket?.on("roomx", () => {
         alert("방 이미 끝남. 나가!");
-        router.back();
+        router.push("/Home");
       });
     }
 
