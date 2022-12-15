@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
+import { toast } from "react-toastify";
 import useSWR, { mutate } from "swr";
 import Error from "../errorAndLoading/Error";
 import Loading from "../errorAndLoading/Loading";
@@ -24,7 +25,17 @@ export default function TwoFactorModal() {
       e.preventDefault();
 
       if (!password) {
-        alert("Password please");
+        toast.error("Password please", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("Password please");
         setPassword("");
         return;
       }
@@ -36,7 +47,17 @@ export default function TwoFactorModal() {
         updateValide();
       } catch (e) {
         console.log(e);
-        alert("Wrong Password");
+        toast.error("Wrong Password", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("Wrong Password");
       }
       setPassword("");
       console.log(password);
@@ -52,7 +73,17 @@ export default function TwoFactorModal() {
       mutate({ ...data, two_factor_valid: true });
       console.log("유저데이터 valid값 true인지 : ", data.two_factor_valid);
     } catch (e) {
-      alert("Error for Verification password");
+      toast.error("Verification password Error", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        rtl: false,
+        pauseOnFocusLoss: true,
+        draggable: false,
+        pauseOnHover: false,
+      });
+      //   alert("Error for Verification password");
       console.log(e);
     }
   }, []);
@@ -107,10 +138,10 @@ export default function TwoFactorModal() {
             position: fixed;
             top: 30%;
             left: 33%;
-  
+
             width: 500px;
             height: 300px;
-  
+
             background-color: white;
             border: 1px inset black;
             box-shadow: 10px 10px;
@@ -137,8 +168,8 @@ export default function TwoFactorModal() {
             // background-color: yellow;
             padding-left: 50px;
             padding-top: 20px;
-        
-  
+
+
         `}
       </style>
     </div>

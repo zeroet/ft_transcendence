@@ -82,7 +82,17 @@ export default function GameBody({
         });
       });
       socket?.on("playing", () => {
-        alert(`you are already playing`);
+        toast.error("you are already playing", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert(`you are already playing`);
         router.push("/Home");
       });
     }

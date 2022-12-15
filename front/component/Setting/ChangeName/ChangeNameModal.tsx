@@ -46,7 +46,17 @@ const ChangeNameModal = ({
           router.push("/Home");
         } catch (err) {
           console.log(err);
-          alert(`${newNickName} is already exists`);
+          toast.error(`${newNickName} is already exists`, {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            rtl: false,
+            pauseOnFocusLoss: true,
+            draggable: false,
+            pauseOnHover: false,
+          });
+          //   alert(`${newNickName} is already exists`);
         } finally {
           setNewNickName("");
         }

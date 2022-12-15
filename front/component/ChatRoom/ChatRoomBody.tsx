@@ -11,6 +11,7 @@ import { IChatContent } from "../../interfaceType";
 import useSocket from "../Utils/socket";
 import { TypeChatId, IChatParticipant } from "../../interfaceType";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 export default function ChatRoomBody({ id }: { id: TypeChatId }) {
   const router = useRouter();
@@ -81,7 +82,17 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
             setIsMuted(true);
           }
           if (res.bannedAt) {
-            alert(`You are baned room name : [${roomData.chatroomName}]`);
+            toast.info(`You are baned from room: [${roomData.chatroomName}]`, {
+              position: "top-center",
+              autoClose: 1000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              rtl: false,
+              pauseOnFocusLoss: true,
+              draggable: false,
+              pauseOnHover: false,
+            });
+            // alert(`You are baned room name : [${roomData.chatroomName}]`);
             router.push("/Chat");
           }
         }
