@@ -10,11 +10,6 @@ const useSocket = (
 ): [Socket | undefined, () => void] => {
   const disconnect = useCallback(() => {
     if (socket[socketType]) {
-      console.log(
-        socket[socketType].id,
-        socketType,
-        "===================disconnet socket=============="
-      );
       socket[socketType].disconnect();
       delete socket[socketType];
     }
@@ -22,30 +17,13 @@ const useSocket = (
 
   if (!socket[socketType] && accessToken) {
     const path = socketType === "chat" ? "/chat" : "/game";
-    // if (socketType === "game") {
-    //   socket[socketType] = socketIOClient("http://localhost:8080", {
-    //     extraHeaders: {
-    //       accessToken,
-    //     },
-    //   });
-    // } else if (socketType === "chat") {
     socket[socketType] = socketIOClient("http://localhost:8080", {
       extraHeaders: {
         accessToken,
       },
       path,
     });
-
-    console.log(
-      `=================create new socket========================== ${socketType} ${socket.id}`
-    );
   }
-  // console.log(`backURL for ${socketType}`);
-  // } else {
-  // console.log("use socket in socket.ts");
-  // }
-  // console.log(socket);
-
   return [socket[socketType], disconnect];
 };
 
