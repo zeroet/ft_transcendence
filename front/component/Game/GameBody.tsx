@@ -172,6 +172,7 @@ export default function GameBody({
           text-shadow: 0 0 10px white;
           box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
           cursor: pointer;
+          margin-top: 150px;
         }
         .ring:before {
           content: "";

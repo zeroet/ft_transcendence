@@ -63,7 +63,7 @@ export default function Chat({
   return (
     <Layout>
       <Header id={id} />
-      <Title title="ChatRoom" />
+      <Title title="Chat" />
       {userData.two_factor_activated && !userData.two_factor_valid && (
         <TwoFactorModal />
       )}
