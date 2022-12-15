@@ -33,7 +33,6 @@ export default function Home({ accessToken }: { accessToken: string }) {
           minHeight: "600px",
         }}
       >
-        {/* {data.two_factor_activated && <TwoFactorModal />} */}
         <Profile id={data.id} />
         <FriendStatus id={data.id} />
       </div>
@@ -52,6 +51,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  // tokenManager(cookie);
   return { props: { accessToken } };
 };

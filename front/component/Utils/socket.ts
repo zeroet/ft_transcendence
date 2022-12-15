@@ -8,12 +8,13 @@ const useSocket = (
   accessToken: string | null,
   socketType: string
 ): [Socket | undefined, () => void] => {
-  const disconnect = useCallback(() => {
+  
+  const disconnect = () => {
     if (socket[socketType]) {
       socket[socketType].disconnect();
       delete socket[socketType];
     }
-  }, [socketType]);
+  };
 
   if (!socket[socketType] && accessToken) {
     const path = socketType === "chat" ? "/chat" : "/game";
