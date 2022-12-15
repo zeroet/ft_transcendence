@@ -137,7 +137,6 @@ export default function Gaming({
         statusChange("Login");
       }
       disconnect();
-      const [gameSocket] = useSocket(accessToken, "game");
     };
   }, [socket?.id]);
 

@@ -83,6 +83,9 @@ export default function App({ Component, pageProps }: AppProps) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookie = cookies(context);
   const { accessToken } = cookie;
+  if (accessToken) {
+    const [gameSocket] = useSocket(accessToken, "game");
+  }
   if (!accessToken) {
     return {
       redirect: {
