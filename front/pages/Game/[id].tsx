@@ -21,12 +21,8 @@ export default function Gaming({
 }) {
   const { data, error } = useSWR("/api/users");
   const [socket, disconnect] = useSocket(accessToken, "game");
-  // 게임오버 화면 만들어둠!
   const [isGameover, setIsGameover] = useState<boolean>(false);
-  // otherPlayerName없어서 대체용
-  // 방 이름 확인용. useEffect써서 리랜더링용
   const router = useRouter();
-  // 마운트 파트
   const [ballX, setBallX] = useState<number>(1375 / 2);
   const [ballY, setBallY] = useState<number>(725 / 2);
   const [ballSize, setBallSize] = useState<number>(50);
