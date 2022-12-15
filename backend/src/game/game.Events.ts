@@ -61,18 +61,19 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
     } catch (err) {
       throw new WsException('unauthorized connection');
     }
-    // let map = this.queuePv.values()
-    // for (const q of map)
-    // {
-    //   if (q.indexOf(client) != -1)
-    //   {
-    //       q[0].emit('Pcancel')
-    //       q[1].emit('Pcancel');
-    //       let user = await this.getUserfromSocket(q[0]);
-    //       this.queuePv.delete(user.id)
-    //       return ;
-    //   }
-    // }
+
+    let map = this.queuePv.values()
+    for (const q of map)
+    {
+      if (q.indexOf(client) != -1)
+      {
+          q[0].emit('Pcancel')
+          q[1].emit('Pcancel');
+          let user = await this.getUserfromSocket(q[0]);
+          this.queuePv.delete(user.id)
+          return ;
+      }
+    }
 
     // Queue case 
     
@@ -172,14 +173,29 @@ export class GameEvents implements OnGatewayConnection, OnGatewayDisconnect, OnG
       this.roomService.createRoom(this.queueNormal.Players[0], this.queueNormal.Players[1]);
   }
 
+  @SubscribeMessage('x')
+  x(@ConnectedSocket() client: Socket) {
+    console.log('xxxxxxxxxxxxxx')
+    if (!this.queueNormal.Players[0])
+      return ;
+    if (this.queueNormal.Players[0].id === client.id && this.queueNormal.size === 1) {
+      console.log('in the ifffffffff');
+      this.queueNormal.Players.splice(0, 1)
+      this.queueNormal.size = 0;
+      return ; 
+    }
+  }
+
   @SubscribeMessage('cancle')
   async cancel(@ConnectedSocket() client: Socket) {
     try {
-      if (this.queueNormal.Players[0].id === client.id && !this.queueNormal.Players[1]) {
+      if (this.queueNormal.Players[0].id === client.id && this.queueNormal.size === 1) {
         this.queueNormal.Players.splice(0,1);
         this.queueNormal.size = 0;
+        console.log('size 1111111111 cancel')
+        return ;
       }
-      
+  
       //ready 0 / 1 index
       if ((this.queueNormal.Players[0].id === client.id) || (this.queueNormal.Players[1].id === client.id)) {
         if (this.queueNormal.Players[0].id === client.id)
