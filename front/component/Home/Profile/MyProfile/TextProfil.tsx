@@ -27,14 +27,14 @@ const TextProfil = ({ id }: { id: number }) => {
   );
 
   useEffect(() => {
-    if (rankData < 10) {
-      setAchivement("/images/achivement/achivement.png");
-    } else if (rankData > 10 && rankData < 100) {
-      setAchivement("/images/achivement/2.png");
-    } else if (rankData > 100 && rankData < 1000) {
-      setAchivement("/images/achivement/3.png");
+    if (rankData === 0) {
+      setAchivement("/images/achivement/sesak.png");
+    } else if (rankData === 1) {
+      setAchivement("/images/achivement/bronze.png");
+    } else if (rankData > 1 && rankData <= 3) {
+      setAchivement("/images/achivement/silver.png");
     } else {
-      setAchivement("/images/achivement/4.png");
+      setAchivement("/images/achivement/gold.png");
     }
   }, [rankData, myData]);
 
@@ -47,16 +47,25 @@ const TextProfil = ({ id }: { id: number }) => {
   if (!user || !myData) return <Loading />;
   return (
     <div>
-      {id != myData.id && <h3>You see {user.intra_id}'s Profile</h3>}
       <div className="name">
-        <h1 className="userName">{user.username}</h1>
+        <h1 className="userName">
+          {user.username}
+          {id != myData.id && <span>'s Profile</span>}
+        </h1>
       </div>
       <div className="info" onClick={onClickShowImg}>
         <h2>ACHIVEMENT</h2>
-        <img src={achivement} width="30px" height={"30px"} />
+        <img src={achivement} width="30px" height="30px" />
       </div>
       {showAchivementExplainModal && (
-        <div className="achivement">achivement 소개</div>
+        <div className="achivement">
+          {rankData === 0 && <h1>Welcome Newbie! Let's play pong!!!</h1>}
+          {rankData === 1 && <h1>You've done 1 pong! Keep it up!</h1>}
+          {rankData > 1 && rankData <= 3 && (
+            <h1>Almost there! go for gold :D</h1>
+          )}
+          {rankData > 3 && <p>Best player ever!</p>}
+        </div>
       )}
       <style jsx>{`
         div {
@@ -78,14 +87,19 @@ const TextProfil = ({ id }: { id: number }) => {
           color: #000000;
         }
         h3 {
-          font-family: "Fragment Mono", monospace;
-          font-style: normal;
-          font-weight: 400;
-          font-size: 20px;
-          line-height: 30px;
-          /* or 150% */
-          text-transform: uppercase;
-          margin: 0px;
+          background-color: black;
+          //   font-family: "Fragment Mono", monospace;
+          //   //   font-style: normal;
+          color: white;
+          //   //   font-weight: 400;
+          //   // font-size: 20px;
+          //   line-height: 30px;
+          //   /* or 150% */
+          //   text-transform: uppercase;
+          //   //   margin: 0px;
+          //   margin-left: 600px;
+          //   margin-top: 0px;
+          //   margin-bottom: -30px;
         }
         .victory {
           color: green;
@@ -100,8 +114,8 @@ const TextProfil = ({ id }: { id: number }) => {
         .info {
           display: flex;
           align-items: center;
-          margin-bottom: 100px;
-          margin-left: 10px;
+          margin-bottom: 120px;
+          margin-left: 7px;
           //   background-color: yellow;
           cursor: pointer;
         }
