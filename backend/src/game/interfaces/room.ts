@@ -1,9 +1,6 @@
-import { RoomService } from "../room.service";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Inject, Injectable } from "@nestjs/common";
-import { MatchHistory } from "src/typeorm";
+import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io"
-import { Repository } from 'typeorm';
+
 
 type ball = {
     x: number;

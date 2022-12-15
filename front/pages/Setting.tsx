@@ -35,7 +35,6 @@ export default function Setting() {
         <style jsx>{`
           .dummy {
           }
-
           .set-list {
             // background-color: yellow;
             display: grid;
