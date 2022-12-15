@@ -67,7 +67,7 @@ export default function Gaming({
 
   useEffect((): (() => void) => {
     statusChange("Game");
-    
+
     socket?.emit("room-list");
 
     if (myRole === "watcher") {
@@ -149,10 +149,10 @@ export default function Gaming({
       )}
       <div className="header">
         <div className="home vibration" onClick={onClickHome}>
-          Home
+          Back to Home
         </div>
       </div>
-      <hr />
+      {/* <hr /> */}
       <div className="grid-div">
         <GameExplain />
         {isGameover ? (
@@ -163,6 +163,7 @@ export default function Gaming({
               <div className="players-name">{ownerName}</div>
               <div className="players-name">{playerName}</div>
             </div>
+            <div className="line"></div>
             <div className="score">
               <div className="score">{ownerScore}</div>
               <div className="score">{playerScore}</div>
@@ -186,14 +187,15 @@ export default function Gaming({
           }
           .home {
             color: white;
-            background-color: gray;
-            width: 100px;
+            background-color: black;
+            width: 150px;
             height: 30px;
             text-align: center;
             padding-top: 5px;
             margin-top: 30px;
             margin-bottom: 30px;
             cursor: pointer;
+            text-transform: uppercase;
           }
           .home:hover {
             background-color: red;
@@ -207,85 +209,83 @@ export default function Gaming({
             display: grid;
             grid-template-columns: 1fr 3fr;
           }
-
           *,
           *::after,
           *::before {
             box-sizing: border-box;
           }
-
-          :root {
-            --hue: 200;
-            --saturation: 0%;
-            --foreground-color: hsl(var(--hue), var(--saturation), 75%);
-            --background-color: hsl(var(--hue), var(--saturation), 20%);
-          }
-
+          //   :root {
+          //     --hue: 200;
+          //     --saturation: 0%;
+          //     --foreground-color: hsl(var(--hue), var(--saturation), 75%);
+          //     --background-color: hsl(var(--hue), var(--saturation), 20%);
+          //   }
           .play-game {
             //   padding: 10px;
             margin: 15px;
-            background-color: var(--background-color);
+            background-color: black;
+            // background-color: var(--background-color);
             overflow: hidden;
             width: 1500px;
             height: 750px;
           }
-
           .paddle {
             position: relative;
-            background-color: var(--foreground-color);
+            background-color: yellow;
+            // background-color: var(--foreground-color);
             width: 12px;
             top: calc(var(--position) * 1vh);
             height: 100px;
-            border-radius: 20%;
+            // border-radius: 20%;
             trasform: traslate(-50%);
           }
-
           .left {
             // --position: ${leftPaddle}px;
             top: ${leftPaddle - 160}px;
           }
-
           .right {
             // --position: ${rightPaddle}px;
             top: ${rightPaddle - 260}px;
             left: ${1500 - 10}px;
           }
-
           .score {
             display: flex;
             justify-content: center;
             font-weight: bold;
             font-size: 7vh;
-            color: var(--foregroud-color);
+            color: grey;
+            // color: var(--foregroud-color);
           }
-
           .players-name {
             display: flex;
             justify-content: center;
             font-weight: bold;
-            font-size: 5vh;
-            color: gray;
+            font-size: 3vh;
+            // color: white
+            color: grey;
+            text-transform: uppercase;
           }
-
           .score > * {
             flex-grow: 1;
             flex-basis: 0;
           }
-
           .players-name > * {
             flex-grow: 1;
             flex-basis: 0;
           }
-
           .ball {
             position: relative;
-            background-color: var(--foreground-color);
+            background-color: yellow;
+            // background-color: var(--foreground-color);
             left: ${ballX}px;
             top: ${ballY - 135}px;
             trasform: traslate(-50%, -50%);
             border-radius: 50%;
             width: ${ballSize / 2}px;
             height: ${ballSize / 2}px;
+          }
+          .inner {
+            background-color: white;
           }
         `}</style>
       </div>
