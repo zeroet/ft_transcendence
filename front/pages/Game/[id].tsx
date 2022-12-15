@@ -11,6 +11,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Gameover from "../../component/Game/PlayGame/Gameover";
 import GameExplain from "../../component/Game/PlayGame/GameExplain";
+import { toast } from "react-toastify";
 
 export default function Gaming({
   accessToken,
@@ -72,14 +73,34 @@ export default function Gaming({
 
     if (myRole === "watcher") {
       socket?.on("roomx", () => {
-        alert("방 이미 끝남. 나가!");
+        toast.error("Game already finished!", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("방 이미 끝남. 나가!");
         router.push("/Home");
       });
     }
 
     socket?.on("playing", () => {
       if (myRole === "watcher") {
-        alert("You are already playing");
+        toast.error("You're already playing!", {
+          position: "top-center",
+          autoClose: 500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("You are already playing");
         router.push("/Home");
       }
     });
@@ -133,7 +154,7 @@ export default function Gaming({
         statusChange("Login");
       }
       disconnect();
-      console.log('언 마운트 실행!')
+      console.log("언 마운트 실행!");
     };
   }, [socket?.id]);
 

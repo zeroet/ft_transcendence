@@ -45,7 +45,17 @@ const GameSettingModal = ({
       }
 
       if (roomList.includes(roomName)) {
-        alert("We have already same name of game");
+        toast.error("We have already same game name", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("We have already same name of game");
         setRoomName("");
         return;
       }
