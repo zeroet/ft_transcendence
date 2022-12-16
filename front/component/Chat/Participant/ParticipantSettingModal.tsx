@@ -6,15 +6,21 @@ import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
 
 const ParticipantSettingModal = ({
-  isOwner,
+  isOwnerMydata,
   userId,
   setShowModal,
   chatId,
+  isAdminParticipant,
+  isAdminMyData,
+  ownerId,
 }: {
-  isOwner: boolean;
+  isOwnerMydata: boolean;
   userId: number;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   chatId: string | null;
+  isAdminParticipant: boolean;
+  isAdminMyData: boolean;
+  ownerId: number | null;
 }) => {
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
@@ -22,6 +28,7 @@ const ParticipantSettingModal = ({
     "/api/users/block/list"
   );
   const [isBlock, setIsBlock] = useState<string>("Block");
+  const [isSetAdmin, setIsSetAdmin] = useState<string>("Set Admin");
   const { data: chatroomData, error: chatroomError } = useSWR(
     chatId ? `/api/chatroom/${chatId}/members` : null
   );
@@ -126,9 +133,7 @@ const ParticipantSettingModal = ({
           targetUserId: userId,
           ban: true,
         })
-        .then((res) => {
-          console.log(res);
-        })
+        .then(() => {})
         .catch((err) => console.log(err));
       setShowModal(false);
     },
@@ -144,29 +149,34 @@ const ParticipantSettingModal = ({
           targetUserId: userId,
           kick: true,
         })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => console.log(err));
+        .then(() => {})
+        .catch((err) => {
+          console.log(err);
+        });
       setShowModal(false);
     },
     [chatroomData, myData, userId]
   );
 
-  const onClickSetOwner = useCallback(
+  const onClickSetAdmin = useCallback(
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
       await axios
-        .patch(`/api/chatroom/${chatId}/owner`, {
+        .patch(`/api/chatroom/${chatId}/admin`, {
           targetUserId: userId,
+          isAdmin: isAdminParticipant ? false : true,
         })
         .then(() => {
-          setShowModal(false);
+          if (isAdminParticipant) {
+            setIsSetAdmin("Unset Admin");
+          } else {
+            setIsSetAdmin("Set Admin");
+          }
         })
         .catch((err) => console.log(err));
     },
-    [myData, userId]
+    [chatroomData, userId, isAdminParticipant]
   );
 
   const onClickDelete = useCallback(
@@ -191,7 +201,12 @@ const ParticipantSettingModal = ({
         setIsBlock("Unblock");
       }
     });
-  }, [myData, blockedListData, chatId]);
+    if (isAdminParticipant) {
+      setIsSetAdmin("Unset Admin");
+    } else {
+      setIsSetAdmin("Set Admin");
+    }
+  }, [myData, blockedListData, chatId, isAdminParticipant]);
 
   if (!myData || (chatId && (!blockedListData || !chatroomData)))
     return <Loading />;
@@ -214,7 +229,7 @@ const ParticipantSettingModal = ({
           Delete
         </div>
       )}
-      {isOwner && (
+      {(isOwnerMydata || isAdminMyData) && ownerId != userId && (
         <div>
           <div className="router-div" onClick={onClickMute}>
             Mute
@@ -225,9 +240,11 @@ const ParticipantSettingModal = ({
           <div className="router-div" onClick={onClickBan}>
             Ban
           </div>
-          <div className="router-div" onClick={onClickSetOwner}>
-            Set Owner
-          </div>
+          {isOwnerMydata && (
+            <div className="router-div" onClick={onClickSetAdmin}>
+              {isSetAdmin}
+            </div>
+          )}
         </div>
       )}
       <style jsx>{`

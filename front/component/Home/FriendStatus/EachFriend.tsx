@@ -29,10 +29,13 @@ export const EachFriend = ({
       </div>
       {showModal && (
         <ParticipantSettingModal
-          isOwner={false}
+          isOwnerMydata={false}
           userId={id}
           setShowModal={setShowModal}
           chatId={null}
+          isAdminParticipant={false}
+          isAdminMyData={false}
+          ownerId={null}
         />
       )}
       <style jsx>{`

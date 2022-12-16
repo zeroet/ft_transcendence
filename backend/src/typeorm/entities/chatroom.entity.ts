@@ -29,12 +29,11 @@ export class Chatroom implements IChatroom {
   @Column({ type: 'int', name: 'owner_id' })
   ownerId: number;
 
-  // @ApiProperty({
-  //   type: Number,
-  //   description: 'admin id',
-  // })
-  // @Column({ type: 'int', name: 'admin_id' })
-  // adminId: number;
+  @ApiProperty({
+    description: 'admin ids',
+  })
+  @Column('int', { array: true, name: 'admin_ids', default: [] })
+  adminIds: number[];
 
   @ApiProperty({
     type: String,

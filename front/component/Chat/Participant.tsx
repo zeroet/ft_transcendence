@@ -2,22 +2,12 @@ import styles from "../../styles/LayoutBox.module.css";
 import useSWR, { mutate } from "swr";
 import fetcher from "../Utils/fetcher";
 import Loading from "../errorAndLoading/Loading";
-import { TypeChatId, IChatMember } from "../../interfaceType";
+import { TypeChatId, IChatParticipant } from "../../interfaceType";
 import axios from "axios";
 import EachParticipant from "./Participant/EachParticipant";
 import useSocket from "../Utils/socket";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-/**
- *
- * id로 들어온값은 id / link가 있다.
- * id는 dm / chat의  id
- * link는  dm / chat을 구분하는 구분자
- *
- * api요청시에, link에 따라 다르게 요청을 보내야하기때문
- * useSWR을 따로만들어서 커스터마이징하도... 될듯
- *
- */
 export default function Participant({
   id,
   ownerId,
@@ -27,18 +17,20 @@ export default function Participant({
   ownerId: number | null;
   accessToken: string;
 }) {
-  // console.log("type chat id == ", id);
   const isId = Object.keys(id).length !== 0;
   const [socket] = useSocket(accessToken, "chat");
-  // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
   const { data: roomMembersData, error: roomMembersError } = useSWR<
-    IChatMember[]
+    IChatParticipant[]
   >(isId ? `/api/${id.link}/${id.id}/members` : null, isId ? fetcher : null);
   const { data: myData, error: myError } = useSWR("/api/users");
-  const { data: roomParticipantData } = useSWR<IChatMember[]>(
+  const { data: roomParticipantData } = useSWR<IChatParticipant[]>(
     isId ? `/api/${id.link}/${id.id}/participants` : null,
     isId ? fetcher : null
   );
+  const { data: chatroomData, error: chatRoomError } = useSWR(
+    `/api/chatroom/${id.id}`
+  );
+  const [myDataIsAdmin, setMyDataIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     socket?.on("newParticipantList", () => {
@@ -49,19 +41,31 @@ export default function Participant({
       mutate(`/api/${id.link}/${id.id}/members`);
       mutate(`/api/${id.link}/${id.id}`);
     });
+    if (chatroomData) {
+      setMyDataIsAdmin(chatroomData.adminIds?.includes(myData.id));
+    }
+
     return () => {
       socket?.off("newMemberList");
       socket?.off("newParticipantList");
     };
-  }, [socket?.id, roomMembersData, id.id, myData, roomParticipantData]);
+  }, [
+    socket?.id,
+    roomMembersData,
+    id.id,
+    myData,
+    roomParticipantData,
+    chatroomData,
+  ]);
 
-  if (roomMembersError || myError)
+  if (roomMembersError || myError || chatRoomError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (
     (isId && !roomMembersData) ||
     !socket ||
     (isId && !myData) ||
-    (isId && !roomParticipantData)
+    (isId && !roomParticipantData) ||
+    (isId && !chatroomData)
   )
     return <Loading />;
   return (
@@ -70,9 +74,9 @@ export default function Participant({
       <hr />
       <ul>
         {isId &&
-          roomParticipantData?.map((member: IChatMember) => {
+          roomParticipantData?.map((member: IChatParticipant) => {
             const color = { color: "red" };
-            roomMembersData?.map((loginMember: IChatMember) => {
+            roomMembersData?.map((loginMember: IChatParticipant) => {
               if (loginMember.userId === member.userId) {
                 color.color = "green";
               }
@@ -83,13 +87,23 @@ export default function Participant({
                   <EachParticipant
                     username={member.User.username}
                     userId={member.userId}
-                    isOwner={ownerId === myData.id}
+                    isOwnerMydata={ownerId === myData.id}
                     chatId={id.id}
                     color={color.color}
+                    isAdminParticipant={member.isAdmin}
+                    isAdminMyData={myDataIsAdmin}
+                    ownerId={ownerId}
                   />
                   {ownerId === member.userId && (
                     <img
                       src="/images/crown.png"
+                      width={"20px"}
+                      height={"20px"}
+                    />
+                  )}
+                  {ownerId !== member.userId && member.isAdmin && (
+                    <img
+                      src="/images/crown_bw.png"
                       width={"20px"}
                       height={"20px"}
                     />
