@@ -63,6 +63,7 @@ export class ChatroomService implements IChatroomService {
       .createQueryBuilder('chat_member')
       .where('chat_member.chatroom_id = :chatroomId', { chatroomId })
       .andWhere('chat_member.user_id = :userId', { userId })
+      .innerJoinAndSelect('chat_member.User', 'user')
       .getOne();
     return member;
   }
@@ -82,6 +83,7 @@ export class ChatroomService implements IChatroomService {
       .createQueryBuilder('chat_participant')
       .where('chat_participant.chatroom_id = :chatroomId', { chatroomId })
       .andWhere('chat_participant.user_id = :userId', { userId })
+      .innerJoinAndSelect('chat_participant.User', 'user')
       .getOne();
     return participant;
   }
@@ -91,6 +93,31 @@ export class ChatroomService implements IChatroomService {
     if (!participant) {
       throw new NotFoundException(
         `User of id:${userId} doesn't participate in the chatroom of id:${chatroomId}`,
+      );
+    }
+    return participant;
+  }
+
+  async findParticipantByIdWithUser(userId: number, chatroomId: number) {
+    const participant = await this.chatParticipantRepository
+      .createQueryBuilder('chat_participant')
+      .where('chat_participant.chatroom_id=:chatroomId', { chatroomId })
+      .andWhere('chat_participant.user_id=:userId', { userId })
+      .innerJoinAndSelect('chat_participant.User', 'user')
+      // .select(['chat_participant', 'user.username'])
+      .getOne();
+    return participant;
+  }
+
+  async findParticipantByIdOrFailWithUser(userId: number, chatroomId: number) {
+    const participant = await this.findParticipantByIdWithUser(
+      userId,
+      chatroomId,
+    );
+    if (!participant) {
+      throw new NotFoundException(
+        // `User of id:${userId} doesn't participate in the chatroom of id:${chatroomId}`,
+        `${participant.User.username} doesn't participate in the chatroom of id:${chatroomId}`,
       );
     }
     return participant;
@@ -404,7 +431,9 @@ export class ChatroomService implements IChatroomService {
       .innerJoinAndSelect('chat_participant.User', 'user')
       .select(['chat_participant', 'user.username', 'user.image_url'])
       .getMany();
-    // members = members.filter((member: any) => member.bannedAt === null);
+    // participants = participants.filter(
+    //   (participant: any) => participant.bannedAt === null,
+    // );
     // console.log('members:', members);
     return participants;
   }
@@ -434,13 +463,13 @@ export class ChatroomService implements IChatroomService {
       //   `User already participate in the chatroom of id:${chatroomId}`,
       // );
     }
-    console.log('ownerId:', chatroom.ownerId);
-    console.log('user.id:', user.id);
+    // console.log('ownerId:', chatroom.ownerId);
+    // console.log('user.id:', user.id);
     if (chatroom.ownerId === user.id) {
       isAdmin = true;
     }
 
-    console.log('isAdmin:', isAdmin);
+    // console.log('isAdmin:', isAdmin);
     const newParticipant = this.chatParticipantRepository.create({
       userId,
       isAdmin,
@@ -471,25 +500,30 @@ export class ChatroomService implements IChatroomService {
     //   updateParticipantDto.targetUserId,
     //   chatroomId,
     // );
-    const targetUser = await this.chatParticipantRepository
-      .createQueryBuilder('chat_participant')
-      .where('chat_participant.user_id=:id', {
-        id: updateParticipantDto.targetUserId,
-      })
-      .andWhere('chat_participant.chatroom_id=:chatroomId', { chatroomId })
-      .innerJoinAndSelect('chat_participant.User', 'user')
-      .select(['chat_participant', 'user.username'])
-      .getOne();
-    if (!targetUser) {
-      throw new NotFoundException(
-        `User of id:${updateParticipantDto.targetUserId} doesn't participate in the chatroom of id:${chatroomId}`,
-      );
-    }
+    const targetUser = await this.findParticipantByIdOrFail(
+      updateParticipantDto.targetUserId,
+      chatroomId,
+    );
+    // const targetUser = await this.chatParticipantRepository
+    //   .createQueryBuilder('chat_participant')
+    //   .where('chat_participant.user_id=:id', {
+    //     id: updateParticipantDto.targetUserId,
+    //   })
+    //   .andWhere('chat_participant.chatroom_id=:chatroomId', { chatroomId })
+    //   .innerJoinAndSelect('chat_participant.User', 'user')
+    //   .select(['chat_participant', 'user.username'])
+    //   .getOne();
+    // if (!targetUser) {
+    //   throw new NotFoundException(
+    //     `User of id:${updateParticipantDto.targetUserId} doesn't participate in the chatroom of id:${chatroomId}`,
+    //   );
+    // }
     console.log('test target user:', targetUser);
     let updatedParticipant = null;
     if (!participant.isAdmin) {
       throw new UnauthorizedException(
-        `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
+        `Username:${participant.User.username} is not an admin of chatroom of name:${chatroom.chatroomName}`,
+        // `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
       );
     }
     if (targetUser.userId === chatroom.ownerId) {
@@ -497,14 +531,14 @@ export class ChatroomService implements IChatroomService {
         `No permission to ban or kick or mute owner of chatroom`,
       );
     }
-    console.log('update participant: target user:', targetUser.User);
+    // console.log('update participant: target user:', targetUser.User);
     // console.log(
     //   'update participant: target user name:',
     //   targetUser.User.username,
     // );
     // ban
     if (updateParticipantDto.ban === true) {
-      console.log('update participant():', targetUser.bannedAt);
+      // console.log('update participant():', targetUser.bannedAt);
       if (targetUser.bannedAt === null) {
         this.addNewTimeout(
           `${targetUser.User.username}_banned`,
@@ -532,6 +566,7 @@ export class ChatroomService implements IChatroomService {
         chatroomId: chatroomId,
         targetUserId: targetUser.userId,
       });
+      // await this.deleteParticipants(targetUser.userId, chatroomId);
     }
     // mute
     else if (updateParticipantDto.mute === true) {
@@ -656,7 +691,8 @@ export class ChatroomService implements IChatroomService {
     // admin verification
     if (!participant.isAdmin) {
       throw new UnauthorizedException(
-        `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
+        // `User of id:${userId} is not an admin of chatroom of id:${chatroomId}`,
+        `Username:${participant.User.username} is not an admin of chatroom of name:${chatroom.chatroomName}`,
       );
     }
     if (targetUser.userId === chatroom.ownerId) {
