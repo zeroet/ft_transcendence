@@ -11,6 +11,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Gameover from "../../component/Game/PlayGame/Gameover";
 import GameExplain from "../../component/Game/PlayGame/GameExplain";
+import { toast } from "react-toastify";
 
 export default function Gaming({
   accessToken,
@@ -21,12 +22,8 @@ export default function Gaming({
 }) {
   const { data, error } = useSWR("/api/users");
   const [socket, disconnect] = useSocket(accessToken, "game");
-  // 게임오버 화면 만들어둠!
   const [isGameover, setIsGameover] = useState<boolean>(false);
-  // otherPlayerName없어서 대체용
-  // 방 이름 확인용. useEffect써서 리랜더링용
   const router = useRouter();
-  // 마운트 파트
   const [ballX, setBallX] = useState<number>(1375 / 2);
   const [ballY, setBallY] = useState<number>(725 / 2);
   const [ballSize, setBallSize] = useState<number>(50);
@@ -67,16 +64,43 @@ export default function Gaming({
 
   useEffect((): (() => void) => {
     statusChange("Game");
-    
+
     socket?.emit("room-list");
 
     if (myRole === "watcher") {
       socket?.emit("watchGame", router.query.id);
     }
 
+    if (myRole === "watcher") {
+      socket?.on("roomx", () => {
+        toast.error("Game already finished!", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("방 이미 끝남. 나가!");
+        router.push("/Home");
+      });
+    }
+
     socket?.on("playing", () => {
       if (myRole === "watcher") {
-        alert("You are already playing");
+        toast.error("You're already playing!", {
+          position: "top-center",
+          autoClose: 500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("You are already playing");
         router.push("/Home");
       }
     });
@@ -130,6 +154,7 @@ export default function Gaming({
         statusChange("Login");
       }
       disconnect();
+      console.log("언 마운트 실행!");
     };
   }, [socket?.id]);
 
@@ -149,20 +174,21 @@ export default function Gaming({
       )}
       <div className="header">
         <div className="home vibration" onClick={onClickHome}>
-          Home
+          Back to Home
         </div>
       </div>
-      <hr />
+      {/* <hr /> */}
       <div className="grid-div">
         <GameExplain />
         {isGameover ? (
-          <Gameover winOrLose={winOrLose} />
+          <Gameover winOrLose={winOrLose} accessToken={accessToken} />
         ) : (
           <div className="play-game">
             <div className="players-name">
               <div className="players-name">{ownerName}</div>
               <div className="players-name">{playerName}</div>
             </div>
+            <div className="line"></div>
             <div className="score">
               <div className="score">{ownerScore}</div>
               <div className="score">{playerScore}</div>
@@ -186,14 +212,15 @@ export default function Gaming({
           }
           .home {
             color: white;
-            background-color: gray;
-            width: 100px;
+            background-color: black;
+            width: 150px;
             height: 30px;
             text-align: center;
             padding-top: 5px;
             margin-top: 30px;
             margin-bottom: 30px;
             cursor: pointer;
+            text-transform: uppercase;
           }
           .home:hover {
             background-color: red;
@@ -207,85 +234,83 @@ export default function Gaming({
             display: grid;
             grid-template-columns: 1fr 3fr;
           }
-
           *,
           *::after,
           *::before {
             box-sizing: border-box;
           }
-
-          :root {
-            --hue: 200;
-            --saturation: 0%;
-            --foreground-color: hsl(var(--hue), var(--saturation), 75%);
-            --background-color: hsl(var(--hue), var(--saturation), 20%);
-          }
-
+          //   :root {
+          //     --hue: 200;
+          //     --saturation: 0%;
+          //     --foreground-color: hsl(var(--hue), var(--saturation), 75%);
+          //     --background-color: hsl(var(--hue), var(--saturation), 20%);
+          //   }
           .play-game {
             //   padding: 10px;
             margin: 15px;
-            background-color: var(--background-color);
+            background-color: black;
+            // background-color: var(--background-color);
             overflow: hidden;
             width: 1500px;
             height: 750px;
           }
-
           .paddle {
             position: relative;
-            background-color: var(--foreground-color);
+            background-color: yellow;
+            // background-color: var(--foreground-color);
             width: 12px;
             top: calc(var(--position) * 1vh);
             height: 100px;
-            border-radius: 20%;
+            // border-radius: 20%;
             trasform: traslate(-50%);
           }
-
           .left {
             // --position: ${leftPaddle}px;
             top: ${leftPaddle - 160}px;
           }
-
           .right {
             // --position: ${rightPaddle}px;
             top: ${rightPaddle - 260}px;
             left: ${1500 - 10}px;
           }
-
           .score {
             display: flex;
             justify-content: center;
             font-weight: bold;
             font-size: 7vh;
-            color: var(--foregroud-color);
+            color: grey;
+            // color: var(--foregroud-color);
           }
-
           .players-name {
             display: flex;
             justify-content: center;
             font-weight: bold;
-            font-size: 5vh;
-            color: gray;
+            font-size: 3vh;
+            // color: white
+            color: grey;
+            text-transform: uppercase;
           }
-
           .score > * {
             flex-grow: 1;
             flex-basis: 0;
           }
-
           .players-name > * {
             flex-grow: 1;
             flex-basis: 0;
           }
-
           .ball {
             position: relative;
-            background-color: var(--foreground-color);
+            background-color: yellow;
+            // background-color: var(--foreground-color);
             left: ${ballX}px;
             top: ${ballY - 135}px;
             trasform: traslate(-50%, -50%);
             border-radius: 50%;
             width: ${ballSize / 2}px;
             height: ${ballSize / 2}px;
+          }
+          .inner {
+            background-color: white;
           }
         `}</style>
       </div>

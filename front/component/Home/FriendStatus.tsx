@@ -23,7 +23,7 @@ export default function FriendStatus({ id }: { id: number }) {
   if (!friendListData || !chatSocket) return <Loading />;
   return (
     <div className={styles.box}>
-      <h1>My Friend Status</h1>
+      <h1>Friend Status</h1>
       <hr />
       <ul>
         {friendListData &&
@@ -37,17 +37,21 @@ export default function FriendStatus({ id }: { id: number }) {
               color.color = "yellow";
             }
             return (
-              <div key={eachFriend.id}>
+              <li key={eachFriend.id}>
                 <EachFriend
                   color={color.color}
                   friendUsername={eachFriend.friendUsername}
                   id={eachFriend.friendUserId}
                 />
-              </div>
+              </li>
             );
           })}
       </ul>
       <style jsx>{`
+        li {
+          list-style: none;
+          margin-left: -20px;
+        }
         h1 {
           font-family: "Fragment Mono", monospace;
           font-size: 25px;

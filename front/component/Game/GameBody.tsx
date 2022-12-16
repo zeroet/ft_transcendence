@@ -72,7 +72,7 @@ export default function GameBody({
         setSettingModal(false);
         toast.error("Game Canceled!", {
           position: "top-center",
-          autoClose: 3000,
+          autoClose: 500,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,
@@ -82,19 +82,29 @@ export default function GameBody({
         });
       });
       socket?.on("playing", () => {
-        alert(`you are already playing`);
+        toast.error("you are already playing", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert(`you are already playing`);
         router.push("/Home");
       });
     }
     return () => {
       if (!isOwner) {
+        socket?.emit("x");
         socket?.off("createRoom");
         socket?.off("playing");
         socket?.off("close");
       }
     };
   }, [socket, ownerOrPlayer, myData]);
-
   if (!socket || !myData) return <Loading />;
   return (
     <div className={styles.box}>
@@ -172,6 +182,7 @@ export default function GameBody({
           text-shadow: 0 0 10px white;
           box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
           cursor: pointer;
+          margin-top: 150px;
         }
         .ring:before {
           content: "";

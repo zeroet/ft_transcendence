@@ -32,7 +32,7 @@ const GameSettingModal = ({
       if (!roomName) {
         toast.error("Room name must have more than 1 character", {
           position: "top-center",
-          autoClose: 3000,
+          autoClose: 1000,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,
@@ -45,7 +45,17 @@ const GameSettingModal = ({
       }
 
       if (roomList.includes(roomName)) {
-        alert("We have already same name of game");
+        toast.error("We have already same game name", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: false,
+        });
+        // alert("We have already same name of game");
         setRoomName("");
         return;
       }
@@ -101,7 +111,7 @@ const GameSettingModal = ({
   useEffect((): (() => void) => {
     toast.success("player matched!", {
       position: "top-center",
-      autoClose: 3000,
+      autoClose: 500,
       hideProgressBar: true,
       closeOnClick: true,
       rtl: false,
@@ -157,8 +167,8 @@ const GameSettingModal = ({
               value={speed}
               className="input-speedbar"
               type="range"
-              min="30"
-              max="80"
+              min="10"
+              max="90"
             />
           </div>
           <div className="div-ballsizebar">
@@ -168,14 +178,14 @@ const GameSettingModal = ({
               value={ballSize}
               className="input-ballsizebar"
               type="range"
-              min="30"
-              max="80"
+              min="10"
+              max="90"
             />
           </div>
         </div>
         <div className="buttonDiv">
           <button onClick={onClickSubmit} className="ready">
-            Ready
+            Start
           </button>
           <button onClick={closeSettingModal} className="cancel">
             Cancel
@@ -187,14 +197,12 @@ const GameSettingModal = ({
           font-weight: bold;
         }
         .p-roomname {
-          //   background-color: red;
           margin-right: 20px;
           margin-left: 30px;
         }
         .input-name {
           width: 320px;
           height: 30px;
-          //   margin-top: 10px;
           border-top: none;
           border-left: none;
           border-right: none;
@@ -204,10 +212,8 @@ const GameSettingModal = ({
           font-size: 17px;
         }
         .input-div-roomname {
-          //   background-color: red;
           margin-top: 5px;
           display: flex;
-          //   height: 40px;
         }
         .submitform {
           display: grid;
@@ -243,7 +249,6 @@ const GameSettingModal = ({
         .div-speedbar {
           display: flex;
           margin-left: 30px;
-          //   margin-top: 5px;
         }
 
         .input-speedbar {
@@ -251,7 +256,6 @@ const GameSettingModal = ({
           margin-left: 57px;
         }
         .div-ballsizebar {
-          //   margin-top: 5px;
           display: flex;
           margin-left: 30px;
         }
@@ -287,7 +291,6 @@ const GameSettingModal = ({
           cursor: pointer;
         }
         input[type="range"] {
-          //   width: 100%;
           -webkit-appearance: none;
           background: transparent;
         }
@@ -295,10 +298,7 @@ const GameSettingModal = ({
           outline: none;
         }
         input[type="range"]::-webkit-slider-runnable-track {
-          //   width: 100%;
-          //   height: 100%;
           cursor: pointer;
-          //   border-radius: 5px;
           border: 1px solid black;
         }
 
@@ -307,9 +307,7 @@ const GameSettingModal = ({
           width: 10px;
           height: 10px;
           background: black;
-          //   box-shadow: 1px 1px 7px gray;
           cursor: pointer;
-          //   box-shadow: -100vw 0 0 100vw #ff96ab;
         }
       `}</style>
     </div>

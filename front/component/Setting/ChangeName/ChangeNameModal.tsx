@@ -46,14 +46,24 @@ const ChangeNameModal = ({
           router.push("/Home");
         } catch (err) {
           console.log(err);
-          alert(`${newNickName} is already exists`);
+          toast.error(`${newNickName} is already exists`, {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            rtl: false,
+            pauseOnFocusLoss: true,
+            draggable: false,
+            pauseOnHover: false,
+          });
+          //   alert(`${newNickName} is already exists`);
         } finally {
           setNewNickName("");
         }
       } else {
         toast.error("nickname should be 1 ~ 30 characters", {
           position: "top-center",
-          autoClose: 3000,
+          autoClose: 2000,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,

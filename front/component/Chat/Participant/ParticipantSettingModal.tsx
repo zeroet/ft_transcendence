@@ -245,7 +245,7 @@ const ParticipantSettingModal = ({
           text-transform: uppercase;
           font-size: 15px;
           background-color: white;
-          box-shadow: 10px 10px 2px 2px;
+          box-shadow: 5px 10px;
           overflow: visible;
         }
         .router-div {

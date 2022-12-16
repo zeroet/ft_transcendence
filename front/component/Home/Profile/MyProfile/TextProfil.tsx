@@ -27,14 +27,14 @@ const TextProfil = ({ id }: { id: number }) => {
   );
 
   useEffect(() => {
-    if (rankData < 10) {
-      setAchivement("/images/achivement/achivement.png");
-    } else if (rankData > 10 && rankData < 100) {
-      setAchivement("/images/achivement/2.png");
-    } else if (rankData > 100 && rankData < 1000) {
-      setAchivement("/images/achivement/3.png");
+    if (rankData === 0) {
+      setAchivement("/images/achivement/sesak.png");
+    } else if (rankData === 1) {
+      setAchivement("/images/achivement/bronze.png");
+    } else if (rankData > 1 && rankData <= 4) {
+      setAchivement("/images/achivement/silver.png");
     } else {
-      setAchivement("/images/achivement/4.png");
+      setAchivement("/images/achivement/gold.png");
     }
   }, [rankData, myData]);
 
@@ -47,18 +47,60 @@ const TextProfil = ({ id }: { id: number }) => {
   if (!user || !myData) return <Loading />;
   return (
     <div>
-      {id != myData.id && <h3>You see {user.intra_id}'s Profile</h3>}
       <div className="name">
-        <h1 className="userName">{user.username}</h1>
+        <h1 className="userName">
+          {user.username}
+          {id != myData.id && <span>'s Profile</span>}
+        </h1>
       </div>
       <div className="info" onClick={onClickShowImg}>
         <h2>ACHIVEMENT</h2>
-        <img src={achivement} width="30px" height={"30px"} />
+        <img src={achivement} width="30px" height="30px" />
       </div>
       {showAchivementExplainModal && (
-        <div className="achivement">achivement 소개</div>
+        <div className="achivement">
+          {rankData === 0 && (
+            <div>
+              <span>Your level: NEWBIE</span>
+              <span className="achivement-text">
+                Welcome Newbie! Let's play pong!!!
+              </span>
+            </div>
+          )}
+          {rankData === 1 && (
+            <div>
+              <span>Your level: BRONZE</span>
+              <span className="achivement-text">
+                You've done 1 pong! Keep it up!
+              </span>
+            </div>
+          )}
+          {rankData > 1 && rankData <= 3 && (
+            <div>
+              <span>Your level: SILVER</span>
+              <span className="achivement-text">
+                Almost there! go for gold :D
+              </span>
+            </div>
+          )}
+          {rankData > 3 && (
+            <div>
+              <span>Your level: GOLD</span>
+              <span className="achivement-text">Best player ever!</span>
+            </div>
+          )}
+        </div>
       )}
       <style jsx>{`
+        .achivement-text {
+          color: blue;
+          animation: blink-effect 1s step-end infinite;
+        }
+        @keyframes blink-effect {
+          50% {
+            opacity: 0;
+          }
+        }
         div {
           display: grid;
           margin-left: 5px;
@@ -77,16 +119,6 @@ const TextProfil = ({ id }: { id: number }) => {
           text-transform: uppercase;
           color: #000000;
         }
-        h3 {
-          font-family: "Fragment Mono", monospace;
-          font-style: normal;
-          font-weight: 400;
-          font-size: 20px;
-          line-height: 30px;
-          /* or 150% */
-          text-transform: uppercase;
-          margin: 0px;
-        }
         .victory {
           color: green;
         }
@@ -100,15 +132,16 @@ const TextProfil = ({ id }: { id: number }) => {
         .info {
           display: flex;
           align-items: center;
-          margin-bottom: 100px;
-          margin-left: 10px;
+          margin-bottom: 120px;
+          margin-left: 7px;
           //   background-color: yellow;
           cursor: pointer;
         }
         .achivement {
           //   background-color: red;
-          margin-top: -110px;
-          margin-left: 10px;
+          margin-top: -125px;
+          height: 100px;
+          //   margin-left: 10px;
           //   border: 1px solid black;
         }
       `}</style>

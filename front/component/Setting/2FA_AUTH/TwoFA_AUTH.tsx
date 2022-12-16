@@ -62,7 +62,7 @@ const TwoFA_AUTH = ({
             console.log(e);
             toast.error("Wrong code", {
               position: "top-center",
-              autoClose: 3000,
+              autoClose: 2000,
               hideProgressBar: true,
               closeOnClick: true,
               rtl: false,

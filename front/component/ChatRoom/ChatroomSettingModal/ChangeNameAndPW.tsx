@@ -29,7 +29,7 @@ const ChangeNameAndPW = ({
       if (RoomPw && RoomPw.length < 4 && RoomPw.length > 0) {
         toast.error("Password should more than 4 character", {
           position: "top-center",
-          autoClose: 3000,
+          autoClose: 2000,
           hideProgressBar: true,
           closeOnClick: true,
           rtl: false,

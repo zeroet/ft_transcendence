@@ -39,27 +39,43 @@ export default function GameList({ accessToken }: { accessToken: string }) {
       {roomList &&
         roomList.map((roomName: string) => {
           return (
-            <Link
-              href={{
-                pathname: `/Game/${roomName}`,
-                query: { myRole: "watcher" },
-              }}
-              key={roomName}
-            >
-              <div className="room-name">
-                <strong> # {roomName}</strong>
-              </div>
-            </Link>
+            <ul>
+              <Link
+                href={{
+                  pathname: `/Game/${roomName}`,
+                  query: { myRole: "watcher" },
+                }}
+                key={roomName}
+                legacyBehavior
+              >
+                <a>
+                  <li className="room-name">
+                    <img src="/images/watcher.png" /> {roomName}
+                  </li>
+                </a>
+              </Link>
+            </ul>
           );
         })}
       <style jsx>{`
         .room-name {
-          padding-left: 30px;
+          display: flex;
+        }
+        img {
+          width: 20px;
+          height: auto;
+        }
+        li {
+          list-style: none;
           margin-top: 15px;
+          margin-left: -30px;
+          font-size: 20px;
+        }
+        a {
+          text-decoration: none;
+          color: black;
         }
         strong {
-          font-size: 20px;
-
           color: black;
         }
         h1 {

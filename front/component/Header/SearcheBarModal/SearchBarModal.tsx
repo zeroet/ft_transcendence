@@ -80,6 +80,7 @@ const SearchBarModal = ({
           background-color: black;
           border: 1px solid black;
           cursor: pointer;
+          margin-right: 2px;
         }
         .vide {
           width: 30px;
