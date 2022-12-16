@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-// import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
 import {
@@ -98,31 +97,6 @@ export class ChatroomService implements IChatroomService {
     return participant;
   }
 
-  // async findParticipantByIdWithUser(userId: number, chatroomId: number) {
-  //   const participant = await this.chatParticipantRepository
-  //     .createQueryBuilder('chat_participant')
-  //     .where('chat_participant.chatroom_id=:chatroomId', { chatroomId })
-  //     .andWhere('chat_participant.user_id=:userId', { userId })
-  //     .innerJoinAndSelect('chat_participant.User', 'user')
-  //     // .select(['chat_participant', 'user.username'])
-  //     .getOne();
-  //   return participant;
-  // }
-
-  // async findParticipantByIdOrFailWithUser(userId: number, chatroomId: number) {
-  //   const participant = await this.findParticipantByIdWithUser(
-  //     userId,
-  //     chatroomId,
-  //   );
-  //   if (!participant) {
-  //     throw new NotFoundException(
-  //       // `User of id:${userId} doesn't participate in the chatroom of id:${chatroomId}`,
-  //       `${participant.User.username} doesn't participate in the chatroom of id:${chatroomId}`,
-  //     );
-  //   }
-  //   return participant;
-  // }
-
   async findChatroomByIdOrFail(chatroomId: number) {
     const chatroom = await this.chatroomRepository
       .createQueryBuilder('chatroom')
@@ -155,28 +129,6 @@ export class ChatroomService implements IChatroomService {
     return chatroom;
   }
 
-  async getAdmins() {
-    let chatrooms = await this.getChatrooms();
-    await Promise.all(
-      chatrooms.map(async (chatroom: any) => {
-        // let admins = [];
-        // if (chatroom.password !== null) chatroom.isPrivate = true;
-        // else chatroom.isPrivate = false;
-        const participants = await this.getParticipants(chatroom.id);
-        participants.forEach((participant) => {
-          return participant.isAdmin;
-        });
-        const admins = participants.map((participant) => {
-          if (participant.isAdmin) return participant.userId;
-        });
-        chatroom['admins'] = admins;
-        console.log('admins chatroom:', chatroom);
-        // const { password, ...result } = chatroom;
-        // return result;
-      }),
-    );
-  }
-
   async getChatroomsInfo(chatrooms: IChatroom[]) {
     return await Promise.all(
       chatrooms.map((chatroom: any) => {
@@ -200,24 +152,10 @@ export class ChatroomService implements IChatroomService {
   ) {
     const callback = async () => {
       console.log(`Timeout ${timeoutName} executing after ${milliseconds}`);
-      // const targetUser = await this.findParticipantById(
-      //   targetUserId,
-      //   chatroomId,
-      // );
-      const targetUser = await this.chatParticipantRepository
-        .createQueryBuilder('chat_participant')
-        .where('chat_participant.user_id=:id', {
-          id: targetUserId,
-        })
-        .andWhere('chat_participant.chatroom_id=:chatroomId', { chatroomId })
-        .innerJoinAndSelect('chat_participant.User', 'user')
-        .select(['chat_participant', 'user.username'])
-        .getOne();
-      if (!targetUser) {
-        throw new NotFoundException(
-          `User of id:${targetUserId} doesn't participate in the chatroom of id:${chatroomId}`,
-        );
-      }
+      const targetUser = await this.findParticipantByIdOrFail(
+        targetUserId,
+        chatroomId,
+      );
       if (targetUser) {
         if (timeoutName === `${targetUser.User.username}_banned`) {
           targetUser.bannedAt = null;
@@ -243,24 +181,10 @@ export class ChatroomService implements IChatroomService {
       console.log(
         `update Timeout name: ${timeoutName} executing after ${milliseconds}`,
       );
-      // const targetUser = await this.findParticipantById(
-      //   targetUserId,
-      //   chatroomId,
-      // );
-      const targetUser = await this.chatParticipantRepository
-        .createQueryBuilder('chat_participant')
-        .where('chat_participant.user_id=:id', {
-          id: targetUserId,
-        })
-        .andWhere('chat_participant.chatroom_id=:chatroomId', { chatroomId })
-        .innerJoinAndSelect('chat_participant.User', 'user')
-        .select(['chat_participant', 'user.username'])
-        .getOne();
-      if (!targetUser) {
-        throw new NotFoundException(
-          `User of id:${targetUserId} doesn't participate in the chatroom of id:${chatroomId}`,
-        );
-      }
+      const targetUser = await this.findParticipantByIdOrFail(
+        targetUserId,
+        chatroomId,
+      );
       if (targetUser) {
         if (timeoutName === `${targetUser.User.username}_banned`) {
           targetUser.bannedAt = null;
@@ -300,8 +224,6 @@ export class ChatroomService implements IChatroomService {
     userId: number,
     createChatroomDto: CreateChatroomDto,
   ): Promise<ChatroomDto> {
-    // console.log('password:', createChatroomDto.password);
-    // console.log('typeof userId:', userId, typeof userId);
     const user = await this.userRepository.findOneByOrFail({ id: userId });
     // const queryRunner = this.dataSource.createQueryRunner();
     // queryRunner.connect();
@@ -323,13 +245,12 @@ export class ChatroomService implements IChatroomService {
     // console.log('hashedPassword:', hashedPassword);
     const newChatroom = this.chatroomRepository.create({
       ownerId: userId,
-      // adminId: userId,
       chatroomName,
       password: hashedPassword,
     });
     const createdChatroom = await this.chatroomRepository.save(newChatroom);
     this.chatEventsGateway.server.emit('newRoomList', createdChatroom);
-    console.log(newChatroom);
+    // console.log(newChatroom);
     const result = await this.getChatroomsInfo([newChatroom]);
     return result[0];
   }
@@ -337,7 +258,7 @@ export class ChatroomService implements IChatroomService {
   async getOneChatroom(chatroomId: number): Promise<ChatroomDto> {
     // console.log('getOneChatroom() typeof chatroomId:', typeof chatroomId);
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
-    console.log('current chatroom info:', chatroom);
+    // console.log('current chatroom info:', chatroom);
     const result = await this.getChatroomsInfo([chatroom]);
     console.log(result[0]);
     return result[0];
@@ -347,7 +268,7 @@ export class ChatroomService implements IChatroomService {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
     const removedChatroom = await this.chatroomRepository.remove(chatroom);
-    console.log('removed chatroom:', removedChatroom);
+    // console.log('removed chatroom:', removedChatroom);
     this.chatEventsGateway.server.emit('deleteChatroom', chatroomId);
     this.chatEventsGateway.server.emit('newRoomList', removedChatroom);
     this.chatEventsGateway.server.emit('newMemberList', null);
@@ -417,8 +338,6 @@ export class ChatroomService implements IChatroomService {
     targetUserId: number,
     isAdmin: boolean,
   ) {
-    // console.log('targetUserid:', targetUserId);
-    // console.log('chatroomId:', chatroomId);
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
     const targetUser = await this.findParticipantByIdOrFail(
@@ -431,8 +350,6 @@ export class ChatroomService implements IChatroomService {
       );
     }
     targetUser.isAdmin = isAdmin;
-
-    // const updatedChatroom = await this.chatroomRepository.save(chatroom);
     const updatedParticipant = await this.chatParticipantRepository.save(
       targetUser,
     );
@@ -476,28 +393,9 @@ export class ChatroomService implements IChatroomService {
     const user = await this.findUserByIdOrFail(userId);
     const participant = await this.findParticipantById(userId, chatroomId);
     let isAdmin = false;
-    // if (participant && participant.bannedAt !== null) {
-    //   console.log(
-    //     `User is banned from the chatroom of id${chatroomId}`,
-    //     participant,
-    //   );
-    //   return;
-    // throw new UnauthorizedException(
-    //   `User is banned from the chatroom of id:${chatroomId}`,
-    // );
-    // } else
     if (participant) {
-      // console.log(
-      //   `User already participate in the chatroom of id:${chatroomId}`,
-      //   participant,
-      // );
       return;
-      // throw new BadRequestException(
-      //   `User already participate in the chatroom of id:${chatroomId}`,
-      // );
     }
-    // console.log('ownerId:', chatroom.ownerId);
-    // console.log('user.id:', user.id);
     if (chatroom.ownerId === user.id) {
       isAdmin = true;
     }
@@ -534,28 +432,10 @@ export class ChatroomService implements IChatroomService {
       userId,
       chatroomId,
     );
-    // const targetUser = await this.findParticipantByIdOrFail(
-    //   updateParticipantDto.targetUserId,
-    //   chatroomId,
-    // );
     const targetUser = await this.findParticipantByIdOrFail(
       updateParticipantDto.targetUserId,
       chatroomId,
     );
-    // const targetUser = await this.chatParticipantRepository
-    //   .createQueryBuilder('chat_participant')
-    //   .where('chat_participant.user_id=:id', {
-    //     id: updateParticipantDto.targetUserId,
-    //   })
-    //   .andWhere('chat_participant.chatroom_id=:chatroomId', { chatroomId })
-    //   .innerJoinAndSelect('chat_participant.User', 'user')
-    //   .select(['chat_participant', 'user.username'])
-    //   .getOne();
-    // if (!targetUser) {
-    //   throw new NotFoundException(
-    //     `User of id:${updateParticipantDto.targetUserId} doesn't participate in the chatroom of id:${chatroomId}`,
-    //   );
-    // }
     console.log('test target user:', targetUser);
     let updatedParticipant = null;
     if (!participant.isAdmin) {
@@ -569,14 +449,8 @@ export class ChatroomService implements IChatroomService {
         `No permission to ban or kick or mute owner of chatroom`,
       );
     }
-    // console.log('update participant: target user:', targetUser.User);
-    // console.log(
-    //   'update participant: target user name:',
-    //   targetUser.User.username,
-    // );
     // ban
     if (updateParticipantDto.ban === true) {
-      // console.log('update participant():', targetUser.bannedAt);
       if (targetUser.bannedAt === null) {
         this.addNewTimeout(
           `${targetUser.User.username}_banned`,
@@ -604,7 +478,6 @@ export class ChatroomService implements IChatroomService {
         chatroomId: chatroomId,
         targetUserId: targetUser.userId,
       });
-      // await this.deleteParticipants(targetUser.userId, chatroomId);
     }
     // mute
     else if (updateParticipantDto.mute === true) {
@@ -670,23 +543,9 @@ export class ChatroomService implements IChatroomService {
   }
 
   async postMembers(userId: number, chatroomId: number) {
-    // try {
-    //   this.postParticipants(userId, chatroomId);
-    // } catch (e) {
-    //   return e;
-    // }
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
     const member = await this.findMemberById(userId, chatroomId);
-    // if (member && member.bannedAt !== null) {
-    //   console.log(
-    //     `User is banned from the chatroom of id${chatroomId}`,
-    //     member,
-    //   );
-    //   throw new UnauthorizedException(
-    //     `User is banned from the chatroom of id:${chatroomId}`,
-    //   );
-    // } else
     if (member) {
       console.log(
         `User already exists in the chatroom of id:${chatroomId}`,
@@ -771,9 +630,6 @@ export class ChatroomService implements IChatroomService {
       .innerJoinAndSelect('chat_content.User', 'user')
       .select(['chat_content', 'user.username'])
       .getMany();
-    if (contents) {
-      // console.log('contents', contents);
-    }
     if (Blockedusers.length > 0) {
       for (let i = 0; i < contents.length; i++) {
         for (let j = 0; j < Blockedusers.length; j++) {
@@ -792,10 +648,6 @@ export class ChatroomService implements IChatroomService {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
-
-    // if (member.mutedAt !== null) {
-    //   return;
-    // }
     const newContent = this.chatContentRepository.create({
       userId,
       chatroomId,

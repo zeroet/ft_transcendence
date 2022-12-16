@@ -124,7 +124,7 @@ export class AuthService implements IAuthService {
       .createQueryBuilder('users')
       .where('users.intra_id=:intra_id', { intra_id })
       .getOne();
-    console.log('dummyuser:', user);
+    // console.log('dummyuser:', user);
     return user;
   }
 
@@ -134,7 +134,7 @@ export class AuthService implements IAuthService {
   }
 
   async createDummyUser() {
-    console.log('createDummyUser()');
+    // console.log('createDummyUser()');
     let name = 'dummy';
     let userDetails = {
       intra_id: name,

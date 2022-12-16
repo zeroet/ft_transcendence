@@ -58,7 +58,7 @@ export class AuthController {
   @Post('dummy')
   async test(@Res({ passthrough: true }) res) {
     const user = await this.authService.createDummyUser();
-    console.log('test:', user);
+    // console.log('test:', user);
 
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
