@@ -382,6 +382,7 @@ export class ChatroomService implements IChatroomService {
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const user = await this.findUserByIdOrFail(userId);
     const participant = await this.findParticipantById(userId, chatroomId);
+    let isAdmin = false;
     // if (participant && participant.bannedAt !== null) {
     //   console.log(
     //     `User is banned from the chatroom of id${chatroomId}`,
@@ -402,9 +403,16 @@ export class ChatroomService implements IChatroomService {
       //   `User already participate in the chatroom of id:${chatroomId}`,
       // );
     }
+    console.log('ownerId:', chatroom.ownerId);
+    console.log('user.id:', user.id);
+    if (chatroom.ownerId === user.id) {
+      isAdmin = true;
+    }
 
+    console.log('isAdmin:', isAdmin);
     const newParticipant = this.chatParticipantRepository.create({
       userId,
+      isAdmin,
       chatroomId,
       Chatroom: chatroom,
       User: user,
