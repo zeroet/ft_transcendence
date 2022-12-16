@@ -8,16 +8,6 @@ import EachParticipant from "./Participant/EachParticipant";
 import useSocket from "../Utils/socket";
 import { useEffect } from "react";
 
-/**
- *
- * id로 들어온값은 id / link가 있다.
- * id는 dm / chat의  id
- * link는  dm / chat을 구분하는 구분자
- *
- * api요청시에, link에 따라 다르게 요청을 보내야하기때문
- * useSWR을 따로만들어서 커스터마이징하도... 될듯
- *
- */
 export default function Participant({
   id,
   ownerId,
@@ -27,10 +17,8 @@ export default function Participant({
   ownerId: number | null;
   accessToken: string;
 }) {
-  // console.log("type chat id == ", id);
   const isId = Object.keys(id).length !== 0;
   const [socket] = useSocket(accessToken, "chat");
-  // link가 chat일때! 나머지는 뒤에 null빼고 dm넣으면됨
   const { data: roomMembersData, error: roomMembersError } = useSWR<
     IChatMember[]
   >(isId ? `/api/${id.link}/${id.id}/members` : null, isId ? fetcher : null);
@@ -80,6 +68,7 @@ export default function Participant({
             return (
               <li key={member.userId}>
                 <div className="participant">
+                  {/* 어드민인지 불린값 추가 */}
                   <EachParticipant
                     username={member.User.username}
                     userId={member.userId}
@@ -90,6 +79,14 @@ export default function Participant({
                   {ownerId === member.userId && (
                     <img
                       src="/images/crown.png"
+                      width={"20px"}
+                      height={"20px"}
+                    />
+                  )}
+                  {/* 그리고 어드민일때 */}
+                  {ownerId !== member.userId && (
+                    <img
+                      src="/images/crown_bw.png"
                       width={"20px"}
                       height={"20px"}
                     />
