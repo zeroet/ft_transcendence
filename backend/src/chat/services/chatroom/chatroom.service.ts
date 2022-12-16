@@ -431,15 +431,20 @@ export class ChatroomService implements IChatroomService {
       );
     }
     targetUser.isAdmin = isAdmin;
-    if (isAdmin) {
-      chatroom.adminIds.push(targetUser.userId);
-      await this.chatroomRepository.save(chatroom);
-    }
 
     // const updatedChatroom = await this.chatroomRepository.save(chatroom);
     const updatedParticipant = await this.chatParticipantRepository.save(
       targetUser,
     );
+    if (isAdmin) {
+      chatroom.adminIds.push(targetUser.userId);
+      await this.chatroomRepository.save(chatroom);
+    } else {
+      chatroom.adminIds = chatroom.adminIds.filter((adminId) => {
+        return adminId !== targetUser.userId;
+      });
+      await this.chatroomRepository.save(chatroom);
+    }
     this.chatEventsGateway.server.emit(
       'newParticipantList',
       updatedParticipant,
@@ -509,10 +514,11 @@ export class ChatroomService implements IChatroomService {
     const savedParticipant = await this.chatParticipantRepository.save(
       newParticipant,
     );
-    // chatroom.adminIds = [newParticipant.userId];
-    chatroom.adminIds.push(newParticipant.userId);
-    console.log('chatroom admins:', chatroom.adminIds);
-    await this.chatroomRepository.save(chatroom);
+    if (isAdmin) {
+      chatroom.adminIds.push(newParticipant.userId);
+      console.log('chatroom admins:', chatroom.adminIds);
+      await this.chatroomRepository.save(chatroom);
+    }
     console.log('saved Participant:', savedParticipant);
     this.chatEventsGateway.server.emit('newParticipantList', savedParticipant);
     return savedParticipant;
