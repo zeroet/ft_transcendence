@@ -367,6 +367,8 @@ export class ChatroomService implements IChatroomService {
     targetUserId: number,
     isAdmin: boolean,
   ) {
+    // console.log('targetUserid:', targetUserId);
+    // console.log('chatroomId:', chatroomId);
     const chatroom = await this.findChatroomByIdOrFail(chatroomId);
     const member = await this.findMemberByIdOrFail(userId, chatroomId);
     const targetUser = await this.findParticipantByIdOrFail(

@@ -186,8 +186,9 @@ export class ChatroomController {
   async setAdmin(
     @User() user: IUser,
     @Param('id') id: number,
-    @Body('setAdminDto') setAdminDto: SetAdminDto,
+    @Body() setAdminDto: SetAdminDto,
   ) {
+    // console.log(setAdminDto);
     return this.chatroomService.setAdmin(
       user.id,
       id,

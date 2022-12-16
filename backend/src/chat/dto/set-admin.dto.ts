@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsNumber } from 'class-validator';
 
 export class SetAdminDto {
   @ApiProperty({
@@ -6,6 +7,7 @@ export class SetAdminDto {
     type: Number,
     description: 'Target user id',
   })
+  @IsNumber()
   targetUserId: number;
 
   @ApiProperty({
@@ -13,5 +15,6 @@ export class SetAdminDto {
     type: Boolean,
     description: 'true or false to set the target user as admin',
   })
+  @IsBoolean()
   isAdmin: boolean;
 }
