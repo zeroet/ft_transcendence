@@ -6,19 +6,21 @@ import ParticipantSettingModal from "./ParticipantSettingModal";
 const EachParticipant = ({
   username,
   userId,
-  isOwner,
+  isOwnerMydata,
   chatId,
   color,
   isAdminParticipant,
   isAdminMyData,
+  ownerId,
 }: {
   username: string;
   userId: number;
-  isOwner: boolean;
+  isOwnerMydata: boolean;
   chatId: string;
   color: string;
   isAdminParticipant: boolean;
   isAdminMyData: boolean;
+  ownerId: number | null;
 }) => {
   const { data: myData } = useSWR(`/api/users`);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -51,12 +53,13 @@ const EachParticipant = ({
       </div>
       {showModal && (
         <ParticipantSettingModal
-          isOwner={isOwner}
+          isOwnerMydata={isOwnerMydata}
           userId={userId}
           setShowModal={setShowModal}
           chatId={chatId}
           isAdminParticipant={isAdminParticipant}
           isAdminMyData={isAdminMyData}
+          ownerId={ownerId}
         />
       )}
       <style jsx>{`

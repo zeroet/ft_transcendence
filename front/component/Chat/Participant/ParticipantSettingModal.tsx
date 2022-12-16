@@ -6,19 +6,21 @@ import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
 
 const ParticipantSettingModal = ({
-  isOwner,
+  isOwnerMydata,
   userId,
   setShowModal,
   chatId,
   isAdminParticipant,
   isAdminMyData,
+  ownerId,
 }: {
-  isOwner: boolean;
+  isOwnerMydata: boolean;
   userId: number;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   chatId: string | null;
   isAdminParticipant: boolean;
   isAdminMyData: boolean;
+  ownerId: number | null;
 }) => {
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
@@ -227,7 +229,7 @@ const ParticipantSettingModal = ({
           Delete
         </div>
       )}
-      {(isOwner || isAdminMyData) && (
+      {(isOwnerMydata || isAdminMyData) && ownerId != userId && (
         <div>
           <div className="router-div" onClick={onClickMute}>
             Mute
@@ -238,7 +240,7 @@ const ParticipantSettingModal = ({
           <div className="router-div" onClick={onClickBan}>
             Ban
           </div>
-          {isOwner && (
+          {isOwnerMydata && (
             <div className="router-div" onClick={onClickSetAdmin}>
               {isSetAdmin}
             </div>

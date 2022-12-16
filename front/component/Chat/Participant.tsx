@@ -87,11 +87,12 @@ export default function Participant({
                   <EachParticipant
                     username={member.User.username}
                     userId={member.userId}
-                    isOwner={ownerId === myData.id}
+                    isOwnerMydata={ownerId === myData.id}
                     chatId={id.id}
                     color={color.color}
                     isAdminParticipant={member.isAdmin}
                     isAdminMyData={myDataIsAdmin}
+                    ownerId={ownerId}
                   />
                   {ownerId === member.userId && (
                     <img
