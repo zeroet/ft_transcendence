@@ -431,7 +431,11 @@ export class ChatroomService implements IChatroomService {
       );
     }
     targetUser.isAdmin = isAdmin;
-    if (isAdmin) chatroom.adminIds.push(targetUser.userId);
+    if (isAdmin) {
+      chatroom.adminIds.push(targetUser.userId);
+      await this.chatroomRepository.save(chatroom);
+    }
+
     // const updatedChatroom = await this.chatroomRepository.save(chatroom);
     const updatedParticipant = await this.chatParticipantRepository.save(
       targetUser,
