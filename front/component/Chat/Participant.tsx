@@ -43,7 +43,6 @@ export default function Participant({
     };
   }, [socket?.id, roomMembersData, id.id, myData, roomParticipantData]);
 
-  console.log(roomParticipantData);
   if (roomMembersError || myError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (
@@ -69,7 +68,6 @@ export default function Participant({
             return (
               <li key={member.userId}>
                 <div className="participant">
-                  {/* 어드민인지 불린값 추가 */}
                   <EachParticipant
                     username={member.User.username}
                     userId={member.userId}

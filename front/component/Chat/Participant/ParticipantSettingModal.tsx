@@ -146,7 +146,9 @@ const ParticipantSettingModal = ({
           kick: true,
         })
         .then(() => {})
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+        });
       setShowModal(false);
     },
     [chatroomData, myData, userId]
@@ -164,10 +166,8 @@ const ParticipantSettingModal = ({
         })
         .then(() => {
           if (isAdmin) {
-            console.log(isAdmin, "is admin boolean");
             setIsSetAdmin("Unset Admin");
           } else {
-            console.log(isAdmin, "is admin boolean");
             setIsSetAdmin("Set Admin");
           }
         })
@@ -226,7 +226,7 @@ const ParticipantSettingModal = ({
           Delete
         </div>
       )}
-      {(isAdmin || isOwner) && (
+      {isOwner && (
         <div>
           <div className="router-div" onClick={onClickMute}>
             Mute
@@ -237,11 +237,9 @@ const ParticipantSettingModal = ({
           <div className="router-div" onClick={onClickBan}>
             Ban
           </div>
-          {isOwner && (
-            <div className="router-div" onClick={onClickSetAdmin}>
-              {isSetAdmin}
-            </div>
-          )}
+          <div className="router-div" onClick={onClickSetAdmin}>
+            {isSetAdmin}
+          </div>
         </div>
       )}
       <style jsx>{`
