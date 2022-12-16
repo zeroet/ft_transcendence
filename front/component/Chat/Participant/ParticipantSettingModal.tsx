@@ -10,13 +10,15 @@ const ParticipantSettingModal = ({
   userId,
   setShowModal,
   chatId,
-  isAdmin,
+  isAdminParticipant,
+  isAdminMyData,
 }: {
   isOwner: boolean;
   userId: number;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   chatId: string | null;
-  isAdmin: boolean;
+  isAdminParticipant: boolean;
+  isAdminMyData: boolean;
 }) => {
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
@@ -158,14 +160,14 @@ const ParticipantSettingModal = ({
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log(isAdmin, "is admin boolean before axois patch");
+      console.log(isAdminParticipant, "is admin boolean before axois patch");
       await axios
         .patch(`/api/chatroom/${chatId}/admin`, {
           targetUserId: userId,
-          isAdmin: isAdmin ? false : true,
+          isAdmin: isAdminParticipant ? false : true,
         })
         .then(() => {
-          if (isAdmin) {
+          if (isAdminParticipant) {
             setIsSetAdmin("Unset Admin");
           } else {
             setIsSetAdmin("Set Admin");
@@ -173,7 +175,7 @@ const ParticipantSettingModal = ({
         })
         .catch((err) => console.log(err));
     },
-    [chatroomData, userId, isAdmin]
+    [chatroomData, userId, isAdminParticipant]
   );
 
   const onClickDelete = useCallback(
@@ -198,12 +200,12 @@ const ParticipantSettingModal = ({
         setIsBlock("Unblock");
       }
     });
-    if (isAdmin) {
+    if (isAdminParticipant) {
       setIsSetAdmin("Unset Admin");
     } else {
       setIsSetAdmin("Set Admin");
     }
-  }, [myData, blockedListData, chatId, isAdmin]);
+  }, [myData, blockedListData, chatId, isAdminParticipant]);
 
   if (!myData || (chatId && (!blockedListData || !chatroomData)))
     return <Loading />;
@@ -226,7 +228,7 @@ const ParticipantSettingModal = ({
           Delete
         </div>
       )}
-      {isOwner && (
+      {(isOwner || isAdminMyData) && (
         <div>
           <div className="router-div" onClick={onClickMute}>
             Mute
@@ -237,9 +239,11 @@ const ParticipantSettingModal = ({
           <div className="router-div" onClick={onClickBan}>
             Ban
           </div>
-          <div className="router-div" onClick={onClickSetAdmin}>
-            {isSetAdmin}
-          </div>
+          {isOwner && (
+            <div className="router-div" onClick={onClickSetAdmin}>
+              {isSetAdmin}
+            </div>
+          )}
         </div>
       )}
       <style jsx>{`
