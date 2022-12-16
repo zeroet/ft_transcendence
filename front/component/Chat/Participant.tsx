@@ -6,7 +6,7 @@ import { TypeChatId, IChatParticipant } from "../../interfaceType";
 import axios from "axios";
 import EachParticipant from "./Participant/EachParticipant";
 import useSocket from "../Utils/socket";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Participant({
   id,
@@ -27,6 +27,10 @@ export default function Participant({
     isId ? `/api/${id.link}/${id.id}/participants` : null,
     isId ? fetcher : null
   );
+  const { data: chatroomData, error: chatRoomError } = useSWR(
+    `/api/chatroom/${id.id}`
+  );
+  const [myDataIsAdmin, setMyDataIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     socket?.on("newParticipantList", () => {
@@ -37,19 +41,24 @@ export default function Participant({
       mutate(`/api/${id.link}/${id.id}/members`);
       mutate(`/api/${id.link}/${id.id}`);
     });
+
+    console.log(chatroomData);
+    // setMyDataIsAdmin(true);
+
     return () => {
       socket?.off("newMemberList");
       socket?.off("newParticipantList");
     };
   }, [socket?.id, roomMembersData, id.id, myData, roomParticipantData]);
 
-  if (roomMembersError || myError)
+  if (roomMembersError || myError || chatRoomError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (
     (isId && !roomMembersData) ||
     !socket ||
     (isId && !myData) ||
-    (isId && !roomParticipantData)
+    (isId && !roomParticipantData) ||
+    (isId && !chatroomData)
   )
     return <Loading />;
   return (
@@ -74,7 +83,8 @@ export default function Participant({
                     isOwner={ownerId === myData.id}
                     chatId={id.id}
                     color={color.color}
-                    isAdmin={member.isAdmin}
+                    isAdminParticipant={member.isAdmin}
+                    isAdminMyData={ownerId === myData.id}
                   />
                   {ownerId === member.userId && (
                     <img
