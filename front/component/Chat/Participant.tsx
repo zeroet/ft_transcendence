@@ -76,6 +76,7 @@ export default function Participant({
       <ul>
         {isId &&
           roomParticipantData?.map((member: IChatParticipant) => {
+            if (member.bannedAt) return;
             const color = { color: "red" };
             roomMembersData?.map((loginMember: IChatParticipant) => {
               if (loginMember.userId === member.userId) {
