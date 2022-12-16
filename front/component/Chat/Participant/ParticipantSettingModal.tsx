@@ -10,11 +10,13 @@ const ParticipantSettingModal = ({
   userId,
   setShowModal,
   chatId,
+  isAdmin,
 }: {
   isOwner: boolean;
   userId: number;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   chatId: string | null;
+  isAdmin: boolean;
 }) => {
   const router = useRouter();
   const { data: myData, error: myError } = useSWR("/api/users");
@@ -22,7 +24,7 @@ const ParticipantSettingModal = ({
     "/api/users/block/list"
   );
   const [isBlock, setIsBlock] = useState<string>("Block");
-  const [isAdmin, setIsAdmin] = useState<string>("Set Admin");
+  const [isSetAdmin, setIsSetAdmin] = useState<string>("Set Admin");
   const { data: chatroomData, error: chatroomError } = useSWR(
     chatId ? `/api/chatroom/${chatId}/members` : null
   );

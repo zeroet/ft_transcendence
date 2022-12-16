@@ -9,12 +9,14 @@ const EachParticipant = ({
   isOwner,
   chatId,
   color,
+  isAdmin,
 }: {
   username: string;
   userId: number;
   isOwner: boolean;
   chatId: string;
   color: string;
+  isAdmin: boolean;
 }) => {
   const { data: myData } = useSWR(`/api/users`);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -51,6 +53,7 @@ const EachParticipant = ({
           userId={userId}
           setShowModal={setShowModal}
           chatId={chatId}
+          isAdmin={isAdmin}
         />
       )}
       <style jsx>{`

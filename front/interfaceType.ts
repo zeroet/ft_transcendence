@@ -66,8 +66,11 @@ export interface IChatParticipant {
   bannedAt: Date;
   createdAt: Date;
   modifiedAt: Date;
+  isAdmin: boolean;
   Chatroom: IChatroom;
-  // User: IUser;
+  User: {
+    username: string;
+  };
 }
 
 export interface IChatContent {

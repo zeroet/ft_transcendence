@@ -2,7 +2,7 @@ import styles from "../../styles/LayoutBox.module.css";
 import useSWR, { mutate } from "swr";
 import fetcher from "../Utils/fetcher";
 import Loading from "../errorAndLoading/Loading";
-import { TypeChatId, IChatMember } from "../../interfaceType";
+import { TypeChatId, IChatParticipant } from "../../interfaceType";
 import axios from "axios";
 import EachParticipant from "./Participant/EachParticipant";
 import useSocket from "../Utils/socket";
@@ -20,10 +20,10 @@ export default function Participant({
   const isId = Object.keys(id).length !== 0;
   const [socket] = useSocket(accessToken, "chat");
   const { data: roomMembersData, error: roomMembersError } = useSWR<
-    IChatMember[]
+    IChatParticipant[]
   >(isId ? `/api/${id.link}/${id.id}/members` : null, isId ? fetcher : null);
   const { data: myData, error: myError } = useSWR("/api/users");
-  const { data: roomParticipantData } = useSWR<IChatMember[]>(
+  const { data: roomParticipantData } = useSWR<IChatParticipant[]>(
     isId ? `/api/${id.link}/${id.id}/participants` : null,
     isId ? fetcher : null
   );
@@ -43,6 +43,7 @@ export default function Participant({
     };
   }, [socket?.id, roomMembersData, id.id, myData, roomParticipantData]);
 
+  console.log(roomParticipantData);
   if (roomMembersError || myError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
   if (
@@ -58,9 +59,9 @@ export default function Participant({
       <hr />
       <ul>
         {isId &&
-          roomParticipantData?.map((member: IChatMember) => {
+          roomParticipantData?.map((member: IChatParticipant) => {
             const color = { color: "red" };
-            roomMembersData?.map((loginMember: IChatMember) => {
+            roomMembersData?.map((loginMember: IChatParticipant) => {
               if (loginMember.userId === member.userId) {
                 color.color = "green";
               }
@@ -75,6 +76,7 @@ export default function Participant({
                     isOwner={ownerId === myData.id}
                     chatId={id.id}
                     color={color.color}
+                    isAdmin={member.isAdmin}
                   />
                   {ownerId === member.userId && (
                     <img
@@ -83,8 +85,7 @@ export default function Participant({
                       height={"20px"}
                     />
                   )}
-                  {/* 그리고 어드민일때 */}
-                  {ownerId !== member.userId && (
+                  {ownerId !== member.userId && member.isAdmin && (
                     <img
                       src="/images/crown_bw.png"
                       width={"20px"}
