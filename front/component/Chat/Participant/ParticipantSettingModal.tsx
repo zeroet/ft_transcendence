@@ -161,15 +161,22 @@ const ParticipantSettingModal = ({
       e.preventDefault();
       e.stopPropagation();
       await axios
-        .patch(`/api/chatroom/${chatId}/owner`, {
+        .patch(`/api/chatroom/${chatId}/admin`, {
           targetUserId: userId,
+          isAdmin: isAdmin ? false : true,
         })
         .then(() => {
-          setShowModal(false);
+          if (isAdmin) {
+            console.log(isAdmin);
+            setIsSetAdmin("Unset Admin");
+          } else {
+            console.log(isAdmin);
+            setIsSetAdmin("Set Admin");
+          }
         })
         .catch((err) => console.log(err));
     },
-    [myData, userId]
+    [chatroomData, userId, isAdmin]
   );
 
   const onClickDelete = useCallback(
@@ -194,7 +201,12 @@ const ParticipantSettingModal = ({
         setIsBlock("Unblock");
       }
     });
-  }, [myData, blockedListData, chatId]);
+    if (isAdmin) {
+      setIsSetAdmin("Unset Admin");
+    } else {
+      setIsSetAdmin("Set Admin");
+    }
+  }, [myData, blockedListData, chatId, isAdmin]);
 
   if (!myData || (chatId && (!blockedListData || !chatroomData)))
     return <Loading />;
@@ -217,7 +229,7 @@ const ParticipantSettingModal = ({
           Delete
         </div>
       )}
-      {isOwner && (
+      {(isAdmin || isOwner) && (
         <div>
           <div className="router-div" onClick={onClickMute}>
             Mute
@@ -228,9 +240,11 @@ const ParticipantSettingModal = ({
           <div className="router-div" onClick={onClickBan}>
             Ban
           </div>
-          <div className="router-div" onClick={onClickSetAdmin}>
-            Set Admin
-          </div>
+          {isOwner && (
+            <div className="router-div" onClick={onClickSetAdmin}>
+              Set Admin
+            </div>
+          )}
         </div>
       )}
       <style jsx>{`
