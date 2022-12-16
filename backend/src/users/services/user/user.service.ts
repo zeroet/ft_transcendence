@@ -50,31 +50,12 @@ export class UserService implements IUserService {
         'friend',
         'users.user_id = friend.user_id',
       )
-      // .innerJoinAndSelect('friend.FriendUser', 'friendUser')
       .where('users.user_id=:id', { id })
       .getOne();
-    // const FriendUsers = await this.friendRepository
-    //   .createQueryBuilder('friend')
-    //   .where('friend.user_id=:id', { id })
-    //   .innerJoinAndSelect('friend.FriendUser', 'friendUser')
-    //   .getMany();
-
-    // // console.log('friend users:', FriendUsers);
-    // for (let i = 0; i < user.Friend.length; i++) {
-    //   for (let j = 0; j < FriendUsers.length; j++) {
-    //     if (user.Friend[i].friendUserId === FriendUsers[j].FriendUser.id) {
-    //       const { status, username } = user.Friend[i].FriendUser;
-    //       delete user.Friend[i].FriendUser;
-    //       user.Friend[i]['status'] = status;
-    //       user.Friend[i]['friendUsername'] = username;
-    //     }
-    //   }
-    // }
     return user;
   }
 
   async getUserById(id: number) {
-    // this.logger.debug(`getUserById() id: ${id}`);
     const user = await this.userRepository
       .createQueryBuilder('users')
       .where('users.user_id=:id', { id })
@@ -83,12 +64,10 @@ export class UserService implements IUserService {
   }
 
   async getAllUsers() {
-    // const users = await this.userRepository.find();
     const users = await this.userRepository
       .createQueryBuilder('users')
       .getMany();
-    // console.log('users info:', users);
-    if (users) return users;
+    return users;
   }
 
   async blockUser(userId: number, blockUserId: number) {
@@ -156,7 +135,6 @@ export class UserService implements IUserService {
     const createdfriend = this.friendRepository.create({
       userId,
       friendUserId,
-      // friendUsername: friendUser.username,
       User: user,
       FriendUser: friendUser,
     });
@@ -221,7 +199,6 @@ export class UserService implements IUserService {
     this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
   }
-  // updateUserById(id: number) {}
 
   async createMatchHistory(info: any) {
     const match = this.matchHistoryRepository.create({ ...info });

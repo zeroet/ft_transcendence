@@ -40,6 +40,7 @@ export interface XYType {
 export interface IChatroom {
   id: number;
   ownerId: number;
+  adminIds: number[];
   chatroomName: string;
   isPrivate: boolean;
   createdAt: Date;

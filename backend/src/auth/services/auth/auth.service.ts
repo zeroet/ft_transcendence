@@ -119,36 +119,37 @@ export class AuthService implements IAuthService {
   async validateDummy(userDetails: UserDetails) {
     const { intra_id } = userDetails;
     console.log('dummy intra id:', intra_id);
-    const user = await this.userRepository.findOneBy({ intra_id });
+    // const user = await this.userRepository.findOneBy({ intra_id });
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.intra_id=:intra_id', { intra_id })
+      .getOne();
     console.log('dummyuser:', user);
-    if (user) return true;
-    else {
-      console.log('return false');
-      return false;
-    }
+    return user;
   }
 
   async createDummy(userDetails: UserDetails) {
     const user = this.userRepository.create(userDetails);
     return await this.userRepository.save(user);
   }
+
   async createDummyUser() {
     console.log('createDummyUser()');
     let name = 'dummy';
-    // const intra_id = name;
-    // const email = name;
-    // const image_url = null;
-    // const username = name;
     let userDetails = {
       intra_id: name,
       email: name,
       image_url: process.env.DUMMY_URL,
       username: name,
     };
-    let user = await this.validateDummy(userDetails);
-    while (user) {
-      name += 1;
-      console.log('name', name);
+    let dummy = await this.validateDummy(userDetails);
+    while (dummy) {
+      name = dummy.username.substring(0, 5);
+      let number = Number(dummy.username.replace(/[^0-9]/g, ''));
+      number += 1;
+      // console.log('number:', number);
+      name += number;
+      // console.log('name', name);
       // console.log('name+=1', name + 1);
       userDetails = {
         intra_id: name,
@@ -156,17 +157,17 @@ export class AuthService implements IAuthService {
         image_url: process.env.DUMMY_URL,
         username: name,
       };
-      user = await this.validateDummy(userDetails);
+      dummy = await this.validateDummy(userDetails);
     }
-    console.log('userdetails af if:', userDetails);
+    // console.log('userdetails af if:', userDetails);
     return this.createDummy(userDetails);
   }
 
   async deleteDummyUser(user) {
     let count = user.intra_id.indexOf('dummy');
-    console.log('deleteDummyUser:', count);
+    // console.log('deleteDummyUser:', count);
     if (count === 0) {
-      console.log('dummy:', user.intra_id);
+      // console.log('dummy:', user.intra_id);
       const dummy = await this.userRepository
         .createQueryBuilder('users')
         .where('users.user_id=:id', { id: user.id })
