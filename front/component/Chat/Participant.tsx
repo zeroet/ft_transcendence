@@ -28,7 +28,8 @@ export default function Participant({
     isId ? fetcher : null
   );
   const { data: chatroomData, error: chatRoomError } = useSWR(
-    `/api/chatroom/${id.id}`
+    isId ? `/api/chatroom/${id.id}` : null,
+    isId ? fetcher : null
   );
   const [myDataIsAdmin, setMyDataIsAdmin] = useState<boolean>(false);
 
