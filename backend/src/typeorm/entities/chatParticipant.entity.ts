@@ -38,6 +38,13 @@ export class ChatParticipant implements IChatParticipant {
   chatroomId: number;
 
   @ApiProperty({
+    type: Boolean,
+    description: 'if the user is an admin, its true',
+  })
+  @Column({ type: 'boolean', name: 'amdin', default: false })
+  isAdmin: boolean;
+
+  @ApiProperty({
     description: 'Muted time',
   })
   @Column({
