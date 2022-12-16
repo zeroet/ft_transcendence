@@ -160,7 +160,6 @@ const ParticipantSettingModal = ({
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log(isAdminParticipant, "is admin boolean before axois patch");
       await axios
         .patch(`/api/chatroom/${chatId}/admin`, {
           targetUserId: userId,

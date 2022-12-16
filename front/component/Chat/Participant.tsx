@@ -41,15 +41,22 @@ export default function Participant({
       mutate(`/api/${id.link}/${id.id}/members`);
       mutate(`/api/${id.link}/${id.id}`);
     });
-
-    console.log(chatroomData);
-    // setMyDataIsAdmin(true);
+    if (chatroomData) {
+      setMyDataIsAdmin(chatroomData.adminIds?.includes(myData.id));
+    }
 
     return () => {
       socket?.off("newMemberList");
       socket?.off("newParticipantList");
     };
-  }, [socket?.id, roomMembersData, id.id, myData, roomParticipantData]);
+  }, [
+    socket?.id,
+    roomMembersData,
+    id.id,
+    myData,
+    roomParticipantData,
+    chatroomData,
+  ]);
 
   if (roomMembersError || myError || chatRoomError)
     axios.get("/api/auth/refresh").catch((e) => console.log(e));
@@ -84,7 +91,7 @@ export default function Participant({
                     chatId={id.id}
                     color={color.color}
                     isAdminParticipant={member.isAdmin}
-                    isAdminMyData={ownerId === myData.id}
+                    isAdminMyData={myDataIsAdmin}
                   />
                   {ownerId === member.userId && (
                     <img
