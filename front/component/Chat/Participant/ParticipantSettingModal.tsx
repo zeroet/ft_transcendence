@@ -22,6 +22,7 @@ const ParticipantSettingModal = ({
     "/api/users/block/list"
   );
   const [isBlock, setIsBlock] = useState<string>("Block");
+  const [isAdmin, setIsAdmin] = useState<string>("Set Admin");
   const { data: chatroomData, error: chatroomError } = useSWR(
     chatId ? `/api/chatroom/${chatId}/members` : null
   );
@@ -153,7 +154,7 @@ const ParticipantSettingModal = ({
     [chatroomData, myData, userId]
   );
 
-  const onClickSetOwner = useCallback(
+  const onClickSetAdmin = useCallback(
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
@@ -225,8 +226,8 @@ const ParticipantSettingModal = ({
           <div className="router-div" onClick={onClickBan}>
             Ban
           </div>
-          <div className="router-div" onClick={onClickSetOwner}>
-            Set Owner
+          <div className="router-div" onClick={onClickSetAdmin}>
+            Set Admin
           </div>
         </div>
       )}
