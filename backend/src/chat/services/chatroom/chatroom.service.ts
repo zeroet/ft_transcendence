@@ -504,7 +504,8 @@ export class ChatroomService implements IChatroomService {
     const savedParticipant = await this.chatParticipantRepository.save(
       newParticipant,
     );
-    chatroom.adminIds.push(participant.userId);
+    // chatroom.adminIds = [newParticipant.userId];
+    chatroom.adminIds.push(newParticipant.userId);
     console.log('chatroom admins:', chatroom.adminIds);
     await this.chatroomRepository.save(chatroom);
     console.log('saved Participant:', savedParticipant);
