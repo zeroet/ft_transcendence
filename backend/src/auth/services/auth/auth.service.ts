@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
@@ -13,8 +8,6 @@ import { IAuthService } from './auth.interface';
 import * as bcrypt from 'bcrypt';
 import { CookieOptions } from 'express';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
-import { Socket } from 'socket.io';
-// import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -147,10 +140,7 @@ export class AuthService implements IAuthService {
       name = dummy.username.substring(0, 5);
       let number = Number(dummy.username.replace(/[^0-9]/g, ''));
       number += 1;
-      // console.log('number:', number);
       name += number;
-      // console.log('name', name);
-      // console.log('name+=1', name + 1);
       userDetails = {
         intra_id: name,
         email: name,

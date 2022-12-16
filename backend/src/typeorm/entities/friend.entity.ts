@@ -6,7 +6,6 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { IFriend } from '../interfaces/IFriend';
 import { IUser } from '../interfaces/IUser';
@@ -23,25 +22,8 @@ export class Friend implements IFriend {
   @Column({ type: 'int', name: 'friend_user_id' })
   friendUserId: number;
 
-  // @ApiProperty({
-  //   required: true,
-  //   example: 'jungmoo cheon',
-  //   description: 'Friend Username',
-  // })
-  // @Column({
-  //   type: 'varchar',
-  //   name: 'friend_username',
-  //   nullable: false,
-  //   // unique: true,
-  //   length: 30,
-  // })
-  // friendUsername: string;
-
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
-
-  // @UpdateDateColumn({ type: 'timestamp', name: 'modified_at' })
-  // modifiedAt: Date;
 
   @ManyToOne((type) => User, (User) => User.Friend, {
     onDelete: 'CASCADE',

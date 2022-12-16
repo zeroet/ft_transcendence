@@ -35,7 +35,6 @@ export class AuthController {
       console.log('login user doesnt exist');
       throw res.redirect(301, 'http://localhost:8080/auth/signup');
     }
-    // console.log('auth/login() set cookies');
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,
@@ -58,8 +57,6 @@ export class AuthController {
   @Post('dummy')
   async test(@Res({ passthrough: true }) res) {
     const user = await this.authService.createDummyUser();
-    // console.log('test:', user);
-
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,
@@ -87,7 +84,6 @@ export class AuthController {
   @Redirect('http://localhost:8000/Home', 301)
   @Get('redirect')
   async redirect(@User() user, @Res({ passthrough: true }) res) {
-    // console.log('redirect()', user);
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,

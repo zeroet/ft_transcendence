@@ -4,14 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { IDm } from '../interfaces/IDm';
-import { IDmContent } from '../interfaces/IDmContent';
 import { IUser } from '../interfaces/IUser';
-import { DmContent } from './dmContent.entity';
 import { User } from './user.entity';
 
 @Entity({ name: 'dm' })
@@ -24,9 +21,6 @@ export class Dm implements IDm {
 
   @Column({ type: 'int', name: 'user2', nullable: true })
   user2: number;
-
-  // @Column({ type: 'varchar', name: 'content', nullable: true, length: 100 })
-  // content: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   readonly createdAt: Date;

@@ -1,7 +1,5 @@
 import { Status } from 'src/utils/types';
 import { IBlock } from './IBlock';
-import { IChatContent } from './IChatContent';
-import { IChatMember } from './IChatMemeber';
 import { IFriend } from './IFriend';
 
 export interface IUser {
@@ -19,6 +17,4 @@ export interface IUser {
   two_factor_valid: boolean;
   Friend: IFriend[];
   Block: IBlock[];
-  // ChatMember: IChatMember[];
-  // ChatContent: IChatContent[];
 }

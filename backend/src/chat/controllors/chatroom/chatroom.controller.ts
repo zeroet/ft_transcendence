@@ -5,7 +5,6 @@ import {
   Get,
   Inject,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -66,9 +65,6 @@ export class ChatroomController {
     @User() user: IUser,
     @Body() createChatroomDto: CreateChatroomDto,
   ) {
-    // console.log('createChatroom()');
-    // console.log('user:', user);
-    // console.log('dto:', createChatroomDto);
     return this.chatroomService.createChatroom(user.id, createChatroomDto);
   }
 
@@ -84,9 +80,6 @@ export class ChatroomController {
   @ApiOperation({ summary: 'Get one chatroom / 특정 대화방 가져오기' })
   @Get(':id')
   async getOneChatroom(@User() user: IUser, @Param('id') id: number) {
-    // console.log('user.id', user.id);
-    // console.log('getOneChatroom():', id);
-    // console.log('getOneChatroom():', typeof id);
     return await this.chatroomService.getOneChatroom(id);
   }
 
@@ -121,7 +114,6 @@ export class ChatroomController {
   @Delete(':id')
   async deleteChatroom(@User() user: IUser, @Param('id') id: number) {
     return this.chatroomService.deleteChatroom(user.id, id);
-    // return 'delete chatroom test...';
   }
 
   @ApiBody({
@@ -188,7 +180,6 @@ export class ChatroomController {
     @Param('id') id: number,
     @Body() setAdminDto: SetAdminDto,
   ) {
-    // console.log(setAdminDto);
     return this.chatroomService.setAdmin(
       user.id,
       id,
@@ -247,8 +238,6 @@ export class ChatroomController {
     @Param('id') id: number,
     @Body() updateParticipantDto: UpdateParticipantDto,
   ) {
-    console.log('updateParticipantDto:', updateParticipantDto);
-    console.log('chatroomId:', id);
     return await this.chatroomService.updateParticipantInfo(
       user.id,
       id,
@@ -292,10 +281,6 @@ export class ChatroomController {
     return this.chatroomService.getMembers(id);
   }
 
-  // @ApiResponse({
-  //   type: ChatMemberDto,
-  //   description: 'Member list of a chatroom',
-  // })
   @ApiParam({
     name: 'id',
     example: 1,
@@ -328,8 +313,6 @@ export class ChatroomController {
     @Param('id') id: number,
     @Body() updateMemberDto: UpdateMemberDto,
   ) {
-    console.log('updateMemberDto:', updateMemberDto);
-    console.log('chatroomId:', id);
     return await this.chatroomService.updateMemberInfo(
       user.id,
       id,
