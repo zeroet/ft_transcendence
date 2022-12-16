@@ -237,6 +237,8 @@ export class UserService implements IUserService {
     if (id)
       matchs = await this.matchHistoryRepository
         .createQueryBuilder('matchhistory')
+        .where('matchhistory.winnerId=:winnerId', { winnerId: id })
+        .orWhere('matchhistory.loserId=:loserId', { loserId: id })
         .innerJoinAndSelect('matchhistory.winner', 'winner')
         .innerJoinAndSelect('matchhistory.loser', 'loser')
         .orderBy('matchhistory.date', 'DESC')
@@ -251,6 +253,8 @@ export class UserService implements IUserService {
     if (id)
       matchs = await this.matchHistoryRepository
         .createQueryBuilder('matchhistory')
+        .where('matchhistory.winnerId=:winnerId', { winnerId: id })
+        .orWhere('matchhistory.loserId=:loserId', { loserId: id })
         .innerJoinAndSelect('matchhistory.winner', 'winner')
         .innerJoinAndSelect('matchhistory.loser', 'loser')
         .getMany();
