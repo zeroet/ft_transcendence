@@ -98,30 +98,30 @@ export class ChatroomService implements IChatroomService {
     return participant;
   }
 
-  async findParticipantByIdWithUser(userId: number, chatroomId: number) {
-    const participant = await this.chatParticipantRepository
-      .createQueryBuilder('chat_participant')
-      .where('chat_participant.chatroom_id=:chatroomId', { chatroomId })
-      .andWhere('chat_participant.user_id=:userId', { userId })
-      .innerJoinAndSelect('chat_participant.User', 'user')
-      // .select(['chat_participant', 'user.username'])
-      .getOne();
-    return participant;
-  }
+  // async findParticipantByIdWithUser(userId: number, chatroomId: number) {
+  //   const participant = await this.chatParticipantRepository
+  //     .createQueryBuilder('chat_participant')
+  //     .where('chat_participant.chatroom_id=:chatroomId', { chatroomId })
+  //     .andWhere('chat_participant.user_id=:userId', { userId })
+  //     .innerJoinAndSelect('chat_participant.User', 'user')
+  //     // .select(['chat_participant', 'user.username'])
+  //     .getOne();
+  //   return participant;
+  // }
 
-  async findParticipantByIdOrFailWithUser(userId: number, chatroomId: number) {
-    const participant = await this.findParticipantByIdWithUser(
-      userId,
-      chatroomId,
-    );
-    if (!participant) {
-      throw new NotFoundException(
-        // `User of id:${userId} doesn't participate in the chatroom of id:${chatroomId}`,
-        `${participant.User.username} doesn't participate in the chatroom of id:${chatroomId}`,
-      );
-    }
-    return participant;
-  }
+  // async findParticipantByIdOrFailWithUser(userId: number, chatroomId: number) {
+  //   const participant = await this.findParticipantByIdWithUser(
+  //     userId,
+  //     chatroomId,
+  //   );
+  //   if (!participant) {
+  //     throw new NotFoundException(
+  //       // `User of id:${userId} doesn't participate in the chatroom of id:${chatroomId}`,
+  //       `${participant.User.username} doesn't participate in the chatroom of id:${chatroomId}`,
+  //     );
+  //   }
+  //   return participant;
+  // }
 
   async findChatroomByIdOrFail(chatroomId: number) {
     const chatroom = await this.chatroomRepository
@@ -153,6 +153,28 @@ export class ChatroomService implements IChatroomService {
       throw new NotFoundException(`Chatroom of id:${chatroomName} not found`);
     }
     return chatroom;
+  }
+
+  async getAdmins() {
+    let chatrooms = await this.getChatrooms();
+    await Promise.all(
+      chatrooms.map(async (chatroom: any) => {
+        // let admins = [];
+        // if (chatroom.password !== null) chatroom.isPrivate = true;
+        // else chatroom.isPrivate = false;
+        const participants = await this.getParticipants(chatroom.id);
+        participants.forEach((participant) => {
+          return participant.isAdmin;
+        });
+        const admins = participants.map((participant) => {
+          if (participant.isAdmin) return participant.userId;
+        });
+        chatroom['admins'] = admins;
+        console.log('admins chatroom:', chatroom);
+        // const { password, ...result } = chatroom;
+        // return result;
+      }),
+    );
   }
 
   async getChatroomsInfo(chatrooms: IChatroom[]) {
@@ -270,6 +292,7 @@ export class ChatroomService implements IChatroomService {
       .createQueryBuilder('chatroom')
       .addSelect('chatroom.password')
       .getMany();
+    // await this.getAdmins();
     return await this.getChatroomsInfo(chatrooms);
   }
 
@@ -469,7 +492,7 @@ export class ChatroomService implements IChatroomService {
       isAdmin = true;
     }
 
-    // console.log('isAdmin:', isAdmin);
+    console.log('isAdmin:', isAdmin);
     const newParticipant = this.chatParticipantRepository.create({
       userId,
       isAdmin,
@@ -481,6 +504,9 @@ export class ChatroomService implements IChatroomService {
     const savedParticipant = await this.chatParticipantRepository.save(
       newParticipant,
     );
+    chatroom.adminIds.push(participant.userId);
+    console.log('chatroom admins:', chatroom.adminIds);
+    await this.chatroomRepository.save(chatroom);
     console.log('saved Participant:', savedParticipant);
     this.chatEventsGateway.server.emit('newParticipantList', savedParticipant);
     return savedParticipant;
