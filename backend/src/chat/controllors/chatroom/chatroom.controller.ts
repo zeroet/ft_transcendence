@@ -24,6 +24,7 @@ import { ChatContentDto } from 'src/chat/dto/chat.content.dto';
 import { ChatMemberDto } from 'src/chat/dto/chat.member.dto';
 import { ChatroomDto } from 'src/chat/dto/chatroom.dto';
 import { CreateChatroomDto } from 'src/chat/dto/create-chatroom.dto';
+import { SetAdminDto } from 'src/chat/dto/set-admin.dto';
 import { UpdateChatroomDto } from 'src/chat/dto/update-chatroom.dto';
 import { UpdateMemberDto } from 'src/chat/dto/update-member.dto';
 import { UpdateParticipantDto } from 'src/chat/dto/update-participant.dto';
@@ -166,6 +167,33 @@ export class ChatroomController {
     @Body('targetUserId') targetUserId: number,
   ) {
     return this.chatroomService.changeOwner(user.id, id, targetUserId);
+  }
+
+  @ApiBody({
+    type: SetAdminDto,
+    description:
+      'Target user id and true or false to set the target user as admin',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    description: 'Chatroom id',
+  })
+  @ApiOperation({
+    summary: 'Set admin of a chatroom / 특정 대화방 방장권한 부여하기',
+  })
+  @Patch(':id/admin')
+  async setAdmin(
+    @User() user: IUser,
+    @Param('id') id: number,
+    @Body('setAdminDto') setAdminDto: SetAdminDto,
+  ) {
+    return this.chatroomService.setAdmin(
+      user.id,
+      id,
+      setAdminDto.targetUserId,
+      setAdminDto.isAdmin,
+    );
   }
 
   @ApiResponse({

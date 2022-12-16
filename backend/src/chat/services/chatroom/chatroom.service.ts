@@ -361,6 +361,35 @@ export class ChatroomService implements IChatroomService {
     return updatedChatroom;
   }
 
+  async setAdmin(
+    userId: number,
+    chatroomId: number,
+    targetUserId: number,
+    isAdmin: boolean,
+  ) {
+    const chatroom = await this.findChatroomByIdOrFail(chatroomId);
+    const member = await this.findMemberByIdOrFail(userId, chatroomId);
+    const targetUser = await this.findParticipantByIdOrFail(
+      targetUserId,
+      chatroomId,
+    );
+    if (member.userId !== chatroom.ownerId) {
+      throw new UnauthorizedException(
+        `User of id:${userId} is not an owner of chatroom of id:${chatroomId}`,
+      );
+    }
+    targetUser.isAdmin = isAdmin;
+    // const updatedChatroom = await this.chatroomRepository.save(chatroom);
+    const updatedParticipant = await this.chatParticipantRepository.save(
+      targetUser,
+    );
+    this.chatEventsGateway.server.emit(
+      'newParticipantList',
+      updatedParticipant,
+    );
+    return updatedParticipant;
+  }
+
   async getParticipants(chatroomId: number) {
     let participants = await this.chatParticipantRepository
       .createQueryBuilder('chat_participant')
