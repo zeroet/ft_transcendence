@@ -129,9 +129,7 @@ const ParticipantSettingModal = ({
           targetUserId: userId,
           ban: true,
         })
-        .then((res) => {
-          console.log(res);
-        })
+        .then(() => {})
         .catch((err) => console.log(err));
       setShowModal(false);
     },
@@ -147,9 +145,7 @@ const ParticipantSettingModal = ({
           targetUserId: userId,
           kick: true,
         })
-        .then((res) => {
-          console.log(res);
-        })
+        .then(() => {})
         .catch((err) => console.log(err));
       setShowModal(false);
     },
@@ -160,6 +156,7 @@ const ParticipantSettingModal = ({
     async (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
+      console.log(isAdmin, "is admin boolean before axois patch");
       await axios
         .patch(`/api/chatroom/${chatId}/admin`, {
           targetUserId: userId,
@@ -167,10 +164,10 @@ const ParticipantSettingModal = ({
         })
         .then(() => {
           if (isAdmin) {
-            console.log(isAdmin);
+            console.log(isAdmin, "is admin boolean");
             setIsSetAdmin("Unset Admin");
           } else {
-            console.log(isAdmin);
+            console.log(isAdmin, "is admin boolean");
             setIsSetAdmin("Set Admin");
           }
         })
@@ -242,7 +239,7 @@ const ParticipantSettingModal = ({
           </div>
           {isOwner && (
             <div className="router-div" onClick={onClickSetAdmin}>
-              Set Admin
+              {isSetAdmin}
             </div>
           )}
         </div>
