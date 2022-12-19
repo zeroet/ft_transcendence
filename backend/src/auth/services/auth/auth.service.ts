@@ -1,8 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
-import { Status, UserDetails } from 'src/utils/types';
+import { Status, StatusArray, UserDetails } from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { IAuthService } from './auth.interface';
 import * as bcrypt from 'bcrypt';
@@ -176,15 +180,12 @@ export class AuthService implements IAuthService {
     if (!user) {
       throw new NotFoundException(`User of id:${userId} not found`);
     }
-    // if (
-    //   status === Status.LOGIN ||
-    //   status === Status.LOGOUT ||
-    //   status === Status.PLAYING
-    // )
-    user.status = status;
-    // else {
-    //   throw new BadRequestException(`User status: ${status} is not valid`);
-    // }
+    if (StatusArray.includes(status)) {
+      user.status = status;
+      // console.log('status:', status);
+    } else {
+      throw new BadRequestException(`User status: ${status} is not valid`);
+    }
     const updatedUser = await this.userRepository.save(user);
     this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;

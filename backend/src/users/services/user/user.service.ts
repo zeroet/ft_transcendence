@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { Block, Friend, MatchHistory, User } from 'src/typeorm';
-import { Status } from 'src/utils/types';
+import { Status, StatusArray } from 'src/utils/types';
 import { IUserService } from './user.interface';
 import { Repository } from 'typeorm';
 import { ConnectionGateway } from 'src/connection/connection.gateway';
@@ -186,15 +186,11 @@ export class UserService implements IUserService {
 
   async updateUserStatus(userId: number, status: Status) {
     const user = await this.findUserByIdOrFail(userId);
-    // if (
-    //   status === Status.LOGIN ||
-    //   status === Status.LOGOUT ||
-    //   status === Status.PLAYING
-    // )
-    user.status = status;
-    // else {
-    //   throw new BadRequestException(`User status: ${status} is not valid`);
-    // }
+    if (StatusArray.includes(status)) {
+      user.status = status;
+    } else {
+      throw new BadRequestException(`User status: ${status} is not valid`);
+    }
     const updatedUser = await this.userRepository.save(user);
     this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
