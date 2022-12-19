@@ -33,9 +33,15 @@ export class ProfileService {
     return updatedUser;
   }
 
-  async updateUserImage(userID: number, newUserImage: string) {
-    await this.userRepository.update(userID, {
-      image_url: newUserImage,
-    });
+  async updateUserImage(userId: number, newUserImage: string) {
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.user_id=:userId', { userId })
+      .getOne();
+    if (!user) {
+      throw new NotFoundException(`User of id:${userId} not found`);
+    }
+    user.image_url = newUserImage;
+    return await this.userRepository.save(user);
   }
 }
