@@ -13,6 +13,7 @@ import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtRefreshAuthGuard } from 'src/auth/guards/jwt.refresh-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { TwoFactorService } from 'src/auth/services/two-factor/two-factor.service';
+import { IUserService } from 'src/users/services/user/user.interface';
 import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies, Status } from 'src/utils/types';
 
@@ -21,6 +22,7 @@ import { Cookies, Status } from 'src/utils/types';
 export class AuthController {
   constructor(
     @Inject('AUTH_SERVICE') private authService: IAuthService,
+    @Inject('USER_SERVICE') private readonly userService: IUserService,
     @Inject('TWO_FACTOR_SERVICE') private twoFactorSerivce: TwoFactorService,
   ) {}
 
@@ -47,7 +49,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
-    return this.authService.updateUserStatus(user.id, Status.LOGIN);
+    return this.userService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({
@@ -56,7 +58,7 @@ export class AuthController {
   @Redirect('http://localhost:8000/Home', 301)
   @Post('dummy')
   async test(@Res({ passthrough: true }) res) {
-    const user = await this.authService.createDummyUser();
+    const user = await this.userService.createDummyUser();
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,
@@ -69,7 +71,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
-    return this.authService.updateUserStatus(user.id, Status.LOGIN);
+    return this.userService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({ summary: 'Signup with 42API / 42API를 이용한 사용자등록' })
@@ -96,7 +98,7 @@ export class AuthController {
       this.authService.refreshTokenCookieOptions,
     );
     this.authService.setRefreshToken(user.id, refreshToken);
-    return this.authService.updateUserStatus(user.id, Status.LOGIN);
+    return this.userService.updateUserStatus(user.id, Status.LOGIN);
   }
 
   @ApiOperation({
@@ -133,13 +135,13 @@ export class AuthController {
     );
     await this.twoFactorSerivce.setTwoFactorValid(user.id, false);
     // if user == dummy then delete dummy
-    if (await this.authService.deleteDummyUser(user)) {
+    if (await this.userService.deleteDummyUser(user)) {
       res.clearCookie(
         Cookies.REFRESH_TOKEN,
         this.authService.defaultCookieOptions,
       );
       return;
     }
-    return this.authService.updateUserStatus(user.id, Status.LOGOUT);
+    return this.userService.updateUserStatus(user.id, Status.LOGOUT);
   }
 }

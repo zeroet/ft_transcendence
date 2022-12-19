@@ -1,4 +1,4 @@
-import { Status } from 'src/utils/types';
+import { Status, UserDetails } from 'src/utils/types';
 
 export interface IUserService {
   getCurrentUser(id: number);
@@ -10,6 +10,10 @@ export interface IUserService {
   addFriend(userId: number, friendUserId: number);
   deleteFriend(userId: number, unFriendUserId: number);
   getFriendList(userId: number);
+  validateUser(userDetails: UserDetails);
+  // createUser(userDetails: UserDetails);
+  createDummyUser();
+  deleteDummyUser(user);
   updateUserStatus(userId: number, status: Status);
   getMatch(userId: number);
   getRank(userId: number);

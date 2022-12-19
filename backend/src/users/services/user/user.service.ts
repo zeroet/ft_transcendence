@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { Block, Friend, MatchHistory, User } from 'src/typeorm';
-import { Status, StatusArray } from 'src/utils/types';
+import { Status, StatusArray, UserDetails } from 'src/utils/types';
 import { IUserService } from './user.interface';
 import { Repository } from 'typeorm';
 import { ConnectionGateway } from 'src/connection/connection.gateway';
@@ -182,6 +182,72 @@ export class UserService implements IUserService {
       }
     }
     return friends;
+  }
+
+  async validateUser(userDetails: UserDetails) {
+    const { intra_id } = userDetails;
+    const user = await this.userRepository.findOneBy({ intra_id });
+    if (user) return user;
+    return this.createUser(userDetails);
+  }
+
+  createUser(userDetails: UserDetails) {
+    console.log('creating a new user');
+    const user = this.userRepository.create(userDetails);
+    return this.userRepository.save(user);
+  }
+
+  async validateDummy(userDetails: UserDetails) {
+    const { intra_id } = userDetails;
+    console.log('dummy intra id:', intra_id);
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.intra_id=:intra_id', { intra_id })
+      .getOne();
+    return user;
+  }
+
+  async createDummy(userDetails: UserDetails) {
+    const user = this.userRepository.create(userDetails);
+    return await this.userRepository.save(user);
+  }
+
+  async createDummyUser() {
+    let name = 'dummy';
+    let userDetails = {
+      intra_id: name,
+      email: name,
+      image_url: process.env.DUMMY_URL,
+      username: name,
+    };
+    let dummy = await this.validateDummy(userDetails);
+    while (dummy) {
+      name = dummy.username.substring(0, 5);
+      let number = Number(dummy.username.replace(/[^0-9]/g, ''));
+      number += 1;
+      name += number;
+      userDetails = {
+        intra_id: name,
+        email: name,
+        image_url: process.env.DUMMY_URL,
+        username: name,
+      };
+      dummy = await this.validateDummy(userDetails);
+    }
+    return this.createDummy(userDetails);
+  }
+
+  async deleteDummyUser(user) {
+    let count = user.intra_id.indexOf('dummy');
+    if (count === 0) {
+      const dummy = await this.userRepository
+        .createQueryBuilder('users')
+        .where('users.user_id=:id', { id: user.id })
+        .getOne();
+      await this.userRepository.remove(dummy);
+      return true;
+    }
+    return false;
   }
 
   async updateUserStatus(userId: number, status: Status) {
