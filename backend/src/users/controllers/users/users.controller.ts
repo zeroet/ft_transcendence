@@ -7,7 +7,6 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
   UnauthorizedException,
   UseGuards,
@@ -49,8 +48,8 @@ export class UsersController {
     // console.log('getCurrentUser()', user);
     const CurrentUser = await this.userService.getCurrentUser(user.id);
     if (!CurrentUser) {
-      console.log('users/getCurrentUser() current user not found');
-      throw new UnauthorizedException('user not found');
+      // console.log('users/getCurrentUser() current user not found');
+      throw new UnauthorizedException('User not found');
     }
     return CurrentUser;
   }
@@ -78,7 +77,7 @@ export class UsersController {
     // console.log('getUserById()', id);
     const user = await this.userService.getUserById(id);
     if (!user) {
-      throw new UnauthorizedException('user not found');
+      throw new UnauthorizedException('User not found');
     }
     return user;
   }
@@ -93,7 +92,7 @@ export class UsersController {
     @User() user: IUser,
     @Param('blockUserId') blockUserId: number,
   ) {
-    console.log('blockUserId:', blockUserId);
+    // console.log('blockUserId:', blockUserId);
     return await this.userService.blockUser(user.id, blockUserId);
   }
 
@@ -109,7 +108,7 @@ export class UsersController {
     @User() user: IUser,
     @Param('unBlockUserId') unBlockUserId: number,
   ) {
-    console.log('unBlockUserId:', unBlockUserId);
+    // console.log('unBlockUserId:', unBlockUserId);
     return await this.userService.unBlockUser(user.id, unBlockUserId);
   }
 
@@ -133,7 +132,7 @@ export class UsersController {
     @User() user: IUser,
     @Param('friendUserId') friendUserId: number,
   ) {
-    console.log('friendUserId:', friendUserId);
+    // console.log('friendUserId:', friendUserId);
     return await this.userService.addFriend(user.id, friendUserId);
   }
 
@@ -150,7 +149,7 @@ export class UsersController {
     @User() user: IUser,
     @Param('unFriendUserId') unFriendUserId: number,
   ) {
-    console.log('unFriendUserId:', unFriendUserId);
+    // console.log('unFriendUserId:', unFriendUserId);
     return await this.userService.deleteFriend(user.id, unFriendUserId);
   }
 
@@ -164,7 +163,8 @@ export class UsersController {
 
   @ApiBody({
     type: UpdateUserStatusDto,
-    description: 'User status: "LOGIN" or "LOGOUT" or "PLAYING"',
+    description:
+      'User status: "LOGIN" or "LOGOUT" or "PLAYING" or "WATCHING" or "READY"',
   })
   @ApiOperation({
     summary: 'Update user status / 사용자 상태 변경하기',
@@ -178,14 +178,13 @@ export class UsersController {
   async match(@Param('id') id: number) {
     return await this.userService.getMatch(id);
   }
-  
+
   @Get('rank/:id')
-  async rank(@Param('id') id:number) {
-      let matchs = await this.userService.getMatch(id);
-      let num = 0;
-      for(const match of matchs)
-        num++;
-      return num;
+  async rank(@Param('id') id: number) {
+    let matchs = await this.userService.getMatch(id);
+    let num = 0;
+    for (const match of matchs) num++;
+    return num;
   }
 
   // @Patch(':id')

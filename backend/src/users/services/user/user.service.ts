@@ -11,8 +11,6 @@ import { Block, Friend, MatchHistory, User } from 'src/typeorm';
 import { Status, StatusArray, UserDetails } from 'src/utils/types';
 import { IUserService } from './user.interface';
 import { Repository } from 'typeorm';
-import { ConnectionGateway } from 'src/connection/connection.gateway';
-import { IUser } from 'src/typeorm/interfaces/IUser';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -25,7 +23,6 @@ export class UserService implements IUserService {
     private matchHistoryRepository: Repository<MatchHistory>,
     private chatEventsGateway: ChatEventsGateway,
   ) {}
-  private connectionGateway: ConnectionGateway;
 
   async findUserByIdOrFail(userId: number): Promise<User> {
     const user = await this.userRepository
@@ -107,7 +104,7 @@ export class UserService implements IUserService {
       );
     }
     const removedBlock = await this.blockRepository.remove(block);
-    console.log('removed block:', removedBlock);
+    // console.log('removed block:', removedBlock);
     return removedBlock;
   }
 
@@ -156,7 +153,7 @@ export class UserService implements IUserService {
       );
     }
     const removedFriend = await this.friendRepository.remove(friend);
-    console.log('removed friend:', removedFriend);
+    // console.log('removed friend:', removedFriend);
     return removedFriend;
   }
 
@@ -193,7 +190,7 @@ export class UserService implements IUserService {
   }
 
   createUser(userDetails: UserDetails) {
-    console.log('creating a new user');
+    // console.log('creating a new user');
     const user = this.userRepository.create(userDetails);
     return this.userRepository.save(user);
   }
