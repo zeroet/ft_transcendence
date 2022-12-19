@@ -22,7 +22,7 @@ import { Cookies, Status } from 'src/utils/types';
 export class AuthController {
   constructor(
     @Inject('AUTH_SERVICE') private authService: IAuthService,
-    @Inject('USER_SERVICE') private readonly userService: IUserService,
+    @Inject('USER_SERVICE') private userService: IUserService,
     @Inject('TWO_FACTOR_SERVICE') private twoFactorSerivce: TwoFactorService,
   ) {}
 
