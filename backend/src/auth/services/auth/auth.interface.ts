@@ -1,11 +1,11 @@
-import { Status, UserDetails } from 'src/utils/types';
+import { CookieOptions } from 'express';
 
 export interface IAuthService {
-  defaultCookieOptions;
-  accessTokenCookieOptions;
-  refreshTokenCookieOptions;
-  getAccessToken(id: number, twoFactorActivated: boolean);
-  getRefreshToken(id: number);
-  setRefreshToken(id: number, refreshToken: string);
+  defaultCookieOptions: CookieOptions;
+  accessTokenCookieOptions: CookieOptions;
+  refreshTokenCookieOptions: CookieOptions;
+  getAccessToken(id: number, twoFactorActivated: boolean): string;
+  getRefreshToken(id: number): string;
+  setRefreshToken(id: number, refreshToken: string): void;
   verify(accessToken: any);
 }

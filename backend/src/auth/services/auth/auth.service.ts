@@ -31,11 +31,19 @@ export class AuthService implements IAuthService {
     maxAge: Number.parseInt(process.env.JWT_ACCESS_EXPIRATION_TIME) * 1000,
   };
 
-  hashData(data: string) {
-    return bcrypt.hash(data, 12);
+  async hashData(data: string): Promise<string> {
+    return await bcrypt.hash(data, 12);
   }
 
-  getAccessToken(id: number, twoFactorActivated: boolean) {
+  async updateRefreshTokenHash(
+    id: number,
+    refreshToken: string,
+  ): Promise<string> {
+    const hash = await this.hashData(refreshToken);
+    return hash;
+  }
+
+  getAccessToken(id: number, twoFactorActivated: boolean): string {
     const access = this.jwtService.sign(
       {
         id: id,
@@ -49,7 +57,7 @@ export class AuthService implements IAuthService {
     return access;
   }
 
-  getRefreshToken(id: number) {
+  getRefreshToken(id: number): string {
     const refresh = this.jwtService.sign(
       {
         id: id,
@@ -72,11 +80,6 @@ export class AuthService implements IAuthService {
         ),
       });
     }
-  }
-
-  async updateRefreshTokenHash(id: number, refreshToken: string) {
-    const hash = await this.hashData(refreshToken);
-    return hash;
   }
 
   async verify(accessToken: any) {

@@ -1,8 +1,8 @@
 import { Status, UserDetails } from 'src/utils/types';
 
 export interface IUserService {
-  getCurrentUser(id: number);
-  getUserById(id: number);
+  getCurrentUser(userId: number);
+  getUserById(userId: number);
   getAllUsers();
   blockUser(userId: number, blockUserId: number);
   unBlockUser(userId: number, unBlockUserId: number);

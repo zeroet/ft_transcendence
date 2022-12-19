@@ -12,6 +12,7 @@ import { Status, StatusArray, UserDetails } from 'src/utils/types';
 import { IUserService } from './user.interface';
 import { Repository } from 'typeorm';
 import { ConnectionGateway } from 'src/connection/connection.gateway';
+import { IUser } from 'src/typeorm/interfaces/IUser';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -26,7 +27,7 @@ export class UserService implements IUserService {
   ) {}
   private connectionGateway: ConnectionGateway;
 
-  async findUserByIdOrFail(userId: number) {
+  async findUserByIdOrFail(userId: number): Promise<User> {
     const user = await this.userRepository
       .createQueryBuilder('users')
       .where('users.user_id=:userId', { userId })
@@ -37,7 +38,7 @@ export class UserService implements IUserService {
     return user;
   }
 
-  async getCurrentUser(id: number): Promise<User> {
+  async getCurrentUser(userId: number): Promise<User> {
     const user = await this.userRepository
       .createQueryBuilder('users')
       .leftJoinAndSelect(
@@ -50,15 +51,15 @@ export class UserService implements IUserService {
         'friend',
         'users.user_id = friend.user_id',
       )
-      .where('users.user_id=:id', { id })
+      .where('users.user_id=:userId', { userId })
       .getOne();
     return user;
   }
 
-  async getUserById(id: number) {
+  async getUserById(userId: number) {
     const user = await this.userRepository
       .createQueryBuilder('users')
-      .where('users.user_id=:id', { id })
+      .where('users.user_id=:userId', { userId })
       .getOne();
     return user;
   }
