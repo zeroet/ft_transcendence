@@ -23,5 +23,8 @@ declare namespace NodeJS {
     JWT_REFRESH_SECRET?: string;
     JWT_ACCESS_EXPIRATION_TIME?: string;
     JWT_REFRESH_EXPIRATION_TIME?: string;
+
+    DEFAULT_IMAGE_URL?: string;
+    DUMMY_URL?: string;
   }
 }

@@ -33,7 +33,10 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
       // console.log('data:', data);
       // console.log('data.image_url:', data.image_url);
       const { login: intra_id, email, image, displayname: username } = data;
-      const image_url = image.versions.small;
+      let image_url = image.versions.small;
+      if (image_url === undefined || null) {
+        image_url = process.env.DEFAULT_IMAGE_URL;
+      }
       console.log('intra_id: ', intra_id);
       console.log('email: ', email);
       console.log('image_url: ', image_url);
