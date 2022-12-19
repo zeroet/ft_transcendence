@@ -42,6 +42,10 @@ export class TwoFactorService implements ITwoFactorService {
       .where('users.user_id=:id', { id })
       .getOne();
     if (user) {
+      // console.log(user.two_factor_activated, twoFactorActivated);
+      // if (user.two_factor_activated && !twoFactorActivated) {
+      //   user.two_factor_secret = null;
+      // }
       user.two_factor_activated = twoFactorActivated;
       return await this.userRepository.save(user);
       // await this.userRepository.save({
