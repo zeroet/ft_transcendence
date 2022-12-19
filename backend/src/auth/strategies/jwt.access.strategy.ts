@@ -1,17 +1,16 @@
-import {
-  Inject,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import { InjectRepository } from '@nestjs/typeorm';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { IUserService } from 'src/users/services/user/user.interface';
+import { User } from 'src/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   private logger: Logger = new Logger(JwtAccessStrategy.name);
-  constructor(@Inject('USER_SERVICE') private userService: IUserService) {
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request) => {
@@ -26,13 +25,16 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
     this.logger.debug(
       `user_id: ${payload.id}, two_factor_activated: ${payload.two_factor_activated}`,
     );
-    // if (payload !== undefined) {
-    const user = await this.userService.getUserById(payload.id);
+    const userId = payload.id;
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .addSelect('users.two_factor_secret')
+      .where('users.user_id=:userId', { userId })
+      .getOne();
     if (!user) {
       console.log('jwt.access.strategy user not found');
       throw new UnauthorizedException('Unauthorized User');
     }
     return user;
-    // }
   }
 }
