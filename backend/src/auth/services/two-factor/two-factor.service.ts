@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { authenticator } from 'otplib';
 import { toFileStream } from 'qrcode';
-import { UserDto } from 'src/users/dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm';
 import { Repository } from 'typeorm';
 import { ITwoFactorService } from './two-factor.interface';
+import { IUser } from 'src/typeorm/interfaces/IUser';
 
 @Injectable()
 export class TwoFactorService implements ITwoFactorService {
@@ -13,7 +13,7 @@ export class TwoFactorService implements ITwoFactorService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async generateTwoFactorSecret(user: UserDto) {
+  async generateTwoFactorSecret(user: IUser) {
     const secret = authenticator.generateSecret();
     const otpAuthUrl = authenticator.keyuri(
       user.email,
