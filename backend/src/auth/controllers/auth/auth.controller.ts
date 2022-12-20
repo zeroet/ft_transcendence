@@ -12,7 +12,7 @@ import { FtAuthGurad } from 'src/auth/guards/ft-auth.guard';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtRefreshAuthGuard } from 'src/auth/guards/jwt.refresh-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
-import { TwoFactorService } from 'src/auth/services/two-factor/two-factor.service';
+import { ITwoFactorService } from 'src/auth/services/two-factor/two-factor.interface';
 import { IUserService } from 'src/users/services/user/user.interface';
 import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies, Status } from 'src/utils/types';
@@ -23,7 +23,7 @@ export class AuthController {
   constructor(
     @Inject('AUTH_SERVICE') private authService: IAuthService,
     @Inject('USER_SERVICE') private userService: IUserService,
-    @Inject('TWO_FACTOR_SERVICE') private twoFactorSerivce: TwoFactorService,
+    @Inject('TWO_FACTOR_SERVICE') private twoFactorSerivce: ITwoFactorService,
   ) {}
 
   @ApiOperation({
@@ -56,7 +56,7 @@ export class AuthController {
     summary: 'Dummy login for test / 테스트용 더미 로그인',
   })
   @Redirect('http://localhost:8000/Home', 301)
-  @Post('dummy')
+  @Get('dummy')
   async test(@Res({ passthrough: true }) res) {
     const user = await this.userService.createDummyUser();
     const refreshToken = this.authService.getRefreshToken(user.id);
