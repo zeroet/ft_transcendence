@@ -89,7 +89,7 @@ export class GameService {
       player2: 0,
     };
     this.wall = { height: 100, width: 10 };
-    this.paddles = { paddle1: 150, paddle2: 150};
+    this.paddles = { paddle1: 350, paddle2: 350};
   }
 
   default() {
@@ -121,12 +121,12 @@ export class GameService {
     var nextY = this.ball.y + this.dir.dy;
 
     //top bottom dir change
-    if (nextY <= 735 || nextY >= 15) {
+    if (nextY <= 735 || nextY >= 35) {
       if (nextY <= 735) {
         this.dir.dy *= -1;
         nextY += 1;
       }
-      if (nextY >= 15) {
+      if (nextY >= 35) {
         this.dir.dy *= -1;
         nextY -= 1;
       }
@@ -147,8 +147,8 @@ export class GameService {
         nextX -= 10;
       }
     } else if (
-      nextY <= this.paddles.paddle1 + 50 &&
-      nextY >= this.paddles.paddle1 - 50
+      nextY <= this.paddles.paddle1 + 100 &&
+      nextY >= this.paddles.paddle1 - 20
     ) {
       if (nextX - this.ballSize / 2 <= 0) {
         this.dir.dx *= -1;
