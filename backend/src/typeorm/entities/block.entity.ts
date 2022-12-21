@@ -56,7 +56,10 @@ export class Block implements IBlock {
   @JoinColumn({ name: 'user', referencedColumnName: 'id' })
   User: IUser;
 
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'blocked_user', referencedColumnName: 'id' })
   BlockedUser: IUser;
 }
