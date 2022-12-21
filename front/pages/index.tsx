@@ -83,6 +83,20 @@ export default function Enter({ path }: { path: string }) {
       console.log(err);
     }
   };
+  const selectedUser = async (e: any) => {
+    console.log(e.target.value);
+    try {
+      await axios
+        .post("/api/auth/test", {
+          headers: { "Cache-Control": "max-age=0" },
+          name: e.target.value,
+        })
+        .then(console.log);
+      router.push("/Home");
+    } catch (err) {
+      console.log(err);
+    }
+  };
   /** test용 */
 
   return (
@@ -109,6 +123,15 @@ export default function Enter({ path }: { path: string }) {
         )}
         {/* 테스트용 */}
         <button onClick={test}>+</button>
+        <select name="test_user" onChange={selectedUser}>
+          <option value="">Test user</option>
+          <option value="Janvier">Janvier</option>
+          <option value="Fevrier">Fevrier</option>
+          <option value="Mars">Mars</option>
+          <option value="Avril">Avril</option>
+          <option value="Mai">Mai</option>
+          <option value="Juin">Juin</option>
+        </select>
         {/* 테스트용 */}
         <style jsx>{`
           div {
