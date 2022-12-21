@@ -7,18 +7,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IChatContent } from '../interfaces/IChatContent';
-import { IChatMember } from '../interfaces/IChatMemeber';
-import { IDm } from '../interfaces/IDm';
 import { IUser } from '../interfaces/IUser';
-import { ChatContent } from './chatContent.entity';
-import { ChatMember } from './chatMember.entitiy';
-import { Dm } from './dm.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Block } from './block.entity';
 import { IBlock } from '../interfaces/IBlock';
-import { IDmContent } from '../interfaces/IDmContent';
-import { DmContent } from './dmContent.entity';
 import { IFriend } from '../interfaces/IFriend';
 import { Friend } from './friend.entity';
 import { Status } from 'src/utils/types';
@@ -88,7 +80,8 @@ export class User implements IUser {
   @ApiProperty({
     required: true,
     example: 'LOGIN',
-    description: 'User status: "LOGIN" or "LOGOUT" or "PLAYING"',
+    description:
+      'User status: "LOGIN" or "LOGOUT" or "PLAYING" or "WATCHING" or "READY"',
   })
   @Column({
     type: 'varchar',
@@ -151,21 +144,6 @@ export class User implements IUser {
   @OneToMany((type) => Friend, (Friend) => Friend.User)
   @JoinColumn({ name: 'friend', referencedColumnName: 'id' })
   Friend: IFriend[];
-
-  // @OneToMany((type) => ChatMember, (ChatMember) => ChatMember.User)
-  // ChatMember: IChatMember[];
-
-  // @OneToMany((type) => ChatContent, (ChatContent) => ChatContent.User)
-  // ChatContent: IChatContent[];
-
-  // @OneToMany((type) => DmContent, (DmContent) => DmContent.User)
-  // DmContent: IDmContent[];
-
-  // @OneToMany((type) => Dm, (Dm) => Dm.User1)
-  // DmUser1: IDm[];
-
-  // @OneToMany((type) => Dm, (Dm) => Dm.User2)
-  // DmUser2: IDm[];
 
   @OneToMany(() => MatchHistory, (match) => match.winner)
   won: MatchHistory[];

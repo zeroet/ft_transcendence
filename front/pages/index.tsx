@@ -3,7 +3,7 @@ import cookies from "next-cookies";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { XYType } from "../interfaceType";
 import { GetServerSideProps } from "next";
 
@@ -74,12 +74,14 @@ export default function Enter({ path }: { path: string }) {
 
   /** test용 */
   const test = async () => {
-    await axios
-      .post("/api/auth/dummy")
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
+    try {
+      await axios
+        .get("/api/auth/dummy", { headers: { "Cache-Control": "max-age=0" } })
+        .then(console.log);
+      router.push("/Home");
+    } catch (err) {
+      console.log(err);
+    }
   };
   /** test용 */
 

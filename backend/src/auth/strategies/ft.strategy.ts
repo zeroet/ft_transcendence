@@ -3,13 +3,13 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-oauth2';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
-import { IAuthService } from '../services/auth/auth.interface';
+import { IUserService } from 'src/users/services/user/user.interface';
 
 @Injectable()
 export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
   constructor(
     private httpService: HttpService,
-    @Inject('AUTH_SERVICE') private readonly authService: IAuthService,
+    @Inject('USER_SERVICE') private readonly userService: IUserService,
   ) {
     super({
       authorizationURL: process.env.FT_AUTHORIZATION_URL,
@@ -33,13 +33,16 @@ export class FtStrategy extends PassportStrategy(Strategy, 'ft') {
       // console.log('data:', data);
       // console.log('data.image_url:', data.image_url);
       const { login: intra_id, email, image, displayname: username } = data;
-      const image_url = image.versions.small;
+      let image_url = image.versions.small;
+      if (image_url === undefined || null) {
+        image_url = process.env.DEFAULT_IMAGE_URL;
+      }
       console.log('intra_id: ', intra_id);
       console.log('email: ', email);
       console.log('image_url: ', image_url);
       console.log('username: ', username);
       const userDetails = { intra_id, email, image_url, username };
-      return this.authService.validateUser(userDetails);
+      return this.userService.validateUser(userDetails);
     } catch (error) {
       console.error(error);
       throw new UnauthorizedException('Failed to authenticate by 42API');

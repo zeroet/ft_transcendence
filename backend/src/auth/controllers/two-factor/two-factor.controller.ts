@@ -24,6 +24,7 @@ import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtTwoFactorAuthGuard } from 'src/auth/guards/jwt.two-factor-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { ITwoFactorService } from 'src/auth/services/two-factor/two-factor.interface';
+import { IUser } from 'src/typeorm/interfaces/IUser';
 import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies } from 'src/utils/types';
 
@@ -51,16 +52,16 @@ export class TwoFactorContorller {
   @UseGuards(JwtAccessAuthGuard)
   @Post('authenticate')
   async authenticate(
-    @User() user,
+    @User() user: IUser,
     @Res({ passthrough: true }) res,
-    @Body() { two_factor_code },
+    @Body('two_factor_code') twoFactorCode: string,
   ) {
     // console.log('authenticate() two_factor_code:', two_factor_code);
     if (!user.two_factor_activated || !user.two_factor_secret)
       throw new BadRequestException('Two Factor is not activated');
     const isCodeValid = this.twoFactorService.validateTwoFactorCode(
       user.two_factor_secret,
-      two_factor_code,
+      twoFactorCode,
     );
     if (!isCodeValid) {
       throw new UnauthorizedException('Invalid authentication code');
@@ -91,7 +92,7 @@ export class TwoFactorContorller {
   })
   @UseGuards(JwtAccessAuthGuard)
   @Get('generate')
-  async register(@User() user, @Res() res: Response) {
+  async register(@User() user: IUser, @Res() res: Response) {
     // if (!req.user.two_factor_activated)
     //   throw new BadRequestException('Two factor is not activated');
     const otpAuthUrl = await this.twoFactorService.generateTwoFactorSecret(
@@ -131,9 +132,7 @@ export class TwoFactorContorller {
       user.two_factor_secret,
       two_factor_code,
     );
-    // console.log('is code valid:', isCodeValid);
     if (!isCodeValid) {
-      // console.log('code invalid');
       throw new UnauthorizedException('Invalid authentication code');
     }
     await this.twoFactorService.setTwoFactorActivated(user.id, set);
@@ -153,11 +152,17 @@ export class TwoFactorContorller {
   @ApiOperation({ summary: 'Deactivate 2FA / 2FA 비활성화' })
   @UseGuards(JwtTwoFactorAuthGuard)
   @Post('deactivate')
-  async deactivateTwoFactor(@User() user, @Body() { set }) {
+  async deactivateTwoFactor(
+    @User() user: IUser,
+    @Body('set') twoFactorActivated: boolean,
+  ) {
     // console.log('deactivate() set:', set);
     if (!user.two_factor_activated)
       throw new BadRequestException('Two factor is not activated');
-    await this.twoFactorService.setTwoFactorActivated(user.id, set);
+    await this.twoFactorService.setTwoFactorActivated(
+      user.id,
+      twoFactorActivated,
+    );
   }
 
   @ApiBody({
@@ -168,8 +173,11 @@ export class TwoFactorContorller {
   @UseGuards(JwtTwoFactorAuthGuard)
   @ApiOperation({ summary: 'Valid 2FA / 2FA 적용 유효성 확인' })
   @Post('valid')
-  async validTwoFactor(@User() user, @Body() { valid }) {
+  async validTwoFactor(
+    @User() user: IUser,
+    @Body('valid') twoFactorValid: boolean,
+  ) {
     // console.log('valid() valid:', valid);
-    await this.twoFactorService.setTwoFactorValid(user.id, valid);
+    await this.twoFactorService.setTwoFactorValid(user.id, twoFactorValid);
   }
 }

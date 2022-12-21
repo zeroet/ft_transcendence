@@ -8,10 +8,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { Block, Friend, MatchHistory, User } from 'src/typeorm';
-import { Status } from 'src/utils/types';
+import { Status, StatusArray, UserDetails } from 'src/utils/types';
 import { IUserService } from './user.interface';
 import { Repository } from 'typeorm';
-import { ConnectionGateway } from 'src/connection/connection.gateway';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -24,9 +23,8 @@ export class UserService implements IUserService {
     private matchHistoryRepository: Repository<MatchHistory>,
     private chatEventsGateway: ChatEventsGateway,
   ) {}
-  private connectionGateway: ConnectionGateway;
 
-  async findUserByIdOrFail(userId: number) {
+  async findUserByIdOrFail(userId: number): Promise<User> {
     const user = await this.userRepository
       .createQueryBuilder('users')
       .where('users.user_id=:userId', { userId })
@@ -37,7 +35,7 @@ export class UserService implements IUserService {
     return user;
   }
 
-  async getCurrentUser(id: number): Promise<User> {
+  async getCurrentUser(userId: number): Promise<User> {
     const user = await this.userRepository
       .createQueryBuilder('users')
       .leftJoinAndSelect(
@@ -50,45 +48,24 @@ export class UserService implements IUserService {
         'friend',
         'users.user_id = friend.user_id',
       )
-      // .innerJoinAndSelect('friend.FriendUser', 'friendUser')
-      .where('users.user_id=:id', { id })
+      .where('users.user_id=:userId', { userId })
       .getOne();
-    // const FriendUsers = await this.friendRepository
-    //   .createQueryBuilder('friend')
-    //   .where('friend.user_id=:id', { id })
-    //   .innerJoinAndSelect('friend.FriendUser', 'friendUser')
-    //   .getMany();
-
-    // // console.log('friend users:', FriendUsers);
-    // for (let i = 0; i < user.Friend.length; i++) {
-    //   for (let j = 0; j < FriendUsers.length; j++) {
-    //     if (user.Friend[i].friendUserId === FriendUsers[j].FriendUser.id) {
-    //       const { status, username } = user.Friend[i].FriendUser;
-    //       delete user.Friend[i].FriendUser;
-    //       user.Friend[i]['status'] = status;
-    //       user.Friend[i]['friendUsername'] = username;
-    //     }
-    //   }
-    // }
     return user;
   }
 
-  async getUserById(id: number) {
-    // this.logger.debug(`getUserById() id: ${id}`);
+  async getUserById(userId: number) {
     const user = await this.userRepository
       .createQueryBuilder('users')
-      .where('users.user_id=:id', { id })
+      .where('users.user_id=:userId', { userId })
       .getOne();
     return user;
   }
 
   async getAllUsers() {
-    // const users = await this.userRepository.find();
     const users = await this.userRepository
       .createQueryBuilder('users')
       .getMany();
-    // console.log('users info:', users);
-    if (users) return users;
+    return users;
   }
 
   async blockUser(userId: number, blockUserId: number) {
@@ -127,7 +104,7 @@ export class UserService implements IUserService {
       );
     }
     const removedBlock = await this.blockRepository.remove(block);
-    console.log('removed block:', removedBlock);
+    // console.log('removed block:', removedBlock);
     return removedBlock;
   }
 
@@ -156,7 +133,6 @@ export class UserService implements IUserService {
     const createdfriend = this.friendRepository.create({
       userId,
       friendUserId,
-      // friendUsername: friendUser.username,
       User: user,
       FriendUser: friendUser,
     });
@@ -177,7 +153,7 @@ export class UserService implements IUserService {
       );
     }
     const removedFriend = await this.friendRepository.remove(friend);
-    console.log('removed friend:', removedFriend);
+    // console.log('removed friend:', removedFriend);
     return removedFriend;
   }
 
@@ -206,22 +182,83 @@ export class UserService implements IUserService {
     return friends;
   }
 
+  async validateUser(userDetails: UserDetails) {
+    const { intra_id } = userDetails;
+    const user = await this.userRepository.findOneBy({ intra_id });
+    if (user) return user;
+    return this.createUser(userDetails);
+  }
+
+  createUser(userDetails: UserDetails) {
+    // console.log('creating a new user');
+    const user = this.userRepository.create(userDetails);
+    return this.userRepository.save(user);
+  }
+
+  async validateDummy(userDetails: UserDetails) {
+    const { intra_id } = userDetails;
+    console.log('dummy intra id:', intra_id);
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.intra_id=:intra_id', { intra_id })
+      .getOne();
+    return user;
+  }
+
+  async createDummy(userDetails: UserDetails) {
+    const user = this.userRepository.create(userDetails);
+    return await this.userRepository.save(user);
+  }
+
+  async createDummyUser() {
+    let name = 'dummy';
+    let userDetails = {
+      intra_id: name,
+      email: name,
+      image_url: process.env.DUMMY_URL,
+      username: name,
+    };
+    let dummy = await this.validateDummy(userDetails);
+    while (dummy) {
+      name = dummy.username.substring(0, 5);
+      let number = Number(dummy.username.replace(/[^0-9]/g, ''));
+      number += 1;
+      name += number;
+      userDetails = {
+        intra_id: name,
+        email: name,
+        image_url: process.env.DUMMY_URL,
+        username: name,
+      };
+      dummy = await this.validateDummy(userDetails);
+    }
+    return this.createDummy(userDetails);
+  }
+
+  async deleteDummyUser(user) {
+    let count = user.intra_id.indexOf('dummy');
+    if (count === 0) {
+      const dummy = await this.userRepository
+        .createQueryBuilder('users')
+        .where('users.user_id=:id', { id: user.id })
+        .getOne();
+      await this.userRepository.remove(dummy);
+      return true;
+    }
+    return false;
+  }
+
   async updateUserStatus(userId: number, status: Status) {
     const user = await this.findUserByIdOrFail(userId);
-    // if (
-    //   status === Status.LOGIN ||
-    //   status === Status.LOGOUT ||
-    //   status === Status.PLAYING
-    // )
-    user.status = status;
-    // else {
-    //   throw new BadRequestException(`User status: ${status} is not valid`);
-    // }
+    if (StatusArray.includes(status)) {
+      user.status = status;
+    } else {
+      throw new BadRequestException(`User status: ${status} is not valid`);
+    }
     const updatedUser = await this.userRepository.save(user);
     this.chatEventsGateway.server.emit('status', updatedUser);
     return updatedUser;
   }
-  // updateUserById(id: number) {}
 
   async createMatchHistory(info: any) {
     const match = this.matchHistoryRepository.create({ ...info });
