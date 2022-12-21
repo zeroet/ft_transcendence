@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
 
@@ -29,6 +30,16 @@ const SearchBarModal = ({
       console.log(name);
       if (addOrDelete === "Add") {
         console.log("in add");
+        toast.info(`${name} is added on friend list`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: true,
+        });
         await axios
           .post(`/api/users/friend/${id.toString()}`)
           .then(() => {
@@ -38,6 +49,16 @@ const SearchBarModal = ({
           .catch((err) => console.log(err));
       } else if (addOrDelete === "Delete") {
         console.log("in delete");
+        toast.info(`${name} is deleted from friend list`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          rtl: false,
+          pauseOnFocusLoss: true,
+          draggable: false,
+          pauseOnHover: true,
+        });
         await axios
           .delete(`/api/users/friend/${id.toString()}`)
           .then(() => {

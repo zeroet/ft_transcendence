@@ -80,11 +80,24 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
         if (res.userId === userData.id && res.chatroomId.toString() === id.id) {
           if (res.mutedAt) {
             setIsMuted(true);
+            toast.info(
+              `You are muted for 10 seconds at: [${roomData.chatroomName}]`,
+              {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                rtl: false,
+                pauseOnFocusLoss: true,
+                draggable: false,
+                pauseOnHover: false,
+              }
+            );
           }
           if (res.bannedAt) {
-            toast.info(`You are baned from room: [${roomData.chatroomName}]`, {
+            toast.info(`You are banned from room: [${roomData.chatroomName}]`, {
               position: "top-center",
-              autoClose: 1000,
+              autoClose: 3000,
               hideProgressBar: true,
               closeOnClick: true,
               rtl: false,
@@ -121,6 +134,19 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       }) => {
         if (chatroomId.toString() === id.id && targetUserId === userData.id) {
           router.push("/Chat");
+          toast.info(
+            `you justed kicked from the room [${roomData.chatroomName}]`,
+            {
+              position: "top-center",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              rtl: false,
+              pauseOnFocusLoss: true,
+              draggable: false,
+              pauseOnHover: false,
+            }
+          );
         }
         if (id.link === "chatroom") mutate(`/api/chatroom/${id.id}/members`);
       }

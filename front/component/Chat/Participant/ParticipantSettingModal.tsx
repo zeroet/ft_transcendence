@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import useSWR, { mutate } from "swr";
 import Loading from "../../errorAndLoading/Loading";
 import useSocket from "../../Utils/socket";
@@ -82,15 +83,30 @@ const ParticipantSettingModal = ({
       e.preventDefault();
       e.stopPropagation();
       if (isBlock === "Block") {
+        const userBlocked = chatroomData.find((e: any) => e.userId === userId);
         await axios
           .post(`/api/users/block/${userId}`)
           .then(() => {
             setIsBlock("Unblock");
             mutate("/api/users/block/list");
             setShowModal(false);
+            toast.info(
+              `You just blocked ${userBlocked.User.username} from chat`,
+              {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                rtl: false,
+                pauseOnFocusLoss: true,
+                draggable: false,
+                pauseOnHover: true,
+              }
+            );
           })
           .catch((err) => console.log(err));
       } else {
+        const userBlocked = chatroomData.find((e: any) => e.userId === userId);
         if (blockedListData.length === 0) {
           setIsBlock("Block");
           return;
@@ -101,6 +117,19 @@ const ParticipantSettingModal = ({
             setIsBlock("Block");
             mutate("/api/users/block/list");
             setShowModal(false);
+            toast.info(
+              `You just unblocked ${userBlocked.User.username} from chat`,
+              {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                rtl: false,
+                pauseOnFocusLoss: true,
+                draggable: false,
+                pauseOnHover: true,
+              }
+            );
           })
           .catch((err) => console.log(err));
       }
@@ -221,9 +250,11 @@ const ParticipantSettingModal = ({
       <div className="router-div" onClick={onClickGame}>
         Game
       </div>
-      <div className="router-div" onClick={onClickBlock}>
-        {isBlock}
-      </div>
+      {chatId && (
+        <div className="router-div" onClick={onClickBlock}>
+          {isBlock}
+        </div>
+      )}
       {!chatId && (
         <div className="router-div" onClick={onClickDelete}>
           Delete

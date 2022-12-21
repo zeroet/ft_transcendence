@@ -49,8 +49,8 @@ const TextProfil = ({ id }: { id: number }) => {
     <div>
       <div className="name">
         <h1 className="userName">
+          {id != myData.id && <p className="span-c">Profile of</p>}
           {user.username}
-          {id != myData.id && <span>'s Profile</span>}
         </h1>
       </div>
       <div className="info" onClick={onClickShowImg}>
@@ -92,6 +92,12 @@ const TextProfil = ({ id }: { id: number }) => {
         </div>
       )}
       <style jsx>{`
+        .span-c {
+          font-size: 20px;
+          color: white;
+          background-color: black;
+          margin-top: -35px;
+        }
         .achivement-text {
           color: blue;
           animation: blink-effect 1s step-end infinite;
