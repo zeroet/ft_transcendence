@@ -89,7 +89,7 @@ export class GameService {
       player2: 0,
     };
     this.wall = { height: 100, width: 10 };
-    this.paddles = { paddle1: 50, paddle2: 50 };
+    this.paddles = { paddle1: 150, paddle2: 150};
   }
 
   default() {
@@ -121,12 +121,12 @@ export class GameService {
     var nextY = this.ball.y + this.dir.dy;
 
     //top bottom dir change
-    if (nextY <= 725 || nextY >= 0) {
-      if (nextY <= 725) {
+    if (nextY <= 735 || nextY >= 15) {
+      if (nextY <= 735) {
         this.dir.dy *= -1;
         nextY += 1;
       }
-      if (nextY >= 0) {
+      if (nextY >= 15) {
         this.dir.dy *= -1;
         nextY -= 1;
       }
@@ -229,20 +229,20 @@ export class GameService {
 
   keyPaddle1(input: number) {
     if (input === 1) {
-      if (this.paddles.paddle1 - 25 < 0) return;
+      if (this.paddles.paddle1 - 25 < 10) return;
       this.paddles.paddle1 -= 25;
     } else if (input === 2) {
-      if (this.paddles.paddle1 + 25 >= 675) return;
+      if (this.paddles.paddle1 + 25 >= 700) return;
       this.paddles.paddle1 += 25;
     }
   }
 
   keyPaddle2(input: number) {
     if (input === 1) {
-      if (this.paddles.paddle2 - 25 < 0) return;
+      if (this.paddles.paddle2 - 25 < 10) return;
       this.paddles.paddle2 -= 25;
     } else if (input === 2) {
-      if (this.paddles.paddle2 + 25 >= 675) return;
+      if (this.paddles.paddle2 + 25 >= 700) return;
       this.paddles.paddle2 += 25;
     }
   }
