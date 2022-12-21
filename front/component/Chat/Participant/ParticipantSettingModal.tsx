@@ -250,9 +250,11 @@ const ParticipantSettingModal = ({
       <div className="router-div" onClick={onClickGame}>
         Game
       </div>
-      <div className="router-div" onClick={onClickBlock}>
-        {isBlock}
-      </div>
+      {chatId && (
+        <div className="router-div" onClick={onClickBlock}>
+          {isBlock}
+        </div>
+      )}
       {!chatId && (
         <div className="router-div" onClick={onClickDelete}>
           Delete
