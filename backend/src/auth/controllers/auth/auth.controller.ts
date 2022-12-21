@@ -86,9 +86,9 @@ export class AuthController {
   @Redirect('http://localhost:8000/Home', 301)
   @Post('test')
   async test(@Res({ passthrough: true }) res, @Body('name') name: string) {
-    console.log('test user name:', name);
+    // console.log('test user name:', name);
     const user = await this.userService.createTestUser(name);
-    console.log('current test user:', user);
+    // console.log('current test user:', user);
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,

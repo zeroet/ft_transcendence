@@ -212,7 +212,7 @@ export class UserService implements IUserService {
 
   async validateDummy(userDetails: UserDetails) {
     const { intra_id } = userDetails;
-    console.log('dummy intra id:', intra_id);
+    // console.log('dummy intra id:', intra_id);
     const user = await this.userRepository
       .createQueryBuilder('users')
       .where('users.intra_id=:intra_id', { intra_id })
