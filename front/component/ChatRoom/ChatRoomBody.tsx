@@ -82,7 +82,7 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
             setIsMuted(true);
           }
           if (res.bannedAt) {
-            toast.info(`You are baned from room: [${roomData.chatroomName}]`, {
+            toast.info(`You are banned from room: [${roomData.chatroomName}]`, {
               position: "top-center",
               autoClose: 1000,
               hideProgressBar: true,

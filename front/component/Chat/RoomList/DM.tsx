@@ -17,7 +17,7 @@ export default function DM() {
       if (myData.id === data.User2.id) {
         toast.info(`you have DM message from ${data.User1.username}`, {
           position: "top-center",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           rtl: false,
