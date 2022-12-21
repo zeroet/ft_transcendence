@@ -156,7 +156,7 @@ export class GameService {
       }
     }
     // score
-    if (nextX - this.ballSize >= 1475 || nextX + this.ballSize <= 0) {
+    if (nextX - this.ballSize >= 1465 || nextX + this.ballSize <= 10) {
       nextX >= 1475 ? (this.score.player1 += 1) : (this.score.player2 += 1);
       if (this.score.player1 == 5) {
         this.gameover();
