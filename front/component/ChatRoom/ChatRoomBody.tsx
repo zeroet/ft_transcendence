@@ -134,6 +134,19 @@ export default function ChatRoomBody({ id }: { id: TypeChatId }) {
       }) => {
         if (chatroomId.toString() === id.id && targetUserId === userData.id) {
           router.push("/Chat");
+          toast.info(
+            `you justed kicked from the room [${roomData.chatroomName}]`,
+            {
+              position: "top-center",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              rtl: false,
+              pauseOnFocusLoss: true,
+              draggable: false,
+              pauseOnHover: false,
+            }
+          );
         }
         if (id.link === "chatroom") mutate(`/api/chatroom/${id.id}/members`);
       }
