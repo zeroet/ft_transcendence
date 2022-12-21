@@ -137,11 +137,17 @@ export class User implements IUser {
   @Column({ type: 'boolean', name: 'two_factor_valid', default: false })
   two_factor_valid: boolean;
 
-  @OneToMany((type) => Block, (Block) => Block.User)
+  @OneToMany((type) => Block, (Block) => Block.User, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'block', referencedColumnName: 'id' })
   Block: IBlock[];
 
-  @OneToMany((type) => Friend, (Friend) => Friend.User)
+  @OneToMany((type) => Friend, (Friend) => Friend.User, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'friend', referencedColumnName: 'id' })
   Friend: IFriend[];
 
