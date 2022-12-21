@@ -12,6 +12,7 @@ export interface IUserService {
   getFriendList(userId: number);
   validateUser(userDetails: UserDetails);
   // createUser(userDetails: UserDetails);
+  createTestUser(name: string);
   createDummyUser();
   deleteDummyUser(user);
   updateUserStatus(userId: number, status: Status);

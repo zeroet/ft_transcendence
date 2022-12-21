@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Inject,
@@ -7,12 +8,13 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FtAuthGurad } from 'src/auth/guards/ft-auth.guard';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt.access-auth.guard';
 import { JwtRefreshAuthGuard } from 'src/auth/guards/jwt.refresh-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { ITwoFactorService } from 'src/auth/services/two-factor/two-factor.interface';
+import { UserDto } from 'src/users/dto/user.dto';
 import { IUserService } from 'src/users/services/user/user.interface';
 import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies, Status } from 'src/utils/types';
@@ -57,8 +59,36 @@ export class AuthController {
   })
   @Redirect('http://localhost:8000/Home', 301)
   @Get('dummy')
-  async test(@Res({ passthrough: true }) res) {
+  async dummy(@Res({ passthrough: true }) res) {
     const user = await this.userService.createDummyUser();
+    const refreshToken = this.authService.getRefreshToken(user.id);
+    res.cookie(
+      Cookies.ACCESS_TOKEN,
+      this.authService.getAccessToken(user.id, user.two_factor_activated),
+      this.authService.accessTokenCookieOptions,
+    );
+    res.cookie(
+      Cookies.REFRESH_TOKEN,
+      refreshToken,
+      this.authService.refreshTokenCookieOptions,
+    );
+    this.authService.setRefreshToken(user.id, refreshToken);
+    return this.userService.updateUserStatus(user.id, Status.LOGIN);
+  }
+
+  @ApiBody({
+    type: String,
+    description: 'Test user name',
+  })
+  @ApiOperation({
+    summary: 'Test user login / 테스트용 로그인',
+  })
+  @Redirect('http://localhost:8000/Home', 301)
+  @Post('test')
+  async test(@Res({ passthrough: true }) res, @Body('name') name: string) {
+    console.log('test user name:', name);
+    const user = await this.userService.createTestUser(name);
+    console.log('current test user:', user);
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,
