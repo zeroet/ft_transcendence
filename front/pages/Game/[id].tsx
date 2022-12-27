@@ -27,8 +27,8 @@ export default function Gaming({
   const [ballX, setBallX] = useState<number>(1500 / 2);
   const [ballY, setBallY] = useState<number>(750 / 2);
   const [ballSize, setBallSize] = useState<number>(50);
-  const [leftPaddle, setLeftPaddle] = useState<number>(650 / 2);
-  const [rightPaddle, setRightPaddle] = useState<number>(650 / 2);
+  const [leftPaddle, setLeftPaddle] = useState<number>(750 / 2);
+  const [rightPaddle, setRightPaddle] = useState<number>(750 / 2);
   const [ownerScore, setOwnerScore] = useState<number>(0);
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [winOrLose, setWinOrLose] = useState<string>("");
@@ -247,7 +247,7 @@ export default function Gaming({
           //   }
           .play-game {
             //   padding: 10px;
-            margin: 15px;
+            margin: 16px;
             background-color: black;
             // background-color: var(--background-color);
             overflow: hidden;
@@ -258,11 +258,11 @@ export default function Gaming({
             position: relative;
             background-color: yellow;
             // background-color: var(--foreground-color);
-            width: 12px;
+            width: 15px;
             top: calc(var(--position) * 1vh);
             height: 100px;
             // border-radius: 20%;
-            trasform: traslate(-50%);
+            transform: translate(-50%);
           }
           .left {
             // --position: ${leftPaddle}px;
@@ -271,7 +271,7 @@ export default function Gaming({
           .right {
             // --position: ${rightPaddle}px;
             top: ${rightPaddle - 260}px;
-            left: ${1500 - 10}px;
+            left: ${1500}px;
           }
           .score {
             display: flex;

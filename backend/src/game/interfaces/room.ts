@@ -141,8 +141,8 @@ export class GameService {
       nextY <= this.paddles.paddle2 + 50 &&
       nextY >= this.paddles.paddle2 - 50
     ) {
-      // if (nextX + this.ballSize / 2 + 10 >= 1475) {
-      if (nextX >= 1500) {
+      if (nextX + this.ballSize / 2 + 10 >= 1500) {
+        // if (nextX >= 1500) {
         console.log(
           `${this.ball.x}, ${this.ball.y} paddle 2 ${this.paddles.paddle2}`,
         );
@@ -153,8 +153,8 @@ export class GameService {
       nextY <= this.paddles.paddle1 + 50 &&
       nextY >= this.paddles.paddle1 - 50
     ) {
-      // if (nextX - this.ballSize / 2 <= 0) {
-      if (nextX <= 0) {
+      if (nextX - this.ballSize / 2 <= 0) {
+        // if (nextX <= 0) {
         this.dir.dx *= -1;
         nextX += 10;
       }
@@ -235,7 +235,7 @@ export class GameService {
 
   keyPaddle1(input: number) {
     if (input === 1) {
-      if (this.paddles.paddle1 - 25 < 10) return;
+      if (this.paddles.paddle1 - 50 < 0) return;
       this.paddles.paddle1 -= 25;
     } else if (input === 2) {
       if (this.paddles.paddle1 + 25 >= 700) return;
@@ -245,7 +245,7 @@ export class GameService {
 
   keyPaddle2(input: number) {
     if (input === 1) {
-      if (this.paddles.paddle2 - 25 < 10) return;
+      if (this.paddles.paddle2 - 50 < 0) return;
       this.paddles.paddle2 -= 25;
     } else if (input === 2) {
       if (this.paddles.paddle2 + 25 >= 700) return;
