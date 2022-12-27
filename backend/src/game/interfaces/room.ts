@@ -150,8 +150,8 @@ export class GameService {
         nextX -= 10;
       }
     } else if (
-      nextY <= this.paddles.paddle1 + 50 &&
-      nextY >= this.paddles.paddle1 - 50
+      nextY <= this.paddles.paddle1 + 100 &&
+      nextY >= this.paddles.paddle1 - 20
     ) {
       if (nextX - this.ballSize / 2 <= 0) {
         // if (nextX <= 0) {
