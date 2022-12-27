@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import { Socket } from "socket.io"
+import { Injectable } from '@nestjs/common';
+import { Socket } from 'socket.io';
 
 type ball = {
   x: number;
@@ -78,8 +78,8 @@ export class GameService {
     this.roomName = roomName;
     this.ownerId = ownerId;
     this.speed = Number(speed);
-    this.width = 1475;
-    this.height = 725;
+    this.width = 1500;
+    this.height = 750;
     this.ballSize = Number(ballSize);
     this.name = { name1: '', name2: '' };
     this.ball = { x: this.width / 2, y: this.height / 2 };
@@ -89,7 +89,7 @@ export class GameService {
       player2: 0,
     };
     this.wall = { height: 100, width: 10 };
-    this.paddles = { paddle1: 350, paddle2: 350};
+    this.paddles = { paddle1: 350, paddle2: 350 };
   }
 
   default() {
@@ -119,14 +119,16 @@ export class GameService {
 
     var nextX = this.ball.x + this.dir.dx;
     var nextY = this.ball.y + this.dir.dy;
+    // var nextX = null;
+    // var nextY = null;
 
     //top bottom dir change
-    if (nextY <= 735 || nextY >= 35) {
-      if (nextY <= 735) {
+    if (nextY <= 750 || nextY >= 0) {
+      if (nextY <= 750) {
         this.dir.dy *= -1;
         nextY += 1;
       }
-      if (nextY >= 35) {
+      if (nextY >= 0) {
         this.dir.dy *= -1;
         nextY -= 1;
       }
@@ -139,7 +141,8 @@ export class GameService {
       nextY <= this.paddles.paddle2 + 50 &&
       nextY >= this.paddles.paddle2 - 50
     ) {
-      if (nextX + this.ballSize / 2 + 10 >= 1475) {
+      if (nextX + this.ballSize / 2 + 10 >= 1500) {
+        // if (nextX >= 1500) {
         console.log(
           `${this.ball.x}, ${this.ball.y} paddle 2 ${this.paddles.paddle2}`,
         );
@@ -151,13 +154,16 @@ export class GameService {
       nextY >= this.paddles.paddle1 - 20
     ) {
       if (nextX - this.ballSize / 2 <= 0) {
+        // if (nextX <= 0) {
         this.dir.dx *= -1;
         nextX += 10;
       }
     }
     // score
-    if (nextX - this.ballSize >= 1465 || nextX + this.ballSize <= 10) {
-      nextX >= 1475 ? (this.score.player1 += 1) : (this.score.player2 += 1);
+    // if (nextX - this.ballSize >= 1465 || nextX + this.ballSize <= 10) {
+    if (nextX >= 1500 || nextX <= 0) {
+      nextX >= 1500 ? (this.score.player1 += 1) : (this.score.player2 += 1);
+      // nextX >= 1475 ? (this.score.player1 += 1) : (this.score.player2 += 1);
       if (this.score.player1 == 5) {
         this.gameover();
       } else if (this.score.player2 == 5) {
@@ -229,7 +235,7 @@ export class GameService {
 
   keyPaddle1(input: number) {
     if (input === 1) {
-      if (this.paddles.paddle1 - 25 < 10) return;
+      if (this.paddles.paddle1 - 50 < 0) return;
       this.paddles.paddle1 -= 25;
     } else if (input === 2) {
       if (this.paddles.paddle1 + 25 >= 700) return;
@@ -239,7 +245,7 @@ export class GameService {
 
   keyPaddle2(input: number) {
     if (input === 1) {
-      if (this.paddles.paddle2 - 25 < 10) return;
+      if (this.paddles.paddle2 - 50 < 0) return;
       this.paddles.paddle2 -= 25;
     } else if (input === 2) {
       if (this.paddles.paddle2 + 25 >= 700) return;
