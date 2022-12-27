@@ -7,7 +7,7 @@ export default function GameExplain() {
       <hr />
       <div className="explain">
         <div>{`<How to win the game>`}</div>
-        <div>Player who win 3 times first win!</div>
+        <div>Player who wins 5 times first wins!</div>
         <div>{`<key>`}</div>
         <div>W: go upside</div>
         <div>S: go downside</div>

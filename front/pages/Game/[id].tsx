@@ -24,8 +24,8 @@ export default function Gaming({
   const [socket, disconnect] = useSocket(accessToken, "game");
   const [isGameover, setIsGameover] = useState<boolean>(false);
   const router = useRouter();
-  const [ballX, setBallX] = useState<number>(1375 / 2);
-  const [ballY, setBallY] = useState<number>(725 / 2);
+  const [ballX, setBallX] = useState<number>(1500 / 2);
+  const [ballY, setBallY] = useState<number>(750 / 2);
   const [ballSize, setBallSize] = useState<number>(50);
   const [leftPaddle, setLeftPaddle] = useState<number>(650 / 2);
   const [rightPaddle, setRightPaddle] = useState<number>(650 / 2);
@@ -184,16 +184,16 @@ export default function Gaming({
           <Gameover winOrLose={winOrLose} accessToken={accessToken} />
         ) : (
           <div className="play-game">
+            <div className="ball"></div>
+            <div className="line"></div>
             <div className="players-name">
               <div className="players-name">{ownerName}</div>
               <div className="players-name">{playerName}</div>
             </div>
-            <div className="line"></div>
             <div className="score">
               <div className="score">{ownerScore}</div>
               <div className="score">{playerScore}</div>
             </div>
-            <div className="ball"></div>
             <div className="paddle left"></div>
             <div className="paddle right"></div>
           </div>
@@ -303,8 +303,8 @@ export default function Gaming({
             background-color: yellow;
             // background-color: var(--foreground-color);
             left: ${ballX}px;
-            top: ${ballY - 135}px;
-            trasform: traslate(-50%, -50%);
+            top: ${ballY}px;
+            transform: translate(-50%, -50%);
             border-radius: 50%;
             width: ${ballSize / 2}px;
             height: ${ballSize / 2}px;
