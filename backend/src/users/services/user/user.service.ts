@@ -202,7 +202,7 @@ export class UserService implements IUserService {
   async createTestUser(name: string) {
     const userDetails = {
       intra_id: name,
-      email: name,
+      email: name + '@student.42.fr',
       image_url: process.env.DUMMY_URL,
       username: name,
     };
@@ -229,7 +229,7 @@ export class UserService implements IUserService {
     let name = 'dummy';
     let userDetails = {
       intra_id: name,
-      email: name,
+      email: name + '@student.42.fr',
       image_url: process.env.DUMMY_URL,
       username: name,
     };
@@ -241,7 +241,7 @@ export class UserService implements IUserService {
       name += number;
       userDetails = {
         intra_id: name,
-        email: name,
+        email: name + '@student.42.fr',
         image_url: process.env.DUMMY_URL,
         username: name,
       };
