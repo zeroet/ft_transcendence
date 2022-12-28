@@ -13,15 +13,10 @@ export class AllExceptionFilter implements ExceptionFilter {
     const context = host.switchToHttp();
     const response = context.getResponse<Response>();
     const request = context.getRequest<Request>();
-
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    // const err = exception.getResponse() as
-    //   | string
-    //   | { error: string; message: string[] };
     console.log('AllException', status, request.url);
     return response.status(status).json({
       statusCode: status,

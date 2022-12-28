@@ -15,7 +15,6 @@ export class UnauthorizedExceptionFilter implements ExceptionFilter {
     const err = exception.getResponse() as
       | string
       | { error: string; message: string[] };
-
     console.log('UnauthroizedException', status, err);
     return response.status(status).json({ statusCode: status, err });
   }
