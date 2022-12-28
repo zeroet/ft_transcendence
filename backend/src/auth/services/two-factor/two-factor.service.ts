@@ -36,22 +36,13 @@ export class TwoFactorService implements ITwoFactorService {
   }
 
   async setTwoFactorActivated(id: number, twoFactorActivated: boolean) {
-    // const user = await this.userRepository.findOneBy({ id });
     const user = await this.userRepository
       .createQueryBuilder('users')
       .where('users.user_id=:id', { id })
       .getOne();
     if (user) {
-      // console.log(user.two_factor_activated, twoFactorActivated);
-      // if (user.two_factor_activated && !twoFactorActivated) {
-      //   user.two_factor_secret = null;
-      // }
       user.two_factor_activated = twoFactorActivated;
       return await this.userRepository.save(user);
-      // await this.userRepository.save({
-      //   ...user,
-      //   two_factor_activated: twoFactorActivated,
-      // });
     }
   }
 
@@ -62,11 +53,9 @@ export class TwoFactorService implements ITwoFactorService {
       .getOne();
     user.two_factor_secret = secret;
     return await this.userRepository.save(user);
-    // return await this.userRepository.update(id, { two_factor_secret: secret });
   }
 
   async setTwoFactorValid(id: number, twoFactorValid: boolean) {
-    // const user = await this.userRepository.findOneBy({ id });
     const user = await this.userRepository
       .createQueryBuilder('users')
       .where('users.user_id=:id', { id })
@@ -74,10 +63,6 @@ export class TwoFactorService implements ITwoFactorService {
     if (user) {
       user.two_factor_valid = twoFactorValid;
       return await this.userRepository.save(user);
-      // await this.userRepository.save({
-      //   ...user,
-      //   two_factor_valid: twoFactorValid,
-      // });
     }
   }
 }

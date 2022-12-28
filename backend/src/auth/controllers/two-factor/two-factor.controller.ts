@@ -56,7 +56,6 @@ export class TwoFactorContorller {
     @Res({ passthrough: true }) res,
     @Body('two_factor_code') twoFactorCode: string,
   ) {
-    // console.log('authenticate() two_factor_code:', two_factor_code);
     if (!user.two_factor_activated || !user.two_factor_secret)
       throw new BadRequestException('Two Factor is not activated');
     const isCodeValid = this.twoFactorService.validateTwoFactorCode(
@@ -93,8 +92,6 @@ export class TwoFactorContorller {
   @UseGuards(JwtAccessAuthGuard)
   @Get('generate')
   async register(@User() user: IUser, @Res() res: Response) {
-    // if (!req.user.two_factor_activated)
-    //   throw new BadRequestException('Two factor is not activated');
     const otpAuthUrl = await this.twoFactorService.generateTwoFactorSecret(
       user,
     );
@@ -119,9 +116,6 @@ export class TwoFactorContorller {
     @Res({ passthrough: true }) res,
     @Body() { set, two_factor_code },
   ) {
-    // console.log('two factor activated:', user.two_factor_activated);
-    // console.log('two factor secret:', user.two_factor_secret);
-    // console.log('two factor code:', two_factor_code);
     if (user.two_factor_activated)
       throw new BadRequestException('Two factor is already activated');
     if (!user.two_factor_secret)
@@ -156,7 +150,6 @@ export class TwoFactorContorller {
     @User() user: IUser,
     @Body('set') twoFactorActivated: boolean,
   ) {
-    // console.log('deactivate() set:', set);
     if (!user.two_factor_activated)
       throw new BadRequestException('Two factor is not activated');
     await this.twoFactorService.setTwoFactorActivated(
@@ -177,7 +170,6 @@ export class TwoFactorContorller {
     @User() user: IUser,
     @Body('valid') twoFactorValid: boolean,
   ) {
-    // console.log('valid() valid:', valid);
     await this.twoFactorService.setTwoFactorValid(user.id, twoFactorValid);
   }
 }

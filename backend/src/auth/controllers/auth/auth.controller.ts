@@ -15,7 +15,6 @@ import { JwtRefreshAuthGuard } from 'src/auth/guards/jwt.refresh-auth.guard';
 import { IAuthService } from 'src/auth/services/auth/auth.interface';
 import { ITwoFactorService } from 'src/auth/services/two-factor/two-factor.interface';
 import { CreateTestUserDto } from 'src/users/dto/create-test.user.dto';
-import { UserDto } from 'src/users/dto/user.dto';
 import { IUserService } from 'src/users/services/user/user.interface';
 import { User } from 'src/utils/decorators/user.decorator';
 import { Cookies, Status } from 'src/utils/types';
@@ -90,9 +89,7 @@ export class AuthController {
     @Res({ passthrough: true }) res,
     @Body('name') name: string,
   ) {
-    // console.log('test user name:', name);
     const user = await this.userService.createTestUser(name);
-    // console.log('current test user:', user);
     const refreshToken = this.authService.getRefreshToken(user.id);
     res.cookie(
       Cookies.ACCESS_TOKEN,
