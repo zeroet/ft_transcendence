@@ -1,4 +1,4 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { OmitType } from '@nestjs/swagger';
 import { User } from 'src/typeorm';
 
 export class UserDto extends OmitType(User, [

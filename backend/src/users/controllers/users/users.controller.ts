@@ -42,13 +42,10 @@ export class UsersController {
   @ApiOperation({
     summary: 'Get current user / 현재 로그인된 사용자 정보요청',
   })
-  // @UseGuards(JwtAccessAuthGuard)
   @Get()
   async getCurrentUser(@User() user: IUser) {
-    // console.log('getCurrentUser()', user);
     const CurrentUser = await this.userService.getCurrentUser(user.id);
     if (!CurrentUser) {
-      // console.log('users/getCurrentUser() current user not found');
       throw new UnauthorizedException('User not found');
     }
     return CurrentUser;
@@ -74,7 +71,6 @@ export class UsersController {
   @ApiOperation({ summary: 'Get one user by id / id로 특정 사용자 정보요청' })
   @Get(':id')
   async getUserById(@Param('id', ParseIntPipe) id: number) {
-    // console.log('getUserById()', id);
     const user = await this.userService.getUserById(id);
     if (!user) {
       throw new UnauthorizedException('User not found');
@@ -92,7 +88,6 @@ export class UsersController {
     @User() user: IUser,
     @Param('blockUserId') blockUserId: number,
   ) {
-    // console.log('blockUserId:', blockUserId);
     return await this.userService.blockUser(user.id, blockUserId);
   }
 
@@ -108,7 +103,6 @@ export class UsersController {
     @User() user: IUser,
     @Param('unBlockUserId') unBlockUserId: number,
   ) {
-    // console.log('unBlockUserId:', unBlockUserId);
     return await this.userService.unBlockUser(user.id, unBlockUserId);
   }
 
@@ -132,7 +126,6 @@ export class UsersController {
     @User() user: IUser,
     @Param('friendUserId') friendUserId: number,
   ) {
-    // console.log('friendUserId:', friendUserId);
     return await this.userService.addFriend(user.id, friendUserId);
   }
 
@@ -149,7 +142,6 @@ export class UsersController {
     @User() user: IUser,
     @Param('unFriendUserId') unFriendUserId: number,
   ) {
-    // console.log('unFriendUserId:', unFriendUserId);
     return await this.userService.deleteFriend(user.id, unFriendUserId);
   }
 
@@ -186,16 +178,4 @@ export class UsersController {
     for (const match of matchs) num++;
     return num;
   }
-
-  // @Patch(':id')
-  // updateUserById(@Param('id', ParseIntPipe) id: number) {
-  //   this.userService.updateUserById(id);
-  // }
-  // @Post()
-  // createUser(@Body() user: UserDto) {
-  //   return this.userService.createUser(user);
-  // }
-
-  // @Delete()
-  // deleteUser() {}
 }

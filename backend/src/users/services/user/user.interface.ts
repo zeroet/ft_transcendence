@@ -11,14 +11,10 @@ export interface IUserService {
   deleteFriend(userId: number, unFriendUserId: number);
   getFriendList(userId: number);
   validateUser(userDetails: UserDetails);
-  // createUser(userDetails: UserDetails);
   createTestUser(name: string);
   createDummyUser();
   deleteDummyUser(user);
   updateUserStatus(userId: number, status: Status);
   getMatch(userId: number);
   getRank(userId: number);
-  // updateUserById(id: number);
-  // createUser(user: UserDto);
-  // deleteUser();
 }

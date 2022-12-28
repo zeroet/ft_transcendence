@@ -10,7 +10,7 @@ import { User } from 'src/typeorm';
 @Injectable()
 export class ProfileService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>, // private readonly mailerService: MailerService,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   async updateUserName(userId: number, newUserName: string) {
