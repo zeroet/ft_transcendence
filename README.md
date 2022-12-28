@@ -1,13 +1,5 @@
 # ft_transcendence
 
-# 추가해야할 사항
-
-2fa :
-
-  - 투팩터 비활성화하고 디비에 시크릿코드 삭제 
-  - 투팩터 활성화 요청시 프론트에서 시크릿코드 생성 generate 요청 
-  - 활성화 버튼 클릭시 오류메세지에 시크릿코드 생성해야 한다고 나오면 generate 요청
-
 # Barcodepong API 문서
 
 서버 실행하고 해당 url 들어가면 swagger api 문서 볼 수 있습니다.
