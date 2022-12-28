@@ -1,4 +1,4 @@
-import { PickType, OmitType, ApiProperty } from '@nestjs/swagger';
+import { PickType, ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 import { Chatroom } from 'src/typeorm';
 export class UpdateChatroomDto extends PickType(Chatroom, [

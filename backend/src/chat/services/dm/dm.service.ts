@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-// import { ChatEventsGateway } from 'src/chat/chat.events.gateway';
 import { ChatEventsGateway } from 'src/events/chat.events.gateway';
 import { Block, Dm, User } from 'src/typeorm';
 import { DmContent } from 'src/typeorm/entities/dmContent.entity';
@@ -28,7 +27,6 @@ export class DmService implements IDmService {
       .where('users.user_id=:userId', { userId })
       .getOne();
     if (!user) {
-      //   console.log(`findUserByIdOrFail of id: ${userId} not found,`);
       throw new NotFoundException(`User of id:${userId} not found`);
     }
     return user;
@@ -80,7 +78,6 @@ export class DmService implements IDmService {
         'user2.image_url',
       ])
       .getMany();
-    // console.log('dms:', dms);
     return dms;
   }
 
@@ -100,7 +97,6 @@ export class DmService implements IDmService {
         'user2.image_url',
       ])
       .getOne();
-    // console.log('dm info:', dm);
     return dm;
   }
 
@@ -120,11 +116,9 @@ export class DmService implements IDmService {
       .where('dm.user2=:senderId', { senderId })
       .andWhere('dm.user1=:receiverId', { receiverId })
       .getOne();
-
     if (dm2) {
       throw new BadRequestException(`Dm already exist`);
     }
-
     const newDm = this.dmRepository.create({
       user1: senderId,
       user2: receiverId,
@@ -132,7 +126,6 @@ export class DmService implements IDmService {
       User2: receiver,
     });
     await this.dmRepository.save(newDm);
-    // console.log('newDm:', newDm);
     this.chatEventsGateway.server.emit('newDmList', newDm);
     return newDm;
   }
@@ -153,21 +146,8 @@ export class DmService implements IDmService {
         'user2.image_url',
       ])
       .getMany();
-    // console.log('dm members:', members);
     return members;
   }
-
-  // async postMembers(userId: number, dmId: number) {
-  //   const dm = await this.findDmByIdOrFail(dmId);
-  //   const user = await this.findUserByIdOrFail(userId);
-  //   const member = await this.findMemberById(userId, dmId);
-  //   if (member) {
-  //     console.log(`User already exists in the dm of id:${dmId}`, member);
-  //     throw new BadRequestException(
-  //       `User already exists in the dm of id:${dmId}`,
-  //     );
-  //   }
-  // }
 
   async getContents(senderId: number, dmId: number) {
     const sender = await this.findUserByIdOrFail(senderId);
@@ -181,7 +161,6 @@ export class DmService implements IDmService {
       .innerJoinAndSelect('dm_content.User', 'user')
       .select(['dm_content', 'user.username'])
       .getMany();
-    // console.log('dm contents:', contents);
     if (Blockedusers.length > 0) {
       for (let i = 0; i < contents.length; i++) {
         for (let j = 0; j < Blockedusers.length; j++) {
@@ -195,15 +174,9 @@ export class DmService implements IDmService {
     return contents;
   }
 
-  async postContents(
-    senderId: number,
-    // receiverId: number,
-    dmId: number,
-    content: string,
-  ) {
+  async postContents(senderId: number, dmId: number, content: string) {
     const dm = await this.findDmByIdOrFail(dmId);
     const sender = await this.findUserByIdOrFail(senderId);
-    // const receiver = await this.findUserByIdOrFail(receiverId);
     const newContent = this.dmContentRepository.create({
       dmId,
       userId: senderId,
@@ -212,7 +185,6 @@ export class DmService implements IDmService {
       User: sender,
     });
     await this.dmContentRepository.save(newContent);
-    // console.log('new dm content:', newContent);
     this.chatEventsGateway.server.emit('newDmContent', newContent);
   }
 
@@ -224,7 +196,6 @@ export class DmService implements IDmService {
         createdAt: MoreThan(new Date(after)),
       },
     });
-    console.log('unReadCount', unReadCount);
     return unReadCount;
   }
 }

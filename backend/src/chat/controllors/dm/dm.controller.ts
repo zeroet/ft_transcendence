@@ -61,19 +61,6 @@ export class DmController {
     return await this.dmSerivce.getMembers(dmId);
   }
 
-  // @ApiParam({
-  //   name: 'id',
-  //   example: 1,
-  //   description: 'Dm id',
-  // })
-  // @ApiOperation({
-  //   summary: 'Post members for a DM / 특정 디엠의 참여자 추가하기',
-  // })
-  // @Post(':dmId/members')
-  // async postMembers(@User() user: IUser, @Param('dmId') dmId: number) {
-  //   return await this.dmSerivce.postMembers(user.id, dmId);
-  // }
-
   @ApiParam({
     name: 'id',
     example: 1,
@@ -106,20 +93,6 @@ export class DmController {
     return await this.dmSerivce.postContents(user.id, dmId, content);
   }
 
-  //  @ApiOperation({
-  //     summary: '안읽은 DM 개수 구하기',
-  //     description:
-  //       'after시간 이후로 해당 사용자로부터 새로 받은 DM의 개수\n\n' +
-  //       'after은 1970년 1월 1일 00:00:00 UTC 이후 경과 시간 (밀리 초)을 나타내는 숫자로 ' +
-  //       'Date객체에서 getTime()함수로 구한 값입니다.',
-  //   })
-  //   @ApiOkResponse({
-  //     type: String,
-  //     description: '',
-  //   })
-  //   @ApiBadRequestResponse({
-  //     description: '.',
-  //   })
   @Get(':senderId/unreads')
   async getUnreads(
     @User() user: IUser,

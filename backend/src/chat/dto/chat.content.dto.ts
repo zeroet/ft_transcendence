@@ -1,4 +1,4 @@
-import { PickType, OmitType, ApiProperty } from '@nestjs/swagger';
+import { OmitType, ApiProperty } from '@nestjs/swagger';
 import { ChatContent } from 'src/typeorm';
 export class ChatContentDto extends OmitType(ChatContent, [
   'Chatroom',
