@@ -39,28 +39,6 @@ export class ChatMember implements IChatMember {
   @Column({ type: 'int', name: 'chatroom_id' })
   chatroomId: number;
 
-  // @ApiProperty({
-  //   description: 'Muted time',
-  // })
-  // @Column({
-  //   type: 'timestamp',
-  //   name: 'muted_at',
-  //   nullable: true,
-  //   default: null,
-  // })
-  // mutedAt: Date | null;
-
-  // @ApiProperty({
-  //   description: 'Banned time',
-  // })
-  // @Column({
-  //   type: 'timestamp',
-  //   name: 'banned_at',
-  //   nullable: true,
-  //   default: null,
-  // })
-  // bannedAt: Date | null;
-
   @ApiProperty({
     description: 'Created time',
   })

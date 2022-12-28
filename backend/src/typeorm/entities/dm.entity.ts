@@ -41,7 +41,4 @@ export class Dm implements IDm {
   })
   @JoinColumn({ name: 'user2', referencedColumnName: 'id' })
   User2: IUser;
-
-  // @OneToMany((type) => DmContent, (DmContent) => DmContent.Dm)
-  // DmContent: IDmContent[];
 }

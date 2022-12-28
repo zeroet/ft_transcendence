@@ -2,15 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IChatContent } from '../interfaces/IChatContent';
-import { IChatMember } from '../interfaces/IChatMemeber';
 import { IChatroom } from '../interfaces/IChatroom';
-import { ChatContent } from './chatContent.entity';
-import { ChatMember } from './chatMember.entitiy';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'chatroom' })
