@@ -1,6 +1,3 @@
-import { IChatContent } from './IChatContent';
-import { IChatMember } from './IChatMemeber';
-
 export interface IChatroom {
   id: number;
   ownerId: number;

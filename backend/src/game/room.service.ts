@@ -5,7 +5,6 @@ import { Stat } from './interfaces/room';
 import { Interval } from '@nestjs/schedule';
 import { UserService } from 'src/users/services/user/user.service';
 import { User } from 'src/typeorm';
-import { watch } from 'fs';
 
 @Injectable()
 export class RoomService {

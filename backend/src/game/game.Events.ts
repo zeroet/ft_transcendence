@@ -21,8 +21,6 @@ import { RoomService } from './room.service';
 import { ConnectionService } from 'src/connection/connection.service';
 import { Status } from 'src/utils/types';
 
-// import { GameService } from './game.service';
-
 @UseGuards(JwtWsGuard)
 @WebSocketGateway({ path: '/game', cors: '*' })
 export class GameEvents
@@ -438,9 +436,8 @@ export class GameEvents
   @SubscribeMessage('Private')
   async startPrivateQ(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data?, // data receiver send event to server with { sender.id }
-  ) // if socket is sender, data is null
-  {
+    @MessageBody() data?, // data receiver send event to server with { sender.id } // if socket is sender, data is null
+  ) {
     let receiver;
     if (!data) return;
     if (this.queuePv.has(data)) {

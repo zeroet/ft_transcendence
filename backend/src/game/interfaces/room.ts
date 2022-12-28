@@ -119,8 +119,6 @@ export class GameService {
 
     var nextX = this.ball.x + this.dir.dx;
     var nextY = this.ball.y + this.dir.dy;
-    // var nextX = null;
-    // var nextY = null;
 
     //top bottom dir change
     if (nextY <= 750 || nextY >= 0) {
@@ -138,11 +136,10 @@ export class GameService {
     // paddles
 
     if (
-      nextY <= this.paddles.paddle2 + 50 &&
-      nextY >= this.paddles.paddle2 - 50
+      nextY <= this.paddles.paddle2 + 100 &&
+      nextY >= this.paddles.paddle2 - 20
     ) {
       if (nextX + this.ballSize / 2 + 10 >= 1500) {
-        // if (nextX >= 1500) {
         console.log(
           `${this.ball.x}, ${this.ball.y} paddle 2 ${this.paddles.paddle2}`,
         );
@@ -154,7 +151,6 @@ export class GameService {
       nextY >= this.paddles.paddle1 - 20
     ) {
       if (nextX - this.ballSize / 2 <= 0) {
-        // if (nextX <= 0) {
         this.dir.dx *= -1;
         nextX += 10;
       }
