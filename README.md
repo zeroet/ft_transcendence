@@ -36,3 +36,16 @@ You can check the mount point with command line 'docker volume inspect'
 For front : **docker restart front**
 <br>
 For back : **docker restart backend**
+
+## Made by
+<p>
+   <img src="https://emoji.slack-edge.com/T039P7U66/the-assembly/157ba128c687991d.png" width="25px"/><img src="https://img.shields.io/badge/hyungyoo (Hyungjun Yoo)-000000?style=for-the-badge&logoColor=white"/> <a href="https://profile.intra.42.fr/users/hyungyoo" target="_black"><img src="https://img.shields.io/badge/Intra-000000?style=for-the-badge&logo=42&logoColor=white"/></a> <a href="github.com/hyungyoo" traget="_black"><img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/></a>
+  <br>
+  <img src="https://img.shields.io/badge/keulee (Keungeun Lee)-000000?style=for-the-badge&logo=42&logoColor=white"/>
+  <br>
+  <img src="https://img.shields.io/badge/seyun (Seokchan Yun)-000000?style=for-the-badge&logo=42&logoColor=white"/>
+  <br>
+  <img src="https://img.shields.io/badge/cjung--mo (Jungmoo Cheon)-000000?style=for-the-badge&logo=42&logoColor=white"/>
+  <br>
+  <img src="https://img.shields.io/badge/eyoo (Eunmi Yoo)-000000?style=for-the-badge&logo=42&logoColor=white"/>
+</p>
