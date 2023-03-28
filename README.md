@@ -1,8 +1,12 @@
 # ft_transcendence
 
+- Last and final 42 project on common course. This project is about creating a website for the Pong contest. Users will play Pong with others. You will enjoy real-time multiplayer online pong games with random match-making, chat room, direct message, changing profiles, 2FA Auth, managing friends list.
+- Tech used on this project: **NestJS, NextJS, PostgreSQL**
+
+
 ## Usage
 
-(sudo) **make** : docker-compose
+(sudo) **make** : docker-compose up --build
 <br>
 **make fclean** : delete completely docker container, volume, network, image
 <br>
