@@ -11,6 +11,8 @@
 
 ## <img src="./image/barcode.png" width="25px" /> Subject
 
+[ft_transcendence subject PDF (EN, 2022)](https://github.com/keulee/ft_transcendence/blob/main/subject/ftTranscendence.en.subject.pdf)
+
 ## <img src="./image/barcode.png" width="25px" /> Usage
 
 (sudo) **make** : docker-compose up --build
