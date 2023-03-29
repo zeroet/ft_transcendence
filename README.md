@@ -1,4 +1,4 @@
-# ft_transcendence
+# ft_transcendence <img src="./image/barcode.png" width="35px" /> BarcodePong
 
 <div align="center">
 
@@ -9,7 +9,9 @@
 - Last and final 42 project on common course. This project is about creating a website for the Pong contest. Users will play Pong with others. You will enjoy real-time multiplayer online pong games with random match-making, chat room, direct message, changing profiles, 2FA Auth, managing friends list.
 - Tech used on this project: **NestJS, NextJS, PostgreSQL**
 
-## Usage
+## <img src="./image/barcode.png" width="25px" /> Subject
+
+## <img src="./image/barcode.png" width="25px" /> Usage
 
 (sudo) **make** : docker-compose up --build
 <br>
@@ -17,19 +19,19 @@
 <br>
 **make re** : fclean all
 
-## url
+## <img src="./image/barcode.png" width="25px" /> url
 
 **http://localhost:8000**
 
-## Barcodepong API document
+## <img src="./image/barcode.png" width="25px" /> BarcodePong API document
 
 You can check swagger API docs on http://localhost:8080/api once you successfully build the docker container
 
-## docker volume (postgresql)
+## <img src="./image/barcode.png" width="25px" /> docker volume (postgresql)
 
 You can check the mount point with command line 'docker volume inspect'
 
-## if you need to restart the front / back
+## <img src="./image/barcode.png" width="25px" /> if you need to restart the front / back
 
 (from the root where you find docker-compose.yml file)
 <br>
@@ -37,7 +39,8 @@ For front : **docker restart front**
 <br>
 For back : **docker restart backend**
 
-## Made by
+## <img src="./image/barcode.png" width="25px" /> Made by
+
 <p>
    <img src="https://emoji.slack-edge.com/T039P7U66/the-federation/cf19b04ff8baa385.png" width="25px"/><img src="https://img.shields.io/badge/cjung--mo(Jungmoo Cheon)-000000?style=for-the-badge&logoColor=white"/> <a href="https://profile.intra.42.fr/users/cjung-mo"><img src="https://img.shields.io/badge/Intra-000000?style=for-the-badge&logo=42&logoColor=white"/></a> <a href="https://github.com/jmcheon"><img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/></a>
   <br>
