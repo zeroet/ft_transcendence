@@ -88,10 +88,14 @@ For back : **docker restart backend**
 ##### Setting Page
 <img src="./image/SettingPage.png" />
 
+##### Change name
+<img src="./image/ChangeName.png" />
+
 ##### Change avatar
 <img src="./image/ChangeAvatar.png" />
 
-
+##### 2FA
+<img src="./image/2FAAuthPage.png" />
 
 ## <img src="./image/barcode.png" width="25px" /> Made by
 
