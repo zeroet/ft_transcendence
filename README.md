@@ -41,6 +41,8 @@ For front : **docker restart front**
 <br>
 For back : **docker restart backend**
 
+## <img src="./image/barcode.png" width="25px" /> Screenshot of BarcodePong
+
 ## <img src="./image/barcode.png" width="25px" /> Made by
 
 <p>
