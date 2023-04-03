@@ -43,6 +43,24 @@ For back : **docker restart backend**
 
 ## <img src="./image/barcode.png" width="25px" /> Screenshot of BarcodePong
 
+##### First Page
+<img src="./image/FirstPage.png" />
+
+##### Home Page
+<img src="./image/profilePage.png" />
+
+##### Chat Page
+<img src="./image/ChatPage.png" />
+
+##### Chat at Public room
+<img src="./image/ChatingPage.png" />
+
+##### When you access to Private chat room
+<img src="./image/PrivateChatPage.png" />
+
+##### DM
+<img src="./image/DMPage.png" />
+
 ## <img src="./image/barcode.png" width="25px" /> Made by
 
 <p>
