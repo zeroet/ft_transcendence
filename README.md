@@ -52,6 +52,9 @@ For back : **docker restart backend**
 ##### Chat Page
 <img src="./image/ChatPage.png" />
 
+##### Create a Chat
+<img src="./image/CreateChatPage.png" />
+
 ##### Chat at Public room
 <img src="./image/ChatingPage.png" />
 
@@ -60,6 +63,35 @@ For back : **docker restart backend**
 
 ##### DM
 <img src="./image/DMPage.png" />
+
+##### Game Page
+<img src="./image/GamePage.png" />
+
+##### Loading for searching a random-matching game 
+<img src="./image/GameLoadingPage.png" />
+
+##### Game Setting 01 - For player who joined at the queue first (As Game room admin)
+<img src="./image/GameSettingPage01.png" />
+
+##### Game Setting 02 - For player who joined at the queue later
+<img src="./image/GameSettingPage02.png" />
+
+##### On gaming 01 (with big ball size setting)
+<img src="./image/GamingPage.png" />
+
+##### On gaming 02 (with small ball size setting)
+<img src="./image/GameWithSmallBall.png" />
+
+##### Game finished
+<img src="./image/WhenGameFinished.png" />
+
+##### Setting Page
+<img src="./image/SettingPage.png" />
+
+##### Change avatar
+<img src="./image/ChangeAvatar.png" />
+
+
 
 ## <img src="./image/barcode.png" width="25px" /> Made by
 
